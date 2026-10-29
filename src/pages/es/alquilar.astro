@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import Steps from '../../components/sections/Steps.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import { rentSteps } from '../../data/steps';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+import { whatsappUrl } from '../../lib/links';
+
+const path = '/es/alquilar/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Alquilar', path },
+];
+const faq = [
+  {
+    question: '¿Tenéis pisos de alquiler ahora mismo?',
+    answer: 'Cambia cada semana y todavía no los publicamos en la web. Escríbenos y te decimos qué hay hoy.',
+  },
+  {
+    question: 'Tengo un piso vacío, ¿me buscáis inquilino?',
+    answer: 'Sí. Buscamos el inquilino, enseñamos el piso y preparamos el contrato.',
+  },
+];
+---
+
+<BaseLayout
+  title="Alquilar piso en Malgrat de Mar"
+  description="Alquiler en Malgrat de Mar con Conroma: te ayudamos a encontrar piso de alquiler o a encontrar inquilino para el tuyo."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="¿Cómo alquilo?"
+    title="Alquilar, "
+    highlight="desde los dos lados."
+    lead="Tanto si buscas piso como si tienes uno y quieres alquilarlo bien."
+  >
+    <a class="button button--primary button--large" href="#busco">Busco piso de alquiler</a>
+    <a class="button button--ghost button--large" href="#tengo-piso">Tengo un piso para alquilar</a>
+  </PageHero>
+
+  <section class="section audience">
+    <div class="wrap audience__grid">
+      <article class="card feature audience__card" id="busco" data-reveal>
+        <img class="audience__photo" src="/img/reales/piso-3.jpg" alt="Salón de un piso de alquiler en Malgrat de Mar" width="900" height="900" loading="lazy" decoding="async" />
+        <div class="audience__body">
+          <span class="icon-tile"><Icon name="search" /></span>
+          <h2 class="feature__title">Busco piso de alquiler</h2>
+          <p class="feature__text">Dinos zona, presupuesto y para cuándo. Te decimos qué tenemos hoy y te avisamos cuando entre algo.</p>
+          <a class="button button--primary" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="alquilar-busco">
+            Preguntar qué hay ahora
+          </a>
+        </div>
+      </article>
+      <article class="card feature audience__card" id="tengo-piso" data-reveal>
+        <img class="audience__photo" src="/img/reales/piso-4.jpg" alt="Interior de un piso listo para alquilar en Malgrat de Mar" width="900" height="900" loading="lazy" decoding="async" />
+        <div class="audience__body">
+          <span class="icon-tile"><Icon name="key" /></span>
+          <h2 class="feature__title">Tengo un piso para alquilar</h2>
+          <p class="feature__text">Buscamos inquilino, enseñamos el piso y preparamos el contrato. Tú decides a quién se lo alquilas.</p>
+          <a class="button button--ghost" href={whatsappUrl({ reason: 'alquiler' })} data-contact="whatsapp" data-origin="alquilar-propietario">
+            Quiero alquilar mi piso
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <Steps eyebrow="El proceso" title="Alquilar con Conroma" steps={rentSteps} />
+  <Testimonials limit={3} />
+  <FaqSection title="Lo que más preguntan del alquiler" items={faq} />
+  <ContactSection />
+</BaseLayout>

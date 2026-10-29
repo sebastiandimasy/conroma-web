@@ -1,0 +1,26 @@
+---
+import Icon from '../Icon.astro';
+import { site } from '../../data/site';
+import { whatsappUrl } from '../../lib/links';
+---
+
+<section class="section contact-band" id="contacto">
+  <div class="wrap">
+    <div class="contact-band__card glass" data-reveal>
+      <p class="eyebrow">¿Cómo contacto?</p>
+      <h2 class="section__title">Cuéntanos qué necesitas.</h2>
+      <p class="section__lead">Escríbenos por donde te vaya mejor.</p>
+      <div class="contact-band__actions">
+        <a class="button button--primary button--large" href="/es/contacto/">Ir a contacto</a>
+        <a class="button button--ghost button--large" href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
+          <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
+          WhatsApp
+        </a>
+        <a class="button button--ghost button--large" href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
+          <Icon name="phone" class="button__icon contact__icon" />
+          Llamar · {site.phoneDisplay}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

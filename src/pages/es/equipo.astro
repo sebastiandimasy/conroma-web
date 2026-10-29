@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import TeamMembers from '../../components/sections/TeamMembers.astro';
+import StorySection from '../../components/sections/StorySection.astro';
+import TeamGallery from '../../components/sections/TeamGallery.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import { breadcrumbSchema } from '../../lib/seo';
+
+const path = '/es/equipo/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Nuestro equipo', path },
+];
+---
+
+<BaseLayout
+  title="Nuestro equipo: las personas de Conroma"
+  description="Conoce al equipo de Conroma Asesores en Malgrat de Mar: quién te atiende, quién enseña los pisos y quién te acompaña a notaría."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Nuestro equipo"
+    title="Las personas que hay "
+    highlight="detrás de cada llave."
+    lead="Quien te atiende el primer día te acompaña hasta la firma. Nada de empezar con alguien y acabar con otro."
+  />
+
+  <StorySection cta={false} />
+  <TeamMembers />
+  <TeamGallery />
+  <Testimonials />
+  <ContactSection />
+</BaseLayout>

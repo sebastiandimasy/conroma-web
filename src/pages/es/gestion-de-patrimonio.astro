@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import Steps from '../../components/sections/Steps.astro';
+import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import type { StepItem } from '../../data/steps';
+import { breadcrumbSchema } from '../../lib/seo';
+
+const path = '/es/gestion-de-patrimonio/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Gestión de patrimonio', path },
+];
+const points: StepItem[] = [
+  { title: 'Buscamos inquilino', text: 'Anunciamos el piso, lo enseñamos y te presentamos a quien encaja.', icon: 'search' },
+  { title: 'Lo llevamos por ti', text: 'Somos el contacto del inquilino para el día a día, y tú estás al tanto de todo.', icon: 'user' },
+  { title: 'Miramos el conjunto', text: 'Si tienes más de un inmueble, vemos contigo qué conviene alquilar, vender o reformar.', icon: 'shield' },
+];
+---
+
+<BaseLayout
+  title="Gestión de patrimonio inmobiliario en Malgrat de Mar"
+  description="Gestión de patrimonio con Conroma: nos ocupamos de tus pisos en Malgrat de Mar y alrededores para que te den tranquilidad y no trabajo."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="¿Y si tengo varios inmuebles?"
+    title="Tus pisos, "
+    highlight="sin que te quiten el sueño."
+    lead="Nos ocupamos de ellos para que te den tranquilidad y no trabajo."
+  >
+    <a class="button button--primary button--large" href="/es/contacto/">Contadnos vuestro caso</a>
+  </PageHero>
+
+  <Steps eyebrow="Qué hacemos" title="Lo que llevamos nosotros" steps={points} numbered={false} />
+  <Testimonials limit={4} />
+  <ServicesGrid eyebrow="También" title="Otros servicios de Conroma" exclude="gestion-de-patrimonio" />
+  <ContactSection />
+</BaseLayout>

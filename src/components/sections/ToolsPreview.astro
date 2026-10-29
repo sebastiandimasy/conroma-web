@@ -1,0 +1,50 @@
+---
+import Icon from '../Icon.astro';
+import type { IconName } from '../../lib/icons';
+
+const tools: { title: string; text: string; cta: string; href: string; icon: IconName }[] = [
+  {
+    title: '¿Cuánto vale mi piso?',
+    text: 'Cuatro preguntas y nos llega tu caso. Gratis y sin compromiso.',
+    cta: 'Valorar mi piso',
+    href: '/es/valoracion/',
+    icon: 'eye',
+  },
+  {
+    title: '¿Puedo comprar un piso?',
+    text: 'Con el límite del 40% de endeudamiento, hasta qué presupuesto llegas y si tu préstamo saldría pre-aprobado.',
+    cta: 'Ver si puedo comprar',
+    href: '/es/comprar/puedo-comprar/',
+    icon: 'key',
+  },
+  {
+    title: 'Simulador de reformas',
+    text: 'Cuánto puede costar reformar tu piso según los metros y los acabados.',
+    cta: 'Calcular la reforma',
+    href: '/es/reformas/simulador/',
+    icon: 'camera',
+  },
+];
+---
+
+<section class="section tools">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">¿Cuánto me va a costar?</p>
+      <h2 class="section__title">Haz números <span class="highlight">antes de decidir.</span></h2>
+      <p class="section__lead">Dos calculadoras y una valoración para hacerte una idea.</p>
+    </div>
+    <ul class="feature-grid">
+      {
+        tools.map((tool) => (
+          <li class="card feature tools__card" data-reveal>
+            <span class="icon-tile"><Icon name={tool.icon} /></span>
+            <h3 class="feature__title">{tool.title}</h3>
+            <p class="feature__text">{tool.text}</p>
+            <a class="button button--primary tools__cta" href={tool.href}>{tool.cta}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,50 @@
+---
+import Icon from '../Icon.astro';
+import OfficeMapLibre from '../../islands/OfficeMapLibre';
+import { site } from '../../data/site';
+import { formatRating } from '../../lib/format';
+
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${site.geo?.latitude},${site.geo?.longitude}`;
+const rating = site.googleRating;
+// Horario compacto para la tarjeta (los dos turnos de L-V).
+const hours = site.openingHours?.map((s) => `${s.opens}–${s.closes}`).join(' · ');
+---
+
+{
+  site.geo && (
+    <section class="section office-map">
+      <div class="wrap">
+        <div class="office-map__card" data-reveal>
+          <div class="office-map__frame">
+            <OfficeMapLibre
+              client:only="react"
+              latitude={site.geo.latitude}
+              longitude={site.geo.longitude}
+              label={`${site.legalName} · ${site.address.street}`}
+            />
+          </div>
+
+          <div class="office-map__panel">
+            {rating && (
+              <a class="office-map__rating" href={rating.url} rel="noopener" target="_blank">
+                <Icon name="star" class="office-map__star" />
+                <strong>{formatRating(rating.value)}</strong>
+                <span>· {rating.count} reseñas</span>
+              </a>
+            )}
+            <h2 class="office-map__title">{site.address.street}</h2>
+            <p class="office-map__place">{site.address.postalCode} {site.address.locality} · {site.address.region}</p>
+            {hours && <p class="office-map__hours">Lunes a viernes · {hours}</p>}
+            <div class="office-map__actions">
+              <a class="button button--primary button--small" href={directionsUrl} rel="noopener" target="_blank">
+                <Icon name="pin" class="button__icon" />
+                Cómo llegar
+              </a>
+              <a class="button button--ghost button--small" href={site.mapsUrl} rel="noopener" target="_blank">Ver en Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

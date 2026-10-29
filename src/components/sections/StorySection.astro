@@ -1,0 +1,53 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { site } from '../../data/site';
+import { formatRating } from '../../lib/format';
+
+interface Props {
+  cta?: boolean;
+}
+
+const { cta = true } = Astro.props;
+const photo = site.teamPhotos[0];
+const rating = site.googleRating;
+---
+
+<section class="section story" id="quienes-somos">
+  <div class="wrap story__grid">
+    {
+      photo && (
+        <figure class="story__figure" data-reveal>
+          <Picture class="story__photo" src={photo.src} alt={photo.alt} formats={['avif', 'webp']} width={880} widths={[440, 660, 880, 1200]} sizes="(min-width: 30rem) 440px, calc(100vw - 40px)" loading="eager" decoding="async" />
+          {rating && (
+            <figcaption class="story__card glass">
+              <span class="story__stars" aria-hidden="true">
+                <Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" /><Icon name="star" />
+              </span>
+              <strong class="story__card-value">{formatRating(rating.value)} sobre 5</strong>
+              <span class="story__card-text">en {rating.count} reseñas de Google sobre el equipo</span>
+            </figcaption>
+          )}
+        </figure>
+      )
+    }
+    <div class="story__copy" data-reveal>
+      <p class="eyebrow">¿Quiénes somos?</p>
+      <h2 class="section__title">Una pequeña familia que le encuentra <span class="highlight">sentido a tu vivienda.</span></h2>
+      {site.about.slice(1).map((paragraph) => <p class="section__lead">{paragraph}</p>)}
+      <ul class="story__points">
+        <li><Icon name="check" class="story__check" />Una misma persona todo el proceso</li>
+        <li><Icon name="check" class="story__check" />Te atendemos en catalán, castellano, inglés y francés</li>
+        <li><Icon name="check" class="story__check" />Si un piso no te conviene, te lo decimos</li>
+      </ul>
+      {
+        cta && (
+          <div class="story__actions">
+            <a class="button button--primary button--large" href="/es/equipo/">Conoce al equipo</a>
+            <a class="button button--ghost button--large" href="/es/empresa/">Nuestra empresa</a>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

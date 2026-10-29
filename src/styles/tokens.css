@@ -1,0 +1,208 @@
+@theme {
+  --color-accent: #f4ce4b;
+  --color-accent-2: #f9de77;
+  --color-accent-deep: #786012;
+  --color-accent-wash: #fcf3cf;
+  --color-on-accent: #161615;
+  --color-on-ink: #ffffff;
+  --color-on-canvas: #161615;
+  --color-on-surface: #161615;
+  --color-on-surface-2: #161615;
+  --color-on-accent-wash: #786012;
+  --color-on-positive: #ffffff;
+  --color-on-negative: #ffffff;
+  --color-on-whatsapp: #0a2e1a;
+
+  /* Pares fijos: para lo que se pinta sobre una foto o sobre un color que
+     no cambia con el tema. Estos NO se invierten en modo oscuro. */
+  --color-fixed-ink: #161615;
+  --color-fixed-paper: #ffffff;
+  --color-fixed-accent-deep: #786012;
+  --color-fixed-wash: #fbe8a6;
+  --color-on-fixed-wash: #2b2410;
+  /* Texto y línea sobre fondo fijo oscuro (--color-fixed-ink): no flipan con el tema. */
+  --color-on-fixed-ink: #f5f5ef;
+  --color-on-fixed-ink-muted: #b6b6ad;
+  --color-on-fixed-ink-faint: #9a9a91;
+  --color-fixed-line: #32322d;
+  --color-fixed-backdrop: #0b0b0a; /* negro de visor/lightbox de fotos */
+  --color-ink: #161615;
+  --color-ink-2: #4c4c47;
+  --color-ink-3: #6b6b64;
+  --color-canvas: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f0ea;
+  --color-line: #e6e6df;
+  --color-dot: rgb(22 22 21 / 0.05); /* puntos de fondo decorativos */
+  --color-positive: #1c6b43;
+  --color-negative: #a3261d;
+  --color-whatsapp: #25d366;
+
+  --font-display: "Helvetica Neue", Helvetica, "Hanken Grotesk Variable", Arial, sans-serif;
+  --font-body: "Hanken Grotesk Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-accent: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-script: "Pacifico", "Brush Script MT", cursive;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-xl: 36px;
+  --radius-pill: 999px;
+
+  --breakpoint-desk: 60rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --text-display: clamp(3rem, 1.4rem + 6.2vw, 7rem);
+  --text-h1: clamp(2.5rem, 1.6rem + 3.2vw, 4.75rem);
+  --text-h2: clamp(2.125rem, 1.55rem + 2.4vw, 3.5rem);
+  --text-h3: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+  --text-title: 1.0625rem;
+  --text-body: 1.0625rem;
+  --text-small: 0.9375rem;
+  --text-caption: 0.875rem;
+
+  --space-gutter: 20px;
+  --space-section: clamp(72px, 52px + 5vw, 128px);
+  --content-max: 1180px;
+
+  --glass-fill-1: rgb(255 255 255 / 0.5);
+  --glass-fill-2: rgb(255 255 255 / 0.66);
+  --glass-fill-3: rgb(255 255 255 / 0.84);
+  --glass-solid: rgb(255 255 255 / 0.94);
+  --glass-edge: rgb(255 255 255 / 0.75);
+  --glass-highlight: rgb(255 255 255 / 0.4);
+  --glass-lowlight: rgb(0 0 0 / 0.05);
+
+  --shadow-1: 0 1px 2px rgb(11 27 43 / 0.05), 0 2px 6px -4px rgb(11 27 43 / 0.10);
+  --shadow-2: 0 1px 3px rgb(11 27 43 / 0.06), 0 6px 14px -8px rgb(11 27 43 / 0.12);
+  --shadow-3: 0 2px 5px rgb(11 27 43 / 0.07), 0 10px 20px -12px rgb(11 27 43 / 0.16);
+
+  /* Fallback estático del héroe bajo el canvas WebGL (claro: blanco + amarillo). */
+  --gradient-hero:
+    radial-gradient(72% 90% at 80% 0%, #fde6a8 0%, transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #fffdf3 55%, #fcf0c8 100%);
+
+  --duration-fast: 180ms;
+  --duration-base: 280ms;
+  --duration-slow: 450ms;
+
+  --header-height: 68px;
+  --action-bar-space: 0px;
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------
+   HeroUI usa su propia paleta (--accent, --default, --background...).
+   Sin esto, sus botones y controles salen en AZUL, que no es de marca.
+   Se mapean a los tokens de Conroma para que todo herede el amarillo.
+   Va despues del @import de @heroui/styles, en global.css.
+   --------------------------------------------------------------- */
+:root {
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-on-accent);
+  --accent-hover: var(--color-accent-2);
+  --accent-soft: var(--color-accent-wash);
+  --accent-soft-foreground: var(--color-on-accent-wash);
+  --accent-soft-hover: var(--color-accent-wash);
+
+  --default: var(--color-surface);
+  --default-foreground: var(--color-on-surface);
+  --default-hover: var(--color-accent);
+
+  --background: var(--color-canvas);
+  --background-secondary: var(--color-surface);
+  --background-tertiary: var(--color-surface-2);
+  --background-inverse: var(--color-ink);
+
+  --danger: var(--color-negative);
+  --danger-foreground: var(--color-on-negative);
+}
+
+@media (min-width: 60rem) {
+  :root {
+    --space-gutter: 24px;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-ink: #f5f5ef;
+  --color-ink-2: #b6b6ad;
+  --color-ink-3: #9a9a91;
+  --color-canvas: #121212;
+  --color-surface: #1a1a17;
+  --color-surface-2: #161613;
+  --color-line: #2c2c26;
+  --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
+  --color-accent-deep: #f0d37a;
+  --color-accent-wash: #2a2410;
+  --color-positive: #6fcf97;
+  --color-negative: #ff8a80;
+  --color-on-ink: #121212;
+  --color-on-canvas: #f5f5ef;
+  --color-on-surface: #f5f5ef;
+  --color-on-surface-2: #f5f5ef;
+  --color-on-accent-wash: #f0d37a;
+  --color-on-positive: #121212;
+  --color-on-negative: #121212;
+
+  --glass-fill-1: rgb(22 22 18 / 0.45);
+  --glass-fill-2: rgb(22 22 18 / 0.58);
+  --glass-fill-3: rgb(22 22 18 / 0.8);
+  --glass-solid: rgb(26 26 23 / 0.94);
+  --glass-edge: rgb(255 255 255 / 0.1);
+  --glass-highlight: rgb(255 255 255 / 0.1);
+  --glass-lowlight: rgb(0 0 0 / 0.3);
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.35), 0 2px 8px -4px rgb(0 0 0 / 0.45);
+  --shadow-2: 0 1px 3px rgb(0 0 0 / 0.4), 0 6px 16px -8px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 2px 6px rgb(0 0 0 / 0.45), 0 12px 22px -12px rgb(0 0 0 / 0.55);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-ink: #f5f5ef;
+    --color-ink-2: #b6b6ad;
+    --color-ink-3: #9a9a91;
+    --color-canvas: #121212;
+    --color-surface: #1a1a17;
+    --color-surface-2: #161613;
+    --color-line: #2c2c26;
+    --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
+    --color-accent-deep: #f0d37a;
+    --color-accent-wash: #2a2410;
+    --color-positive: #6fcf97;
+    --color-negative: #ff8a80;
+    --color-on-ink: #121212;
+    --color-on-canvas: #f5f5ef;
+    --color-on-surface: #f5f5ef;
+    --color-on-surface-2: #f5f5ef;
+    --color-on-accent-wash: #f0d37a;
+    --color-on-positive: #121212;
+    --color-on-negative: #121212;
+
+    --glass-fill-1: rgb(22 22 18 / 0.45);
+    --glass-fill-2: rgb(22 22 18 / 0.58);
+    --glass-fill-3: rgb(22 22 18 / 0.8);
+    --glass-solid: rgb(26 26 23 / 0.94);
+    --glass-edge: rgb(255 255 255 / 0.1);
+    --glass-highlight: rgb(255 255 255 / 0.1);
+    --glass-lowlight: rgb(0 0 0 / 0.3);
+
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.35), 0 2px 8px -4px rgb(0 0 0 / 0.45);
+    --shadow-2: 0 1px 3px rgb(0 0 0 / 0.4), 0 6px 16px -8px rgb(0 0 0 / 0.5);
+    --shadow-3: 0 2px 6px rgb(0 0 0 / 0.45), 0 12px 22px -12px rgb(0 0 0 / 0.55);
+
+    /* dark: negro carbón + amarillo. */
+    --gradient-hero:
+      radial-gradient(72% 90% at 80% 0%, #2a2208 0%, transparent 55%),
+      linear-gradient(135deg, #121212 0%, #14110a 55%, #1d1708 100%);
+    color-scheme: dark;
+  }
+}

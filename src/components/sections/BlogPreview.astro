@@ -1,0 +1,32 @@
+---
+import Icon from '../Icon.astro';
+import { posts } from '../../data/blog';
+---
+
+<section class="section blog-preview">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">¿Tienes dudas?</p>
+      <h2 class="section__title">Te lo contamos <span class="highlight">fácil.</span></h2>
+    </div>
+    <ul class="feature-grid">
+      {
+        posts.slice(0, 3).map((post) => (
+          <li data-reveal>
+            <a class="card feature blog__card" href={`/es/blog/${post.slug}/`}>
+              <span class="tag">{post.category}</span>
+              <h3 class="feature__title">{post.title}</h3>
+              <span class="services__more">
+                Leer
+                <Icon name="arrow" class="link-list__arrow" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="featured__more">
+      <a class="button button--ghost button--large" href="/es/blog/">Ir al blog</a>
+    </p>
+  </div>
+</section>

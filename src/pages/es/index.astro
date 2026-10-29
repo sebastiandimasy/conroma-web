@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import ReelTestimonials from '../../islands/ReelTestimonials';
+import ContactForm from '../../islands/ContactForm';
+import { testimonials } from '../../data/testimonials';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import { homeFaq } from '../../data/faq';
+import HeroSearch from '../../islands/HeroSearch';
+import Contador from '../../components/sections/Contador.astro';
+import { site } from '../../data/site';
+import { whatsappUrl } from '../../lib/links';
+import { formatRating } from '../../lib/format';
+import { agentSchema, faqSchema } from '../../lib/seo';
+
+const rating = site.googleRating;
+
+// Servicios de la home como acordeón (textos de services.ts; "Compra y venta" fusiona comprar+vender).
+const homeServices = [
+  {
+    name: 'Compra y venta',
+    summary:
+      'Te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves. Y si vendes, empezamos por decirte cuánto vale tu piso. Gratis y sin compromiso.',
+  },
+  {
+    name: 'Alquiler',
+    summary: '¿Buscas piso de alquiler? ¿Tienes uno y quieres un buen inquilino? Te ayudamos en los dos casos.',
+  },
+  {
+    name: 'Gestión de patrimonio',
+    summary: 'Si tienes uno o varios pisos, te buscamos inquilino y vemos contigo qué hacer con cada uno.',
+  },
+  {
+    name: 'Reformas e interiorismo',
+    summary: 'Conroma en Obras: le damos una segunda vida al piso antes de venderlo o de entrar a vivir.',
+  },
+];
+
+// Abanico del héroe con obras reales de Conroma (rotación, posición y entrada escalonada por tarjeta).
+const heroDeck = [
+  { src: '/img/reformas/reforma-05.jpg', rot: -22, delay: '0.5s', z: 10 },
+  { src: '/img/reformas/reforma-09.jpg', rot: -11, delay: '0.38s', z: 20 },
+  { src: '/img/reformas/reforma-02.jpg', rot: 0, delay: '0.26s', z: 30 },
+  { src: '/img/reformas/reforma-14.jpg', rot: 11, delay: '0.38s', z: 20 },
+  { src: '/img/reformas/reforma-18.jpg', rot: 22, delay: '0.5s', z: 10 },
+];
+---
+
+<BaseLayout
+  title="Inmobiliaria en Malgrat de Mar | Conroma"
+  description="Conroma Asesores es la inmobiliaria familiar de Malgrat de Mar: compra, venta, alquiler, gestión de patrimonio y reformas. Te atendemos en catalán, castellano, inglés y francés."
+  path="/es/"
+  schemas={[agentSchema(), faqSchema(homeFaq)]}
+  overlay
+>
+  <section class="hero hero--deck">
+    <div class="wrap hero__content">
+      <p class="eyebrow">Donde empieza tu próxima historia</p>
+      <h1 class="hero__title">Encuentra tu <em class="hero__accent">hogar</em></h1>
+      <p class="hero__lead">
+        Compramos, vendemos y alquilamos contigo. Y nos quedamos para lo que venga después.
+      </p>
+      <HeroSearch client:idle />
+      {
+        rating && (
+          <div class="hero__proof">
+            <span class="social-proof__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
+              <Icon name="star" class="social-proof__star" />
+              <Icon name="star" class="social-proof__star" />
+              <Icon name="star" class="social-proof__star" />
+              <Icon name="star" class="social-proof__star" />
+              <Icon name="star" class="social-proof__star" />
+            </span>
+            <a class="social-proof__text" href={rating.url} rel="noopener" target="_blank">
+              <strong>{formatRating(rating.value)} en Google</strong> · {rating.count} reseñas de clientes
+            </a>
+          </div>
+        )
+      }
+    </div>
+    <div class="hero__deck" aria-hidden="true">
+      {
+        heroDeck.map((card, index) => (
+          <figure class="hero-card" style={`--rot:${card.rot}deg; --delay:${card.delay}; z-index:${card.z};`}>
+            <img
+              src={card.src}
+              alt=""
+              width="448"
+              height="640"
+              loading={index < 3 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <Contador />
+
+  <section class="section home-services">
+    <div class="wrap home-services__grid">
+      <div class="home-services__col" data-reveal>
+        <p class="eyebrow">Nuestros servicios</p>
+        <h2 class="section__title">Nos encargamos de <span class="highlight">todo.</span></h2>
+        <div class="accordion home-services__accordion">
+          {
+            homeServices.map((service, index) => (
+              <details class="accordion__item" name="home-services" open={index === 0}>
+                <summary class="accordion__question">
+                  {service.name}
+                  <Icon name="plus" class="accordion__icon" />
+                </summary>
+                <p class="accordion__answer">{service.summary}</p>
+              </details>
+            ))
+          }
+        </div>
+        <p class="home-services__more">
+          <a class="text-link" href="/es/servicios/">Conoce nuestros servicios</a>
+        </p>
+      </div>
+      <figure class="home-services__figure" data-reveal>
+        <img
+          class="home-services__photo"
+          src="/img/reales/piso-1.jpg"
+          alt="Cocina reformada y luminosa de una vivienda de Conroma"
+          width="720"
+          height="900"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <section class="section story home-team" id="equipo">
+    <div class="wrap story__grid">
+      <figure class="home-team__figure" data-reveal>
+        <img
+          class="home-team__cutout"
+          src="/img/equipo/equipo.jpg"
+          alt="Equipo de Conroma Asesores"
+          width="667"
+          height="1000"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="story__copy" data-reveal>
+        <p class="eyebrow">Nuestro equipo</p>
+        <h2 class="section__title">Cercanía, atención y asesoría <span class="highlight">personalizada.</span></h2>
+        <p class="section__lead">
+          Somos una familia de aquí. La misma persona te atiende el primer día y te acompaña hasta la
+          firma, y seguimos a tu lado para lo que venga después.
+        </p>
+        <p class="home-team__roles">
+          Contamos con: Consultores inmobiliarios · Gestores de Patrimonio · Asesores Jurídicos
+        </p>
+        <div class="story__actions">
+          <a class="button button--ghost button--large" href="/es/equipo/">Conócenos</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section home-reformas">
+    <div class="wrap about__grid">
+      <div class="about__copy" data-reveal>
+        <p class="eyebrow">Reformas e interiorismo</p>
+        <h2 class="section__title">Le damos una <span class="highlight">segunda vida</span> al piso.</h2>
+        <p class="section__lead">
+          Conroma en Obras reforma y viste la vivienda antes de venderla o de que entres a vivir.
+          De la cocina al último detalle, lo dejamos listo.
+        </p>
+        <p>
+          <a class="text-link" href="/es/reformas/">Ver reformas e interiorismo</a>
+        </p>
+      </div>
+      <figure class="about__figure" data-reveal>
+        <img
+          class="story__photo"
+          src="/img/reales/piso-2.jpg"
+          alt="Salón reformado de una vivienda de Conroma"
+          width="880"
+          height="1100"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </section>
+
+  <ReelTestimonials
+    client:visible
+    testimonials={testimonials.map((item) => ({ quote: item.text, author: item.author, context: item.context }))}
+    ratingUrl={rating?.url}
+  />
+
+  <section class="section contact" id="contacto">
+    <div class="wrap contact__grid">
+      <div class="contact__intro" data-reveal>
+        <p class="eyebrow">Hablemos</p>
+        <h2 class="section__title">Contacta con un asesor.</h2>
+        <p class="section__lead">
+          Tanto si quieres vender, comprar o alquilar tu casa o tienes dudas de qué decisión tomar,
+          tenemos un asesor que puede ayudarte y encargarse personalmente de tu consulta.
+        </p>
+        <div class="contact__channels">
+          <a class="button button--ghost button--start" href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
+            <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
+            WhatsApp · {site.phoneDisplay}
+          </a>
+          <a class="button button--ghost button--start" href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
+            <Icon name="phone" class="button__icon contact__icon" />
+            Llamar · {site.phoneDisplay}
+          </a>
+        </div>
+      </div>
+      <div class="contact__card glass" data-reveal>
+        <ContactForm client:visible />
+      </div>
+    </div>
+  </section>
+
+  <FaqSection title="Dudas frecuentes al comprar o vender en el Maresme" items={homeFaq} />
+</BaseLayout>

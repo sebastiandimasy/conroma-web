@@ -1,0 +1,29 @@
+---
+import Icon from '../Icon.astro';
+import { site } from '../../data/site';
+---
+
+<section class="section instagram">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">Síguenos el día a día</p>
+      <h2 class="section__title">Cada casa es una historia. Te las contamos en <span class="highlight">Instagram.</span></h2>
+    </div>
+    <ul class="instagram__grid">
+      {
+        site.instagram.map((account) => (
+          <li data-reveal>
+            <a class="card feature instagram__card" href={account.url} rel="noopener" target="_blank">
+              <h3 class="feature__title">{account.handle}</h3>
+              <p class="feature__text">{account.about}</p>
+              <span class="services__more">
+                Abrir en Instagram
+                <Icon name="arrow" class="link-list__arrow" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

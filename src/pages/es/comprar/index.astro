@@ -1,0 +1,116 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
+import Icon from '../../../components/Icon.astro';
+import { site } from '../../../data/site';
+import Steps from '../../../components/sections/Steps.astro';
+import Trust from '../../../components/sections/Trust.astro';
+import Testimonials from '../../../components/sections/Testimonials.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import PropertyGrid from '../../../islands/PropertyGrid';
+import { propertiesIn } from '../../../data/properties';
+import { buySteps } from '../../../data/steps';
+import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
+
+const path = '/es/comprar/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Comprar', path },
+];
+const catalog = propertiesIn('malgrat-de-mar', 'venta');
+const faq = [
+  {
+    question: '¿Cobráis algo por enseñarme pisos?',
+    answer: 'No. Ver pisos con nosotros no te cuesta nada ni te compromete a nada.',
+  },
+  {
+    question: '¿Me ayudáis con la hipoteca?',
+    answer: 'Te orientamos sobre qué pedir y a quién, y te acompañamos con los papeles que te pida el banco.',
+  },
+  {
+    question: 'Vivo fuera, ¿puedo comprar igual?',
+    answer: 'Sí. Te atendemos en catalán, castellano, inglés y francés, y te explicamos qué necesitas para comprar desde otro país.',
+  },
+];
+---
+
+<BaseLayout
+  title="Comprar piso en Malgrat de Mar"
+  description="Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="¿Cómo compro?"
+    title="Comprar casa, "
+    highlight="sin perderte por el camino."
+    lead="Te enseñamos lo que hay de verdad, con el precio a la vista, y te decimos lo que pensamos de cada piso."
+  >
+    <a class="button button--primary button--large" href="/es/venta/malgrat-de-mar/">Ver los {catalog.length} pisos en venta</a>
+    <a class="button button--ghost button--large" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
+  </PageHero>
+
+  <section class="section buy-intro">
+    <div class="wrap buy-intro__grid">
+      {
+        site.heroImage && (
+          <figure class="buy-intro__figure" data-reveal>
+            <Picture
+              class="buy-intro__photo"
+              src={site.heroImage.src}
+              alt={site.heroImage.alt}
+              formats={['avif', 'webp']}
+              width={880}
+              widths={[440, 660, 880, 1200]}
+              sizes="(min-width: 60rem) 520px, calc(100vw - 40px)"
+              loading="eager"
+              decoding="async"
+            />
+          </figure>
+        )
+      }
+      <div class="buy-intro__copy" data-reveal>
+        <p class="eyebrow">Comprar en Malgrat de Mar</p>
+        <h2 class="section__title">Comprar casa con gente <span class="highlight">de aquí</span></h2>
+        <p class="section__lead">
+          Conocemos cada calle de Malgrat de Mar y del Alt Maresme. Te enseñamos lo que hay de verdad,
+          con el precio a la vista, y te decimos lo bueno y lo malo de cada piso antes de que firmes.
+        </p>
+        <ul class="buy-intro__list">
+          <li><Icon name="check" class="buy-intro__check" />Visitas sin compromiso y en cuatro idiomas</li>
+          <li><Icon name="check" class="buy-intro__check" />Te avisamos de lo que aún no está en los portales</li>
+          <li><Icon name="check" class="buy-intro__check" />Te acompañamos hasta la firma en notaría</li>
+        </ul>
+        <div class="buy-intro__actions">
+          <a class="button button--primary" href="/es/venta/malgrat-de-mar/">Ver pisos en venta</a>
+          <a class="button button--ghost" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Steps eyebrow="El proceso" title="Comprar con Conroma, en tres pasos" steps={buySteps} />
+
+  <section class="section featured">
+    <div class="wrap">
+      <div class="section__head section__head--center" data-reveal>
+        <p class="eyebrow">¿Qué tenemos ahora?</p>
+        <h2 class="section__title">Pisos en venta en <span class="highlight">Malgrat de Mar</span></h2>
+      </div>
+      <div data-reveal>
+        <PropertyGrid client:visible properties={catalog.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
+      </div>
+      <p class="featured__more">
+        <a class="button button--ghost button--large" href="/es/venta/malgrat-de-mar/">Ver todas las viviendas</a>
+      </p>
+    </div>
+  </section>
+
+  <Trust />
+  <Testimonials limit={3} />
+  <FaqSection title="Comprar: lo que nos preguntan" items={faq} />
+  <ContactSection />
+</BaseLayout>

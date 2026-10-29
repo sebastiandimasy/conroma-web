@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import Faq from '../../../components/Faq.astro';
+import ListingExplorer from '../../../islands/ListingExplorer';
+import { propertiesIn } from '../../../data/properties';
+import { publishedCatalogTowns, type Town } from '../../../data/towns';
+import { formatPrice } from '../../../lib/format';
+import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../../lib/seo';
+import { whatsappUrl } from '../../../lib/links';
+import { site } from '../../../data/site';
+
+export function getStaticPaths() {
+  return publishedCatalogTowns.map((town) => ({ params: { town: town.slug }, props: { town } }));
+}
+
+interface Props {
+  town: Town;
+}
+
+const { town } = Astro.props;
+const path = `/es/venta/${town.slug}/`;
+const catalog = propertiesIn(town.slug, 'venta');
+const cheapest = Math.min(...catalog.map((property) => property.price));
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: `Pisos en venta en ${town.name}`, path },
+];
+const faq = [
+  {
+    question: `¿Cuántos pisos tenéis en venta en ${town.name}?`,
+    answer: `Ahora mismo, ${catalog.length}. La lista cambia cada semana, así que si no ves el tuyo, dinos qué buscas y te avisamos.`,
+  },
+  {
+    question: `¿Cómo visito un piso en ${town.name}?`,
+    answer: 'Escríbenos por WhatsApp desde la ficha del piso, o llámanos. Cuadramos día y hora y te lo enseñamos.',
+  },
+];
+---
+
+<BaseLayout
+  title={`Pisos en venta en ${town.name}`}
+  description={`${catalog.length} pisos y casas en venta en ${town.name}, desde ${formatPrice(cheapest)}. Con precio a la vista y contacto directo por WhatsApp.`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(`Pisos en venta en ${town.name}`, path), faqSchema(faq)]}
+  noindex={site.sampleData}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Pisos en venta en {town.name}</h1>
+    </div>
+  </section>
+
+  <section class="listing-section">
+    <div class="wrap">
+      <ListingExplorer client:load properties={catalog} townName={town.name} />
+      <aside class="alert-card" data-reveal>
+        <span class="alert-card__corner alert-card__corner--tl" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--tr" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--bl" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--br" aria-hidden="true"><Icon name="plus" /></span>
+        <div class="alert-card__text">
+          <p class="alert-card__eyebrow">Búsqueda a medida</p>
+          <h2 class="alert-card__title">¿No ves el tuyo?</h2>
+          <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
+        </div>
+        <a class="button button--ink button--large alert-card__cta" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
+          <Icon name="whatsapp" class="button__icon" />
+          Avisadme por WhatsApp
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section town-text">
+    <div class="wrap town-text__grid">
+      <div data-reveal>
+        <h2 class="section__title">Comprar piso en {town.name}</h2>
+        <p class="section__lead">{town.intro}</p>
+      </div>
+      <div data-reveal>
+        <nav class="link-list" aria-label="Relacionados">
+          <a class="link-list__link" href="/es/valoracion/">
+            ¿Vendes en {town.name}? Mira cuánto vale
+            <Icon name="arrow" class="link-list__arrow" />
+          </a>
+          <a class="link-list__link" href="/es/inmobiliaria/blanes/">
+            Inmobiliaria en Blanes
+            <Icon name="arrow" class="link-list__arrow" />
+          </a>
+        </nav>
+        <Faq items={faq} name="pueblo" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

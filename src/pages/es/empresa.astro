@@ -1,0 +1,66 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import TrustBand from '../../components/sections/TrustBand.astro';
+import Trust from '../../components/sections/Trust.astro';
+import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import CeoSection from '../../components/sections/CeoSection.astro';
+import TownLinks from '../../components/sections/TownLinks.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import { site } from '../../data/site';
+import { agentSchema, breadcrumbSchema } from '../../lib/seo';
+
+const path = '/es/empresa/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Nuestra empresa', path },
+];
+---
+
+<BaseLayout
+  title="Nuestra empresa: quién es Conroma Asesores"
+  description="Conroma Asesores Inmobiliarios es una inmobiliaria familiar de Malgrat de Mar. Te acompañamos antes, durante y después de la venta."
+  path={path}
+  schemas={[agentSchema(), breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Nuestra empresa"
+    title="Una pequeña familia que le encuentra "
+    highlight="sentido a tu vivienda."
+    lead={site.about[1]}
+  >
+    <a class="button button--primary button--large" href="/es/equipo/">Conoce al equipo</a>
+    <a class="button button--ghost button--large" href="/es/contacto/">Hablar con Conroma</a>
+  </PageHero>
+
+  <TrustBand />
+
+  <section class="section about">
+    <div class="wrap about__grid">
+      <div class="about__copy" data-reveal>
+        <p class="eyebrow">Nuestra historia</p>
+        <h2 class="section__title">De Malgrat de Mar, <span class="highlight">con los pies en el pueblo.</span></h2>
+        <p class="section__lead">
+          Venimos con ideales de la primera década de este siglo. Con los años hemos ido renovando la manera de trabajar
+          y las herramientas, pero no la idea: tratarte como a alguien del pueblo.
+        </p>
+        <p class="section__lead">{site.about[2]}</p>
+      </div>
+      {
+        site.teamPhotos[1] && (
+          <figure class="about__figure" data-reveal>
+            <Picture class="story__photo" src={site.teamPhotos[1].src} alt={site.teamPhotos[1].alt} formats={['avif', 'webp']} width={880} widths={[440, 660, 880, 1200]} sizes="(min-width: 30rem) 440px, calc(100vw - 40px)" loading="lazy" decoding="async" />
+          </figure>
+        )
+      }
+    </div>
+  </section>
+
+  <Trust />
+  <CeoSection />
+  <ServicesGrid />
+  <TownLinks />
+  <ContactSection />
+</BaseLayout>

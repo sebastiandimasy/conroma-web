@@ -1,0 +1,24 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../../data/site';
+---
+
+{
+  site.teamPhotos.length > 0 && (
+    <section class="section team">
+      <div class="wrap">
+        <div class="section__head section__head--center" data-reveal>
+          <p class="eyebrow">El día a día</p>
+          <h2 class="section__title">Así se trabaja en <span class="highlight">la oficina.</span></h2>
+        </div>
+        <ul class="team-gallery">
+          {site.teamPhotos.map((photo) => (
+            <li class="team-gallery__item" data-reveal>
+              <Picture class="team-gallery__photo" src={photo.src} alt={photo.alt} formats={['avif', 'webp']} width={880} widths={[440, 660, 880, 1200]} sizes="(min-width: 80rem) 380px, (min-width: 40rem) 31vw, calc(100vw - 40px)" loading="lazy" decoding="async" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

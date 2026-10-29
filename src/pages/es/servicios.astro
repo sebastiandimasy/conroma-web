@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+const path = '/es/servicios/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Servicios', path },
+];
+const faq = [
+  {
+    question: '¿Qué servicios ofrece Conroma?',
+    answer:
+      'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes varios inmuebles y reformamos pisos con Conroma en Obras.',
+  },
+  {
+    question: '¿Tengo que pagar por una valoración o una primera visita?',
+    answer: 'No. Pasamos a ver tu piso y te damos un precio realista gratis y sin compromiso.',
+  },
+  {
+    question: '¿En qué zonas trabajáis?',
+    answer:
+      'Tenemos oficina en Malgrat de Mar y trabajamos toda la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella y Lloret de Mar.',
+  },
+];
+---
+
+<BaseLayout
+  title="Servicios inmobiliarios en Malgrat de Mar"
+  description="Servicios inmobiliarios de Conroma en Malgrat de Mar y el Alt Maresme: comprar, vender, alquilar, gestión de patrimonio y reformas."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="¿Qué hacemos?"
+    title="Servicios inmobiliarios en "
+    highlight="Malgrat de Mar y alrededores."
+    lead="Todo lo que pasa alrededor de una casa, con una misma persona de principio a fin."
+  >
+    <a class="button button--primary button--large" href="/es/contacto/">Hablar con Conroma</a>
+    <a class="button button--ghost button--large" href="/es/valoracion/">Saber cuánto vale mi piso</a>
+  </PageHero>
+
+  <ServicesGrid eyebrow="Cinco servicios" title="En qué te podemos ayudar." />
+  <FaqSection title="Servicios: lo que nos preguntan" items={faq} />
+  <ContactSection />
+</BaseLayout>

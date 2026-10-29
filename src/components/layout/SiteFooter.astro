@@ -1,0 +1,254 @@
+---
+import Icon from '../Icon.astro';
+import { site } from '../../data/site';
+import { mainNav } from '../../data/nav';
+import { whatsappUrl } from '../../lib/links';
+
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <p class="site-footer__name">Conroma</p>
+      <p class="site-footer__claim">
+        Inmobiliaria familiar en Malgrat de Mar. Compra, venta y alquiler en el Alt Maresme.
+      </p>
+      <address class="site-footer__address">
+        {site.legalName}<br />
+        {site.address.street}<br />
+        {site.address.postalCode} {site.address.locality}
+      </address>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Enlaces rápidos">
+      <h2 class="site-footer__title">Web</h2>
+      <ul class="site-footer__links">
+        {mainNav.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+        <li><a href="/es/servicios/">Servicios</a></li>
+        <li><a href="/es/contacto/">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Contacto">
+      <h2 class="site-footer__title">Hablamos</h2>
+      <ul class="site-footer__links site-footer__links--icon">
+        <li>
+          <a href={whatsappUrl()} data-contact="whatsapp" data-origin="pie">
+            <Icon name="whatsapp" class="site-footer__icon" />
+            WhatsApp · {site.phoneDisplay}
+          </a>
+        </li>
+        <li>
+          <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="pie">
+            <Icon name="phone" class="site-footer__icon" />
+            Llamar · {site.phoneDisplay}
+          </a>
+        </li>
+        <li>
+          <a href={`tel:${site.landline}`} data-contact="llamada" data-origin="pie-fijo">
+            <Icon name="phone" class="site-footer__icon" />
+            Fijo · {site.landlineDisplay}
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${site.email}`}>
+            <Icon name="mail" class="site-footer__icon" />
+            {site.email}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__title">Síguenos</h2>
+      <div class="site-footer__social">
+        {site.instagram.map((account) => (
+          <a
+            class="site-footer__social-btn"
+            href={account.url}
+            target="_blank"
+            rel="noopener"
+            aria-label={`Instagram ${account.handle}`}
+          >
+            <Icon name="instagram" class="site-footer__icon" />
+          </a>
+        ))}
+        {site.tiktok && (
+          <a
+            class="site-footer__social-btn"
+            href={site.tiktok}
+            target="_blank"
+            rel="noopener"
+            aria-label="TikTok de Conroma"
+          >
+            <Icon name="tiktok" class="site-footer__icon" />
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap site-footer__base">
+    <p>© {year} {site.legalName}</p>
+    <nav class="site-footer__legal" aria-label="Legal">
+      <a href="/es/aviso-legal/">Aviso legal</a>
+      <a href="/es/privacidad/">Privacidad</a>
+      <a href="/es/cookies/">Cookies</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  /* Footer negro carbón FIJO en ambos temas (ESTANDAR §0, pares --color-fixed-*).
+     El fondo no se invierte; el texto blanco tampoco. */
+  .site-footer {
+    margin-top: 20px;
+    padding-block: 56px 32px;
+    background: var(--color-fixed-ink);
+    color: var(--color-fixed-paper);
+    font-size: var(--text-small);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 36px;
+  }
+
+  .site-footer__name {
+    margin-bottom: 12px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .site-footer__claim {
+    max-width: 38ch;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-fixed-paper) 72%, transparent);
+  }
+
+  .site-footer__address {
+    font-style: normal;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-fixed-paper) 60%, transparent);
+  }
+
+  .site-footer__title {
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-fixed-paper) 62%, transparent);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-footer__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--color-fixed-paper) 82%, transparent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .site-footer__icon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+
+  .site-footer__social {
+    display: flex;
+    gap: 12px;
+  }
+
+  .site-footer__social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    border: 1px solid color-mix(in srgb, var(--color-fixed-paper) 28%, transparent);
+    color: var(--color-fixed-paper);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .site-footer__social-btn:active {
+    transform: scale(0.97);
+  }
+
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 44px;
+    padding-top: 24px;
+    border-top: 1px solid color-mix(in srgb, var(--color-fixed-paper) 16%, transparent);
+    color: color-mix(in srgb, var(--color-fixed-paper) 60%, transparent);
+  }
+
+  .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .site-footer__base a {
+    color: color-mix(in srgb, var(--color-fixed-paper) 78%, transparent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  /* Hover: a amarillo de marca, solo color (ESTANDAR §1: cero transform en hover). */
+  @media (hover: hover) and (pointer: fine) {
+    .site-footer__links a:hover,
+    .site-footer__base a:hover {
+      color: var(--color-accent);
+    }
+
+    .site-footer__social-btn:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-on-accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-footer__social-btn {
+      transition: none;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.7fr 1fr 1.3fr 1fr;
+      gap: 40px;
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import Icon from '../Icon.astro';
+import Section from '../Section.astro';
+import { services } from '../../data/services';
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  exclude?: string;
+}
+
+const { eyebrow = '¿Qué hacemos?', title = 'Todo lo que pasa alrededor de una casa.', exclude } = Astro.props;
+const list = services.filter((service) => service.slug !== exclude);
+---
+
+<Section class="services" center eyebrow={eyebrow}>
+  <Fragment slot="title">{title}</Fragment>
+  <ul class="services__grid">
+    {
+      list.map((service) => (
+        <li data-reveal>
+          <a class="card feature services__card" href={service.href}>
+            <span class="icon-tile"><Icon name={service.icon} /></span>
+            <span class="services__question">{service.question}</span>
+            <h3 class="feature__title">{service.name}</h3>
+            <p class="feature__text">{service.summary}</p>
+            <span class="services__more">
+              Ver cómo
+              <Icon name="arrow" class="link-list__arrow" />
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

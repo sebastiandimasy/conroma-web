@@ -1,0 +1,29 @@
+---
+import Breadcrumbs from '../layout/Breadcrumbs.astro';
+import type { Crumb } from '../../lib/seo';
+
+interface Props {
+  crumbs: Crumb[];
+  eyebrow?: string;
+  title: string;
+  highlight?: string;
+  lead?: string;
+}
+
+const { crumbs, eyebrow, title, highlight, lead } = Astro.props;
+---
+
+<section class="page-head">
+  <div class="wrap">
+    <Breadcrumbs crumbs={crumbs} />
+    {eyebrow && <p class="eyebrow page-head__eyebrow">{eyebrow}</p>}
+    <h1 class="page-head__title">
+      {title}
+      {highlight && <span class="highlight">{highlight}</span>}
+    </h1>
+    {lead && <p class="page-head__lead">{lead}</p>}
+    <div class="page-head__actions">
+      <slot />
+    </div>
+  </div>
+</section>

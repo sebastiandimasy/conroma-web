@@ -1,0 +1,43 @@
+---
+import Icon from '../Icon.astro';
+import type { IconName } from '../../lib/icons';
+
+export interface Step {
+  title: string;
+  text: string;
+  icon: IconName;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  steps: Step[];
+  numbered?: boolean;
+}
+
+const { eyebrow, title, lead, steps, numbered = true } = Astro.props;
+const List = numbered ? 'ol' : 'ul';
+---
+
+<section class="section steps">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h2 class="section__title">{title}</h2>
+      {lead && <p class="section__lead">{lead}</p>}
+    </div>
+    <List class:list={['feature-grid', { 'feature-grid--four': steps.length === 4 }]}>
+      {
+        steps.map((step, index) => (
+          <li class="card feature" data-reveal>
+            {numbered && <span class="feature__number" aria-hidden="true">0{index + 1}</span>}
+            <span class="icon-tile"><Icon name={step.icon} /></span>
+            <h3 class="feature__title">{step.title}</h3>
+            <p class="feature__text">{step.text}</p>
+          </li>
+        ))
+      }
+    </List>
+  </div>
+</section>

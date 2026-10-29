@@ -1,0 +1,24 @@
+---
+import type { Crumb } from '../../lib/seo';
+
+interface Props {
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Migas de pan">
+  {
+    crumbs.map((crumb, index) =>
+      index < crumbs.length - 1 ? (
+        <>
+          <a class="breadcrumbs__link" href={crumb.path}>{crumb.name}</a>
+          <span aria-hidden="true">›</span>
+        </>
+      ) : (
+        <span class="breadcrumbs__current" aria-current="page">{crumb.name}</span>
+      ),
+    )
+  }
+</nav>

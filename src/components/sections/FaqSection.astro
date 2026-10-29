@@ -1,0 +1,22 @@
+---
+import Faq from '../Faq.astro';
+import type { FaqItem } from '../../data/faq';
+
+interface Props {
+  title?: string;
+  items: FaqItem[];
+}
+
+const { title = 'Preguntas frecuentes', items } = Astro.props;
+---
+
+<section class="section faq-section" id="preguntas">
+  <div class="wrap faq-section__inner">
+    <div class="section__head section__head--center" data-reveal>
+      <h2 class="section__title">{title}</h2>
+    </div>
+    <div class="card faq-section__card" data-reveal>
+      <Faq items={items} name="preguntas" />
+    </div>
+  </div>
+</section>

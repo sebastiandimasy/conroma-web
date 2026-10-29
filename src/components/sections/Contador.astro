@@ -1,0 +1,25 @@
+---
+import StatCounters from '../../islands/StatCounters';
+
+// Cifras PROVISIONALES (confirmadas como editables). Cambiar cuando haya datos reales.
+const stats = [
+  { target: 100, prefix: '+', label: 'clientes satisfechos' },
+  { target: 300, prefix: '+', label: 'inmuebles gestionados' },
+  { target: 200, prefix: '+', label: 'pisos vendidos' },
+];
+---
+
+<section class="section contador">
+  <div class="wrap contador__inner">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">Gente que ya confía</p>
+      <h2 class="section__title">Nos encanta estar en el <span class="highlight">principio de cada historia</span></h2>
+    </div>
+    <div data-reveal>
+      <StatCounters client:visible stats={stats} />
+    </div>
+    <p class="contador__cta" data-reveal>
+      <a class="button button--primary button--large" href="/es/gestion-de-patrimonio/">Impulsa tu patrimonio</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,294 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../../data/site';
+
+const photos = site.teamPhotos;
+
+const slides = [
+  { title: 'Somos una pequeña familia', desc: site.about[0] },
+  { title: 'Antes, durante y después', desc: site.about[1] },
+  { title: 'Conocemos el pueblo', desc: site.about[2] },
+].map((slide, index) => ({ ...slide, image: photos[index % photos.length] }));
+---
+
+<section class="family" data-family data-active="0" aria-label="Quiénes somos">
+  <div class="family__stage">
+    <div class="wrap">
+      <p class="eyebrow family__eyebrow">De aquí, como tú</p>
+      <div class="family__slides">
+        {
+          slides.map((slide, index) => (
+            <article class:list={['family__slide', { 'is-active': index === 0 }]} data-slide={index}>
+              <div class="family__copy">
+                <h2 class="family__title">{slide.title}</h2>
+                <p class="family__desc">{slide.desc}</p>
+              </div>
+              <figure class="family__media">
+                <Picture
+                  class="family__img"
+                  src={slide.image.src}
+                  alt={slide.image.alt}
+                  formats={['avif', 'webp']}
+                  width={720}
+                  widths={[360, 540, 720, 960]}
+                  sizes="(min-width: 60rem) 440px, calc(100vw - 40px)"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            </article>
+          ))
+        }
+      </div>
+      <div class="family__controls">
+        <div class="family__dots" role="tablist" aria-label="Pasos">
+          {
+            slides.map((slide, index) => (
+              <button
+                class="family__dot"
+                type="button"
+                data-dot={index}
+                aria-current={index === 0 ? 'true' : 'false'}
+                aria-label={`Ir a: ${slide.title}`}
+              />
+            ))
+          }
+        </div>
+        <a class="button button--primary button--large family__cta" href="/es/equipo/">Conoce al equipo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .family {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+  }
+
+  .family__stage {
+    position: relative;
+    padding-block: 64px;
+  }
+
+  .family__stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+    -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, #000 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, #000 55%, transparent 100%);
+  }
+
+  .family__eyebrow {
+    position: relative;
+    color: var(--color-accent-deep);
+  }
+
+  .family__slides {
+    position: relative;
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .family__slide {
+    display: grid;
+    gap: 20px;
+  }
+
+  .family__title {
+    font-size: clamp(1.9rem, 1.4rem + 2.4vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+  }
+
+  .family__desc {
+    margin-top: 14px;
+    max-width: 46ch;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--color-ink-2);
+  }
+
+  .family__media {
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-3);
+    border: 1px solid var(--color-line);
+  }
+
+  .family__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .family__controls {
+    position: relative;
+    margin-top: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .family__dots {
+    display: none;
+    gap: 8px;
+  }
+
+  .family__dot {
+    height: 5px;
+    width: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, currentColor 24%, transparent);
+    cursor: pointer;
+    transition:
+      width var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .family__dot[aria-current='true'] {
+    width: 46px;
+    background: color-mix(in srgb, currentColor 82%, transparent);
+  }
+
+  @media (min-width: 60rem) {
+    .family__slide {
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .family__media {
+      justify-self: end;
+      max-width: 440px;
+    }
+  }
+
+  /* Enhanced: GSAP-pinned showcase (desktop, motion allowed) */
+  @media (min-width: 60rem) {
+    .family.is-enhanced .family__stage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .family.is-enhanced .family__slides {
+      min-height: 440px;
+    }
+
+    .family.is-enhanced .family__slide {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.55s var(--ease-out);
+    }
+
+    .family.is-enhanced .family__slide.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .family.is-enhanced .family__dots {
+      display: flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .family__slide {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  function initFamilyShowcase() {
+    const section = document.querySelector<HTMLElement>('[data-family]');
+    if (!section) return;
+
+    const stage = section.querySelector<HTMLElement>('.family__stage');
+    const slides = Array.from(section.querySelectorAll<HTMLElement>('.family__slide'));
+    const dots = Array.from(section.querySelectorAll<HTMLButtonElement>('.family__dot'));
+    const count = slides.length;
+    if (!stage || count === 0) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const desktop = window.matchMedia('(min-width: 60rem)');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let trigger: ScrollTrigger | null = null;
+
+    const setActive = (i: number) => {
+      slides.forEach((slide, si) => slide.classList.toggle('is-active', si === i));
+      dots.forEach((dot, di) => dot.setAttribute('aria-current', di === i ? 'true' : 'false'));
+      section.dataset.active = String(i);
+    };
+
+    const enable = () => {
+      if (trigger) return;
+      section.classList.add('is-enhanced');
+      setActive(0);
+      trigger = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: () => '+=' + Math.round(window.innerHeight * 0.85 * count),
+        pin: stage,
+        pinSpacing: true,
+        scrub: true,
+        onUpdate: (self) => {
+          const i = Math.min(count - 1, Math.floor(self.progress * count));
+          setActive(i);
+        },
+      });
+    };
+
+    const disable = () => {
+      if (trigger) {
+        trigger.kill();
+        trigger = null;
+      }
+      section.classList.remove('is-enhanced');
+      slides.forEach((slide) => slide.classList.remove('is-active'));
+      dots.forEach((dot) => dot.setAttribute('aria-current', 'false'));
+      section.dataset.active = '0';
+    };
+
+    const apply = () => {
+      if (desktop.matches && !reduce.matches) enable();
+      else disable();
+    };
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        if (!trigger) return;
+        const target = trigger.start + ((i + 0.5) / count) * (trigger.end - trigger.start);
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      });
+    });
+
+    apply();
+    desktop.addEventListener('change', apply);
+    reduce.addEventListener('change', apply);
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+  }
+
+  initFamilyShowcase();
+</script>

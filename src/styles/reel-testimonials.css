@@ -1,0 +1,277 @@
+/* Estilos del componente de reseñas (ScrollReel), con tokens de marca Conroma.
+ * Incluye las animaciones que el componente original referenciaba pero no traía:
+ * .scroll-reel-char (subida por carácter) y .scroll-reel-exit (salida del bloque). */
+
+.reel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+  max-width: 1060px;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  outline: none;
+}
+
+.reel:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+@media (min-width: 48rem) {
+  .reel {
+    flex-direction: row;
+    min-height: 320px;
+  }
+}
+
+/* --- Carrete --- */
+.reel__reel {
+  position: relative;
+  height: 14rem;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 48rem) {
+  .reel__reel {
+    height: auto;
+    width: 380px;
+  }
+}
+
+.reel__cols {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.reel__col {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 8px;
+  will-change: transform;
+}
+
+.reel__cell {
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(to bottom, var(--color-surface-2), var(--color-surface));
+  filter: blur(1px);
+}
+
+.reel__featured {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-2);
+}
+
+.reel__avatar {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(120% 120% at 25% 15%, var(--color-fixed-wash) 0%, var(--color-accent) 45%, var(--color-accent-deep) 120%);
+  color: var(--color-on-fixed-wash);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* --- Contenido --- */
+.reel__content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 22px;
+}
+
+@media (min-width: 48rem) {
+  .reel__content {
+    padding: 40px 28px;
+  }
+}
+
+.reel__mark {
+  display: block;
+  height: 42px;
+  width: 42px;
+  color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+}
+
+.reel__stage {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  overflow: hidden;
+  margin-top: 9px;
+}
+
+.reel__ghost {
+  visibility: hidden;
+  display: flex;
+  min-height: 140px;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.reel__live {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  will-change: transform, opacity;
+}
+
+.reel__quote {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+@media (min-width: 40rem) {
+  .reel__quote {
+    font-size: 1.375rem;
+  }
+}
+
+.reel__author {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink-2);
+}
+
+.reel__controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+@media (min-width: 48rem) {
+  .reel__controls {
+    margin-top: 0;
+  }
+}
+
+.reel__btn {
+  display: grid;
+  height: 44px;
+  width: 44px;
+  place-items: center;
+  cursor: pointer;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-ink);
+  padding: 0;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s, opacity 0.2s;
+}
+
+.reel__btn:hover:not(:disabled) {
+  background: var(--color-surface-2);
+}
+
+.reel__btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.reel__btn:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.reel__btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.reel__btn svg {
+  height: 13px;
+  width: 13px;
+  opacity: 0.75;
+}
+
+.reel__more {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.reel__more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-ink-2);
+}
+
+/* --- Animaciones (faltaban en el componente original) --- */
+@keyframes scroll-reel-char-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-reel-char {
+  display: inline-block;
+  opacity: 0;
+  animation: scroll-reel-char-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes scroll-reel-exit-fade {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.scroll-reel-exit {
+  animation: scroll-reel-exit-fade 0.24s ease forwards;
+}
+
+.scroll-reel-exit .scroll-reel-char {
+  animation: none;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reel-char {
+    animation: none;
+    opacity: 1;
+  }
+  .scroll-reel-exit {
+    animation: none;
+  }
+  .reel__col {
+    transition: none !important;
+  }
+}

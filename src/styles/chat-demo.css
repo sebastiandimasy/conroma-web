@@ -1,0 +1,289 @@
+/* Chat demo del prototipo. Fondo del tema (blanco / negro carbón) y amarillo
+ * solo como acento. Convive con la ActionBar fija de móvil usando la variable
+ * --action-bar-space que ya define el layout (92px en móvil, 0 en escritorio). */
+
+.chatdemo {
+  position: fixed;
+  right: 0;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Mientras el aviso de cookies está visible, nos apartamos (igual que .action-bar) */
+.has-cookie-notice .chatdemo {
+  visibility: hidden;
+}
+
+@media (min-width: 60rem) {
+  .chatdemo {
+    bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ---------- Lanzador ---------- */
+
+/* Pestaña pegada al borde derecho: solo asoma el robot. Se despliega al pasar el ratón, al enfocarla o al abrir el chat. */
+.chatdemo__launcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 64px;
+  padding: 0 0 0 4px;
+  border: 0;
+  border-radius: 32px 0 0 32px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+  transform: translateX(calc(100% - 26px));
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.chatdemo__launcher:hover,
+.chatdemo__launcher:focus-visible,
+.chatdemo__launcher[aria-expanded="true"] {
+  transform: translateX(0);
+}
+
+/* Señal: un anillo que pulsa mientras el robot está escondido. */
+.chatdemo__launcher::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  border: 2px solid var(--color-accent);
+  opacity: 0;
+  pointer-events: none;
+  animation: chatdemo-signal 2.4s var(--ease-out) infinite;
+}
+
+.chatdemo__launcher[aria-expanded="true"]::before {
+  display: none;
+}
+
+@keyframes chatdemo-signal {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatdemo__launcher,
+  .chatdemo__launcher::before {
+    transition: none;
+    animation: none;
+  }
+}
+
+.chatdemo__icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* ---------- Panel ---------- */
+
+.chatdemo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-right: 12px;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 520px);
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-3);
+  outline: none;
+  animation: chatdemo-in 180ms var(--ease-out) both;
+}
+
+@keyframes chatdemo-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chatdemo__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chatdemo__title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.chatdemo__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -8px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-ink-2);
+  cursor: pointer;
+}
+
+.chatdemo__close:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-2);
+}
+
+/* ---------- Conversación ---------- */
+
+.chatdemo__log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.chatdemo__msg {
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.chatdemo__msg p {
+  margin: 0;
+}
+
+.chatdemo__msg--bot {
+  align-self: flex-start;
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  border-bottom-left-radius: var(--radius-xs);
+}
+
+.chatdemo__msg--user {
+  align-self: flex-end;
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  border-bottom-right-radius: var(--radius-xs);
+}
+
+.chatdemo__link {
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--color-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Acciones ---------- */
+
+.chatdemo__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chatdemo__chip {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.chatdemo__chip:hover:not(:disabled) {
+  background: var(--color-accent-wash);
+  border-color: var(--color-accent);
+}
+
+.chatdemo__chip:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.chatdemo__wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.chatdemo__wa .chatdemo__icon {
+  width: 18px;
+  height: 18px;
+}
+
+.chatdemo__note {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-ink-3);
+  text-align: center;
+}
+
+/* ---------- Foco visible ---------- */
+
+.chatdemo__launcher:focus-visible,
+.chatdemo__close:focus-visible,
+.chatdemo__chip:focus-visible,
+.chatdemo__wa:focus-visible,
+.chatdemo__link:focus-visible {
+  outline: 3px solid var(--color-accent-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatdemo__panel {
+    animation: none;
+  }
+
+  .chatdemo__launcher,
+  .chatdemo__chip {
+    transition: none;
+  }
+
+  .chatdemo__launcher:hover,
+  .chatdemo__launcher:active {
+    transform: none;
+  }
+}

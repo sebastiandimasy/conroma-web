@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
+import Icon from '../../../components/Icon.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import { posts } from '../../../data/blog';
+import { breadcrumbSchema } from '../../../lib/seo';
+
+const path = '/es/blog/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Blog', path },
+];
+---
+
+<BaseLayout
+  title="Blog: comprar, vender y alquilar en Malgrat de Mar"
+  description="Guías cortas y claras de Conroma para comprar, vender o alquilar una vivienda en Malgrat de Mar y alrededores."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Blog"
+    title="Te lo contamos "
+    highlight="fácil."
+    lead="Guías cortas para comprar, vender o alquilar sin perderte en los papeles."
+  />
+
+  <section class="section blog">
+    <div class="wrap">
+      <ul class="feature-grid">
+        {
+          posts.map((post) => (
+            <li data-reveal>
+              <a class="card feature blog__card" href={`/es/blog/${post.slug}/`}>
+                <span class="tag">{post.category}</span>
+                <h2 class="feature__title">{post.title}</h2>
+                <p class="feature__text">{post.description}</p>
+                <span class="services__more">
+                  Leer
+                  <Icon name="arrow" class="link-list__arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <ContactSection />
+</BaseLayout>

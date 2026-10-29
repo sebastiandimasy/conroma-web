@@ -1,0 +1,92 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Button } from '@heroui/react';
+import { site } from '../data/site';
+
+const needs = ['Comprar', 'Vender', 'Alquilar', 'Reformar', 'Otra cosa'];
+
+export default function ContactForm() {
+  const [name, setName] = useState('');
+  const [need, setNeed] = useState(needs[0]);
+  const [message, setMessage] = useState('');
+  const [privacy, setPrivacy] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [sent, setSent] = useState(false);
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const next: Record<string, string> = {};
+    if (name.trim().length < 2) next.name = 'Dinos cómo te llamas.';
+    if (!privacy) next.privacy = 'Necesitamos que aceptes la política de privacidad para contestarte.';
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+    const lines = [`Hola, soy ${name.trim()}.`, `Necesito: ${need.toLowerCase()}.`, message.trim()];
+    const text = encodeURIComponent(lines.filter(Boolean).join('\n'));
+    window.open(`https://wa.me/${site.whatsapp}?text=${text}`, '_blank', 'noopener');
+    setSent(true);
+  }
+
+  if (sent) {
+    return (
+      <div className="contact-form contact-form--done" aria-live="polite">
+        <span className="tag">Listo</span>
+        <h3 className="contact-form__title">Se ha abierto WhatsApp con tu mensaje ya escrito.</h3>
+        <p className="feature__text">Dale a enviar y te contestamos nosotros, en persona.</p>
+        <Button variant="ghost" onPress={() => setSent(false)}>
+          Escribir otro mensaje
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <form className="contact-form" onSubmit={submit} noValidate>
+      <label className="field">
+        <span className="field__label">Nombre</span>
+        <input
+          className="field__control"
+          type="text"
+          autoComplete="given-name"
+          placeholder="Ej. Ana"
+          value={name}
+          aria-invalid={Boolean(errors.name)}
+          onChange={(event) => setName(event.target.value)}
+        />
+        {errors.name && <span className="field__error">{errors.name}</span>}
+      </label>
+      <label className="field">
+        <span className="field__label">¿Qué necesitas?</span>
+        <select className="field__control" value={need} onChange={(event) => setNeed(event.target.value)}>
+          {needs.map((item) => (
+            <option key={item}>{item}</option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        <span className="field__label">Cuéntanos (si quieres)</span>
+        <textarea
+          className="field__control"
+          placeholder="Ej. Busco un piso de 3 habitaciones cerca de la playa"
+          value={message}
+          onChange={(event) => setMessage(event.target.value)}
+        />
+      </label>
+      <label className="check">
+        <input
+          className="check__input"
+          type="checkbox"
+          checked={privacy}
+          onChange={(event) => setPrivacy(event.target.checked)}
+        />
+        <span>
+          He leído la <a href="/es/privacidad/">política de privacidad</a>.
+        </span>
+      </label>
+      {errors.privacy && <span className="field__error">{errors.privacy}</span>}
+      <Button variant="primary" className="button--large button--block" type="submit">
+        Enviar por WhatsApp
+      </Button>
+      <p className="field__hint">Se abre WhatsApp con tu mensaje ya escrito.</p>
+    </form>
+  );
+}

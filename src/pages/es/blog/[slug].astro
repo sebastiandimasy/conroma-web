@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import ContactBand from '../../../components/sections/ContactBand.astro';
+import { posts, type BlogPost } from '../../../data/blog';
+import { articleSchema, breadcrumbSchema } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const path = `/es/blog/${post.slug}/`;
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Blog', path: '/es/blog/' },
+  { name: post.title, path },
+];
+const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.description}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), articleSchema(post)]}
+  noindex={post.draft}
+>
+  <article class="article">
+    <header class="page-head">
+      <div class="wrap article__wrap">
+        <Breadcrumbs crumbs={crumbs} />
+        <p class="eyebrow page-head__eyebrow">{post.category}</p>
+        <h1 class="page-head__title">{post.title}</h1>
+        <p class="page-head__lead">{post.intro}</p>
+        {post.draft && <p class="article__draft">Borrador pendiente de revisión por Conroma.</p>}
+      </div>
+    </header>
+    <div class="wrap article__wrap article__body">
+      {
+        post.sections.map((section) => (
+          <section class="article__section">
+            <h2 class="article__heading">{section.heading}</h2>
+            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            {section.list && <ul class="article__list">{section.list.map((item) => <li>{item}</li>)}</ul>}
+          </section>
+        ))
+      }
+      <p class="article__cta">
+        <a class="button button--primary button--large" href={post.cta.href}>{post.cta.label}</a>
+      </p>
+      <nav class="link-list" aria-label="Más artículos">
+        {others.map((item) => <a class="link-list__link" href={`/es/blog/${item.slug}/`}>{item.title}</a>)}
+      </nav>
+    </div>
+  </article>
+  <ContactBand />
+</BaseLayout>

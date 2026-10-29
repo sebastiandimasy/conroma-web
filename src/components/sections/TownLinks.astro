@@ -1,0 +1,46 @@
+---
+import Icon from '../Icon.astro';
+import Section from '../Section.astro';
+import { towns, publishedCatalogTowns, publishedSellerTowns } from '../../data/towns';
+
+/* Los enlaces salen de los datos, no escritos a mano: así ningún pueblo con
+   página publicada se queda huérfano (sin enlaces entrantes) al añadirlo. */
+const links = [
+  ...publishedCatalogTowns.map((town) => ({
+    label: `Pisos en venta en ${town.name}`,
+    href: `/es/venta/${town.slug}/`,
+  })),
+  ...publishedSellerTowns.map((town) => ({
+    label: `Inmobiliaria en ${town.name}`,
+    href: `/es/inmobiliaria/${town.slug}/`,
+  })),
+];
+
+/* Pueblos sin página propia: solo el nombre, para no enlazar a algo que no existe. */
+const publishedSlugs = new Set(publishedSellerTowns.map((town) => town.slug));
+const upcoming = towns.filter((town) => !publishedSlugs.has(town.slug));
+---
+
+<Section
+  class="town-links"
+  wrapClass="town-links__grid"
+  eyebrow="Dónde trabajamos"
+  lead="La oficina está en Malgrat de Mar y nos movemos por todo el Alt Maresme y el sur de la Costa Brava."
+>
+  <Fragment slot="title">De Malgrat de Mar a <span class="highlight">toda la costa.</span></Fragment>
+  <div class="card town-links__card" data-reveal>
+    <nav class="link-list" aria-label="Zonas">
+      {
+        links.map((link) => (
+          <a class="link-list__link" href={link.href}>
+            {link.label}
+            <Icon name="arrow" class="link-list__arrow" />
+          </a>
+        ))
+      }
+    </nav>
+    <ul class="chip-row town-links__chips">
+      {upcoming.map((town) => <li class="chip">{town.name}</li>)}
+    </ul>
+  </div>
+</Section>

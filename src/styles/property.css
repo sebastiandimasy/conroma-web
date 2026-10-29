@@ -1,0 +1,832 @@
+@layer components {
+  .property-grid {
+    @apply grid gap-6;
+  }
+
+  @media (min-width: 40rem) {
+    .property-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .property-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+  }
+
+  .property-card {
+    @apply flex h-full flex-col;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+    transition:
+      transform 220ms var(--ease-out),
+      box-shadow 220ms var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .property-card:hover {
+      box-shadow: var(--shadow-2);
+    }
+
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .property-grid__item {
+        animation: card-rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+    }
+  }
+
+  @keyframes card-rise {
+    from {
+      opacity: 0;
+      translate: 0 32px;
+    }
+  }
+
+  .property-card__media {
+    @apply relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-surface-2);
+  }
+
+  .property-card__photo-link {
+    @apply block h-full;
+  }
+
+  .property-card__photo {
+    @apply h-full w-full object-cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .property-card__tag {
+    @apply absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--color-fixed-paper);
+    color: var(--color-fixed-accent-deep);
+    box-shadow: var(--shadow-1);
+  }
+
+  .property-card__tools {
+    @apply absolute flex items-center gap-2;
+    top: 10px;
+    right: 10px;
+  }
+
+  .chip--on-photo {
+    border-color: rgb(255 255 255 / 0.75);
+    background: rgb(255 255 255 / 0.86);
+    color: var(--color-fixed-ink);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .property-card__hide span {
+    @apply sr-only;
+  }
+
+  .property-card__hide {
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .save-button__icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  /* HeroUI ToggleButton (favorito) con aspecto de chip sobre la foto + acento de marca */
+  .favorite-toggle {
+    @apply inline-flex items-center justify-center;
+    gap: 7px;
+    width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    background: rgb(255 255 255 / 0.86);
+    color: var(--color-fixed-ink);
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  /* Variante con etiqueta ("Guardar"/"Guardado"), usada en la ficha del inmueble:
+     mismo aspecto que un .chip--on-photo para convivir con el botón "Volver". */
+  .favorite-toggle:has(span) {
+    width: auto;
+    padding-inline: 14px;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    box-shadow: var(--shadow-1);
+  }
+
+  .favorite-toggle:hover {
+    filter: brightness(0.96);
+  }
+
+  .favorite-toggle[data-pressed] {
+    transform: scale(0.9);
+  }
+
+  .favorite-toggle[data-selected] {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .property-card__body {
+    @apply flex flex-1 flex-col gap-2;
+    padding: 16px 18px 18px;
+  }
+
+  .property-card__top {
+    @apply flex items-baseline justify-between gap-3;
+  }
+
+  .property-card__price {
+    font-family: var(--font-mono);
+    font-size: 1.3125rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .property-card__ref {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-ink-3);
+  }
+
+  .property-card__place {
+    @apply flex items-center gap-1;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .property-card__pin {
+    width: 15px;
+    height: 15px;
+    color: var(--color-ink-3);
+  }
+
+  .property-card__drop,
+  .property__drop {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-positive);
+  }
+
+  .property-card__title {
+    font-family: var(--font-body);
+    font-size: var(--text-title);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .property-card__title a {
+    padding-block: 12px;
+  }
+
+  .property-card__title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .property-card__facts {
+    @apply flex flex-wrap gap-x-3;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .property-card__facts li + li::before {
+    content: "·";
+    margin-right: 12px;
+  }
+
+  .property-card__actions {
+    @apply mt-auto grid grid-cols-2 gap-2;
+    padding-top: 12px;
+  }
+
+  /* Los botones son inline-flex y medirían según su texto (WhatsApp más ancho que
+     Llamar). Se estiran a su columna para que queden del mismo tamaño. */
+  .property-card__actions .button {
+    width: 100%;
+  }
+
+  .listing-section {
+    padding-bottom: calc(var(--space-section) / 2);
+  }
+
+  .listing {
+    @apply flex flex-col gap-5;
+  }
+
+  .listing__filters {
+    position: sticky;
+    top: calc(var(--header-height) + 18px);
+    z-index: 20;
+    padding-block: 6px;
+  }
+
+  .listing__bar {
+    @apply flex items-center justify-between gap-4;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .listing__count {
+    font-weight: 600;
+  }
+
+  .listing__restore {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .listing__sort select {
+    min-height: 44px;
+    padding-inline: 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: var(--text-small);
+    font-weight: 600;
+  }
+
+  .listing__empty {
+    @apply flex flex-col items-start gap-4;
+    padding: 32px 24px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--color-line);
+    color: var(--color-ink-2);
+  }
+
+  .listing__empty-title {
+    font-size: var(--text-h3);
+    color: var(--color-ink);
+  }
+
+  .listing__empty-actions {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .filter-dialog {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .filter-dialog[open] {
+    @apply flex items-end justify-center desk:items-center;
+  }
+
+  .filter-dialog::backdrop {
+    background: rgb(0 0 0 / 0.4);
+  }
+
+  .filter-dialog .sheet {
+    margin: 0;
+  }
+
+  .sheet__handle {
+    padding: 4px 0 2px;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  /* CTA de marca estilo "liquid glass" (diseño CTA-3 adaptado a Conroma).
+     Clase reutilizable: cualquier CTA de bloque amarillo usa .alert-card.
+     Desvío deliberado de ESTANDAR §1 (vidrio + brillo radial) a petición del cliente. */
+  .alert-card {
+    @apply relative mx-auto flex flex-col items-center gap-5 text-center;
+    max-width: 680px;
+    margin-top: 48px;
+    padding: clamp(36px, 6vw, 60px) clamp(24px, 5vw, 56px);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-edge);
+    background:
+      radial-gradient(60% 75% at 50% -10%, rgb(255 255 255 / 0.4), transparent 70%),
+      color-mix(in srgb, var(--color-accent) 90%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+    color: var(--color-on-accent);
+    box-shadow: var(--shadow-3), inset 0 1px 0 rgb(255 255 255 / 0.5);
+  }
+
+  /* Línea discontinua central, detrás del contenido (guía del diseño CTA-3). */
+  .alert-card::after {
+    content: "";
+    position: absolute;
+    top: 18px;
+    bottom: 18px;
+    left: 50%;
+    z-index: 0;
+    border-left: 1px dashed rgb(22 22 21 / 0.14);
+    pointer-events: none;
+  }
+
+  .alert-card__corner {
+    @apply absolute inline-flex;
+    width: 22px;
+    height: 22px;
+    color: var(--color-on-accent);
+    opacity: 0.4;
+  }
+
+  .alert-card__corner svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .alert-card__corner--tl { top: -11px; left: -11px; }
+  .alert-card__corner--tr { top: -11px; right: -11px; }
+  .alert-card__corner--bl { bottom: -11px; left: -11px; }
+  .alert-card__corner--br { bottom: -11px; right: -11px; }
+
+  .alert-card__text {
+    @apply relative flex flex-col items-center gap-2;
+    z-index: 1;
+  }
+
+  .alert-card__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-accent);
+    opacity: 0.7;
+  }
+
+  .alert-card__title {
+    font-size: var(--text-h2);
+    line-height: 1.02;
+    /* apple-design: tracking negativo en títulos grandes. */
+    letter-spacing: -0.03em;
+  }
+
+  .alert-card__lead {
+    max-width: 44ch;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.5;
+  }
+
+  .alert-card__cta {
+    @apply relative;
+    z-index: 1;
+    max-width: 100%;
+    padding-block: 14px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  /* Accesibilidad: sin transparencia, el vidrio pasa a sólido. */
+  @media (prefers-reduced-transparency: reduce) {
+    .alert-card {
+      background: var(--color-accent);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  .property__top {
+    padding-block: 16px;
+  }
+
+  .property__gallery {
+    @apply relative;
+  }
+
+  .property__gallery-tools {
+    @apply pointer-events-none absolute flex justify-between;
+    top: 14px;
+    left: var(--space-gutter);
+    right: var(--space-gutter);
+  }
+
+  .property__gallery-tools > * {
+    pointer-events: auto;
+  }
+
+  .gallery {
+    @apply relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .gallery__track {
+    @apply flex overflow-x-auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .gallery__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery__slide {
+    flex: none;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    scroll-snap-align: center;
+    background: var(--color-surface-2);
+  }
+
+  .gallery__photo {
+    @apply h-full w-full object-cover;
+  }
+
+  /* Marcador cuando aún no hay fotos reales del inmueble. */
+  .gallery__empty {
+    @apply flex flex-col items-center justify-center gap-2;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-2);
+    color: var(--color-ink-3);
+    font-size: var(--text-small);
+  }
+
+  .gallery__empty svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .gallery__zoom {
+    @apply block h-full w-full;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .gallery__counter {
+    @apply absolute;
+    right: var(--space-gutter);
+    bottom: 14px;
+  }
+
+  /* Flechas de navegación (una foto cada vez). */
+  .gallery__nav {
+    @apply absolute inline-flex items-center justify-center;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--glass-edge);
+    background: var(--glass-solid);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-2);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .gallery__nav:hover {
+      background: var(--color-accent);
+      color: var(--color-on-accent);
+    }
+  }
+
+  .gallery__nav:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  .gallery__nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .gallery__nav--prev {
+    left: var(--space-gutter);
+  }
+
+  .gallery__nav--prev svg {
+    transform: rotate(180deg);
+  }
+
+  .gallery__nav--next {
+    right: var(--space-gutter);
+  }
+
+  .gallery__viewer {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-fixed-backdrop);
+    overflow-y: auto;
+  }
+
+  .gallery__viewer-bar {
+    @apply sticky top-0 flex justify-end;
+    z-index: 2;
+    padding: 14px var(--space-gutter);
+  }
+
+  .gallery__viewer-list {
+    @apply mx-auto flex flex-col gap-2;
+    max-width: 1100px;
+    padding: 0 0 40px;
+  }
+
+
+  .property__layout {
+    @apply grid gap-10;
+    padding-block: 28px calc(var(--space-section) / 2);
+  }
+
+  .property__main {
+    @apply flex min-w-0 flex-col gap-10;
+  }
+
+  .property__summary {
+    @apply flex flex-col gap-3;
+  }
+
+  .property__price {
+    font-family: var(--font-mono);
+    font-size: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .property__mortgage {
+    @apply inline-flex items-center self-start;
+    min-height: 44px;
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .property__title {
+    font-family: var(--font-body);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  .property__facts {
+    @apply grid grid-cols-4 gap-2;
+    margin-top: 8px;
+  }
+
+  .property__fact {
+    @apply flex flex-col gap-1;
+    padding: 14px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    font-size: var(--text-caption);
+    color: var(--color-ink-2);
+  }
+
+  .property__fact strong {
+    font-family: var(--font-display);
+    font-family: var(--font-mono);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+
+  .property__anchors {
+    position: sticky;
+    top: calc(var(--header-height) + 18px);
+    z-index: 20;
+    padding-block: 6px;
+  }
+
+  .property__block {
+    @apply flex flex-col gap-5;
+  }
+
+  .property__heading {
+    font-size: var(--text-h2);
+  }
+
+  .property__description {
+    max-width: 62ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    color: var(--color-ink-2);
+  }
+
+  /* Mapa de zona aproximada de la ficha (ubicación, no dirección exacta). */
+  .property__map {
+    height: clamp(220px, 40vw, 320px);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    overflow: hidden;
+  }
+
+  .approx-map__canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .honesty {
+    @apply grid gap-3;
+  }
+
+  .honesty__item {
+    @apply flex flex-col gap-2;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+
+  .honesty__title {
+    font-family: var(--font-body);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  @media (min-width: 40rem) {
+    .honesty {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .spec-list {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .spec-list__row {
+    @apply flex items-center justify-between gap-4;
+    min-height: 56px;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .spec-list__row dt {
+    color: var(--color-ink-2);
+  }
+
+  .spec-list__row dd {
+    font-weight: 700;
+  }
+
+  .contact-card {
+    @apply flex flex-col gap-5;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+  }
+
+  .contact-options {
+    @apply flex flex-col gap-4;
+  }
+
+  .contact-options__message {
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+    color: var(--color-ink-2);
+  }
+
+  .contact-options__actions {
+    @apply grid gap-2;
+  }
+
+  @media (min-width: 60rem) {
+    .property__layout {
+      grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .property__aside {
+      position: sticky;
+      top: calc(var(--header-height) + 32px);
+    }
+  }
+}
+
+@layer components {
+  /* Acceso a guardados en la cabecera: corazón con contador en el acento de marca */
+  .saved-link {
+    position: relative;
+  }
+
+  .saved-link__icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  .saved-link__count {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 0.8125rem; /* 13px mínimo (ESTANDAR §1) */
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  .site-menu__link--saved {
+    @apply inline-flex items-center;
+    gap: 10px;
+  }
+
+  .site-menu__link--saved .saved-link__count {
+    position: static;
+  }
+
+  .saved-list {
+    margin-top: 28px;
+  }
+
+  .saved-count {
+    margin-top: 20px;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .saved-empty {
+    @apply flex flex-col items-start;
+    gap: 14px;
+    max-width: 48ch;
+    /* El bloque se centra bajo la cabecera centrada; el texto sigue a la izquierda. */
+    margin-inline: auto;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--color-line);
+  }
+
+  .saved-empty__title {
+    font-size: var(--text-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .saved-empty__text {
+    color: var(--color-ink-2);
+    line-height: 1.55;
+  }
+}
+
+@layer components {
+  /* Vista previa del mensaje de WhatsApp en la ficha: antes aparecía la frase
+     suelta, sin decir qué era ni qué pasaba al pulsar. */
+  .contact-options__preview-label {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    color: var(--color-ink-2);
+  }
+
+  .contact-options__hint {
+    font-size: var(--text-caption);
+    color: var(--color-ink-3);
+  }
+}

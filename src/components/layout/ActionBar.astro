@@ -1,0 +1,29 @@
+---
+import Icon from '../Icon.astro';
+import { phoneUrl, whatsappUrl, type ContactContext } from '../../lib/links';
+
+interface Props {
+  contact?: ContactContext;
+  primaryAction?: { label: string; href: string };
+}
+
+const { contact = {}, primaryAction = { label: 'Valorar', href: '/es/valoracion/' } } = Astro.props;
+---
+
+<nav class="action-bar glass" aria-label="Contacto rápido" data-action-bar>
+  <a
+    class="button button--ink action-bar__button"
+    href={whatsappUrl(contact)}
+    data-contact="whatsapp"
+    data-origin="barra"
+    data-ref={contact.propertyRef}
+  >
+    <Icon name="whatsapp" class="button__icon" />
+    WhatsApp
+  </a>
+  <a class="button button--ghost action-bar__button" href={phoneUrl()} data-contact="llamada" data-origin="barra" data-ref={contact.propertyRef}>
+    <Icon name="phone" class="button__icon" />
+    Llamar
+  </a>
+  <a class="button button--primary action-bar__button" href={primaryAction.href}>{primaryAction.label}</a>
+</nav>

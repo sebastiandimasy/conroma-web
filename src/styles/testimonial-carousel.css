@@ -1,0 +1,153 @@
+/* Carrusel de reseñas (isla TestimonialCarousel): una reseña centrada que rota sola.
+ * Solo tokens de marca; movimiento por opacity/transform (lo aporta motion/react). */
+
+.tcar {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.tcar__stage {
+  position: relative;
+  width: 100%;
+  display: grid;
+}
+
+/* Todas las slides ocupan la misma celda del grid: la saliente no empuja el layout. */
+.tcar__slide {
+  grid-area: 1 / 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.tcar__stars {
+  display: inline-flex;
+  gap: 3px;
+  color: var(--color-accent);
+}
+
+.tcar__stars svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tcar__quote {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--color-ink);
+}
+
+.tcar__by {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tcar__avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background: radial-gradient(
+    120% 120% at 25% 15%,
+    var(--color-fixed-wash) 0%,
+    var(--color-accent) 45%,
+    var(--color-accent-deep) 120%
+  );
+  color: var(--color-on-fixed-wash);
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+}
+
+.tcar__by-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.tcar__by-text strong {
+  font-size: var(--text-small);
+  color: var(--color-ink);
+}
+
+.tcar__by-text span {
+  font-size: var(--text-caption);
+  color: var(--color-ink-3);
+}
+
+.tcar__dots {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 28px;
+}
+
+/* Área táctil de 44px con el punto visual centrado dentro. */
+.tcar__dot {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+}
+
+.tcar__dot::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-pill);
+  background: var(--color-line);
+  transition: background-color 0.2s ease, width 0.2s ease;
+}
+
+.tcar__dot.is-active::before {
+  width: 22px;
+  background: var(--color-accent);
+}
+
+.tcar__dot:active::before {
+  transform: scale(0.97);
+}
+
+.tcar__dot:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.tcar__more {
+  margin: 8px 0 0;
+  font-size: var(--text-small);
+  font-weight: 700;
+}
+
+.tcar__more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tcar__dot::before {
+    transition: none;
+  }
+}

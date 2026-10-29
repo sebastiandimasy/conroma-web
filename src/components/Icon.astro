@@ -1,0 +1,26 @@
+---
+import { icons, filledIcons, iconViewBox, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const filled = filledIcons.includes(name);
+---
+
+<svg
+  class={className}
+  viewBox={iconViewBox[name] ?? '0 0 24 24'}
+  width="24"
+  height="24"
+  fill={filled ? 'currentColor' : 'none'}
+  stroke={filled ? 'none' : 'currentColor'}
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d={icons[name]} fill-rule="evenodd" clip-rule="evenodd"></path>
+</svg>

@@ -1,0 +1,35 @@
+---
+// Galería de obras reales de Conroma. Fotos en public/img/reformas/reforma-01..23.jpg.
+const photos = Array.from(
+  { length: 23 },
+  (_, i) => `/img/reformas/reforma-${String(i + 1).padStart(2, '0')}.jpg`,
+);
+---
+
+<section class="section reform-gallery" id="obras">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">Nuestras obras</p>
+      <h2 class="section__title">Reformas que <span class="highlight">hablan solas</span></h2>
+      <p class="section__lead">Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.</p>
+    </div>
+
+    <div class="reform-gallery__grid">
+      {
+        photos.map((src, i) => (
+          <figure class="reform-gallery__item card" data-reveal>
+            <img
+              class="reform-gallery__photo"
+              src={src}
+              alt={`Reforma de Conroma en Obras, foto ${i + 1}`}
+              width="640"
+              height="480"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

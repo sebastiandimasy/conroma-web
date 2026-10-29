@@ -1,0 +1,49 @@
+---
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = '¿Cuánto vale mi casa?',
+  lead = 'Pon la dirección y te lo decimos. Gratis y sin compromiso.',
+} = Astro.props;
+---
+
+<section class="section valuation" id="valoracion">
+  <div class="wrap">
+    <div class="valuation__card glass" data-reveal>
+      <div class="valuation__intro">
+        <p class="eyebrow">Para propietarios</p>
+        <h2 class="section__title">{title}</h2>
+        <p class="section__lead">{lead}</p>
+        <form class="valuation__form" action="/es/valoracion/" method="get">
+          <label class="field valuation__field">
+            <span class="visually-hidden">Dirección de tu vivienda</span>
+            <input
+              class="field__control"
+              type="text"
+              name="direccion"
+              autocomplete="street-address"
+              placeholder="Ej. Carrer de Mar 24, Malgrat"
+            />
+          </label>
+          <button class="button button--primary button--large" type="submit">Va, dime cuánto</button>
+        </form>
+        <p class="valuation__note">Solo te pedimos el contacto al final.</p>
+      </div>
+      <ul class="valuation__options">
+        <li class="card valuation__option">
+          <span class="tag tag--ink">Recomendada</span>
+          <h3 class="feature__title">Pasamos a verlo</h3>
+          <p class="feature__text">Vemos tu piso en persona y te decimos lo que vale de verdad.</p>
+        </li>
+        <li class="card valuation__option">
+          <span class="tag">Rápida</span>
+          <h3 class="feature__title">Desde el móvil</h3>
+          <p class="feature__text">Nos pasas cuatro datos por WhatsApp y te contestamos con una primera idea.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

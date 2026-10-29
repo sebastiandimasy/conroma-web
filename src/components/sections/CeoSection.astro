@@ -1,0 +1,42 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../../data/site';
+
+const ceo = site.ceo;
+---
+
+{
+  ceo && (
+    <section class="section founder" id="boris">
+      <div class="wrap founder__grid">
+        <figure class="founder__figure" data-reveal>
+          {ceo.photo ? (
+            <Picture class="founder__photo" src={ceo.photo.src} alt={ceo.photo.alt} formats={['avif', 'webp']} width={840} widths={[420, 640, 840, 1067]} sizes="(min-width: 29rem) 420px, calc(100vw - 40px)" loading="lazy" decoding="async" />
+          ) : (
+            <div class="founder__photo founder__photo--pending">Foto de {ceo.name} pendiente</div>
+          )}
+        </figure>
+        <div class="founder__copy" data-reveal>
+          <p class="eyebrow">El fundador</p>
+          <h2 class="founder__name">{ceo.name}</h2>
+          <p class="founder__role">{ceo.role}</p>
+          <div class="founder__bio">
+            {ceo.bio.map((paragraph) => <p class:list={{ 'founder__pending': ceo.bioPending }}>{paragraph}</p>)}
+          </div>
+          {ceo.closing && <p class="founder__closing">{ceo.closing}</p>}
+          <dl class="founder__facts">
+            {
+              ceo.facts.map((fact) => (
+                <div class="founder__fact">
+                  <dt>{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <p class="founder__signature script">{ceo.name}</p>
+        </div>
+      </div>
+    </section>
+  )
+}

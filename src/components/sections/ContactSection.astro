@@ -1,0 +1,41 @@
+---
+import Icon from '../Icon.astro';
+import ContactForm from '../../islands/ContactForm';
+import { site } from '../../data/site';
+import { whatsappUrl } from '../../lib/links';
+---
+
+<section class="section contact" id="contacto">
+  <div class="wrap contact__grid">
+    <div class="contact__intro" data-reveal>
+      <p class="eyebrow">Hablemos</p>
+      <h2 class="section__title">Cuéntanos qué necesitas.</h2>
+      <p class="section__lead">Déjanos un mensaje. Y si lo prefieres, escríbenos por WhatsApp o llámanos.</p>
+      <div class="contact__channels">
+        <a class="button button--ghost button--start" href={whatsappUrl()} data-contact="whatsapp" data-origin="contacto">
+          <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
+          WhatsApp · {site.phoneDisplay}
+        </a>
+        <a class="button button--ghost button--start" href={`tel:${site.phone}`} data-contact="llamada" data-origin="contacto">
+          <Icon name="phone" class="button__icon contact__icon" />
+          Llamar · {site.phoneDisplay}
+        </a>
+        <a class="button button--ghost button--start" href={`tel:${site.landline}`} data-contact="llamada" data-origin="contacto-fijo">
+          <Icon name="phone" class="button__icon contact__icon" />
+          Fijo · {site.landlineDisplay}
+        </a>
+        <a class="button button--ghost button--start" href={`mailto:${site.email}`}>
+          <Icon name="mail" class="button__icon contact__icon" />
+          {site.email}
+        </a>
+        <address class="chip contact__address">
+          <Icon name="pin" class="button__icon contact__icon" />
+          {site.address.street}, {site.address.locality}
+        </address>
+      </div>
+    </div>
+    <div class="contact__card glass" data-reveal>
+      <ContactForm client:visible />
+    </div>
+  </div>
+</section>

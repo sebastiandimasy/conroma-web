@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import ValuationBlock from '../../../components/sections/ValuationBlock.astro';
+import Steps from '../../../components/sections/Steps.astro';
+import { sellSteps } from '../../../data/steps';
+import Trust from '../../../components/sections/Trust.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import Icon from '../../../components/Icon.astro';
+import { townFaq } from '../../../data/faq';
+import { publishedSellerTowns, type Town } from '../../../data/towns';
+import { whatsappUrl } from '../../../lib/links';
+import { agentSchema, breadcrumbSchema, faqSchema } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return publishedSellerTowns.map((town) => ({ params: { town: town.slug }, props: { town } }));
+}
+
+interface Props {
+  town: Town;
+}
+
+const { town } = Astro.props;
+const path = `/es/inmobiliaria/${town.slug}/`;
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: `Inmobiliaria en ${town.name}`, path },
+];
+const faq = town.buyerIntro
+  ? [
+      ...townFaq(town.name),
+      {
+        question: `¿Tenéis pisos en venta en ${town.name}?`,
+        answer: `Trabajamos en ${town.name}, pero todavía no publicamos ahí el catálogo en la web. Escríbenos diciendo qué buscas y te contamos qué hay, incluido lo que aún no está anunciado.`,
+      },
+      {
+        question: `¿Me avisáis si entra algo en ${town.name}?`,
+        answer: `Sí. Dinos qué buscas y cuánto quieres gastarte y te escribimos cuando entre algo que encaje. Sin compromiso y sin registrarte en nada.`,
+      },
+    ]
+  : townFaq(town.name);
+---
+
+<BaseLayout
+  title={`Inmobiliaria en ${town.name}: comprar y vender | Conroma`}
+  description={`¿Compras o vendes en ${town.name}? Te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`}
+  path={path}
+  schemas={[agentSchema(), breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Inmobiliaria en {town.name}</h1>
+      <p class="page-head__lead">{town.intro || town.sellerIntro}</p>
+      <div class="page-head__actions">
+        <a class="button button--primary button--large" href="/es/valoracion/">Saber cuánto vale mi piso</a>
+        {
+          town.buyerIntro ? (
+            <a class="button button--ghost button--large" href="#comprar">{`Busco piso en ${town.name}`}</a>
+          ) : (
+            <a class="button button--ghost button--large" href="/es/comprar/">Ver pisos en venta</a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    town.buyerIntro && (
+      <section class="section town-buy" id="comprar">
+        <div class="wrap">
+          <div class="section__head section__head--center" data-reveal>
+            <p class="eyebrow">¿Buscas piso?</p>
+            <h2 class="section__title">{`Comprar en ${town.name}`}</h2>
+            <p class="section__lead">{town.buyerIntro}</p>
+          </div>
+          <ul class="town-buy__points" data-reveal>
+            <li>
+              <Icon name="check" class="town-buy__check" />
+              Te decimos qué hay ahora mismo, incluido lo que todavía no está anunciado.
+            </li>
+            <li>
+              <Icon name="check" class="town-buy__check" />
+              {`Estamos a diez minutos: vamos contigo a ver los pisos de ${town.name}.`}
+            </li>
+            <li>
+              <Icon name="check" class="town-buy__check" />
+              Si entra algo que encaje con lo que buscas, te avisamos.
+            </li>
+          </ul>
+          <div class="town-buy__actions" data-reveal>
+            <a
+              class="button button--primary button--large"
+              href={whatsappUrl({ reason: 'general' })}
+              data-contact="whatsapp"
+              data-origin={`pueblo-${town.slug}-comprar`}
+            >
+              <Icon name="whatsapp" class="button__icon" />
+              {`Decidnos qué buscáis en ${town.name}`}
+            </a>
+            <a class="button button--ghost button--large" href="/es/venta/malgrat-de-mar/">
+              Ver lo que sí tenemos publicado
+            </a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <ValuationBlock
+    title={`¿Cuánto vale tu piso en ${town.name}?`}
+    lead="Pon la dirección y te lo decimos. Gratis y sin compromiso."
+  />
+  <Steps eyebrow="El proceso" title={`Vender en ${town.name}, en tres pasos`} steps={sellSteps} />
+  <Trust />
+  <FaqSection title={`Vender en ${town.name}: lo que nos preguntan`} items={faq} />
+  <ContactSection />
+</BaseLayout>

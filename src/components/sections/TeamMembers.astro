@@ -1,0 +1,33 @@
+---
+import { team } from '../../data/team';
+---
+
+<section class="section team-members" id="equipo">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">Nuestro equipo</p>
+      <h2 class="section__title">Las personas <span class="highlight">de Conroma</span></h2>
+      <p class="section__lead">La misma gente que te atiende el primer día te acompaña hasta la firma. De aquí, de verdad.</p>
+    </div>
+
+    <div class="team-members__grid">
+      {
+        team.map((member) => (
+          <article class="member card" data-reveal>
+            <figure class="member__figure">
+              <img class="member__photo" src={member.photo} alt={`${member.name}, ${member.role} en Conroma`} width="640" height="800" loading="lazy" decoding="async" />
+              {member.actionPhoto && (
+                <img class="member__action" src={member.actionPhoto} alt={`${member.name} trabajando`} width="200" height="200" loading="lazy" decoding="async" />
+              )}
+            </figure>
+            <div class="member__body">
+              <h3 class="member__name">{member.name}</h3>
+              <p class="member__role">{member.role}</p>
+              {member.bio.map((paragraph) => <p class="member__bio">{paragraph}</p>)}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,135 @@
+---
+import '@fontsource/pacifico/latin-400.css';
+import '@fontsource/playfair-display/latin-400-italic.css';
+import '@fontsource-variable/hanken-grotesk';
+import '../styles/global.css';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import CookieNotice from '../islands/CookieNotice';
+import IntentWelcome from '../islands/IntentWelcome';
+import ChatDemo from '../islands/ChatDemo';
+import { site } from '../data/site';
+import { absoluteUrl, alternates, pageTitle } from '../lib/seo';
+import type { ContactContext } from '../lib/links';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  schemas?: object[];
+  noindex?: boolean;
+  bare?: boolean;
+  overlay?: boolean;
+  contact?: ContactContext;
+  primaryAction?: { label: string; href: string };
+}
+
+const { title, description, path, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction } = Astro.props;
+const canonical = absoluteUrl(path);
+const languageLinks = alternates(path);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle(title)}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {languageLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.legalName} />
+    <meta property="og:title" content={pageTitle(title)} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B0B0A" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/brand/conroma-logo.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('conroma:tema');
+        if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script>
+    {/* Consent Mode v2: por defecto denegado hasta que acepten cookies (RGPD). */}
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      try {
+        var granted = localStorage.getItem('conroma:cookies') === 'aceptado';
+        gtag('consent', 'default', {
+          ad_storage: granted ? 'granted' : 'denied',
+          ad_user_data: granted ? 'granted' : 'denied',
+          ad_personalization: granted ? 'granted' : 'denied',
+          analytics_storage: granted ? 'granted' : 'denied',
+          wait_for_update: 500,
+        });
+      } catch (e) {
+        gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+      }
+    </script>
+    {/* Google tag (gtag.js) — GA4. Respeta el Consent Mode v2 fijado arriba. */}
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-C9WV5S78LX"></script>
+    <script is:inline>
+      gtag('js', new Date());
+      gtag('config', 'G-C9WV5S78LX');
+    </script>
+    {/* Google Tag Manager */}
+    <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KWJHKHR2');</script>
+  </head>
+  <body class:list={{ 'page--bare': bare, 'page--overlay': overlay }}>
+    {/* Google Tag Manager (noscript) */}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KWJHKHR2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {/* Medición Click-URL: cada CTA con data-contact empuja su clic al dataLayer (GTM mide por origen/canal, no por el texto del botón). */}
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('[data-contact]');
+        if (!a) return;
+        var payload = {
+          cta_contact: a.getAttribute('data-contact'),
+          cta_origin: a.getAttribute('data-origin') || '',
+          cta_ref: a.getAttribute('data-ref') || '',
+        };
+        // gtag('event') lo recoge GA4 directo y además queda en el dataLayer para GTM/Pixel.
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'cta_click', payload);
+        } else {
+          window.dataLayer = window.dataLayer || [];
+          payload.event = 'cta_click';
+          window.dataLayer.push(payload);
+        }
+      }, true);
+    </script>
+    {/* PRUEBA liquid-glass: filtro de refracción. Quitar junto con la clase .liquid-glass para revertir. */}
+    <svg class="liquid-glass-defs" aria-hidden="true" focusable="false">
+      <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.009 0.009" numOctaves="2" seed="7" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="1.5" result="soft" />
+        <feDisplacementMap in="SourceGraphic" in2="soft" scale="26" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    {site.sampleData && <p class="sample-notice">Web en construcción: los pisos son reales; estamos añadiendo sus fotos.</p>}
+    {!bare && <SiteHeader />}
+    <main id="contenido">
+      <slot />
+    </main>
+    {!bare && <SiteFooter />}
+    {!bare && <ChatDemo client:idle />}
+    {!bare && <IntentWelcome client:idle />}
+    <CookieNotice client:idle />
+    <script>
+      import { initMotion } from '../lib/motion';
+      initMotion();
+    </script>
+  </body>
+</html>

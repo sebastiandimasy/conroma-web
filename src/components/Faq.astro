@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+import type { FaqItem } from '../data/faq';
+
+interface Props {
+  items: FaqItem[];
+  name: string;
+}
+
+const { items, name } = Astro.props;
+---
+
+<div class="accordion">
+  {
+    items.map((item) => (
+      <details class="accordion__item" name={name}>
+        <summary class="accordion__question">
+          {item.question}
+          <Icon name="plus" class="accordion__icon" />
+        </summary>
+        <p class="accordion__answer">{item.answer}</p>
+      </details>
+    ))
+  }
+</div>

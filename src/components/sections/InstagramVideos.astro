@@ -1,0 +1,43 @@
+---
+import StoryVideos from '../../islands/StoryVideos';
+import { site } from '../../data/site';
+
+const videos = site.instagramVideos.filter((item) => item.video);
+---
+
+{
+  videos.length > 0 && (
+    <section class="section instagram-videos">
+      <div class="wrap">
+        <div class="section__head section__head--center" data-reveal>
+          <p class="eyebrow">Casos de éxito</p>
+          <h2 class="section__title">Historias que nos motivan <span class="highlight">día a día.</span></h2>
+          <p class="section__lead">Estos son algunos de los casos de éxito y testimonios de clientes de Conroma.</p>
+        </div>
+        <StoryVideos client:visible items={videos.map((item) => ({ url: item.url, label: item.label, video: item.video! }))} />
+        <ul class="social-links">
+          {
+            site.instagram.map((account) => (
+              <li class="social-links__item">
+                <a class="social-link" href={account.url} rel="noopener" target="_blank" aria-label={`Instagram ${account.handle}`}>
+                  <img src="/icons/instagram.svg" alt="" width="22" height="22" />
+                </a>
+                <span class="social-links__handle">{account.handle}</span>
+              </li>
+            ))
+          }
+          {
+            site.tiktok && (
+              <li class="social-links__item">
+                <a class="social-link" href={site.tiktok} rel="noopener" target="_blank" aria-label={`TikTok ${new URL(site.tiktok).pathname.split('/').pop()}`}>
+                  <img src="/icons/tiktok.svg" alt="" width="22" height="22" />
+                </a>
+                <span class="social-links__handle">{new URL(site.tiktok).pathname.split('/').pop()}</span>
+              </li>
+            )
+          }
+        </ul>
+      </div>
+    </section>
+  )
+}

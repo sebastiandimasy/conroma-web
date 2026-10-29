@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
+
+const path = '/es/cookies/';
+const updated = '27 de octubre de 2026';
+---
+
+<BaseLayout
+  title="Política de cookies"
+  description={`Qué cookies usa ${site.legalName} y cómo gestionarlas.`}
+  path={path}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <h1 class="page-head__title">Política de cookies</h1>
+      <p class="page-head__lead">Qué cookies usa este sitio, para qué, y cómo decides sobre ellas.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="legal">
+        <p class="legal__meta">Última actualización: {updated}</p>
+
+        <p class="legal__note">
+          Borrador pendiente de revisión jurídica. Revisa el inventario de cookies real antes de publicar; hoy
+          el sitio solo guarda preferencias en tu navegador y no instala cookies de medición sin tu consentimiento.
+        </p>
+
+        <h2>1. Qué es una cookie</h2>
+        <p>
+          Una cookie es un pequeño archivo que un sitio web guarda en tu dispositivo para recordar información
+          sobre tu visita. También usamos tecnologías equivalentes del navegador, como el almacenamiento local
+          (<em>localStorage</em>).
+        </p>
+
+        <h2>2. Cookies que usamos</h2>
+
+        <h3>Técnicas y de preferencia (necesarias)</h3>
+        <p>
+          Guardan tus elecciones para que la web funcione como esperas. No requieren consentimiento y no sirven
+          para rastrearte. Hoy usamos almacenamiento local del navegador para:
+        </p>
+        <ul>
+          <li>Recordar si has aceptado o rechazado las cookies de medición.</li>
+          <li>Recordar el tema (claro u oscuro) y tu respuesta a la pregunta de bienvenida.</li>
+          <li>Guardar los inmuebles que marcas como favoritos o descartas, solo en tu dispositivo.</li>
+        </ul>
+
+        <h3>De medición (analíticas)</h3>
+        <p>
+          Nos ayudarían a entender de forma estadística cómo se usa la web para mejorarla. <strong>Solo se
+          activan si las aceptas</strong> en el aviso de cookies. Mientras no las aceptes, no se instalan.
+        </p>
+
+        <h2>3. Cómo gestionar las cookies</h2>
+        <p>
+          Puedes aceptar o rechazar las cookies de medición desde el aviso que aparece al entrar. Además, puedes
+          borrar o bloquear las cookies y el almacenamiento local desde la configuración de tu navegador (Chrome,
+          Safari, Firefox, Edge…). Si las bloqueas, algunas preferencias no se recordarán.
+        </p>
+
+        <h2>4. Cambios</h2>
+        <p>
+          Podemos actualizar esta política si cambian las cookies que usamos. La fecha de arriba indica la última
+          revisión. Para cualquier duda, escríbenos a <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+
+        <p>
+          Consulta también la <a href="/es/privacidad/">Política de Privacidad</a> y el
+          <a href="/es/aviso-legal/">Aviso Legal</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

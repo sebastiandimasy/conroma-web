@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ValuationWizard from '../../islands/ValuationWizard';
+---
+
+<BaseLayout
+  title="¿Cuánto vale mi piso? Valoración gratis"
+  description="Dinos dónde está tu piso y en qué estado, y te decimos cuánto vale. Cuatro preguntas, gratis y sin compromiso."
+  path="/es/valoracion/"
+  bare
+>
+  <ValuationWizard client:load />
+  <noscript>
+    <div class="wrap wizard-fallback">
+      <p>
+        <strong>¿Cuánto vale mi piso?</strong>
+      </p>
+      <p>Para la valoración paso a paso hace falta JavaScript. Escríbenos por WhatsApp o llámanos y te lo decimos igual.</p>
+    </div>
+  </noscript>
+</BaseLayout>

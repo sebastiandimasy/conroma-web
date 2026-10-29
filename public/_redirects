@@ -1,0 +1,58 @@
+# Redirecciones 301 desde la web antigua (conromaasesores.com) a la nueva.
+# Formato Cloudflare Pages: gana la PRIMERA regla que coincide, así que lo
+# específico va antes que los comodines.
+# Inventario de origen: sitemap (43 URLs) + /mapa_web (67) + rastreo = 72 rutas.
+
+# La raíz (/ -> /es/) la añade el adaptador desde astro.config, no se repite aquí.
+
+# --- Páginas estáticas (1:1) ---
+/contacto                   /es/contacto/                   301
+/contacto/                  /es/contacto/                   301
+/blogs                      /es/blog/                       301
+/blogs/                     /es/blog/                       301
+/favoritos                  /es/guardados/                  301
+/favoritos/                 /es/guardados/                  301
+/captacion                  /es/vender/                     301
+/captacion/                 /es/vender/                     301
+/destacados                 /es/venta/malgrat-de-mar/       301
+/destacados/                /es/venta/malgrat-de-mar/       301
+/texto_legal                /es/privacidad/                 301
+/texto_legal/               /es/privacidad/                 301
+/politica_cookies           /es/privacidad/                 301
+/politica_cookies/          /es/privacidad/                 301
+/mapa_web                   /es/                            301
+/mapa_web/                  /es/                            301
+
+# --- Fichas de inmueble -> listado de su municipio ---
+# Origen: /detalle/<operacion>/<tipo>/<provincia>/<municipio>[/<barrio>]/<id>/
+# El alquiler va primero: la intención manda sobre el municipio, porque las
+# páginas de pueblo son de compraventa, no de alquiler.
+/detalle/en_alquiler/*                      /es/alquilar/                    301
+/detalle/:op/:tipo/:prov/malgrat_de_mar/*   /es/venta/malgrat-de-mar/        301
+/detalle/:op/:tipo/:prov/blanes/*           /es/inmobiliaria/blanes/         301
+/detalle/:op/:tipo/:prov/tordera/*          /es/inmobiliaria/tordera/        301
+/detalle/:op/:tipo/:prov/lloret_de_mar/*    /es/inmobiliaria/lloret-de-mar/  301
+/detalle/:op/:tipo/:prov/pineda_de_mar/*    /es/inmobiliaria/pineda-de-mar/  301
+/detalle/:op/:tipo/:prov/calella/*          /es/inmobiliaria/calella/        301
+/detalle/:op/:tipo/:prov/santa_susanna/*    /es/inmobiliaria/santa-susanna/  301
+/detalle/:op/:tipo/:prov/palafolls/*        /es/inmobiliaria/palafolls/      301
+# Resto de municipios (sin página propia): por intención de búsqueda
+/detalle/*                  /es/comprar/                    301
+
+# --- Buscador por facetas -> equivalente más cercano ---
+# Origen: /buscador/<operacion>/<tipo>/<provincia>/<municipio>/
+/buscador/en_alquiler/*                     /es/alquilar/                    301
+/buscador/:op/:tipo/:prov/malgrat_de_mar/*  /es/venta/malgrat-de-mar/        301
+/buscador/:op/:tipo/:prov/blanes/*          /es/inmobiliaria/blanes/         301
+/buscador/:op/:tipo/:prov/tordera/*         /es/inmobiliaria/tordera/        301
+/buscador/:op/:tipo/:prov/lloret_de_mar/*   /es/inmobiliaria/lloret-de-mar/  301
+/buscador/:op/:tipo/:prov/pineda_de_mar/*   /es/inmobiliaria/pineda-de-mar/  301
+/buscador/:op/:tipo/:prov/calella/*         /es/inmobiliaria/calella/        301
+/buscador/:op/:tipo/:prov/santa_susanna/*   /es/inmobiliaria/santa-susanna/  301
+/buscador/:op/:tipo/:prov/palafolls/*       /es/inmobiliaria/palafolls/      301
+/buscador/*                 /es/comprar/                    301
+/buscador                   /es/comprar/                    301
+
+# --- Restos técnicos del sitio antiguo ---
+/idioma/*                   /es/                            301
+/uikit/*                    /es/                            301

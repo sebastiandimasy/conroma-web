@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import ValuationBlock from '../../components/sections/ValuationBlock.astro';
+import Steps from '../../components/sections/Steps.astro';
+import Trust from '../../components/sections/Trust.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import { sellSteps } from '../../data/steps';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+const path = '/es/vender/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Vender', path },
+];
+const faq = [
+  {
+    question: 'Quiero vender, ¿por dónde empiezo?',
+    answer: 'Por saber cuánto vale. Nos dices la dirección, pasamos a verlo y te decimos un precio realista. A partir de ahí decides tú.',
+  },
+  {
+    question: '¿Valorar mi piso me compromete a algo?',
+    answer: 'No. La valoración es gratis y no te obliga a vender con nosotros.',
+  },
+  {
+    question: 'Mi piso necesita reforma, ¿lo puedo vender igual?',
+    answer: 'Sí. Te decimos cuánto vale tal como está y, si te interesa, qué cambiaría con una reforma antes de vender.',
+  },
+  {
+    question: 'Es un piso heredado, ¿qué hago?',
+    answer: 'Lo vemos con calma. Te explicamos qué papeles hacen falta antes de ponerlo en venta.',
+  },
+];
+---
+
+<BaseLayout
+  title="Vender piso en Malgrat de Mar"
+  description="Vende tu piso en Malgrat de Mar con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Tu venta, paso a paso"
+    title="Vender bien empieza por "
+    highlight="saber lo que vale."
+    lead="Te decimos un precio realista y nos encargamos de todo lo demás."
+  >
+    <a class="button button--primary button--large" href="/es/valoracion/">Saber cuánto vale mi piso</a>
+    <a class="button button--ghost button--large" href="/es/contacto/">Hablar con Conroma</a>
+  </PageHero>
+
+  <Steps eyebrow="El proceso" title="Vender con Conroma, en tres pasos" steps={sellSteps} />
+  <ValuationBlock />
+  <Trust />
+  <Testimonials limit={3} />
+  <FaqSection title="Dudas al vender tu piso" items={faq} />
+  <ContactSection />
+</BaseLayout>

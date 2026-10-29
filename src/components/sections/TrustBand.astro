@@ -1,0 +1,28 @@
+---
+import { site } from '../../data/site';
+import { formatRating } from '../../lib/format';
+
+const rating = site.googleRating;
+const cells = [
+  rating && { value: formatRating(rating.value), label: 'sobre 5 en Google', href: rating.url },
+  rating && { value: String(rating.count), label: 'reseñas de clientes', href: rating.url },
+  site.yearsActive !== null && { value: String(site.yearsActive), label: 'años en Malgrat de Mar' },
+  { value: String(site.languages.length), label: 'idiomas: CA · ES · EN · FR' },
+  { value: '0 €', label: 'por valorar tu piso' },
+].filter((cell): cell is { value: string; label: string; href?: string } => Boolean(cell));
+---
+
+<section class="trust-band" aria-label="Datos de confianza">
+  <div class="wrap">
+    <dl class="trust-band__grid glass" data-reveal>
+      {
+        cells.map((cell) => (
+          <div class="trust-band__cell">
+            <dt class="trust-band__label">{cell.href ? <a href={cell.href} rel="noopener" target="_blank">{cell.label}</a> : cell.label}</dt>
+            <dd class="trust-band__value">{cell.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

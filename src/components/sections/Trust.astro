@@ -1,0 +1,23 @@
+---
+import Icon from '../Icon.astro';
+import Section from '../Section.astro';
+import { guarantees } from '../../data/faq';
+import type { IconName } from '../../lib/icons';
+
+const icons: IconName[] = ['user', 'globe', 'shield'];
+---
+
+<Section class="trust" center eyebrow="¿Por qué con nosotros?">
+  <Fragment slot="title">Comprar o vender una casa ya es bastante. <span class="highlight">Lo demás lo llevamos nosotros.</span></Fragment>
+  <ul class="feature-grid">
+    {
+      guarantees.map((item, index) => (
+        <li class="card feature" data-reveal>
+          <span class="icon-tile"><Icon name={icons[index]} /></span>
+          <h3 class="feature__title">{item.question}</h3>
+          <p class="feature__text">{item.answer}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

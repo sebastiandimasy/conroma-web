@@ -1,0 +1,38 @@
+---
+/**
+ * Primitiva de sección: estandariza `section > wrap > section__head`.
+ * Repetido ~17 veces a mano. El título va en el slot "title" (admite <span class="highlight">).
+ */
+interface Props {
+  class?: string;
+  id?: string;
+  center?: boolean;
+  eyebrow?: string;
+  lead?: string;
+  reveal?: boolean;
+  /* Clase extra en el .wrap, para secciones con grid propio (p.ej. town-links__grid). */
+  wrapClass?: string;
+}
+
+const { class: cls, id, center = false, eyebrow, lead, reveal = true, wrapClass } = Astro.props;
+const hasHead = Boolean(eyebrow || lead || Astro.slots.has('title'));
+---
+
+<section class:list={['section', cls]} id={id}>
+  <div class:list={['wrap', wrapClass]}>
+    {
+      hasHead && (
+        <div class:list={['section__head', { 'section__head--center': center }]} data-reveal={reveal ? true : undefined}>
+          {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+          {Astro.slots.has('title') && (
+            <h2 class="section__title">
+              <slot name="title" />
+            </h2>
+          )}
+          {lead && <p class="section__lead">{lead}</p>}
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>

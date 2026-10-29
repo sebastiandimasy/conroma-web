@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import PropertyGallery from '../../../islands/PropertyGallery';
+import FavoriteToggle from '../../../islands/FavoriteToggle';
+import ContactOptions from '../../../islands/ContactOptions';
+import PropertyGrid from '../../../islands/PropertyGrid';
+import ApproxLocationMap from '../../../islands/ApproxLocationMap';
+import { getListings, propertySlug, propertyTitle, type Property } from '../../../data/properties';
+import { findTown } from '../../../data/towns';
+import { site } from '../../../data/site';
+import { formatFloor, formatPrice } from '../../../lib/format';
+import { breadcrumbSchema, listingSchema } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return getListings().map((property) => ({ params: { slug: propertySlug(property) }, props: { property } }));
+}
+
+interface Props {
+  property: Property;
+}
+
+const { property } = Astro.props;
+const town = findTown(property.town);
+const townName = town?.name ?? property.town;
+// Coords reales del piso (feed) si las hay; si no, el centro del pueblo.
+const mapGeo = property.geo ?? town?.geo ?? null;
+const title = propertyTitle(property);
+const path = `/es/inmueble/${propertySlug(property)}/`;
+const listingPath = `/es/venta/${property.town}/`;
+const drop = property.previousPrice ? property.previousPrice - property.price : 0;
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: `Pisos en venta en ${townName}`, path: listingPath },
+  { name: `${property.type} en ${property.zone}`, path },
+];
+const similar = getListings({ town: property.town, operation: property.operation })
+  .filter((item) => item.ref !== property.ref)
+  .sort((a, b) => Math.abs(a.price - property.price) - Math.abs(b.price - property.price))
+  .slice(0, 3);
+const features = [
+  { label: 'Estado', value: property.state },
+  { label: 'Planta', value: formatFloor(property.floor) },
+  { label: 'Ascensor', value: property.elevator ? 'Sí' : 'Consultar' },
+  { label: 'Parking', value: property.parking ? 'Sí' : 'Consultar' },
+  { label: 'Terraza o balcón', value: property.terrace ? 'Sí' : 'Consultar' },
+  { label: 'Referencia', value: property.ref },
+];
+---
+
+<BaseLayout
+  title={`${title} — ${formatPrice(property.price)}`}
+  description={`${title}: ${property.rooms} habitaciones, ${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}, ${property.area} m². ${property.description}`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), listingSchema(property)]}
+  contact={{ propertyRef: property.ref, propertyTitle: title }}
+  primaryAction={{ label: 'Pedir visita', href: '#contacto' }}
+  noindex={site.sampleData}
+>
+  <article class="property">
+    <div class="wrap property__top">
+      <Breadcrumbs crumbs={crumbs} />
+    </div>
+
+    <div class="wrap property__layout">
+      <div class="property__main">
+        <div class="property__gallery">
+          <PropertyGallery client:load propertyRef={property.ref} title={title} photos={property.photos} tone={property.tone} images={property.images} />
+          <div class="property__gallery-tools">
+            <a class="chip chip--on-photo" href={listingPath}>
+              <Icon name="back" class="save-button__icon" />
+              Volver
+            </a>
+            <FavoriteToggle client:load propertyRef={property.ref} label />
+          </div>
+        </div>
+        <header class="property__summary">
+          <span class="tag">{property.tag}</span>
+          <p class="property__price">
+            <data value={property.price}>{formatPrice(property.price)}</data>
+          </p>
+          {
+            drop > 0 && property.previousPrice && (
+              <p class="property__drop">
+                Antes {formatPrice(property.previousPrice)} · ha bajado {formatPrice(drop)}
+              </p>
+            )
+          }
+          <a class="property__mortgage" href={`/es/comprar/puedo-comprar/?precio=${property.price}`}>
+            ¿Me lo puedo permitir? Calcúlalo
+          </a>
+          <h1 class="property__title">{title}</h1>
+          <ul class="property__facts">
+            <li class="property__fact"><strong>{property.rooms}</strong> {property.rooms === 1 ? 'habitación' : 'habitaciones'}</li>
+            <li class="property__fact"><strong>{property.baths}</strong> {property.baths === 1 ? 'baño' : 'baños'}</li>
+            <li class="property__fact"><strong>{property.area}</strong> m²</li>
+            <li class="property__fact"><strong>{property.floor === 0 ? 'Baja' : `${property.floor}ª`}</strong> planta</li>
+          </ul>
+        </header>
+
+        <nav class="property__anchors chip-row chip-row--scroll" aria-label="Secciones de la ficha">
+          <a class="chip" href="#resumen">Resumen</a>
+          <a class="chip" href="#caracteristicas">Características</a>
+          <a class="chip" href="#zona">Zona</a>
+          <a class="chip" href="#contacto">Contacto</a>
+        </nav>
+
+        {
+          (property.description || property.likes || property.watchOut) && (
+            <section class="property__block" id="resumen">
+              <h2 class="property__heading">Te lo contamos fácil</h2>
+              {property.description && <p class="property__description">{property.description}</p>}
+              {
+                (property.likes || property.watchOut) && (
+              <div class="honesty">
+                {property.likes && (
+                  <div class="honesty__item">
+                    <h3 class="honesty__title">Lo que más nos gusta</h3>
+                    <p>{property.likes}</p>
+                  </div>
+                )}
+                {property.watchOut && (
+                  <div class="honesty__item">
+                    <h3 class="honesty__title">A tener en cuenta</h3>
+                    <p>{property.watchOut}</p>
+                  </div>
+                )}
+              </div>
+            )
+          }
+            </section>
+          )
+        }
+
+        <section class="property__block" id="caracteristicas">
+          <h2 class="property__heading">Características</h2>
+          <dl class="spec-list">
+            {
+              features.map((feature) => (
+                <div class="spec-list__row">
+                  <dt>{feature.label}</dt>
+                  <dd>{feature.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section class="property__block" id="zona">
+          <h2 class="property__heading">La zona</h2>
+          <p class="property__description">
+            {property.zone}, {townName}. En el mapa te situamos la zona aproximada; la dirección exacta te la contamos cuando hablemos.
+          </p>
+          {
+            mapGeo && (
+              <div class="property__map">
+                <ApproxLocationMap
+                  client:only="react"
+                  latitude={mapGeo.latitude}
+                  longitude={mapGeo.longitude}
+                  label={`${property.zone}, ${townName}`}
+                />
+              </div>
+            )
+          }
+          <nav class="link-list" aria-label="Zona">
+            <a class="link-list__link" href={listingPath}>
+              Más pisos en venta en {townName}
+              <Icon name="arrow" class="link-list__arrow" />
+            </a>
+          </nav>
+        </section>
+      </div>
+
+      <aside class="property__aside" id="contacto">
+        <div class="contact-card">
+          <h2 class="property__heading">¿Qué necesitas?</h2>
+          {
+            site.agent && (
+              <div class="agent">
+                <img class="agent__photo" src={site.agent.photo} alt={site.agent.name} width="64" height="64" loading="lazy" />
+                <p>
+                  <strong>{site.agent.name}</strong>
+                  <br />
+                  Conoce este piso por dentro
+                </p>
+              </div>
+            )
+          }
+          <ContactOptions client:visible propertyRef={property.ref} propertyTitle={title} />
+        </div>
+      </aside>
+    </div>
+
+    {
+      similar.length > 0 && (
+        <section class="section similar">
+          <div class="wrap">
+            <div class="section__head">
+              <h2 class="section__title">Viviendas parecidas</h2>
+            </div>
+            <PropertyGrid client:visible properties={similar} townName={townName} origin="ficha-parecidas" />
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="Página no encontrada" description="Esta página no existe o ha cambiado de sitio." path="/404/" noindex>
+  <section class="page-head">
+    <div class="wrap">
+      <h1 class="page-head__title">Vaya, esta página no está.</h1>
+      <p class="page-head__lead">Puede que el piso ya se haya vendido o que el enlace esté mal. Prueba por aquí.</p>
+      <nav class="link-list" aria-label="Otras páginas">
+        <a class="link-list__link" href="/es/">Inicio<Icon name="arrow" class="link-list__arrow" /></a>
+        <a class="link-list__link" href="/es/venta/malgrat-de-mar/">
+          Pisos en venta en Malgrat de Mar<Icon name="arrow" class="link-list__arrow" />
+        </a>
+        <a class="link-list__link" href="/es/valoracion/">
+          ¿Cuánto vale mi piso?<Icon name="arrow" class="link-list__arrow" />
+        </a>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

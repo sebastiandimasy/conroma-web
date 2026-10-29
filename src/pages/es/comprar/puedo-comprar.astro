@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import AffordabilitySimulator from '../../../islands/AffordabilitySimulator';
+import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
+
+const path = '/es/comprar/puedo-comprar/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Comprar', path: '/es/comprar/' },
+  { name: '¿Puedo comprar?', path },
+];
+const faq = [
+  {
+    question: '¿Por qué el 40%?',
+    answer: 'Es el límite de endeudamiento que mira la banca: entre la cuota de la hipoteca y el resto de tus pagos mensuales no deberías pasar del 40% de tu sueldo. Por encima, cuesta que aprueben el préstamo.',
+  },
+  {
+    question: '¿Esto es una aprobación de verdad?',
+    answer: 'No. Es un cálculo orientativo, un simulacro. La aprobación de verdad la da el banco con tus papeles. Lo que sí hacemos es acompañarte para conseguirla.',
+  },
+  {
+    question: 'No tengo ahorros, ¿puedo comprar igual?',
+    answer: 'A veces sí. Hay opciones de financiación 100% según el caso. Escríbenos y lo miramos contigo, sin compromiso.',
+  },
+];
+---
+
+<BaseLayout
+  title="¿Puedo comprar un piso? Calcula tu presupuesto"
+  description="Calcula hasta qué presupuesto puedes comprar con el límite del 40% de endeudamiento, y si tu préstamo saldría pre-aprobado. Sin dejar tus datos."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <section class="section calc-section">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <div class="calc-layout">
+        <div class="calc-layout__intro" data-reveal>
+          <p class="eyebrow">Tu presupuesto real</p>
+          <h1 class="calc-layout__title">Mira hasta dónde <span class="highlight">puedes llegar.</span></h1>
+          <p class="calc-layout__lead">
+            Con el límite del 40% de endeudamiento te decimos tu presupuesto máximo y si tu préstamo saldría
+            pre-aprobado. En 30 segundos.
+          </p>
+          <ul class="calc-layout__points">
+            <li><Icon name="check" class="calc-layout__check" />Sin dejar tus datos</li>
+            <li><Icon name="check" class="calc-layout__check" />Cálculo orientativo, como lo mira el banco</li>
+            <li><Icon name="check" class="calc-layout__check" />Y si quieres, lo confirmamos contigo</li>
+          </ul>
+        </div>
+        <div class="calc-layout__form simulator-card glass" data-reveal>
+          <AffordabilitySimulator client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection title="Comprar: dudas sobre la financiación" items={faq} />
+  <ContactSection />
+</BaseLayout>

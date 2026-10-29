@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
+import Steps from '../../../components/sections/Steps.astro';
+import ReformGallery from '../../../components/sections/ReformGallery.astro';
+import InstagramSection from '../../../components/sections/InstagramSection.astro';
+import ServicesGrid from '../../../components/sections/ServicesGrid.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import type { StepItem } from '../../../data/steps';
+import { breadcrumbSchema } from '../../../lib/seo';
+
+const path = '/es/reformas/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Reformas', path },
+];
+const points: StepItem[] = [
+  { title: 'Vemos el piso', text: 'Te decimos qué merece la pena tocar y qué no.', icon: 'eye' },
+  { title: 'Presupuesto claro', text: 'Por escrito y partida a partida, antes de empezar.', icon: 'shield' },
+  { title: 'Te enseñamos la obra', text: 'Vas viendo cómo avanza. El antes y el después lo contamos en Instagram.', icon: 'camera' },
+];
+---
+
+<BaseLayout
+  title="Reformas en Malgrat de Mar: Conroma en Obras"
+  description="Conroma en Obras: reformamos pisos en Malgrat de Mar y alrededores, para venderlos mejor o para entrar a vivir."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Conroma en Obras"
+    title="Este piso tiene historia. "
+    highlight="Le espera un futuro mejor."
+    lead="Le damos una segunda vida, para venderlo mejor o para entrar a vivir."
+  >
+    <a class="button button--primary button--large" href="/es/reformas/simulador/">Calcular cuánto cuesta</a>
+    <a class="button button--ghost button--large" href="/es/contacto/">Tengo un piso por reformar</a>
+  </PageHero>
+
+  <Steps eyebrow="Cómo lo hacemos" title="Una reforma sin sustos" steps={points} />
+  <ReformGallery />
+  <InstagramSection />
+  <ServicesGrid eyebrow="También" title="Otros servicios de Conroma" exclude="reformas" />
+  <ContactSection />
+</BaseLayout>

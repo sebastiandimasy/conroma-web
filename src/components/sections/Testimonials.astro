@@ -1,0 +1,25 @@
+---
+import TestimonialCarousel from '../../islands/TestimonialCarousel.tsx';
+import { testimonials } from '../../data/testimonials';
+import { site } from '../../data/site';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = testimonials.length } = Astro.props;
+const items = testimonials.slice(0, limit);
+const rating = site.googleRating;
+---
+
+<section class="section testimonials">
+  <div class="wrap">
+    <div class="section__head section__head--center" data-reveal>
+      <p class="eyebrow">Lo que dicen de nosotros</p>
+      <h2 class="section__title">Personas reales, <span class="highlight">casas con nombre.</span></h2>
+    </div>
+    <div data-reveal>
+      <TestimonialCarousel client:visible testimonials={items} ratingUrl={rating?.url} />
+    </div>
+  </div>
+</section>
