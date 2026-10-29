@@ -2156,16 +2156,40 @@
   }
 
   .home-services__figure {
-    @apply w-full;
+    @apply relative w-full overflow-hidden;
     margin: 0;
-  }
-
-  .home-services__photo {
-    @apply w-full object-cover;
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-line);
     box-shadow: var(--shadow-3);
+  }
+
+  /* Fotos apiladas: solo se ve la del servicio abierto (crossfade por opacidad). */
+  .home-services__photo {
+    @apply absolute inset-0 h-full w-full object-cover;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  /* Por defecto (y con el 1er servicio abierto) se ve la primera foto. */
+  .home-services__photo:first-child {
+    opacity: 1;
+  }
+
+  /* La foto sigue al servicio abierto en el acordeón (:has sobre el detalle n). */
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(2)[open]) .home-services__photo:first-child,
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(3)[open]) .home-services__photo:first-child,
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(4)[open]) .home-services__photo:first-child {
+    opacity: 0;
+  }
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(2)[open]) .home-services__photo:nth-child(2) {
+    opacity: 1;
+  }
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(3)[open]) .home-services__photo:nth-child(3) {
+    opacity: 1;
+  }
+  .home-services__grid:has(.home-services__accordion > details:nth-of-type(4)[open]) .home-services__photo:nth-child(4) {
+    opacity: 1;
   }
 
   @media (min-width: 60rem) {
@@ -2176,7 +2200,7 @@
     }
 
     /* La foto llena la altura de la columna del acordeón. */
-    .home-services__photo {
+    .home-services__figure {
       height: 100%;
       aspect-ratio: auto;
     }
