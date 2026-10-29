@@ -2222,6 +2222,10 @@
   .home-team__cutout {
     @apply w-full h-auto;
     max-width: 440px;
+    /* Es una foto (no recorte): mismo marco que las demás fotos de la home. */
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-3);
   }
 
   /* Reformas · galería de obras reales: retícula de fotos a sangre dentro de card. */
