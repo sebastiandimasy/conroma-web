@@ -1,5 +1,6 @@
 ---
 import Icon from '../Icon.astro';
+import Logo from '../Logo.astro';
 import { site } from '../../data/site';
 import { mainNav } from '../../data/nav';
 import { whatsappUrl } from '../../lib/links';
@@ -10,9 +11,10 @@ const year = 2026;
 <footer class="site-footer">
   <div class="wrap site-footer__grid">
     <div class="site-footer__brand">
-      <p class="site-footer__name">Conroma</p>
+      <Logo class="site-footer__logo" size={44} />
+      <p class="site-footer__name">Conroma Asesores Inmobiliarios</p>
       <p class="site-footer__claim">
-        Inmobiliaria familiar en Malgrat de Mar. Compra, venta y alquiler en el Alt Maresme.
+        Especialistas en gestión inmobiliaria y gestión de patrimonios.
       </p>
       <address class="site-footer__address">
         {site.legalName}<br />
@@ -60,6 +62,10 @@ const year = 2026;
           </a>
         </li>
       </ul>
+      <div class="site-footer__badges">
+        <img class="site-footer__badge" src="/brand/afc.svg" alt="Agents de Finques de Catalunya (AFC)" width="169" height="51" loading="lazy" />
+        <img class="site-footer__badge" src="/brand/api.svg" alt="Agente de la Propiedad Inmobiliaria (API)" width="183" height="46" loading="lazy" />
+      </div>
     </nav>
 
     <div class="site-footer__col">
@@ -117,12 +123,35 @@ const year = 2026;
     gap: 36px;
   }
 
+  .site-footer__logo {
+    display: block;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 18px;
+    color: var(--color-fixed-paper);
+  }
+
   .site-footer__name {
     margin-bottom: 12px;
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1;
+  }
+
+  /* Sellos AFC/API en chip blanco fijo (los logos son de color: necesitan fondo claro). */
+  .site-footer__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  /* Los sellos son logos blancos: van directos sobre el footer oscuro (sin chip). */
+  .site-footer__badge {
+    height: 34px;
+    width: auto;
+    opacity: 0.9;
   }
 
   .site-footer__claim {

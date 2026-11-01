@@ -1,9 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import ReelTestimonials from '../../islands/ReelTestimonials';
 import ContactForm from '../../islands/ContactForm';
-import { testimonials } from '../../data/testimonials';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import { homeFaq } from '../../data/faq';
 import HeroSearch from '../../islands/HeroSearch';
@@ -35,25 +33,16 @@ const homeServices = [
     summary: 'Conroma en Obras: le damos una segunda vida al piso antes de venderlo o de entrar a vivir.',
   },
 ];
-
-// Abanico del héroe con obras reales de Conroma (rotación, posición y entrada escalonada por tarjeta).
-const heroDeck = [
-  { src: '/img/reformas/reforma-05.jpg', rot: -22, delay: '0.5s', z: 10 },
-  { src: '/img/reformas/reforma-09.jpg', rot: -11, delay: '0.38s', z: 20 },
-  { src: '/img/reformas/reforma-02.jpg', rot: 0, delay: '0.26s', z: 30 },
-  { src: '/img/reformas/reforma-14.jpg', rot: 11, delay: '0.38s', z: 20 },
-  { src: '/img/reformas/reforma-18.jpg', rot: 22, delay: '0.5s', z: 10 },
-];
 ---
 
 <BaseLayout
   title="Inmobiliaria en Malgrat de Mar | Conroma"
-  description="Conroma Asesores es la inmobiliaria familiar de Malgrat de Mar: compra, venta, alquiler, gestión de patrimonio y reformas. Te atendemos en catalán, castellano, inglés y francés."
+  description="Conroma Asesores Inmobiliarios: especialistas en gestión inmobiliaria y gestión de patrimonios. Compra, venta, alquiler y reformas. Te atendemos en catalán, castellano, inglés y francés."
   path="/es/"
   schemas={[agentSchema(), faqSchema(homeFaq)]}
   overlay
 >
-  <section class="hero hero--deck">
+  <section class="hero">
     <div class="wrap hero__content">
       <p class="eyebrow">Donde empieza tu próxima historia</p>
       <h1 class="hero__title">Encuentra tu <em class="hero__accent">hogar</em></h1>
@@ -76,22 +65,6 @@ const heroDeck = [
             </a>
           </div>
         )
-      }
-    </div>
-    <div class="hero__deck" aria-hidden="true">
-      {
-        heroDeck.map((card, index) => (
-          <figure class="hero-card" style={`--rot:${card.rot}deg; --delay:${card.delay}; z-index:${card.z};`}>
-            <img
-              src={card.src}
-              alt=""
-              width="448"
-              height="640"
-              loading={index < 3 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-          </figure>
-        ))
       }
     </div>
   </section>
@@ -187,11 +160,12 @@ const heroDeck = [
     </div>
   </section>
 
-  <ReelTestimonials
-    client:visible
-    testimonials={testimonials.map((item) => ({ quote: item.text, author: item.author, context: item.context }))}
-    ratingUrl={rating?.url}
-  />
+  <section class="section reviews" aria-label="Reseñas de clientes en Google">
+    <div class="wrap">
+      {/* Widget Trustindex: reseñas de Google en vivo (cuenta de Conroma). */}
+      <script is:inline defer async src="https://cdn.trustindex.io/loader.js?d045063849cb67522f863d5cb82"></script>
+    </div>
+  </section>
 
   <section class="section contact" id="contacto">
     <div class="wrap contact__grid">
