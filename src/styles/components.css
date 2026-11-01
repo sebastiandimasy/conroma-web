@@ -421,6 +421,35 @@
     }
   }
 
+  /* ── Reglas de UI móvil estilo app (ESTANDAR §1) ──────────────────────
+     Teléfonos (<40rem): TODO botón de acción del contenido va a ancho completo
+     (uno por línea, etiqueta centrada) y las cabeceras de sección se centran,
+     para una alineación coherente y armónica. Header, dock móvil y pie quedan
+     fuera (no están dentro de <main>). */
+  @media (max-width: 39.99rem) {
+    main .button {
+      width: 100%;
+    }
+
+    /* Cabeceras de sección a la IZQUIERDA de forma uniforme (las centradas se alinean
+       a la izquierda en móvil). El héroe mantiene su centrado como elemento distintivo. */
+    .section__head--center {
+      align-items: flex-start;
+      text-align: left;
+      max-width: none;
+      margin-inline: 0;
+    }
+  }
+
+  /* Móvil y tablet (<60rem): un solo tamaño de botón, ninguno más grande que otro. */
+  @media (max-width: 59.99rem) {
+    .button--large {
+      min-height: 48px;
+      padding-inline: 22px;
+      font-size: var(--text-small);
+    }
+  }
+
   .button__icon {
     width: 20px;
     height: 20px;

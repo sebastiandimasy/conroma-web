@@ -149,6 +149,21 @@ El móvil es el **97%** del tráfico. Se verifica a 390px antes de dar nada por 
 - Cero scroll horizontal.
 - Comprobación: `document.documentElement.scrollWidth === clientWidth` a 390px.
 
+#### Reglas de UI móvil (estilo app) — una regla general, no caso por caso
+
+- **Botones de acción a ancho completo.** En teléfonos (`<40rem`), todo `.button` dentro de
+  `<main>` ocupa el ancho del contenido (uno por línea, etiqueta centrada). Header, dock móvil
+  y pie quedan fuera. Implementado en `components.css` (`main .button { width: 100% }`), no con
+  clases por botón. Los grupos de 2 CTAs (p. ej. WhatsApp + Llamar) se apilan a ancho completo.
+- **Un solo tamaño de botón.** Ninguno más grande que otro: `.button--large` se normaliza al
+  tamaño base en `<60rem`.
+- **Jerarquía de CTAs.** Primario = amarillo (`button--primary`), texto/iconos en tinta oscura
+  (contraste correcto, incluido el icono de WhatsApp). Secundario = contorno (`button--ghost`).
+- **Alineación coherente.** El **héroe** se centra (elemento distintivo); **todas las demás
+  cabeceras de sección** (eyebrow + título + lead) van a la **izquierda** de forma uniforme en
+  móvil (las `section__head--center` se alinean a la izquierda en `<40rem`). Las cifras del
+  contador se presentan centradas (showcase).
+
 ---
 
 ## 2. Redacción
