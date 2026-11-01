@@ -5,44 +5,43 @@
      surface-2/on-surface-2 · accent-wash/on-accent-wash · positive/on-positive ·
      negative/on-negative · whatsapp/on-whatsapp. Los --color-fixed-* y
      --color-on-fixed-* son pares que NO se invierten en modo oscuro. */
-  --color-accent: #f4ce4b;
-  --color-accent-2: #f9de77;
-  --color-accent-deep: #786012;
-  --color-accent-wash: #fcf3cf;
-  --color-on-accent: #161615;
-  --color-on-ink: #ffffff;
-  --color-on-canvas: #161615;
-  --color-on-surface: #161615;
-  --color-on-surface-2: #161615;
-  --color-on-accent-wash: #786012;
-  --color-on-positive: #ffffff;
-  --color-on-negative: #ffffff;
-  --color-on-whatsapp: #0a2e1a;
+  /* Paleta en escala Tailwind (oklch): acento = amber, neutros = stone. */
+  --color-accent: oklch(0.879 0.169 91.605); /* amber-300 */
+  --color-accent-2: oklch(0.924 0.12 95.746); /* amber-200 */
+  --color-accent-deep: oklch(0.473 0.137 46.201); /* amber-800 */
+  --color-accent-wash: oklch(0.962 0.059 95.617); /* amber-100 */
+  --color-on-accent: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-on-ink: oklch(0.985 0.001 106.423); /* stone-50 */
+  --color-on-canvas: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-on-surface: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-on-surface-2: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-on-accent-wash: oklch(0.473 0.137 46.201); /* amber-800 */
+  --color-on-positive: oklch(0.216 0.006 56.043); /* stone-900 (texto oscuro sobre emerald-500) */
+  --color-on-negative: oklch(0.216 0.006 56.043); /* stone-900 (texto oscuro sobre red-500) */
+  --color-on-whatsapp: oklch(0.216 0.006 56.043); /* stone-900 (texto oscuro sobre el verde claro) */
 
-  /* Pares fijos: para lo que se pinta sobre una foto o sobre un color que
-     no cambia con el tema. Estos NO se invierten en modo oscuro. */
-  --color-fixed-ink: #161615;
-  --color-fixed-paper: #ffffff;
-  --color-fixed-accent-deep: #786012;
-  --color-fixed-wash: #fbe8a6;
-  --color-on-fixed-wash: #2b2410;
-  /* Texto y línea sobre fondo fijo oscuro (--color-fixed-ink): no flipan con el tema. */
-  --color-on-fixed-ink: #f5f5ef;
-  --color-on-fixed-ink-muted: #b6b6ad;
-  --color-on-fixed-ink-faint: #9a9a91;
-  --color-fixed-line: #32322d;
-  --color-fixed-backdrop: #0b0b0a; /* negro de visor/lightbox de fotos */
-  --color-ink: #161615;
-  --color-ink-2: #4c4c47;
-  --color-ink-3: #6b6b64;
-  --color-canvas: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-2: #f0f0ea;
-  --color-line: #e6e6df;
-  --color-dot: rgb(22 22 21 / 0.05); /* puntos de fondo decorativos */
-  --color-positive: #1c6b43;
-  --color-negative: #a3261d;
-  --color-whatsapp: #25d366;
+  /* Pares fijos (no invierten en oscuro): foto/lightbox. Stone + amber. */
+  --color-fixed-ink: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-fixed-paper: oklch(0.985 0.001 106.423); /* stone-50 */
+  --color-fixed-accent-deep: oklch(0.473 0.137 46.201); /* amber-800 */
+  --color-fixed-wash: oklch(0.924 0.12 95.746); /* amber-200 */
+  --color-on-fixed-wash: oklch(0.374 0.01 67.558); /* stone-700 */
+  --color-on-fixed-ink: oklch(0.97 0.001 106.424); /* stone-100 */
+  --color-on-fixed-ink-muted: oklch(0.709 0.01 56.259); /* stone-400 */
+  --color-on-fixed-ink-faint: oklch(0.553 0.013 58.071); /* stone-500 */
+  --color-fixed-line: oklch(0.268 0.007 34.298); /* stone-800 */
+  --color-fixed-backdrop: oklch(0.147 0.004 49.25); /* stone-950 */
+  --color-ink: oklch(0.216 0.006 56.043); /* stone-900 */
+  --color-ink-2: oklch(0.444 0.011 73.639); /* stone-600 */
+  --color-ink-3: oklch(0.553 0.013 58.071); /* stone-500 */
+  --color-canvas: oklch(1 0 0); /* white */
+  --color-surface: oklch(1 0 0); /* white */
+  --color-surface-2: oklch(0.97 0.001 106.424); /* stone-100 */
+  --color-line: oklch(0.923 0.003 48.717); /* stone-200 */
+  --color-dot: rgb(28 25 23 / 0.05); /* puntos de fondo decorativos (stone) */
+  --color-positive: oklch(76.5% 0.177 163.223); /* Tailwind emerald-500 */
+  --color-negative: oklch(63.7% 0.237 25.331); /* Tailwind red-500 */
+  --color-whatsapp: oklch(0.723 0.219 149.579); /* Tailwind green-500 (≈ WhatsApp) */
 
   --font-display: "Helvetica Neue", Helvetica, "Hanken Grotesk Variable", Arial, sans-serif;
   --font-body: "Hanken Grotesk Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -153,25 +152,25 @@
 }
 
 :root[data-theme="dark"] {
-  --color-ink: #f5f5ef;
-  --color-ink-2: #b6b6ad;
-  --color-ink-3: #9a9a91;
-  --color-canvas: #121212;
-  --color-surface: #1a1a17;
-  --color-surface-2: #161613;
-  --color-line: #2c2c26;
+  --color-ink: oklch(0.97 0.001 106.424);
+  --color-ink-2: oklch(0.709 0.01 56.259);
+  --color-ink-3: oklch(0.553 0.013 58.071);
+  --color-canvas: oklch(0.147 0.004 49.25);
+  --color-surface: oklch(0.216 0.006 56.043);
+  --color-surface-2: oklch(0.185 0.005 56.043);
+  --color-line: oklch(0.268 0.007 34.298);
   --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
-  --color-accent-deep: #f0d37a;
-  --color-accent-wash: #2a2410;
-  --color-positive: #6fcf97;
-  --color-negative: #ff8a80;
-  --color-on-ink: #121212;
-  --color-on-canvas: #f5f5ef;
-  --color-on-surface: #f5f5ef;
-  --color-on-surface-2: #f5f5ef;
-  --color-on-accent-wash: #f0d37a;
-  --color-on-positive: #121212;
-  --color-on-negative: #121212;
+  --color-accent-deep: oklch(0.879 0.169 91.605);
+  --color-accent-wash: oklch(0.27 0.04 75);
+  --color-positive: oklch(84.5% 0.143 164.978); /* Tailwind emerald-400 (más claro para fondo oscuro) */
+  --color-negative: oklch(70.4% 0.191 22.216); /* Tailwind red-400 */
+  --color-on-ink: oklch(0.147 0.004 49.25);
+  --color-on-canvas: oklch(0.97 0.001 106.424);
+  --color-on-surface: oklch(0.97 0.001 106.424);
+  --color-on-surface-2: oklch(0.97 0.001 106.424);
+  --color-on-accent-wash: oklch(0.879 0.169 91.605);
+  --color-on-positive: oklch(0.147 0.004 49.25);
+  --color-on-negative: oklch(0.147 0.004 49.25);
 
   --glass-fill-1: rgb(22 22 18 / 0.45);
   --glass-fill-2: rgb(22 22 18 / 0.58);
@@ -188,31 +187,31 @@
   /* dark: negro carbón + amarillo (igual que el @media; aquí para el toggle manual en SO claro). */
   --gradient-hero:
     radial-gradient(72% 90% at 80% 0%, #2a2208 0%, transparent 55%),
-    linear-gradient(135deg, #121212 0%, #14110a 55%, #1d1708 100%);
+    linear-gradient(135deg, oklch(0.147 0.004 49.25) 0%, #14110a 55%, #1d1708 100%);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-ink: #f5f5ef;
-    --color-ink-2: #b6b6ad;
-    --color-ink-3: #9a9a91;
-    --color-canvas: #121212;
-    --color-surface: #1a1a17;
-    --color-surface-2: #161613;
-    --color-line: #2c2c26;
+    --color-ink: oklch(0.97 0.001 106.424);
+    --color-ink-2: oklch(0.709 0.01 56.259);
+    --color-ink-3: oklch(0.553 0.013 58.071);
+    --color-canvas: oklch(0.147 0.004 49.25);
+    --color-surface: oklch(0.216 0.006 56.043);
+    --color-surface-2: oklch(0.185 0.005 56.043);
+    --color-line: oklch(0.268 0.007 34.298);
     --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
-    --color-accent-deep: #f0d37a;
-    --color-accent-wash: #2a2410;
-    --color-positive: #6fcf97;
-    --color-negative: #ff8a80;
-    --color-on-ink: #121212;
-    --color-on-canvas: #f5f5ef;
-    --color-on-surface: #f5f5ef;
-    --color-on-surface-2: #f5f5ef;
-    --color-on-accent-wash: #f0d37a;
-    --color-on-positive: #121212;
-    --color-on-negative: #121212;
+    --color-accent-deep: oklch(0.879 0.169 91.605);
+    --color-accent-wash: oklch(0.27 0.04 75);
+    --color-positive: oklch(84.5% 0.143 164.978); /* Tailwind emerald-400 (más claro para fondo oscuro) */
+    --color-negative: oklch(70.4% 0.191 22.216); /* Tailwind red-400 */
+    --color-on-ink: oklch(0.147 0.004 49.25);
+    --color-on-canvas: oklch(0.97 0.001 106.424);
+    --color-on-surface: oklch(0.97 0.001 106.424);
+    --color-on-surface-2: oklch(0.97 0.001 106.424);
+    --color-on-accent-wash: oklch(0.879 0.169 91.605);
+    --color-on-positive: oklch(0.147 0.004 49.25);
+    --color-on-negative: oklch(0.147 0.004 49.25);
 
     --glass-fill-1: rgb(22 22 18 / 0.45);
     --glass-fill-2: rgb(22 22 18 / 0.58);
@@ -229,7 +228,7 @@
     /* dark: negro carbón + amarillo. */
     --gradient-hero:
       radial-gradient(72% 90% at 80% 0%, #2a2208 0%, transparent 55%),
-      linear-gradient(135deg, #121212 0%, #14110a 55%, #1d1708 100%);
+      linear-gradient(135deg, oklch(0.147 0.004 49.25) 0%, #14110a 55%, #1d1708 100%);
     color-scheme: dark;
   }
 }

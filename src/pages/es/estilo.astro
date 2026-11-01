@@ -8,15 +8,36 @@ import MediaCard from '../../components/MediaCard.astro';
 
 const theme = css.slice(css.indexOf('@theme'), css.indexOf(':root {'));
 const darkBlock = css.slice(css.indexOf(':root[data-theme="dark"]'), css.indexOf('@media (prefers-color-scheme: dark)'));
-const hexes = (src: string) => Object.fromEntries([...src.matchAll(/--color-([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
-const light = hexes(theme);
-const dark = { ...light, ...hexes(darkBlock) };
-const lum = (h: string) => {
-  const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+const read = (src: string) =>
+  Object.fromEntries([...src.matchAll(/--color-([\w-]+):\s*(#[0-9a-f]{6}|oklch\([^)]+\))/gi)].map((m) => [m[1], m[2]]));
+const light = read(theme);
+const dark = { ...light, ...read(darkBlock) };
+const toLin = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+const lumHex = (h: string) => {
+  const c = [1, 3, 5].map((i) => toLin(parseInt(h.slice(i, i + 2), 16) / 255));
   return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
 };
+// oklch(L C H) → luminancia relativa WCAG (OKLab → sRGB lineal → Y).
+const lumOklch = (s: string) => {
+  const [Lr, C, H] = s.slice(s.indexOf('(') + 1, s.indexOf(')')).trim().split(/[\s,]+/);
+  const L = parseFloat(Lr) / (Lr.includes('%') ? 100 : 1);
+  const hr = (parseFloat(H) * Math.PI) / 180;
+  const a = parseFloat(C) * Math.cos(hr);
+  const b = parseFloat(C) * Math.sin(hr);
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const k = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const R = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * k;
+  const G = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * k;
+  const B = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * k;
+  return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+};
+const lum = (v?: string) => (!v ? null : v[0] === '#' ? lumHex(v) : lumOklch(v));
 const ratio = (p: Record<string, string>, a: string, b: string) => {
-  const [x, y] = [lum(p[a]), lum(p[b])].sort((m, n) => n - m);
+  const la = lum(p[a]);
+  const lb = lum(p[b]);
+  if (la == null || lb == null) return '—';
+  const [x, y] = [la, lb].sort((m, n) => n - m);
   return ((x + 0.05) / (y + 0.05)).toFixed(2);
 };
 const pairs = ['accent', 'ink', 'canvas', 'surface', 'surface-2', 'accent-wash', 'positive', 'negative', 'whatsapp', 'fixed-ink'].map((n) => ({
