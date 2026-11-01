@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Button } from '@heroui/react';
 import { cookieConsent, hydrateStore, setConsent } from '../lib/store';
 
 export default function CookieNotice() {
@@ -24,23 +23,30 @@ export default function CookieNotice() {
     <AnimatePresence>
       {visible && (
         <motion.aside
-          className="cookie-notice glass glass--thick"
+          className="cookie-notice"
+          role="dialog"
           aria-label="Aviso de cookies"
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
           transition={{ type: 'spring', duration: 0.45, bounce: 0 }}
         >
-          <p className="cookie-notice__text">
-            <a href="/es/privacidad/">Cookies</a>: tú decides.
-          </p>
+          <div className="cookie-notice__body">
+            <p className="cookie-notice__title">🍪 Usamos cookies</p>
+            <p className="cookie-notice__text">
+              Usamos cookies propias y de terceros para <strong>medir las visitas</strong> (Google
+              Analytics) y mejorar la web. Las de medición solo se activan si las aceptas. Puedes
+              aceptarlas todas o rechazar las no esenciales. Más información en nuestra{' '}
+              <a href="/es/cookies/">política de cookies</a>.
+            </p>
+          </div>
           <div className="cookie-notice__actions">
-            <Button variant="ghost" className="button--small" onPress={() => setConsent('rechazado')}>
+            <button type="button" className="button button--ghost" onClick={() => setConsent('rechazado')}>
               Rechazar
-            </Button>
-            <Button variant="ghost" className="button--small" onPress={() => setConsent('aceptado')}>
+            </button>
+            <button type="button" className="button button--primary" onClick={() => setConsent('aceptado')}>
               Aceptar
-            </Button>
+            </button>
           </div>
         </motion.aside>
       )}
