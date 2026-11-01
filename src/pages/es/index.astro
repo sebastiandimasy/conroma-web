@@ -128,7 +128,7 @@ const homeServices = [
           Contamos con: Consultores inmobiliarios · Gestores de Patrimonio · Asesores Jurídicos
         </p>
         <div class="story__actions">
-          <Button variant="ghost" size="large" href="/es/equipo/">Conócenos</Button>
+          <Button variant="ghost" size="large" class="button--block-mobile" href="/es/equipo/">Conócenos</Button>
         </div>
       </div>
     </div>
@@ -211,7 +211,7 @@ const homeServices = [
           tenemos un asesor que puede ayudarte y encargarse personalmente de tu consulta.
         </p>
         <div class="contact__channels">
-          <Button variant="ghost" start href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
+          <Button variant="primary" start href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
             <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
             WhatsApp · {site.phoneDisplay}
           </Button>

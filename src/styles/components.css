@@ -399,6 +399,11 @@
     color: var(--color-whatsapp);
   }
 
+  /* Sobre el botón primario (amarillo) el icono de WhatsApp va en tinta oscura: contraste correcto. */
+  .button--primary .button__icon--whatsapp {
+    color: var(--color-on-accent);
+  }
+
   .button--small {
     min-height: 44px;
     padding-inline: 18px;
@@ -407,6 +412,13 @@
 
   .button--block {
     width: 100%;
+  }
+
+  /* Botón único a ancho completo SOLO en móvil (CTAs solitarios). */
+  @media (max-width: 59.99rem) {
+    .button--block-mobile {
+      width: 100%;
+    }
   }
 
   .button__icon {
