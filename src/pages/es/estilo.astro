@@ -1,0 +1,104 @@
+---
+// Guía de estilo viva (interna, noindex). Los ratios se calculan leyendo tokens.css: ningún hex aquí.
+import css from '../../styles/tokens.css?raw';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Button from '../../components/Button.astro';
+import MediaCard from '../../components/MediaCard.astro';
+
+const theme = css.slice(css.indexOf('@theme'), css.indexOf(':root {'));
+const darkBlock = css.slice(css.indexOf(':root[data-theme="dark"]'), css.indexOf('@media (prefers-color-scheme: dark)'));
+const hexes = (src: string) => Object.fromEntries([...src.matchAll(/--color-([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
+const light = hexes(theme);
+const dark = { ...light, ...hexes(darkBlock) };
+const lum = (h: string) => {
+  const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+const ratio = (p: Record<string, string>, a: string, b: string) => {
+  const [x, y] = [lum(p[a]), lum(p[b])].sort((m, n) => n - m);
+  return ((x + 0.05) / (y + 0.05)).toFixed(2);
+};
+const pairs = ['accent', 'ink', 'canvas', 'surface', 'surface-2', 'accent-wash', 'positive', 'negative', 'whatsapp', 'fixed-ink'].map((n) => ({
+  n,
+  on: `on-${n}`,
+  l: ratio(light, n, `on-${n}`),
+  d: ratio(dark, n, `on-${n}`),
+}));
+const radii = ['xs', 'sm', 'md', 'lg', 'xl', 'pill'];
+const sizes = [['small', 'Pequeño'], ['', 'Normal'], ['large', 'Grande']] as const;
+const variants = ['primary', 'ghost', 'ink'] as const;
+---
+
+<BaseLayout title="Guía de estilo" description="Guía de estilo interna del sistema de diseño." path="/es/estilo/" noindex>
+  <Section eyebrow="Interno · noindex" lead="Prueba viva del design system. Cambia el tema del sistema para ver el modo oscuro.">
+    <h1 slot="title">Guía de estilo</h1>
+
+    <h2 class="sg-h">Paleta · pares fondo/texto</h2>
+    <p class="sg-note">Ratio WCAG calculado desde tokens.css (claro / oscuro). Texto normal exige 4.5.</p>
+    <div class="sg-grid">
+      {pairs.map((p) => (
+        <div class="sg-swatch" style={`background:var(--color-${p.n});color:var(--color-${p.on})`}>
+          <strong>--color-{p.n}</strong>
+          <span>on: --color-{p.on}</span>
+          <span>claro {p.l}:1 · oscuro {p.d}:1</span>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="sg-h">Tipografía</h2>
+    <div class="sg-stack">
+      <p style="font-family:var(--font-display)">--font-display · Conroma Asesores en Malgrat</p>
+      <p style="font-family:var(--font-body)">--font-body · Conroma Asesores en Malgrat</p>
+      <p style="font-family:var(--font-accent);font-style:italic">--font-accent · Conroma Asesores en Malgrat</p>
+      <p style="font-family:var(--font-script)">--font-script · Conroma Asesores</p>
+      <p class="sg-h1">Titular h1</p>
+      <p class="sg-h2">Titular h2</p>
+      <p class="sg-h3">Titular h3</p>
+    </div>
+
+    <h2 class="sg-h">Radios y sombras</h2>
+    <div class="sg-grid sg-grid--sm">
+      {radii.map((r) => <div class="sg-box" style={`border-radius:var(--radius-${r})`}>--radius-{r}</div>)}
+      {[1, 2, 3].map((s) => <div class="sg-box" style={`box-shadow:var(--shadow-${s})`}>--shadow-{s}</div>)}
+    </div>
+
+    <h2 class="sg-h">Button</h2>
+    <p class="sg-note">Hover, activo y foco: interactúa con ellos. Disabled es un button con atributo disabled.</p>
+    {variants.map((v) => (
+      <div class="sg-row">
+        {sizes.map(([s, label]) => <Button variant={v} size={s || undefined} href="#estilo">{v} · {label}</Button>)}
+        <Button variant={v} type="button" disabled>{v} · disabled</Button>
+      </div>
+    ))}
+
+    <h2 class="sg-h">Section</h2>
+    <p class="sg-note">Esta misma página usa Section arriba (eyebrow + title + lead). Ejemplo centrado:</p>
+    <Section center eyebrow="Eyebrow" lead="Texto de apoyo (lead) bajo el título." reveal={false}>
+      <span slot="title">Título de sección</span>
+    </Section>
+
+    <h2 class="sg-h">MediaCard</h2>
+    <div class="sg-media">
+      <MediaCard src="/img/reformas/reforma-01.jpg" alt="Reforma de ejemplo" width={800} height={600}>
+        <h3>Título de la tarjeta</h3>
+        <p>Cuerpo de la tarjeta con foto a sangre arriba.</p>
+      </MediaCard>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .sg-h { margin-block: var(--space-10) var(--space-3); }
+  .sg-note { margin-bottom: var(--space-4); color: var(--color-ink-2); }
+  .sg-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+  .sg-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(100%, 120px), 1fr)); }
+  .sg-swatch { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-sm); font-size: var(--text-caption); overflow-wrap: anywhere; }
+  .sg-box { padding: var(--space-6) var(--space-3); background: var(--color-surface); color: var(--color-on-surface); border: 1px solid var(--color-line); font-size: var(--text-caption); overflow-wrap: anywhere; }
+  .sg-stack > p { margin-block: var(--space-2); font-size: var(--text-title); overflow-wrap: anywhere; }
+  .sg-stack > .sg-h1 { font-size: var(--text-h1); line-height: 1.05; }
+  .sg-stack > .sg-h2 { font-size: var(--text-h2); line-height: 1.1; }
+  .sg-stack > .sg-h3 { font-size: var(--text-h3); }
+  .sg-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+  .sg-media { max-width: 360px; }
+</style>
