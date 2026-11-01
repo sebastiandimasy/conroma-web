@@ -608,8 +608,13 @@
       grid-template-columns: 1fr;
       gap: 24px;
     }
-    /* Las cifras quedan centradas en móvil (showcase, ESTANDAR §1): la cabecera se
-       alinea a la izquierda, pero el contador es el elemento distintivo centrado. */
+
+    /* Cifras a la izquierda en móvil: coherentes con la cabecera (pedido del usuario).
+       Especificidad > base .stat para ganar al text-center de la clase base. */
+    .stats .stat {
+      align-items: flex-start;
+      text-align: left;
+    }
   }
 
   .stat {

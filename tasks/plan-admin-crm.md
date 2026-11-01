@@ -1,336 +1,249 @@
 # Plan — Panel de administración + CRM (Conroma Asesores)
 
-> Fecha: 2026-10-29 · Estado: propuesta para decidir, aún sin código.
-> Alcance: dashboard para que los comerciales (1) den de alta viviendas con ficha
-> completa + ubicación por círculo 30–70 m, y (2) gestionen citas con disparo de
-> reseña Google post-visita (WhatsApp + email).
+> Fecha: 2026-10-29 · Rev. 2026-11-01 · Estado: propuesta para decidir, aún sin código.
+> Decisiones del usuario (2026-11-01):
+> - **Alta de pisos PROPIA** (NO se usa Habitatsoft como fuente): el panel construye el alta
+>   completa de viviendas y las fichas viven en **nuestra** base de datos.
+> - Se añade **módulo de Leads** (captura desde la web + pipeline + clasificación) como parte
+>   de primera clase, no como extra de v2.
 >
-> Respeta [[orden-de-trabajo]]: la web pública (contenido + migración) va **antes**;
-> esto arranca después. Este documento es el brainstorm que pedía
-> `~/.claude/projects/-Users-sebastian-conroma-web/memory/admin-crm-dashboard.md`.
+> Alcance: dashboard para que los comerciales (1) **den de alta y gestionen las viviendas**
+> con ficha completa + fotos + ubicación por círculo 30–70 m; (2) **capturen y gestionen
+> leads** (contacto, estado, recolección, clasificación); (3) gestionen **citas** con disparo
+> de **reseña de Google** post-visita (WhatsApp + email).
+> Respeta [[orden-de-trabajo]]: la web pública (contenido + migración) va **antes**; esto
+> arranca después. Memoria: [[admin-crm-dashboard]].
 
 ---
 
-## 0. TL;DR (la recomendación en 6 líneas)
+## 0. TL;DR
 
-- **Integrar, no reconstruir el alta de pisos.** Conroma ya trabaja con **Habitatsoft**
-  (código de agencia **527526**: las fotos en `src/data/property-photos.json` salen de su
-  CDN `fotoshs.imghs.net/.../527526/...`, y ya existe el parser `src/lib/habitatsoft.ts`).
-  El panel NO debe duplicar el alta de inmuebles: Habitatsoft es la fuente de verdad del
-  inventario. El panel solo **añade lo que Habitatsoft no da**: el radio del círculo y las
-  notas editoriales (`likes`/`watchOut`), y gestiona el **CRM de citas + reseñas**, que es
-  lo que de verdad no existe hoy.
-- **Arquitectura: no montar backend aparte.** El sitio ya se despliega como **Cloudflare
-  Worker** (`adapter: cloudflare()` en `astro.config.mjs`, `wrangler.jsonc`). Se añaden
-  **rutas de API de Astro** (`prerender = false`) + **D1** (citas/clientes/overrides) +
-  **R2** (fotos propias, si las hubiera) sobre el mismo proyecto. Cero servicios nuevos.
-- **3 preguntas que bloquean el arranque** (detalle en §10): (1) ¿tenéis el **feed/URL de
-  Enlace Web 2.0** de Habitatsoft y permite escritura o solo lectura?; (2) ¿WhatsApp
-  **API Cloud** (automático, de pago, alta Meta) o **wa.me semiautomático** (gratis, un
-  clic del comercial)?; (3) ¿el disparo de reseña lo hace **este proyecto** o se delega al
-  piloto **Fidelización NFC** (PHP+SQLite Calipso) ya en marcha?
+- **Construimos el alta de pisos propia.** Al descartar Habitatsoft, Conroma pasa a tener su
+  **propia fuente de verdad del inventario** en **Cloudflare D1**, con fotos en **R2**. El
+  panel es, de hecho, un mini-PMS inmobiliario: formulario de ficha + galería + geo/radio.
+  La costura `getListings()/getListing()` (`src/data/properties.ts`) ya está pensada para
+  cambiar la fuente: pasa de leer el JSON de Excel a leer **D1** — sin tocar las páginas.
+- **No montar backend aparte.** El sitio ya se despliega como **Cloudflare Worker**
+  (`adapter: cloudflare()`, `wrangler.jsonc`). Se añaden **rutas API de Astro**
+  (`prerender = false`) + **D1** (pisos, leads, citas, clientes) + **R2** (fotos) + **KV**
+  (sesión/caché) sobre el mismo proyecto. Cero servicios nuevos.
+- **Tres módulos:** (A) Inventario de pisos, (B) **Leads**, (C) Citas + reseñas. Fluyen en
+  cadena: **lead → cita → reseña**.
+- **Lo que de verdad hay que decidir antes (Fase 0, §10):** dónde viven/validan las fotos
+  (R2 + límites), auth de comerciales, proveedor de email, WhatsApp (wa.me vs API Cloud), y
+  si la web pública se publica por **rebuild** o pasa a **ficha dinámica**.
 
 ---
 
 ## 1. Objetivo y alcance
 
-### Qué resuelve
-Dar a los comerciales una herramienta propia para (a) tener fichas de piso completas en la
-web pública con ubicación aproximada controlada, y (b) no perder citas ni reseñas: hoy las
-reseñas de Google se muestran en carrusel (`src/islands/TestimonialCarousel.tsx`) pero
-**nunca se piden**; el disparo post-visita cierra ese bucle.
-
 ### Qué SÍ entra en v1 (MVP)
-- Login de comerciales (pocos usuarios).
-- Lista de pisos **leída del feed Habitatsoft**, con un panel para editar **solo los campos
-  que el feed no cubre**: centro del mapa + **radio 30–70 m**, y notas `likes`/`watchOut`.
-- CRM de citas: crear cita (piso + cliente + fecha/hora + comercial), estados
-  **pendiente → realizada / no-show / cancelada**, vista **calendario** y vista lista.
-- Al marcar **realizada**: disparo de **WhatsApp + email** al cliente pidiendo valoración
-  del servicio + reseña de Google (con el `googleRating.url` de `src/data/site.ts`).
-- Registro de "reseña pedida / abierta" para medir el bucle.
+- **Auth de comerciales** (pocos usuarios; admin vs. comercial).
+- **Alta/edición de piso completa** (módulo A): todos los campos de la ficha + **subida de
+  fotos a R2** + ubicación (centro del mapa + **radio 30–70 m**). Publica a la web pública.
+- **Leads** (módulo B): **captura automática desde la web** (formulario de contacto y CTAs de
+  WhatsApp registran el lead), lista/bandeja, **pipeline de estados**, **clasificación**
+  (intención, zona, presupuesto, origen, comercial), e **historial de contacto** por lead.
+- **Citas** (módulo C): crear cita (piso + lead/cliente + fecha/hora + comercial), estados
+  pendiente → realizada / no-show / cancelada, **calendario** + lista. Un lead se convierte en
+  cita.
+- **Disparo post-visita:** al marcar la cita "realizada" y con consentimiento → **WhatsApp +
+  email** pidiendo valoración + reseña de Google. Registro para medir el bucle.
 
-### Qué NO entra en v1 (para no sobre-construir — ponytail)
-- Alta de pisos desde cero con subida masiva de fotos (lo hace Habitatsoft; ver §2).
-- Portal del cliente, firma de documentos, facturación, pipeline de leads completo.
-- Multi-idioma del panel (los comerciales trabajan en es/ca).
-- App móvil nativa (el panel es web responsive; móvil ~97% del tráfico → [[validar-en-movil]]).
-- Sincronización bidireccional con Habitatsoft (solo lectura del feed en v1; ver riesgos).
-
----
-
-## 2. Decisión clave: integrar con Habitatsoft vs. construir alta propia
-
-**Recomendación: INTEGRAR (leer el feed Habitatsoft). No reconstruir el alta de pisos.**
-
-### Evidencia en el repo de que Habitatsoft ya es la fuente real
-- `src/lib/habitatsoft.ts`: parser completo del feed **"Enlace Web 2.0" (v1.7)**
-  `<WEB><Inmuebles><Inmueble>` → `Property`, incluyendo fotos (`Medias/Fotos/Foto`),
-  geo (`Latitud`/`Longitud`) y textos por idioma. Hoy está **definido pero sin cablear**
-  (nadie importa `parseHabitatsoftXml`): es el "enchufe" que el proyecto dejó preparado.
-- `src/data/property-photos.json`: las URLs de fotos reales ya vienen del **CDN de
-  Habitatsoft** (`fotoshs.imghs.net/3xl//527526/...`), código de agencia **527526**.
-- `src/data/properties.ts` lo dice explícito en comentario: *"el día que llegue el feed de
-  Habitatsoft, solo cambia esta constante `source` (y un parser XML→Property), sin tocar
-  páginas"*. La costura `getListings()/getListing()` ya está pensada para eso.
-- Hoy el inventario es un **volcado de Excel** (`scripts/build_properties.py` →
-  `properties.real.json`, 126 pisos) **+ scrape de fotos** — un parche temporal, no la
-  fuente de verdad.
-
-### Razonamiento build-vs-integrate
-| Criterio | Integrar feed Habitatsoft | Reconstruir alta en el panel |
-|---|---|---|
-| Fuente única de verdad | Sí (Habitatsoft ya la tiene) | Se duplica → dos verdades que divergen |
-| Fotos/descripciones/geo | Ya vienen en el feed | Habría que re-subir todo a R2 |
-| Coste de construcción | Bajo (parser ya hecho) | Alto (formulario + subida fotos + validación) |
-| Mantenimiento | Bajo; el comercial sigue usando Habitatsoft | Doble trabajo del comercial (alta en 2 sitios) |
-| Riesgo | Depender del formato/URL del feed | Reinventar un PMS inmobiliario |
-
-**Conclusión:** el comercial da de alta el piso **en Habitatsoft como ya hace**. El panel
-Conroma **lee** ese feed y solo guarda, por referencia de piso, un pequeño "override"
-(radio del círculo + `likes`/`watchOut`), que la costura `properties.ts` fusiona con el feed.
-Eso evita el componente más caro (alta + fotos) y mantiene una sola verdad del inventario.
-
-> **Suposición a confirmar (§10):** que Conroma efectivamente gestiona su cartera en
-> Habitatsoft y puede obtener la URL del feed Enlace Web 2.0. Si NO usaran Habitatsoft como
-> gestor, cambia todo: habría que construir alta propia y el presupuesto se multiplica.
+### Qué NO entra en v1 (ponytail)
+- Portal del cliente, firma de documentos, facturación.
+- Multi-idioma del panel (comerciales trabajan es/ca).
+- App móvil nativa (panel web responsive; móvil ~97% → [[validar-en-movil]]).
+- Automatización desatendida de WhatsApp (API Cloud) — se empieza con wa.me (§6).
+- Importación masiva / sincronización con un PMS externo (no hay Habitatsoft).
 
 ---
 
-## 3. Arquitectura (ecosistema Cloudflare actual)
+## 2. Decisión clave (revisada): ALTA PROPIA del inventario
 
-**Hecho de partida (verificado en el repo):** el sitio **no es "estático a pelo"**: usa
-`adapter: cloudflare()` (`astro.config.mjs`) y se despliega como **Cloudflare Worker**
-(`wrangler.jsonc`, `main: @astrojs/cloudflare/entrypoints/server`, binding `ASSETS` → `./dist`).
-No hay `output` forzado → por defecto las páginas se **prerenderizan estáticas**, pero el
-Worker **puede servir rutas on-demand** marcándolas `export const prerender = false`. Hoy no
-hay ninguna ruta de API ni binding de datos (solo `ASSETS`). **Es decir: la capa dinámica ya
-está medio montada; falta encenderla.**
+**El usuario descartó Habitatsoft → el panel construye y posee el inventario.** Implicaciones:
 
-### Opción A (RECOMENDADA) — Todo en el mismo Worker de Astro
-- El panel vive en `/es/admin/...` como páginas Astro + islas React, `prerender = false`.
-- La API vive en rutas Astro `src/pages/api/*.ts` (`export const POST/GET`), también dinámicas.
-- Datos en **D1** (SQLite de Cloudflare): citas, clientes, comerciales, overrides de piso.
-- Fotos/adjuntos propios en **R2** (solo si el comercial sube algo que Habitatsoft no tiene;
-  en v1 probablemente ni hace falta porque las fotos vienen del CDN de Habitatsoft).
-- **KV** para sesión/caché del feed Habitatsoft (TTL corto).
-- La web pública consume el inventario como hoy vía `getListings()`; el feed se cachea y los
-  overrides se leen de D1 en build (o en runtime si la ficha pasa a dinámica).
-- **Trade-off:** un único despliegue, una sola auth, bindings en el `wrangler.jsonc` que ya
-  existe. Mezcla web pública de marketing con panel interno (mitigable: `/admin` detrás de
-  auth, `noindex`, y ya excluible del sitemap como se hace con `hiddenPaths`).
-- **Por qué gana:** es la de menos piezas nuevas. Reutiliza adapter, wrangler, costura de
-  inventario y la "espina de conversión" ([[espina-conversion]]) sin duplicar nada.
+- El inventario deja de leerse de un feed; vive en **D1** (tabla `property`) + fotos en **R2**.
+- La costura `getListings()/getListing()` cambia su `source`: hoy fusiona
+  `properties.real.json` (volcado de Excel) + `property-photos.json`; pasa a **leer D1**
+  (en build para la web estática, o en runtime si la ficha se hace dinámica). **Las páginas no
+  cambian** gracias a la costura.
+- El parser `src/lib/habitatsoft.ts` queda **sin uso** (se puede archivar); el volcado de
+  Excel (`scripts/build_properties.py`) sirve como **migración inicial** de los 126 pisos
+  actuales a D1 (one-shot), y luego el alta la hacen los comerciales en el panel.
+- Coste mayor que integrar: hay que construir formulario de ficha, **subida/gestión de fotos**
+  (lo más caro) y validación. A cambio: control total y una sola verdad propia.
 
-### Opción B — Worker de API separado + mismo front
-- Un segundo Worker (`conroma-crm`) con su `wrangler.jsonc`, D1/R2 propios, y el panel
-  consumiéndolo por `fetch`.
-- **Trade-off:** aísla el panel de la web de marketing (deploys independientes, menos riesgo
-  de romper la web al tocar el CRM), pero duplica config, auth y CORS. Útil solo si el CRM
-  crece mucho o lo usa otra marca.
+> Migración de arranque: script que lee `properties.real.json` + `property-photos.json` y los
+> inserta en D1 (`property` + `property_photo`), para no empezar vacío.
 
-### Opción C — SaaS externo (no-build) para el CRM
-- El CRM de citas no se construye: se usa una herramienta existente (ver §8). El panel
-  Conroma solo cubre el override de piso (radio + notas), y las citas/reseñas se delegan.
-- **Trade-off:** el menor código, pero menor control del disparo WhatsApp+reseña a medida y
-  posibles costes de licencia. Encaja si se reutiliza el piloto **NFC** para reseñas.
+---
 
-### Publicación web: rebuild en push vs. render dinámico
-- **v1 (recomendado): rebuild**. El override de piso cambia poco; un cambio dispara
-  `npm run build && wrangler deploy` (o un hook de Cloudflare Pages/Workers Build). Simple,
-  cacheable, barato. La ficha pública sigue estática.
-- **v2 (si molesta la latencia de publicación): render dinámico** de la ficha de piso
-  (`/es/inmueble/[slug]` con `prerender = false`) leyendo feed+D1 en runtime. Más caro en
-  CPU del Worker, innecesario mientras el inventario no cambie cada minuto.
+## 3. Arquitectura (Cloudflare, mismo Worker)
+
+- Panel en `/es/admin/...` (páginas Astro + islas React, `prerender = false`), detrás de auth,
+  `noindex` y fuera de sitemap (patrón `hiddenPaths` en `astro.config.mjs`).
+- API en `src/pages/api/*.ts` (`GET/POST/PATCH`), dinámicas.
+- **D1**: pisos, fotos (metadatos), leads, eventos de lead, clientes, citas, comerciales, peticiones de reseña.
+- **R2**: ficheros de fotos de los pisos (clave por `property_id`), servidas por el Worker/CDN.
+- **KV**: sesión y cachés cortas.
+- **Web pública**: la costura `getListings()` lee D1. **v1 = rebuild al guardar** (un cambio
+  dispara `build + deploy`); **v2 = ficha dinámica** (`/es/inmueble/[slug]` con
+  `prerender=false`) si la latencia de publicación molesta.
 
 ---
 
 ## 4. Modelo de datos (alto nivel, D1)
 
-El inventario **no se modela aquí**: vive en Habitatsoft y se lee por `ref`. D1 solo guarda
-lo que el feed no da y el CRM.
-
-- **`agent` (comercial)**: `id`, `name`, `email`, `role` (admin/comercial), `password_hash`
-  o proveedor de auth. (Pocos registros.)
-- **`property_override`**: `ref` (PK, la de Habitatsoft, ej. `C-1280-A`),
-  `geo_lat`, `geo_lng`, `radius_m` (30–70, validar rango), `likes`, `watch_out`,
-  `updated_by`, `updated_at`. **No** duplica precio/fotos/etc. del feed.
-- **`client`**: `id`, `name`, `phone` (E.164 para wa.me), `email`, `consent_marketing`
-  (bool + fecha + origen — clave RGPD, §9), `created_by`.
-- **`appointment` (cita)**: `id`, `property_ref`, `client_id`, `agent_id`, `starts_at`,
-  `ends_at`, `status` (`pendiente`|`realizada`|`no_show`|`cancelada`), `notes`, `created_at`.
-- **`review_request`**: `id`, `appointment_id`, `channel` (`whatsapp`|`email`),
-  `sent_at`, `status` (`enviada`|`fallida`|`clic`), `review_link_clicked_at`. Cierra la
-  medición del bucle de reseñas.
-
-> Nota: `Property.geo` hoy es solo `{latitude, longitude}` (ver `src/data/properties.ts`).
-> Hay que **añadir `radiusM?`** al tipo para que la ficha pública lo pase al mapa (hoy
-> `src/pages/es/inmueble/[slug].astro` llama a `<ApproxLocationMap>` **sin** `radiusMeters`,
-> así que usa el default 250 m del island). Ese es el único cambio de esquema público.
+- **`agent`** (comercial): `id`, `name`, `email`, `role`, auth.
+- **`property`**: `id`, `ref`, `operation`, `type`, `town`, `zone`, `price`, `previous_price`,
+  `rooms`, `baths`, `area`, `floor`, `elevator`, `parking`, `terrace`, `state`, `tag`,
+  `description`, `likes`, `watch_out`, `geo_lat`, `geo_lng`, `radius_m` (30–70), `status`
+  (borrador/publicado/retirado), `created_by`, `updated_at`. **Esta es ahora la fuente de verdad.**
+- **`property_photo`**: `id`, `property_id`, `r2_key`, `order`, `alt`. (Galería por piso.)
+- **`lead`**: `id`, `name`, `phone` (E.164), `email`, `intent` (comprar/vender/alquilar/
+  valoración), `zone`, `budget`, `property_ref?` (piso de interés), `source` (whatsapp/
+  formulario/llamada/valoración/manual), `status` (nuevo/contactado/cita/ganado/perdido/
+  sin_respuesta), `assigned_to` (agent), `consent_marketing` (+fecha+origen, RGPD), `created_at`.
+- **`lead_event`**: `id`, `lead_id`, `type` (llamada/whatsapp/email/nota/cambio_estado),
+  `note`, `agent_id`, `created_at`. (Historial de contacto.)
+- **`client`**: `id`, `name`, `phone`, `email`, `consent_marketing`. (Un lead "ganado" o con
+  cita se promueve a cliente; puede fusionarse con `lead`.)
+- **`appointment`**: `id`, `property_id`, `lead_id`/`client_id`, `agent_id`, `starts_at`,
+  `ends_at`, `status`, `notes`.
+- **`review_request`**: `id`, `appointment_id`, `channel`, `sent_at`, `status`, `clicked_at`.
 
 ---
 
-## 5. Flujo de alta/edición de piso (lo mínimo, porque Habitatsoft hace el resto)
+## 5. Módulo A — Alta/edición de piso (ahora completa)
 
-1. El comercial da de alta el piso **en Habitatsoft** (fotos, características, precio, geo
-   real) — como ya hace hoy.
-2. El panel Conroma lista los pisos del feed (por `ref`). Para cada uno, un formulario corto:
-   - **Mapa de círculo**: reutiliza `src/islands/ApproxLocationMap.tsx` en modo edición.
-     El comercial arrastra el centro y ajusta el **radio 30–70 m** (slider; validar rango).
-     Hoy el island solo pinta un círculo fijo; habría que añadirle modo "editable" (mover
-     centro + cambiar radio) y devolver `{lat, lng, radiusM}`. Guardar en `property_override`.
-   - **Notas editoriales**: `likes` ("lo que enamora") y `watchOut` ("ojo con…") — campos
-     que el feed Habitatsoft **no** trae (el propio `habitatsoft.ts` lo comenta).
-3. **Fotos → R2**: solo si el comercial quiere una foto que no está en Habitatsoft. En v1 se
-   puede **omitir** (las fotos vienen del CDN `fotoshs.imghs.net`). Nombrarlo como la opción
-   pequeña: *si no hay necesidad real de fotos propias, no montar R2 en v1*.
-4. **Publicación**: al guardar, se dispara el rebuild (o, en v2, la ficha dinámica lo lee en
-   runtime). La costura `getListings()` fusiona feed + override sin tocar las páginas.
-
----
-
-## 6. CRM de citas + disparador post-visita
-
-### Estados y calendario
-- Estados: `pendiente` → `realizada` | `no_show` | `cancelada`.
-- Vistas: **calendario** (semana/día) + lista filtrable por comercial. En el front, HeroUI
-  (`@heroui/react` ya está en `package.json`) cubre tablas/inputs; para el calendario, o un
-  componente propio simple o una librería ligera (ver §8). Móvil primero ([[validar-en-movil]]).
-
-### Disparador: al marcar "realizada" → WhatsApp + email
-Flujo: `PATCH /api/appointments/:id {status:'realizada'}` → si hay `consent_marketing` →
-encola envío WhatsApp + email → crea filas `review_request`. **Debe ser idempotente** (no
-reenviar si ya se envió para esa cita).
-
-**Opciones WhatsApp:**
-- **(a) wa.me semiautomático (recomendado para MVP, ponytail).** El panel no envía solo:
-  muestra al comercial un botón `wa.me/<tel>?text=<plantilla>` ya redactado (reutiliza el
-  patrón de `src/lib/links.ts` → `whatsappUrl`/`whatsappMessage`). Un clic del comercial y
-  WhatsApp Web/móvil abre el mensaje. **Coste 0, sin alta en Meta, sin plantillas aprobadas.**
-  Limitación: requiere el clic humano; no es 100% automático.
-  `shortcut: envío manual por el comercial; subir a API Cloud cuando el volumen de citas lo
-  justifique o se quiera envío desatendido.`
-- **(b) WhatsApp Business API Cloud (automático).** Envío desatendido, pero exige cuenta de
-  WhatsApp Business, número verificado, **plantillas (HSM) aprobadas por Meta** para mensajes
-  iniciados por la empresa, y **coste por conversación**. Reservar para v2 si el volumen lo pide.
-
-**Opciones email:** proveedor transaccional por API desde el Worker — **Resend**, **MailChannels**
-(históricamente gratis desde Workers; confirmar estado actual), **Brevo** o **SendGrid**.
-Recomendado: el más simple con dominio ya verificado (SPF/DKIM de `conromaasesores.com`).
-> **Suposición:** no veo proveedor de email transaccional configurado en el repo; hay que elegirlo.
-
-**Plantilla del mensaje** (es/ca): agradecer la visita + pedir valoración + enlace directo a
-reseña de Google usando `site.googleRating.url` / `site.mapsUrl` de `src/data/site.ts`
-(CID `18024108401007901977`).
-
-### Cómo medir que la reseña se pidió / se consiguió
-- **Pedida:** fila `review_request` por cita + canal (dato duro en D1).
-- **Clic al enlace de reseña:** el enlace lleva un redirector propio
-  `/api/r/:requestId` → cuenta el clic (actualiza `review_request.status='clic'`) → 302 a
-  Google. Además, `data-contact="resena"` + `data-origin="postvisita"` para que lo recoja el
-  mismo listener Click-URL de `BaseLayout.astro` ([[espina-conversion]]) en GA4/GTM.
-- **Conseguida:** Google **no** da atribución por reseña individual; se infiere comparando
-  `googleRating.count` en `site.ts` antes/después (hoy 107, revisado 2026-10-12). Dejarlo
-  claro: "pedida" y "clic" son medibles; "conseguida" es estimación, no dato 1:1.
+1. **Formulario de ficha**: todos los campos de `Property` (tipo, pueblo, zona, precio,
+   habitaciones, baños, m², planta, ascensor/parking/terraza, estado, descripción, `likes`,
+   `watchOut`), con validación.
+2. **Fotos → R2**: subir, ordenar, borrar, foto de portada. Convertir/limitar tamaño
+   (el adapter Cloudflare tiene límite de 25 MiB por asset; comprimir en subida). Es el
+   componente más caro de construir.
+3. **Mapa de círculo**: `src/islands/ApproxLocationMap.tsx` en modo **edición** (mover centro +
+   slider de **radio 30–70 m**; hoy pinta un círculo fijo → añadir editable, devolver
+   `{lat,lng,radiusM}`). Guardar en `property`.
+4. **Publicación**: al guardar (estado "publicado") → rebuild (v1) o ficha dinámica (v2). La
+   costura `getListings()` lee D1; las páginas no cambian.
+5. **Esquema público**: añadir `radiusM?` a `Property.geo` (hoy `src/pages/es/inmueble/[slug]`
+   llama a `ApproxLocationMap` sin radio → usa 250 m por defecto).
 
 ---
 
-## 7. Fases de entrega (cada una con criterio de "hecho")
+## 6. Módulo B — Leads (el que pediste añadir)
 
-- **Fase 0 — Decisiones (§10).** *Hecho cuando* hay URL del feed Habitatsoft, elección
-  WhatsApp (a/b), elección email, y decisión NFC vs. propio.
-- **Fase 1 — Cablear el feed Habitatsoft.** Importar `parseHabitatsoftXml`, cachear en KV,
-  sustituir el `source` de Excel por el feed en `properties.ts`. *Hecho cuando* la web pública
-  muestra el inventario desde el feed y los 126 pisos cuadran con Habitatsoft.
-- **Fase 2 — Auth + override de piso (radio + notas).** Login comerciales, D1
-  `property_override`, `ApproxLocationMap` editable (centro + radio 30–70 m), `Property.geo`
-  con `radiusM`, ficha pública pasando el radio. *Hecho cuando* un comercial fija un círculo
-  de 50 m y se ve publicado en la ficha.
-- **Fase 3 — CRM de citas (sin disparo).** Crear/editar citas, estados, calendario + lista.
-  *Hecho cuando* un comercial gestiona su agenda semanal en móvil.
-- **Fase 4 — Disparo post-visita + medición.** Al marcar "realizada": WhatsApp (opción
-  elegida) + email + `review_request` + redirector `/api/r/:id`. *Hecho cuando* al cerrar una
-  cita el cliente recibe la petición y el clic al enlace de Google queda contado.
-- **Fase 5 (opcional) — Automatizar/escala.** Subir WhatsApp a API Cloud, fotos propias en
-  R2, ficha dinámica si hace falta. *Hecho cuando* el envío es desatendido con plantilla
-  aprobada.
+### Captura automática desde la web
+- `ContactForm` y los CTAs de WhatsApp, además de abrir WhatsApp, hacen **`POST /api/leads`**
+  con nombre/teléfono/intención/piso de interés/origen. Reusa `data-contact`/`data-origin`
+  (la "espina de conversión", [[espina-conversion]]): el lead queda registrado **aunque el
+  comercial no conteste**. (Hoy el formulario solo abre WhatsApp y el lead se pierde.)
+- Fuentes: formulario de contacto, botón WhatsApp, botón llamar (tel:), wizard de valoración,
+  consulta desde una ficha de piso. Cada una pasa su `origin` → `lead.source`.
+- **RGPD:** registrar `consent_marketing` (casilla de privacidad del formulario) con fecha y
+  origen; sin consentimiento no se dispara comunicación comercial luego.
+
+### Gestión en el panel
+- **Bandeja/lista** de leads con filtros (estado, intención, zona, comercial, fecha, origen).
+- **Pipeline de estados:** `nuevo → contactado → cita agendada → ganado | perdido`
+  (+ `sin_respuesta`). Arrastrar/cambiar estado; cada cambio crea un `lead_event`.
+- **Clasificación:** intención (comprar/vender/alquilar/valoración), zona, presupuesto, origen,
+  comercial asignado. Sirve para priorizar y repartir.
+- **Ficha de lead:** datos + **historial de contacto** (`lead_event`) + acciones rápidas
+  (WhatsApp/llamar/email con plantilla) + "convertir en cita" (enlaza al módulo C).
+- **Reparto:** asignar lead a un comercial (manual en v1; reglas automáticas en v2).
+
+### Medición
+- Lead capturado = fila en D1 (dato duro) → cierra la atribución que hoy falta (los clics a
+  WhatsApp se miden en GA4/GTM pero no se guarda el lead). Enlaza con [[espina-conversion]].
 
 ---
 
-## 8. Build vs. buy por componente
+## 7. Módulo C — Citas + disparo de reseña
+
+- Igual que la versión anterior del plan: estados pendiente → realizada/no_show/cancelada,
+  calendario + lista, y al marcar **realizada** (con consentimiento) → **WhatsApp + email**
+  pidiendo reseña de Google (`site.googleRating.url`/`mapsUrl`, CID 18024108401007901977).
+- **WhatsApp:** v1 **wa.me semiautomático** (gratis, un clic del comercial; reusa
+  `src/lib/links.ts`); v2 **API Cloud** (automático, de pago, plantillas Meta).
+- **Email:** proveedor transaccional (Resend/MailChannels/Brevo) con dominio verificado.
+- **Medición del bucle:** `review_request` + redirector `/api/r/:id` que cuenta el clic y 302 a
+  Google (+ `data-contact="resena"`). "Pedida" y "clic" son medibles; "conseguida" se estima
+  comparando `googleRating.count`.
+
+---
+
+## 8. Fases de entrega (re-priorizadas con alta propia + leads)
+
+- **Fase 0 — Decisiones (§10).** Fotos/R2, auth, email, WhatsApp, publicación.
+- **Fase 1 — Infra + auth + migración.** D1 + R2 + KV en `wrangler.jsonc`; auth comerciales;
+  **migrar los 126 pisos** de `properties.real.json`+fotos a D1. *Hecho cuando* la web pública
+  lee el inventario desde D1 (costura cambiada) sin cambiar páginas.
+- **Fase 2 — Alta/edición de piso (módulo A).** Formulario + **fotos a R2** + mapa editable
+  (radio 30–70 m) + publicación. *Hecho cuando* un comercial crea un piso con fotos y círculo y
+  se publica.
+- **Fase 3 — Leads (módulo B).** `POST /api/leads` + captura en el formulario/CTAs; bandeja,
+  pipeline, clasificación, ficha de lead con historial. *Hecho cuando* un contacto de la web
+  aparece como lead y el comercial lo mueve por el pipeline.
+- **Fase 4 — Citas (módulo C, sin disparo).** Crear/editar citas desde un lead, estados,
+  calendario. *Hecho cuando* un comercial gestiona su agenda semanal en móvil.
+- **Fase 5 — Disparo post-visita + medición.** WhatsApp + email + `review_request` +
+  redirector. *Hecho cuando* al cerrar una cita el cliente recibe la petición y el clic queda
+  contado.
+- **Fase 6 (opcional) — Escala.** WhatsApp API Cloud, reglas de reparto de leads, ficha
+  dinámica, informes.
+
+---
+
+## 9. Build vs. buy y riesgos
 
 | Componente | Recomendación | Nota |
 |---|---|---|
-| Alta/inventario de pisos | **BUY/integrate** (Habitatsoft) | Ya es el PMS; solo leer su feed (§2). |
-| Mapa círculo 30–70 m | **BUILD (ya hecho)** | `ApproxLocationMap.tsx` existe; añadir modo edición. |
-| Auth comerciales | **BUILD mínimo** o Cloudflare Access | Pocos usuarios; Cloudflare Access evita montar login. |
-| Base de datos CRM | **BUY plataforma** (D1) | Serverless, ya en el ecosistema; sin servidor propio. |
-| Calendario de citas | **BUILD ligero** vs. **Calendly/Cal.com** | Calendly resuelve agenda+recordatorios pero no liga a piso/ficha ni al disparo de reseña a medida. Evaluar Cal.com (open source) si se quiere no construir. |
-| Disparo reseña (WhatsApp/email) | **BUY APIs** (wa.me/Resend) o **reutilizar NFC** | El piloto **Fidelización NFC** (PHP+SQLite Calipso + dashboard React) ya existe para reseñas: el disparo podría delegarse ahí en vez de construir nuevo. |
-| CRM completo | **No construir** en v1 | HubSpot free, Pipedrive, etc. son overkill y no ligan a Habitatsoft ni al mapa. |
+| Inventario de pisos | **BUILD** (ahora propio) | D1 + R2; migrar los 126 actuales. Es el mayor coste nuevo. |
+| Subida/gestión de fotos | **BUILD** (R2) | Comprimir en subida (límite 25 MiB/asset); portada + orden. |
+| Mapa círculo 30–70 m | **BUILD (base hecha)** | `ApproxLocationMap.tsx` existe; añadir modo edición. |
+| Auth comerciales | **Cloudflare Access** o login propio | Pocos usuarios; Access = cero código. |
+| Base de datos | **D1** | Serverless, ya en el ecosistema. |
+| Captura/gestión de leads | **BUILD** | Es el núcleo del valor; se apoya en la espina de conversión existente. |
+| Calendario de citas | **BUILD ligero** o Cal.com | Cal.com si no se quiere construir agenda. |
+| Disparo reseña | **wa.me + Resend** o reutilizar piloto **NFC** (Calipso) | El NFC ya existe para reseñas; valorar delegar. |
 
-**Línea ponytail:** el máximo ahorro es *integrar Habitatsoft + reutilizar NFC para el
-disparo de reseña + Cloudflare Access para auth*; así el código nuevo se reduce casi al CRM
-de citas y al override de piso.
-
----
-
-## 9. Riesgos
-
-- **RGPD / consentimiento (el mayor).** Enviar WhatsApp/email pidiendo reseña es comunicación
-  comercial: requiere **base legal/consentimiento** del cliente (campo `consent_marketing` con
-  fecha y origen) y que la petición sea proporcionada a la relación (acaba de visitar un piso).
-  Sin consentimiento registrado, **no disparar**. Añadir opt-out y texto legal (hay
-  `src/pages/es/privacidad.astro`/`aviso-legal.astro` que actualizar).
-- **WhatsApp API: coste y fricción.** La opción (b) cobra por conversación y exige plantillas
-  aprobadas por Meta; además, mensajes no solicitados pueden marcar el número como spam. La
-  opción (a) wa.me lo evita a cambio del clic manual.
-- **Dependencia del feed Habitatsoft.** Si cambia el formato de "Enlace Web 2.0", se rompe la
-  web. Mitigar: cachear la última versión buena en KV y validar el parse (el parser ya es
-  tolerante: `asArray`, `num`, `bool01`).
-- **Solo-lectura del feed.** Si Habitatsoft no expone escritura por API, el override (radio +
-  notas) vive solo en Conroma y nunca vuelve a Habitatsoft — asumible, pero hay que tenerlo claro.
-- **Mezclar panel interno con web de marketing** (Opción A): el `/admin` debe ir con auth,
-  `noindex` y fuera de sitemap (ya hay patrón `hiddenPaths` en `astro.config.mjs`).
-- **Mantenimiento.** Más piezas (D1, API, auth, colas de envío) = más superficie que mantener
-  para una agencia pequeña. Favorecer buy/reutilizar siempre que se pueda (§8).
-- **Medición de reseña "conseguida"** no es atribuible 1:1 (§6): no prometer ese número exacto.
+**Riesgos:** (1) **fotos** = el trabajo más pesado (subida, almacenamiento, rendimiento);
+(2) **RGPD** en la captura de leads y el disparo de reseña (consentimiento con fecha/origen,
+opt-out, textos legales a actualizar); (3) **mantenimiento** de más piezas para una agencia
+pequeña; (4) ser ahora la **única fuente de verdad** del inventario (no hay feed de respaldo);
+(5) **publicación**: rebuild por cambio puede ser lento si el inventario cambia mucho → valorar
+ficha dinámica.
 
 ---
 
-## 10. Preguntas abiertas para el usuario (desbloquean la Fase 0)
+## 10. Preguntas abiertas (desbloquean la Fase 0)
 
-1. **Habitatsoft como fuente de verdad (la más crítica):** ¿Conroma gestiona su cartera en
-   Habitatsoft y tenéis la **URL del feed "Enlace Web 2.0"** (agencia 527526)? ¿Ese feed es
-   **solo lectura** o permite **escritura por API** (para devolver el radio/notas)? Toda la §2
-   depende de esto.
-2. **WhatsApp:** ¿opción **(a) wa.me semiautomático** (gratis, un clic del comercial) o **(b)
-   API Cloud** (automático, de pago, alta en Meta + plantillas aprobadas)? Esto define coste y
-   si el disparo es desatendido.
-3. **Disparo de reseña: ¿aquí o en NFC?** ¿Se construye en este proyecto o se **reutiliza el
-   piloto Fidelización NFC** (PHP+SQLite Calipso + dashboard React) que ya existe para reseñas?
-4. **Email transaccional:** ¿qué proveedor? (Resend/MailChannels/Brevo/SendGrid) y ¿está
-   verificado el dominio `conromaasesores.com` con SPF/DKIM?
-5. **Auth:** ¿**Cloudflare Access** (cero código, login por email) o login propio? ¿Cuántos
-   comerciales y qué roles (admin vs. comercial)?
-6. **Fotos propias:** ¿los comerciales necesitan subir fotos que **no** están en Habitatsoft?
-   Si no, se omite R2 en v1.
-7. **Publicación:** ¿sirve **rebuild al guardar** (minutos de latencia) o hace falta que el
-   cambio de piso se vea **al instante** (ficha dinámica, más coste)?
+1. **Fotos:** ¿cuántas por piso y de qué tamaño? ¿Se suben originales (y comprimimos nosotros)
+   o ya vienen optimizadas? Confirma usar **R2**.
+2. **Auth:** ¿**Cloudflare Access** (login por email, cero código) o login propio? ¿Cuántos
+   comerciales y roles (admin/comercial)?
+3. **Email transaccional:** proveedor (Resend/MailChannels/Brevo/SendGrid) y ¿dominio
+   `conromaasesores.com` verificado (SPF/DKIM)?
+4. **WhatsApp:** ¿**wa.me semiautomático** (gratis, clic del comercial) o **API Cloud**
+   (automático, de pago)?
+5. **Disparo de reseña:** ¿se construye aquí o se **reutiliza el piloto NFC** (Calipso)?
+6. **Leads — formulario:** ¿el formulario de contacto sigue **abriendo WhatsApp** y además
+   captura el lead, o cambia a **enviar al CRM** + notificar al comercial (sin abrir WhatsApp)?
+7. **Publicación:** ¿sirve **rebuild al guardar** (minutos) o hace falta ver el cambio **al
+   instante** (ficha dinámica, más coste de CPU del Worker)?
 
 ---
 
-### Ficheros citados (evidencia)
-- `astro.config.mjs` — adapter Cloudflare, sin `output` (estático + Worker), `hiddenPaths`.
-- `wrangler.jsonc` — Worker `conroma-web`, binding `ASSETS`, sin D1/R2/KV aún.
-- `src/data/properties.ts` — costura `getListings()/getListing()`, `Property.geo`, comentario
-  del plan de feed; fusiona `properties.real.json` + `property-photos.json`.
-- `src/lib/habitatsoft.ts` — `parseHabitatsoftXml` (Enlace Web 2.0 v1.7), **sin cablear**.
-- `src/data/property-photos.json` — fotos del CDN Habitatsoft (527526).
-- `scripts/build_properties.py` — volcado temporal del Excel (126 pisos).
-- `src/islands/ApproxLocationMap.tsx` — círculo (default 250 m, `radiusMeters` configurable).
-- `src/pages/es/inmueble/[slug].astro` — usa el mapa **sin** pasar radio (línea ~158).
-- `src/lib/links.ts` — `whatsappUrl`/`whatsappMessage`, patrón reutilizable para el disparo.
-- `src/islands/TestimonialCarousel.tsx` + `src/data/testimonials.ts` — reseñas mostradas, no pedidas.
-- `src/layouts/BaseLayout.astro` — GA4/GTM + listener Click-URL (`data-contact`/`data-origin`).
-- `src/data/site.ts` — NAP, `whatsapp`, `googleRating.url`, `mapsUrl` (CID), `geo`.
+### Ficheros clave (evidencia)
+- `astro.config.mjs` / `wrangler.jsonc` — Worker Cloudflare; añadir D1/R2/KV; `hiddenPaths`.
+- `src/data/properties.ts` — costura `getListings()/getListing()`; cambiar `source` a D1.
+- `scripts/build_properties.py` + `src/data/properties.real.json` + `property-photos.json` —
+  base para la **migración inicial** de 126 pisos a D1.
+- `src/islands/ApproxLocationMap.tsx` — círculo (hacer editable, radio 30–70 m).
+- `src/islands/ContactForm` + `src/lib/links.ts` (`whatsappUrl`) — punto de **captura de leads**.
+- `src/layouts/BaseLayout.astro` — listener Click-URL (`data-contact`/`data-origin`) para atribuir leads.
+- `src/data/site.ts` — NAP, `googleRating.url`, `mapsUrl` (CID) para el disparo de reseña.
+- `src/lib/habitatsoft.ts` — queda **sin uso** (se descarta Habitatsoft).

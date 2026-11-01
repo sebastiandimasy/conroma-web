@@ -162,7 +162,7 @@ El móvil es el **97%** del tráfico. Se verifica a 390px antes de dar nada por 
 - **Alineación coherente.** El **héroe** se centra (elemento distintivo); **todas las demás
   cabeceras de sección** (eyebrow + título + lead) van a la **izquierda** de forma uniforme en
   móvil (las `section__head--center` se alinean a la izquierda en `<40rem`). Las cifras del
-  contador se presentan centradas (showcase).
+  contador también van a la izquierda en móvil (coherencia con la cabecera).
 
 ---
 
