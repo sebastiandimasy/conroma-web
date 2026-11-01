@@ -32,11 +32,11 @@ export default function CookieNotice() {
           transition={{ type: 'spring', duration: 0.45, bounce: 0 }}
         >
           <div className="cookie-notice__body">
-            <p className="cookie-notice__title">🍪 Usamos cookies</p>
+            <p className="cookie-notice__title">Usamos cookies</p>
             <p className="cookie-notice__text">
-              Usamos cookies propias y de terceros para <strong>medir las visitas</strong> (Google
-              Analytics) y mejorar la web. Las de medición solo se activan si las aceptas. Puedes
-              aceptarlas todas o rechazar las no esenciales. Más información en nuestra{' '}
+              Usamos cookies propias y de terceros para medir las visitas con Google Analytics y
+              mejorar la web. Las de medición solo se activan si las aceptas. Puedes aceptarlas todas
+              o rechazar las no esenciales. Más información en nuestra{' '}
               <a href="/es/cookies/">política de cookies</a>.
             </p>
           </div>
