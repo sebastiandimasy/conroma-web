@@ -25,6 +25,8 @@ interface Props {
 }
 
 const { title, description, path, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction } = Astro.props;
+// Preview para el stakeholder: todo el sitio noindex (build con PUBLIC_PREVIEW=true). En producción no se activa.
+const previewNoindex = import.meta.env.PUBLIC_PREVIEW === 'true';
 const canonical = absoluteUrl(path);
 const languageLinks = alternates(path);
 ---
@@ -38,7 +40,7 @@ const languageLinks = alternates(path);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {languageLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || previewNoindex) && <meta name="robots" content={previewNoindex ? 'noindex, nofollow' : 'noindex'} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.legalName} />
     <meta property="og:title" content={pageTitle(title)} />

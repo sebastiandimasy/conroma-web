@@ -111,7 +111,7 @@
 
   /* MOVIMIENTO — duraciones (las curvas --ease-* están en @theme). */
   --duration-fast: 180ms;
-  --duration-base: 280ms;
+  --duration-base: 240ms;
   --duration-slow: 450ms;
 
   --header-height: 68px;

@@ -9,7 +9,8 @@
     "preview": "npm run build && wrangler dev",
     "test": "vitest run",
     "generate-types": "wrangler types",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:preview": "PUBLIC_PREVIEW=true npm run build && wrangler deploy --name conroma-web-preview"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
