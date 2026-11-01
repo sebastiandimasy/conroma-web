@@ -10,14 +10,16 @@ const links = mainNav;
 const current = Astro.url.pathname;
 const isActive = (href: string) => current === href || (href !== '/es/' && current.startsWith(href));
 
-// Icono de cada enlace del menú; el dock móvil usa los mismos enlaces que el de escritorio.
+// Dock móvil: Inicio + el nav sin Blog (lista propia; no altera el nav de escritorio).
+const dockLinks = [{ label: 'Inicio', href: '/es/' }, ...mainNav.filter((link) => link.label !== 'Blog')];
+
 const dockIcons: Record<string, IconName> = {
-  Comprar: 'home',
+  Inicio: 'home',
+  Comprar: 'search',
   Vender: 'tag',
   Alquilar: 'key',
   Empresa: 'building',
   Equipo: 'users',
-  Blog: 'newspaper',
 };
 
 ---
@@ -53,7 +55,7 @@ const dockIcons: Record<string, IconName> = {
 
 <nav class="mobile-dock glass glass--thick" aria-label="Navegación principal">
   {
-    links.map((link) => (
+    dockLinks.map((link) => (
       <a
         class:list={['mobile-dock__link', { 'is-active': isActive(link.href) }]}
         href={link.href}

@@ -204,9 +204,20 @@
     height: 22px;
   }
 
+  /* Activo estilo Apple liquid-glass: pill esmerilado con brillo superior y borde sutil,
+     radio md para que la etiqueta no choque con el borde; el dorado del icono da la señal de marca. */
   .mobile-dock__link.is-active {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+    border-radius: var(--radius-md);
+    background: var(--glass-fill-2);
+    color: var(--color-ink);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      inset 0 0 0 1px var(--glass-edge),
+      var(--shadow-1);
+  }
+
+  .mobile-dock__link.is-active svg {
+    color: var(--color-accent-deep);
   }
 
   .mobile-dock {
