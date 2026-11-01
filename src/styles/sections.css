@@ -2206,6 +2206,43 @@
     }
   }
 
+  /* Reseñas · resumen de reserva si el widget de Trustindex no llega a cargar (sin dejar hueco). */
+  .reviews__fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 22px 26px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+    text-align: center;
+  }
+
+  .reviews__stars {
+    display: inline-flex;
+    gap: 4px;
+    color: var(--color-accent);
+  }
+
+  .reviews__star {
+    width: 22px;
+    height: 22px;
+  }
+
+  .reviews__text {
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .reviews__text strong {
+    color: var(--color-ink);
+  }
+
   /* Home · Equipo: línea de roles bajo el valor diferencial. */
   .home-team__roles {
     font-size: var(--text-small);

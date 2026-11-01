@@ -160,11 +160,44 @@ const homeServices = [
     </div>
   </section>
 
-  <section class="section reviews" aria-label="Reseñas de clientes en Google">
+  <section class="section reviews" aria-label="Reseñas de clientes en Google" data-reviews>
     <div class="wrap">
+      {
+        rating && (
+          <a class="reviews__fallback" href={rating.url} rel="noopener" target="_blank" data-reviews-fallback>
+            <span class="reviews__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
+              <Icon name="star" class="reviews__star" />
+              <Icon name="star" class="reviews__star" />
+              <Icon name="star" class="reviews__star" />
+              <Icon name="star" class="reviews__star" />
+              <Icon name="star" class="reviews__star" />
+            </span>
+            <span class="reviews__text">
+              <strong>{formatRating(rating.value)} en Google</strong> · {rating.count} reseñas de clientes · Verlas todas
+            </span>
+          </a>
+        )
+      }
       {/* Widget Trustindex: reseñas de Google en vivo (cuenta de Conroma). */}
       <script is:inline defer async src="https://cdn.trustindex.io/loader.js?d045063849cb67522f863d5cb82"></script>
     </div>
+    {/* Oculta el resumen de reserva cuando el widget de Trustindex llega a inyectarse. */}
+    <script is:inline>
+      (function () {
+        var sec = document.currentScript.closest('[data-reviews]');
+        if (!sec) return;
+        var fb = sec.querySelector('[data-reviews-fallback]');
+        if (!fb) return;
+        var obs = new MutationObserver(function () {
+          if (sec.querySelector('.ti-widget, [class*="trustindex"]')) {
+            fb.style.display = 'none';
+            obs.disconnect();
+          }
+        });
+        obs.observe(sec, { childList: true, subtree: true });
+        setTimeout(function () { obs.disconnect(); }, 15000);
+      })();
+    </script>
   </section>
 
   <section class="section contact" id="contacto">
