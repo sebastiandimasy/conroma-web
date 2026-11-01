@@ -8,9 +8,9 @@ interface Props {
   class?: string;
   [attr: string]: unknown; // data-*, aria-*, target, rel, type...
 }
-const { variant = 'primary', size, href, start, class: cls, ...rest } = Astro.props;
+const { variant = 'primary', size, href, start, class: cls, type, ...rest } = Astro.props;
 const classes = ['button', `button--${variant}`, size && `button--${size}`, start && 'button--start', cls];
 ---
 {href !== undefined
   ? <a href={href} class:list={classes} {...rest}><slot /></a>
-  : <button class:list={classes} {...rest}><slot /></button>}
+  : <button type={(type as 'button' | 'submit' | 'reset' | undefined) ?? 'button'} class:list={classes} {...rest}><slot /></button>}
