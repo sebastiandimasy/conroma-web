@@ -608,6 +608,12 @@
       grid-template-columns: 1fr;
       gap: 24px;
     }
+
+    /* Cifras a la izquierda en móvil: coherentes con la cabecera (especificidad > base .stat). */
+    .stats .stat {
+      align-items: flex-start;
+      text-align: left;
+    }
   }
 
   .stat {
