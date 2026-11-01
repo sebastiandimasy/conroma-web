@@ -1,0 +1,16 @@
+---
+// Wrapper fino sobre las clases .button* de components.css (no re-estiliza).
+interface Props {
+  variant?: 'primary' | 'ghost' | 'ink';
+  size?: 'large' | 'small';
+  href?: string;
+  start?: boolean;
+  class?: string;
+  [attr: string]: unknown; // data-*, aria-*, target, rel, type...
+}
+const { variant = 'primary', size, href, start, class: cls, ...rest } = Astro.props;
+const classes = ['button', `button--${variant}`, size && `button--${size}`, start && 'button--start', cls];
+---
+{href !== undefined
+  ? <a href={href} class:list={classes} {...rest}><slot /></a>
+  : <button class:list={classes} {...rest}><slot /></button>}

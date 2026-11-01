@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
+import Button from '../../components/Button.astro';
 import ContactForm from '../../islands/ContactForm';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import { homeFaq } from '../../data/faq';
@@ -127,7 +128,7 @@ const homeServices = [
           Contamos con: Consultores inmobiliarios · Gestores de Patrimonio · Asesores Jurídicos
         </p>
         <div class="story__actions">
-          <a class="button button--ghost button--large" href="/es/equipo/">Conócenos</a>
+          <Button variant="ghost" size="large" href="/es/equipo/">Conócenos</Button>
         </div>
       </div>
     </div>
@@ -210,14 +211,14 @@ const homeServices = [
           tenemos un asesor que puede ayudarte y encargarse personalmente de tu consulta.
         </p>
         <div class="contact__channels">
-          <a class="button button--ghost button--start" href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
+          <Button variant="ghost" start href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
             <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
             WhatsApp · {site.phoneDisplay}
-          </a>
-          <a class="button button--ghost button--start" href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
+          </Button>
+          <Button variant="ghost" start href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
             <Icon name="phone" class="button__icon contact__icon" />
             Llamar · {site.phoneDisplay}
-          </a>
+          </Button>
         </div>
       </div>
       <div class="contact__card glass" data-reveal>
