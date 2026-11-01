@@ -2289,3 +2289,39 @@
     @apply h-full w-full object-cover;
   }
 }
+
+/* Trustindex (reseñas) en oscuro: la cabecera ("EXCELENTE", "A base de N reseñas")
+   y el pie se pintan sobre el fondo oscuro de la página → texto claro; las tarjetas
+   blancas del widget conservan texto oscuro. Sin @layer + !important para ganar a los
+   estilos inyectados por el widget. Clases .ti-* verificadas en el DOM real. */
+:root[data-theme="dark"] .reviews .ti-widget-container,
+:root[data-theme="dark"] .reviews .ti-rating,
+:root[data-theme="dark"] .reviews .nowrap,
+:root[data-theme="dark"] .reviews .ti-footer-filter-text {
+  color: var(--color-ink) !important;
+}
+:root[data-theme="dark"] .reviews .ti-inner,
+:root[data-theme="dark"] .reviews .ti-inner .ti-name,
+:root[data-theme="dark"] .reviews .ti-inner .ti-review-content,
+:root[data-theme="dark"] .reviews .ti-inner .ti-review-text-container,
+:root[data-theme="dark"] .reviews .ti-inner .nowrap,
+:root[data-theme="dark"] .reviews .ti-inner a {
+  color: var(--color-fixed-ink) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .reviews .ti-widget-container,
+  :root:not([data-theme="light"]) .reviews .ti-rating,
+  :root:not([data-theme="light"]) .reviews .nowrap,
+  :root:not([data-theme="light"]) .reviews .ti-footer-filter-text {
+    color: var(--color-ink) !important;
+  }
+  :root:not([data-theme="light"]) .reviews .ti-inner,
+  :root:not([data-theme="light"]) .reviews .ti-inner .ti-name,
+  :root:not([data-theme="light"]) .reviews .ti-inner .ti-review-content,
+  :root:not([data-theme="light"]) .reviews .ti-inner .ti-review-text-container,
+  :root:not([data-theme="light"]) .reviews .ti-inner .nowrap,
+  :root:not([data-theme="light"]) .reviews .ti-inner a {
+    color: var(--color-fixed-ink) !important;
+  }
+}
