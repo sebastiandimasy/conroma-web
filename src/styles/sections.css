@@ -1544,21 +1544,25 @@
     @apply grid gap-5;
   }
 
-  /* Cards de público con foto a sangre arriba y cuerpo con padding. */
-  .audience__card {
+  /* MediaCard: foto a sangre arriba + cuerpo con padding (valores = antiguo .audience__*). */
+  .media-card {
     padding: 0;
     overflow: hidden;
     gap: 0;
   }
 
-  .audience__photo {
+  .media-card__photo {
     @apply block w-full object-cover;
     aspect-ratio: 16 / 10;
   }
 
-  .audience__body {
+  .media-card__body {
     @apply flex flex-1 flex-col gap-3;
     padding: 24px;
+  }
+
+  .media-card__body .button {
+    @apply mt-auto self-start;
   }
 
   .services__card,
@@ -1584,10 +1588,6 @@
   /* El CTA de las tarjetas de herramientas va centrado, como el resto del contenido. */
   .tools__cta {
     @apply mt-auto self-center;
-  }
-
-  .audience__card .button {
-    @apply mt-auto self-start;
   }
 
   @media (min-width: 40rem) {

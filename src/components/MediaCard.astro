@@ -1,0 +1,21 @@
+---
+// Tarjeta con foto a sangre arriba. Estilos .media-card* en sections.css.
+// Slots: default = cuerpo; "overlay" = capa opcional sobre la foto (precio/zona).
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  eager?: boolean;
+  reveal?: boolean;
+  class?: string;
+  id?: string;
+  [attr: string]: unknown;
+}
+const { src, alt, width, height, eager, reveal, class: cls, ...rest } = Astro.props;
+---
+<article class:list={['card feature media-card', cls]} data-reveal={reveal ? '' : undefined} {...rest}>
+  <img class="media-card__photo" {src} {alt} {width} {height} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  <slot name="overlay" />
+  <div class="media-card__body"><slot /></div>
+</article>

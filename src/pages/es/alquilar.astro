@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/sections/PageHero.astro';
+import MediaCard from '../../components/MediaCard.astro';
 import Icon from '../../components/Icon.astro';
 import Steps from '../../components/sections/Steps.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
@@ -46,28 +47,22 @@ const faq = [
 
   <section class="section audience">
     <div class="wrap audience__grid">
-      <article class="card feature audience__card" id="busco" data-reveal>
-        <img class="audience__photo" src="/img/reales/piso-3.jpg" alt="Salón de un piso de alquiler en Malgrat de Mar" width="900" height="900" loading="lazy" decoding="async" />
-        <div class="audience__body">
+      <MediaCard id="busco" reveal src="/img/reales/piso-3.jpg" alt="Salón de un piso de alquiler en Malgrat de Mar" width={900} height={900}>
           <span class="icon-tile"><Icon name="search" /></span>
           <h2 class="feature__title">Busco piso de alquiler</h2>
           <p class="feature__text">Dinos zona, presupuesto y para cuándo. Te decimos qué tenemos hoy y te avisamos cuando entre algo.</p>
           <a class="button button--primary" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="alquilar-busco">
             Preguntar qué hay ahora
           </a>
-        </div>
-      </article>
-      <article class="card feature audience__card" id="tengo-piso" data-reveal>
-        <img class="audience__photo" src="/img/reales/piso-4.jpg" alt="Interior de un piso listo para alquilar en Malgrat de Mar" width="900" height="900" loading="lazy" decoding="async" />
-        <div class="audience__body">
+      </MediaCard>
+      <MediaCard id="tengo-piso" reveal src="/img/reales/piso-4.jpg" alt="Interior de un piso listo para alquilar en Malgrat de Mar" width={900} height={900}>
           <span class="icon-tile"><Icon name="key" /></span>
           <h2 class="feature__title">Tengo un piso para alquilar</h2>
           <p class="feature__text">Buscamos inquilino, enseñamos el piso y preparamos el contrato. Tú decides a quién se lo alquilas.</p>
           <a class="button button--ghost" href={whatsappUrl({ reason: 'alquiler' })} data-contact="whatsapp" data-origin="alquilar-propietario">
             Quiero alquilar mi piso
           </a>
-        </div>
-      </article>
+      </MediaCard>
     </div>
   </section>
 
