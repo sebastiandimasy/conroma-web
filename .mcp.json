@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?features=account,database,debugging,development,functions,storage,docs"
+    }
+  }
+}

@@ -6,6 +6,12 @@
 >   completa de viviendas y las fichas viven en **nuestra** base de datos.
 > - Se añade **módulo de Leads** (captura desde la web + pipeline + clasificación) como parte
 >   de primera clase, no como extra de v2.
+> - **Base de datos oficial: SUPABASE** (el usuario ya tiene hosting + Supabase listos). Sustituye
+>   a Cloudflare D1/R2/Access del borrador anterior: Supabase aporta **Postgres** (datos),
+>   **Auth** (login de comerciales), **Storage** (fotos de pisos) y **RLS** (seguridad por fila).
+> - **Formulario de contacto**: al enviar **va al CRM y avisa al comercial** (deja de abrir
+>   WhatsApp). Los botones de WhatsApp sueltos pueden seguir abriendo WhatsApp y capturando lead.
+> - **Disparo de reseña**: **wa.me semiautomático** en v1 (un clic del comercial).
 >
 > Alcance: dashboard para que los comerciales (1) **den de alta y gestionen las viviendas**
 > con ficha completa + fotos + ubicación por círculo 30–70 m; (2) **capturen y gestionen
@@ -79,17 +85,44 @@
 
 ---
 
-## 3. Arquitectura (Cloudflare, mismo Worker)
+## 3. Arquitectura (Astro en Cloudflare Worker + Supabase)
 
-- Panel en `/es/admin/...` (páginas Astro + islas React, `prerender = false`), detrás de auth,
-  `noindex` y fuera de sitemap (patrón `hiddenPaths` en `astro.config.mjs`).
-- API en `src/pages/api/*.ts` (`GET/POST/PATCH`), dinámicas.
-- **D1**: pisos, fotos (metadatos), leads, eventos de lead, clientes, citas, comerciales, peticiones de reseña.
-- **R2**: ficheros de fotos de los pisos (clave por `property_id`), servidas por el Worker/CDN.
-- **KV**: sesión y cachés cortas.
-- **Web pública**: la costura `getListings()` lee D1. **v1 = rebuild al guardar** (un cambio
-  dispara `build + deploy`); **v2 = ficha dinámica** (`/es/inmueble/[slug]` con
-  `prerender=false`) si la latencia de publicación molesta.
+**Supabase es la base de datos oficial.** El front sigue siendo este proyecto Astro (desplegado
+como Cloudflare Worker); Supabase aporta datos, auth y almacenamiento de fotos.
+
+- **Supabase Postgres**: todas las tablas (pisos, fotos, leads, eventos, clientes, citas,
+  comerciales, peticiones de reseña). Con **RLS activado en todas las tablas** del esquema público.
+- **Supabase Auth**: login de los comerciales (email/contraseña o magic link). El **rol**
+  (admin/comercial) va en `app_metadata` (NO en `user_metadata`, que es editable por el usuario)
+  y se usa en las políticas RLS.
+- **Supabase Storage**: bucket para las **fotos de los pisos** (sustituye a R2). Subida con
+  INSERT+SELECT+UPDATE para permitir reemplazo (upsert).
+- **Panel** en `/es/admin/...` (Astro + islas React, `prerender = false`), detrás de Supabase
+  Auth, `noindex` y fuera de sitemap (`hiddenPaths` en `astro.config.mjs`). El navegador usa la
+  **clave pública (anon/publishable)** + sesión de Supabase Auth + RLS.
+- **API** en `src/pages/api/*.ts` (dinámicas): para operaciones de servidor que lo requieran, el
+  Worker usa la **service_role key** (SOLO en servidor, como **secret de Cloudflare**, nunca en
+  el navegador). La mayor parte del CRUD puede ir directo desde el cliente con RLS.
+- **Web pública**: la costura `getListings()/getListing()` (`src/data/properties.ts`) cambia su
+  `source` para leer los pisos **publicados** de Supabase. **v1 = rebuild al guardar/publicar**
+  (lee Supabase en build); **v2 = ficha dinámica** (`/es/inmueble/[slug]` con `prerender=false`)
+  si la latencia molesta.
+
+### Cómo se conectan (pasos de integración)
+1. `npm i @supabase/supabase-js` (**versión fijada**, commit del lockfile).
+2. Variables: `SUPABASE_URL` y `SUPABASE_ANON_KEY` (públicas, para el navegador) y
+   `SUPABASE_SERVICE_ROLE_KEY` (**secreta**, solo en rutas API del Worker →
+   `wrangler secret put`). Nunca exponer la service_role en el cliente.
+3. Crear el **esquema** (§4) en Supabase con **RLS** y políticas por rol/propietario; exponer al
+   Data API las tablas que el front lee.
+4. **Auth**: alta de los comerciales en Supabase Auth; guardar el rol en `app_metadata`.
+5. **Storage**: bucket `property-photos`; políticas de subida para comerciales autenticados.
+6. Cablear `getListings()` para leer pisos publicados de Supabase (build v1).
+
+> Para la puesta en marcha hay un **conector MCP de Supabase** disponible en esta sesión
+> (`mcp.supabase.com`): si lo autenticas (OAuth) con un **token de acceso con permisos acotados**,
+> puedo inspeccionar el proyecto, crear el esquema y las políticas. Alternativa: me pasas la URL
+> del proyecto y las claves (la service_role como secret, no en texto plano en el repo).
 
 ---
 
@@ -202,10 +235,10 @@
 | Componente | Recomendación | Nota |
 |---|---|---|
 | Inventario de pisos | **BUILD** (ahora propio) | D1 + R2; migrar los 126 actuales. Es el mayor coste nuevo. |
-| Subida/gestión de fotos | **BUILD** (R2) | Comprimir en subida (límite 25 MiB/asset); portada + orden. |
+| Subida/gestión de fotos | **BUILD sobre Supabase Storage** | Bucket `property-photos`; comprimir en subida; portada + orden. |
 | Mapa círculo 30–70 m | **BUILD (base hecha)** | `ApproxLocationMap.tsx` existe; añadir modo edición. |
-| Auth comerciales | **Cloudflare Access** o login propio | Pocos usuarios; Access = cero código. |
-| Base de datos | **D1** | Serverless, ya en el ecosistema. |
+| Auth comerciales | **Supabase Auth** | Email/contraseña o magic link; rol en `app_metadata`; cero login propio. |
+| Base de datos | **Supabase (Postgres)** | Base oficial del usuario; RLS por rol/propietario. |
 | Captura/gestión de leads | **BUILD** | Es el núcleo del valor; se apoya en la espina de conversión existente. |
 | Calendario de citas | **BUILD ligero** o Cal.com | Cal.com si no se quiere construir agenda. |
 | Disparo reseña | **wa.me + Resend** o reutilizar piloto **NFC** (Calipso) | El NFC ya existe para reseñas; valorar delegar. |
