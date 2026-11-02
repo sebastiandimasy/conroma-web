@@ -184,9 +184,10 @@
   --shadow-2: 0 1px 3px rgb(0 0 0 / 0.4), 0 6px 16px -8px rgb(0 0 0 / 0.5);
   --shadow-3: 0 2px 6px rgb(0 0 0 / 0.45), 0 12px 22px -12px rgb(0 0 0 / 0.55);
 
-  /* dark: negro carbón + amarillo (igual que el @media; aquí para el toggle manual en SO claro). */
+  /* dark: negro carbón + amarillo (igual que el @media; aquí para el toggle manual en SO claro).
+     Glow ámbar de marca sobre carbón, acoplado al claro (ahí es #fde6a8 sobre blanco). */
   --gradient-hero:
-    radial-gradient(72% 90% at 80% 0%, #2a2208 0%, transparent 55%),
+    radial-gradient(72% 90% at 80% 0%, #8a6d12 0%, transparent 55%),
     linear-gradient(135deg, oklch(0.147 0.004 49.25) 0%, #14110a 55%, #1d1708 100%);
   color-scheme: dark;
 }
@@ -225,9 +226,9 @@
     --shadow-2: 0 1px 3px rgb(0 0 0 / 0.4), 0 6px 16px -8px rgb(0 0 0 / 0.5);
     --shadow-3: 0 2px 6px rgb(0 0 0 / 0.45), 0 12px 22px -12px rgb(0 0 0 / 0.55);
 
-    /* dark: negro carbón + amarillo. */
+    /* dark: negro carbón + amarillo. Glow ámbar de marca sobre carbón, acoplado al claro. */
     --gradient-hero:
-      radial-gradient(72% 90% at 80% 0%, #2a2208 0%, transparent 55%),
+      radial-gradient(72% 90% at 80% 0%, #8a6d12 0%, transparent 55%),
       linear-gradient(135deg, oklch(0.147 0.004 49.25) 0%, #14110a 55%, #1d1708 100%);
     color-scheme: dark;
   }

@@ -90,7 +90,7 @@ void main() {
 // Paleta de marca Conroma, dependiente del tema:
 // dark  → amarillo/ámbar sobre carbón.  light → amarillo/ámbar sobre blanco.
 const PALETTES = {
-  dark: { bg: '#121212', colors: ['#f4ce4b', '#f9de77', '#8a6d12', '#0d0d0b'] },
+  dark: { bg: '#14110a', colors: ['#f4ce4b', '#f9de77', '#8a6d12', '#0d0d0b'] },
   light: { bg: '#ffffff', colors: ['#f4ce4b', '#f7d85f', '#fbe9a0', '#ffffff'] },
 } as const;
 const SPEED = 1.3;
