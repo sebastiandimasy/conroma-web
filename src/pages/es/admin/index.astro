@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import AdminApp from '../../../islands/AdminApp';
+import '../../../styles/admin.css';
+// Panel interno: noindex, sin header/footer/dock (bare). Todo el trabajo lo hace la isla React.
+---
+
+<BaseLayout
+  title="Panel"
+  description="Panel interno de Conroma Asesores."
+  path="/es/admin/"
+  noindex
+  bare
+>
+  <main class="admin">
+    <div class="admin__shell">
+      <AdminApp client:only="react" />
+    </div>
+  </main>
+</BaseLayout>
