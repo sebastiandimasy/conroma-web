@@ -19,7 +19,8 @@ export default defineConfig({
     // El simulador de hipoteca se sustituyó por la calculadora de "¿puedo comprar?".
     '/es/comprar/simulador-hipoteca/': '/es/comprar/puedo-comprar/',
   },
-  build: { inlineStylesheets: 'always' },
+  prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
+  build: { inlineStylesheets: 'auto' },
   integrations: [react(), sitemap({ filter: (page) => !hiddenPaths.some((path) => page.includes(path)) })],
   // worker.format 'es' para que Vite emita bien el web worker de maplibre-gl.
   // ssr.noExternal: evita el error intermitente del optimizador SSR de Vite en `astro dev`.

@@ -1,0 +1,24 @@
+# Cabeceras Cloudflare Pages. Formato: patrón de ruta + líneas "Header: valor" indentadas.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Assets con hash de Astro: inmutables, cache larga.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# PENDIENTE — Content-Security-Policy.
+# No se activa aún: una CSP mal ajustada rompe GTM/GA, maplibre-gl, fontsource y las
+# fotos de Habitatsoft. Antes de activarla hay que permitir al menos estos hosts:
+#   script-src:  'self' www.googletagmanager.com www.google-analytics.com
+#   connect-src: 'self' www.google-analytics.com *.google-analytics.com region1.google-analytics.com
+#                www.googletagmanager.com *.tiles.mapbox.com (si aplica) *.supabase.co
+#   style-src:   'self' 'unsafe-inline' fonts.googleapis.com
+#   font-src:    'self' fonts.gstatic.com data:
+#   img-src:     'self' data: blob: fotoshs.imghs.net www.googletagmanager.com www.google-analytics.com
+#   worker-src:  'self' blob:   (maplibre-gl crea su worker desde blob:)
+#   frame-src:   'self' www.googletagmanager.com
+# Revisar en móvil con DevTools (Report-Only primero) antes de forzarla.

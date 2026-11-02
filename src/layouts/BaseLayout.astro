@@ -22,9 +22,10 @@ interface Props {
   overlay?: boolean;
   contact?: ContactContext;
   primaryAction?: { label: string; href: string };
+  ogImage?: string;
 }
 
-const { title, description, path, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction } = Astro.props;
+const { title, description, path, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction, ogImage = '/img/equipo/equipo.jpg' } = Astro.props;
 // Preview para el stakeholder: todo el sitio noindex (build con PUBLIC_PREVIEW=true). En producción no se activa.
 const previewNoindex = import.meta.env.PUBLIC_PREVIEW === 'true';
 const canonical = absoluteUrl(path);
@@ -47,6 +48,18 @@ const languageLinks = alternates(path);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="es_ES" />
+    {/* Cabecera social. ogImage se puede sobreescribir por página; por defecto, foto de marca.
+        TODO: crear una OG dedicada 1200x630 (JPG/PNG) en public/brand y apuntar aquí el default;
+        la actual (equipo.jpg, 1667x2500) es vertical y WhatsApp/redes la recortan. */}
+    <meta property="og:image" content={absoluteUrl(ogImage)} />
+    {ogImage === '/img/equipo/equipo.jpg' && (
+      <>
+        <meta property="og:image:width" content="1667" />
+        <meta property="og:image:height" content="2500" />
+      </>
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={absoluteUrl(ogImage)} />
     <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0B0B0A" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/brand/conroma-logo.svg" />
@@ -75,12 +88,11 @@ const languageLinks = alternates(path);
         gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
       }
     </script>
-    {/* Google tag (gtag.js) — GA4. Respeta el Consent Mode v2 fijado arriba. */}
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-C9WV5S78LX"></script>
-    <script is:inline>
-      gtag('js', new Date());
-      gtag('config', 'G-C9WV5S78LX');
-    </script>
+    {/* Analítica consolidada en Google Tag Manager (GTM-KWJHKHR2). El gtag.js directo de
+        GA4 se quitó para no duplicar hits. IMPORTANTE: para que GA4 siga recibiendo datos,
+        en el contenedor GTM debe existir una etiqueta "GA4 Configuration" con el ID de medición
+        G-C9WV5S78LX, disparada en All Pages. Eso se configura en la UI de GTM, no aquí.
+        El Consent Mode v2 y window.dataLayer/gtag de arriba se mantienen: GTM los necesita. */}
     {/* Google Tag Manager */}
     <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -91,24 +103,22 @@ const languageLinks = alternates(path);
   <body class:list={{ 'page--bare': bare, 'page--overlay': overlay }}>
     {/* Google Tag Manager (noscript) */}
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KWJHKHR2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    {/* Medición Click-URL: cada CTA con data-contact empuja su clic al dataLayer (GTM mide por origen/canal, no por el texto del botón). */}
+    {/* Medición Click-URL: un clic en cualquier enlace wa.me/ o tel: empuja el evento al dataLayer.
+        GTM dispara las conversiones de GA4 y Google Ads por el CANAL del enlace (whatsapp/telefono),
+        nunca por el texto del botón. origen/contacto vienen de los data-origin/data-contact que
+        generan los CTAs (ver src/lib/links.ts y los islands de contacto). */}
     <script is:inline>
       document.addEventListener('click', function (e) {
-        var a = e.target.closest && e.target.closest('[data-contact]');
+        var a = e.target.closest && e.target.closest('a[href^="tel:"], a[href*="wa.me/"]');
         if (!a) return;
-        var payload = {
-          cta_contact: a.getAttribute('data-contact'),
-          cta_origin: a.getAttribute('data-origin') || '',
-          cta_ref: a.getAttribute('data-ref') || '',
-        };
-        // gtag('event') lo recoge GA4 directo y además queda en el dataLayer para GTM/Pixel.
-        if (typeof window.gtag === 'function') {
-          window.gtag('event', 'cta_click', payload);
-        } else {
-          window.dataLayer = window.dataLayer || [];
-          payload.event = 'cta_click';
-          window.dataLayer.push(payload);
-        }
+        var href = a.getAttribute('href') || '';
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'contacto_click',
+          metodo: href.indexOf('tel:') === 0 ? 'telefono' : 'whatsapp',
+          origen: a.getAttribute('data-origin') || '',
+          contacto: a.getAttribute('data-contact') || '',
+        });
       }, true);
     </script>
     {/* PRUEBA liquid-glass: filtro de refracción. Quitar junto con la clase .liquid-glass para revertir. */}
