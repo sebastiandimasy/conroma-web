@@ -8,10 +8,15 @@ Todo lo de esta sesión está **subido a GitHub** en la rama `feat/crm-leads` de
 ## 1. Qué hacer en el Mac personal (3 comandos)
 
 ```bash
-cd ~/conroma-web          # o donde lo tengas clonado
+cd ~/conroma-web                      # o donde lo tengas clonado
+git fetch origin
+git checkout feat/crm-leads           # ojo: el trabajo NO esta en main
 git pull origin feat/crm-leads
 npm install
 ```
+
+> **El repositorio no tiene rama `main`.** Solo hay `feat/crm-leads` (donde esta todo) y
+> `feat/design-system-fase0-4` (antigua). Si clonas de cero, comprueba en que rama caes.
 
 Abre Claude Code en esa carpeta. Lee `CLAUDE.md` **solo**, sin que le digas nada.
 
@@ -58,7 +63,12 @@ Son pesados o contienen datos, por eso no se commitean:
 | `conroma-preview-hostinger/` y `.zip` | La demo lista para subir a Hostinger (78 MB). Se regenera con `bash scripts/preparar-preview.sh`. |
 | `backup-conromaasesores-antigua.tar.gz` | La web antigua entera: 285 páginas, 908 recursos, 18 MB. **No la borres** hasta que el swipe lleve meses. |
 | `conroma-crm-ui-para-subir/` | El CRM, pendiente de subir a GitHub. Instrucciones dentro, en `SUBIR-A-GITHUB.md`. |
-| `Claude-migracion/` | Skills y memoria de Claude para instalar en el Mac personal. **Esto no viaja por GitHub**: vive en `~/.claude/` de cada ordenador. |
+| `conroma-contexto/` | `CLAUDE.md`, `CONTEXT.md`, `COMO-SINCRONIZAR.md` y `VOLCADO-desde-Pro.md`: el puente de contexto entre las dos cuentas. |
+
+> Las **skills y la memoria de Claude** no están en ninguna de esas carpetas ni en GitHub: viven
+> en `~/.claude/` de **cada ordenador** (47 fichas de memoria y las skills instaladas). Si las
+> quieres en el Mac personal hay que copiar esa carpeta a mano (AirDrop o USB). El repo funciona
+> sin ellas: `CLAUDE.md` y `ESTADO.md` bastan para retomar este proyecto.
 
 ## 6. Lo primero que hay que retomar
 
