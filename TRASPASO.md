@@ -10,7 +10,7 @@ Todo lo de esta sesión está **subido a GitHub** en la rama `feat/crm-leads` de
 | Proyecto | Carpeta | Repo | Stack |
 |---|---|---|---|
 | **Web pública** | `~/conroma-web` | `github.com/sebastiandimasy/conroma-web` (rama `feat/crm-leads`) | Astro + Cloudflare |
-| **CRM interno** | `~/conroma-crm-ui` | `github.com/sebastiandimasy/conroma-crm-ui` *(pendiente de crear)* | Vite + React + Tailwind |
+| **CRM interno** | `~/conroma-crm-ui` | `github.com/sebastiandimasy/conroma-crm-ui` (rama `main`) | Vite + React + Tailwind |
 
 Cada uno tiene su propio `CLAUDE.md`. **Abre Claude Code dentro de la carpeta del proyecto en
 el que vas a trabajar**, nunca en la carpeta padre: si lo abres un nivel por encima, mezcla los
