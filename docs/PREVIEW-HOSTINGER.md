@@ -1,7 +1,14 @@
 # Demo privada para el stakeholder, en Hostinger y sin indexar
 
-Objetivo: una URL que puedas pasarle al stakeholder para que vea la web nueva **antes** del
-swipe, sin que Google la encuentre ni la indexe, y sin tocar nada de la web actual.
+Objetivo: **una sola URL** que pasarle al stakeholder para que vea, antes del swipe y sin que
+Google la encuentre, las dos cosas:
+
+- **`/`** — un portal con dos accesos.
+- **`/es/`** — la web nueva entera, 184 páginas.
+- **`/crm/`** — el prototipo del CRM, navegable y con datos de ejemplo: puede trastear sin
+  romper nada (el onboarding de 6 pasos le explica dónde está cada cosa).
+
+La web actual sigue intacta: no se toca nada de producción.
 
 El paquete ya está hecho:
 
@@ -15,14 +22,14 @@ El paquete ya está hecho:
 Son **tres barreras independientes**. Con una bastaría; las tres juntas hacen que sea
 prácticamente imposible que aparezca en Google:
 
-1. **`<meta name="robots" content="noindex, nofollow">` en las 184 páginas.** Verificado una a
-   una: 184 de 184. Se genera con `PUBLIC_PREVIEW=true` al compilar.
+1. **`<meta name="robots" content="noindex, nofollow">` en las 184 páginas** (verificado una a
+   una: 184 de 184; lo genera `PUBLIC_PREVIEW=true`) **y en el CRM y el portal**.
 2. **`robots.txt` con `Disallow: /`** para todo el subdominio.
 3. **Cabecera `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`** en el `.htaccess`. Esta
    cubre también lo que no puede llevar etiqueta: PDF, imágenes, vídeos.
 
-> El `.htaccess` además manda la raíz `/` a `/es/` y activa la compresión. Hostinger usa
-> LiteSpeed, que entiende `.htaccess` igual que Apache.
+> El `.htaccess` además activa la compresión. Hostinger usa LiteSpeed, que entiende
+> `.htaccess` igual que Apache.
 
 ## Pasos en el panel de Hostinger
 
@@ -80,8 +87,8 @@ curl -s https://demo.conromaasesores.com/robots.txt
 curl -s https://demo.conromaasesores.com/es/ | grep -o '<meta name="robots"[^>]*>'
 ```
 
-Y en el navegador: abre `https://demo.conromaasesores.com/` — debe llevarte solo a `/es/`.
-**Míralo en el móvil**, que es el 97 % del tráfico.
+Y en el navegador: abre `https://demo.conromaasesores.com/` — debe salir el portal con los dos
+accesos, y `/crm/` tiene que cargar el panel. **Míralo en el móvil**, que es el 97 % del tráfico.
 
 ## Qué NO funciona en la demo (y está bien que no funcione)
 
@@ -89,7 +96,11 @@ Y en el navegador: abre `https://demo.conromaasesores.com/` — debe llevarte so
   ejecute JavaScript, y el hosting compartido de Hostinger ejecuta PHP. Los formularios **no dan
   error**: siguen abriendo WhatsApp con el mensaje escrito, que es lo que el stakeholder va a
   probar. Ver `docs/HOSTINGER.md` para cómo se resuelve de cara a producción.
-- **El panel `/es/admin/`** no entra: necesita las claves de Supabase compiladas.
+- **El panel `/es/admin/`** no entra: necesita las claves de Supabase compiladas. Para enseñar
+  la gestión está `/crm/`, que es el prototipo y no necesita claves.
+- **El CRM de `/crm/` usa datos de ejemplo**, no los reales. Lo avisa en pantalla con un
+  indicador ámbar («Datos de demostración»). Es lo que queremos para una demo: el stakeholder
+  puede cambiar etapas y escribir notas sin tocar nada de verdad.
 
 ## Cuando el stakeholder dé el OK
 
@@ -99,7 +110,11 @@ esté indexada, es una fuente de confusión. El swipe de verdad está en `docs/S
 ## Regenerar el paquete (si cambia algo de la web)
 
 ```bash
+cd ~/conroma-crm-ui && npm run build     # el CRM, si ha cambiado
 cd ~/conroma-web
 PUBLIC_PREVIEW=true npm run build
 bash scripts/preparar-preview.sh
 ```
+
+El script **aborta si alguna página no lleva `noindex`**: sin esa comprobación es fácil subir
+por error un build normal y que Google acabe indexando la demo.
