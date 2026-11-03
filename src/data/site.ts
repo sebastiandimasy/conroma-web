@@ -124,7 +124,11 @@ export const site: SiteData = {
     ],
   },
   languages: ['Català', 'Castellano', 'English', 'Français'],
-  sampleData: true,
+  // Aprobado por el dueño (3-nov-2026): fuera el aviso de "web en construcción".
+  // Las 118 fichas con fotos salen limpias; las 8 que aún no las tienen se quedan
+  // fuera de Google solas (noindex + fuera del sitemap), así que no se promete nada
+  // que no esté. Volver a poner `true` solo si se vuelve a cargar cartera en bruto.
+  sampleData: false,
   // Aprobado por el dueño (3-nov-2026): el catálogo se indexa. Los 8 inmuebles
   // sin fotos quedan fuera automáticamente hasta que Habitatsoft entregue el archivo.
   catalogIndexable: true,
