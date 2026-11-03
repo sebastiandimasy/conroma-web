@@ -3,6 +3,8 @@ import type { Property } from '../data/properties';
 export interface Filters {
   maxPrice: number | null;
   minRooms: number | null;
+  /** Slug del pueblo. Solo se usa en el listado general: dentro de /es/venta/{pueblo}/ sobra. */
+  town: string | null;
   type: string | null;
   terrace: boolean;
   elevator: boolean;
@@ -14,6 +16,7 @@ export type SortOrder = 'recientes' | 'precio-asc' | 'precio-desc';
 export const emptyFilters: Filters = {
   maxPrice: null,
   minRooms: null,
+  town: null,
   type: null,
   terrace: false,
   elevator: false,
@@ -25,6 +28,7 @@ export function applyFilters(list: Property[], filters: Filters): Property[] {
     (property) =>
       (filters.maxPrice === null || property.price <= filters.maxPrice) &&
       (filters.minRooms === null || property.rooms >= filters.minRooms) &&
+      (filters.town === null || property.town === filters.town) &&
       (filters.type === null || property.type === filters.type) &&
       (!filters.terrace || property.terrace) &&
       (!filters.elevator || property.elevator) &&
@@ -42,6 +46,7 @@ export function countActive(filters: Filters): number {
   return [
     filters.maxPrice !== null,
     filters.minRooms !== null,
+    filters.town !== null,
     filters.type !== null,
     filters.terrace,
     filters.elevator,
@@ -56,6 +61,7 @@ export function filtersFromQuery(query: URLSearchParams): Filters {
     ...emptyFilters,
     maxPrice: Number.isFinite(maxPrice) && maxPrice > 0 ? maxPrice : null,
     minRooms: Number.isFinite(minRooms) && minRooms > 0 ? minRooms : null,
+    town: query.get('pueblo'),
     type: query.get('tipo'),
   };
 }

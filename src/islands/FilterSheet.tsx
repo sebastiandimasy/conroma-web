@@ -7,6 +7,8 @@ import { emptyFilters } from '../lib/filters';
 interface FilterSheetProps {
   open: boolean;
   filters: Filters;
+  /** Pueblos con inmuebles. Vacio dentro de la pagina de un pueblo: alli el filtro sobra. */
+  towns: { slug: string; name: string; count: number }[];
   types: string[];
   count: number;
   onChange: (filters: Filters) => void;
@@ -16,7 +18,7 @@ interface FilterSheetProps {
 const priceSteps = [150000, 200000, 250000, 300000, 400000];
 const roomSteps = [1, 2, 3, 4];
 
-export function FilterSheet({ open, filters, types, count, onChange, onClose }: FilterSheetProps) {
+export function FilterSheet({ open, filters, towns, types, count, onChange, onClose }: FilterSheetProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const controls = useDragControls();
   const reduceMotion = useReducedMotion();
@@ -68,22 +70,62 @@ export function FilterSheet({ open, filters, types, count, onChange, onClose }: 
           </div>
           <h2 className="sheet__title">Filtros</h2>
 
-          <fieldset className="sheet__group">
-            <legend className="field__label">Precio hasta</legend>
-            <div className="chip-row">
-              {priceSteps.map((step) => (
-                <button
-                  key={step}
-                  type="button"
-                  className="chip"
-                  aria-pressed={filters.maxPrice === step}
-                  onClick={() => onChange({ ...filters, maxPrice: filters.maxPrice === step ? null : step })}
+          {/* Desplegables en vez de listas abiertas: 25 pueblos en chips eran un muro de
+              scroll y dejaban el boton de aplicar fuera de pantalla. El <select> nativo
+              ademas abre la rueda del sistema en movil, que es el 97% del trafico. */}
+          <div className="sheet__fields">
+            {towns.length > 1 && (
+              <label className="field">
+                <span className="field__label">Pueblo</span>
+                <select
+                  className="field__control"
+                  value={filters.town ?? ''}
+                  onChange={(event) => onChange({ ...filters, town: event.target.value || null })}
                 >
-                  {`${step.toLocaleString('es-ES')} €`}
-                </button>
-              ))}
-            </div>
-          </fieldset>
+                  <option value="">Todos los pueblos</option>
+                  {towns.map((town) => (
+                    <option key={town.slug} value={town.slug}>
+                      {`${town.name} (${town.count})`}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+
+            <label className="field">
+              <span className="field__label">Precio hasta</span>
+              <select
+                className="field__control"
+                value={filters.maxPrice ?? ''}
+                onChange={(event) =>
+                  onChange({ ...filters, maxPrice: event.target.value ? Number(event.target.value) : null })
+                }
+              >
+                <option value="">Sin límite</option>
+                {priceSteps.map((step) => (
+                  <option key={step} value={step}>
+                    {`${step.toLocaleString('es-ES')} €`}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="field">
+              <span className="field__label">Tipo</span>
+              <select
+                className="field__control"
+                value={filters.type ?? ''}
+                onChange={(event) => onChange({ ...filters, type: event.target.value || null })}
+              >
+                <option value="">Cualquiera</option>
+                {types.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
 
           <fieldset className="sheet__group">
             <legend className="field__label">Habitaciones, como mínimo</legend>
@@ -97,23 +139,6 @@ export function FilterSheet({ open, filters, types, count, onChange, onClose }: 
                   onClick={() => onChange({ ...filters, minRooms: filters.minRooms === step ? null : step })}
                 >
                   {`${step}+`}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="sheet__group">
-            <legend className="field__label">Tipo</legend>
-            <div className="chip-row">
-              {types.map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  className="chip"
-                  aria-pressed={filters.type === type}
-                  onClick={() => onChange({ ...filters, type: filters.type === type ? null : type })}
-                >
-                  {type}
                 </button>
               ))}
             </div>

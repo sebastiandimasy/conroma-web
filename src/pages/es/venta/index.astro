@@ -66,31 +66,34 @@ const faq = [
     </div>
   </section>
 
-  <section class="section town-index">
-    <div class="wrap">
-      <h2 class="section__title">Por pueblo</h2>
-      <ul class="town-index__list">
-        {
-          townRows.map((row) => (
-            <li class="town-index__item">
-              <a class="town-index__link" href={`/es/venta/${row.town.slug}/`}>
-                <span class="town-index__name">{row.town.name}</span>
-                <span class="town-index__count">
-                  {row.total} {row.total === 1 ? 'inmueble' : 'inmuebles'}
-                  {row.homes > 0 && <> · {row.homes} de vivienda</>}
-                </span>
-                <Icon name="arrow" class="town-index__arrow" />
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
   <section class="listing-section">
     <div class="wrap">
       <ListingExplorer client:load properties={catalog} townName="el Maresme y La Selva" />
+      <section class="section town-index">
+        <details class="town-index__details">
+          <summary class="town-index__summary">
+            <span class="section__title">Ir directo a un pueblo</span>
+            <span class="town-index__hint">{townRows.length} pueblos con inmuebles</span>
+          </summary>
+          <ul class="town-index__list">
+            {
+              townRows.map((row) => (
+                <li class="town-index__item">
+                  <a class="town-index__link" href={`/es/venta/${row.town.slug}/`}>
+                    <span class="town-index__name">{row.town.name}</span>
+                    <span class="town-index__count">
+                      {row.total} {row.total === 1 ? 'inmueble' : 'inmuebles'}
+                      {row.homes > 0 && <> · {row.homes} de vivienda</>}
+                    </span>
+                    <Icon name="arrow" class="town-index__arrow" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
+      </section>
+
       <aside class="alert-card" data-reveal>
         <span class="alert-card__corner alert-card__corner--tl" aria-hidden="true"><Icon name="plus" /></span>
         <span class="alert-card__corner alert-card__corner--tr" aria-hidden="true"><Icon name="plus" /></span>

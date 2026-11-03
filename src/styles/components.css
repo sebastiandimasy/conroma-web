@@ -495,6 +495,12 @@
     @apply flex flex-wrap gap-2;
   }
 
+  /* Para listas largas de chips (los 25 pueblos): envuelven en vez de scrollar. */
+  .chip-row--wrap {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
   .chip-row--scroll {
     @apply flex-nowrap overflow-x-auto;
     margin-inline: calc(var(--space-gutter) * -1);
@@ -903,9 +909,28 @@
     margin-bottom: 24px;
   }
 
+  .sheet__fields {
+    @apply grid gap-4;
+    margin-bottom: 24px;
+  }
+
+  /* El boton de aplicar se queda pegado abajo: antes había que bajar 745px de scroll
+     para llegar a él después de tocar un filtro. */
   .sheet__actions {
     @apply grid gap-3;
     grid-template-columns: auto 1fr;
+    position: sticky;
+    bottom: 0;
+    margin: 0 calc(var(--space-4) * -1) calc(var(--space-4) * -1);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-line);
+  }
+
+  @media (min-width: 40rem) {
+    .sheet__fields {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (min-width: 60rem) {

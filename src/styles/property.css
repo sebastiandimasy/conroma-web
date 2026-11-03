@@ -849,6 +849,67 @@
 @layer components {
   /* Índice de pueblos de /es/venta/: enlaces reales (no filtro de cliente) para que
      cada pueblo tenga su puerta de entrada y se pueda rastrear. */
+  /* Plegado por defecto: abierto se comia 2,4 pantallas de movil antes de que el
+     visitante viera un solo piso. Los enlaces siguen en el HTML aunque este cerrado,
+     asi que Google los rastrea igual. */
+  .town-index__details {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .town-index__summary {
+    @apply flex items-center gap-3;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .town-index__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Flecha propia, que gira al abrir: sin ella no se ve que es desplegable. */
+  .town-index__summary::after {
+    content: '';
+    flex: none;
+    margin-left: auto;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--color-ink-3);
+    border-bottom: 2px solid var(--color-ink-3);
+    transform: rotate(45deg);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+  }
+
+  .town-index__details[open] .town-index__summary::after {
+    transform: rotate(-135deg);
+  }
+
+  .town-index__summary .section__title {
+    margin: 0;
+  }
+
+  .town-index__hint {
+    font-size: var(--text-caption);
+    color: var(--color-ink-2);
+  }
+
+  .town-index__summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .town-index__summary::after {
+      transition: none;
+    }
+  }
+
   .town-index__list {
     @apply grid gap-3;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));

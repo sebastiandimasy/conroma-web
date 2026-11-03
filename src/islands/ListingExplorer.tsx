@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { Button } from '@heroui/react';
 import type { Property } from '../data/properties';
+import { findTown } from '../data/towns';
 import {
   applyFilters,
   countActive,
@@ -35,6 +36,16 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
   }, []);
 
   const types = useMemo(() => [...new Set(properties.map((property) => property.type))], [properties]);
+  // Pueblos presentes en esta cartera, de mas a menos inmuebles. En la pagina de un pueblo
+  // concreto sale uno solo, y entonces el filtro no se pinta.
+  const towns = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const property of properties) counts.set(property.town, (counts.get(property.town) ?? 0) + 1);
+    return [...counts.entries()]
+      .map(([slug, count]) => ({ slug, name: findTown(slug)?.name ?? slug, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'es'));
+  }, [properties]);
+  const townName_ = towns.find((town) => town.slug === filters.town)?.name ?? null;
   const matching = useMemo(() => applyFilters(properties, filters), [properties, filters]);
   const visible = useMemo(
     () => sortProperties(matching.filter((property) => !hidden.includes(property.ref)), order),
@@ -44,6 +55,9 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
   const hiddenCount = matching.length - visible.length;
 
   const quick: { label: string; active: boolean; toggle: () => void }[] = [
+    ...(townName_
+      ? [{ label: townName_, active: true, toggle: () => setFilters({ ...filters, town: null }) }]
+      : []),
     {
       label: 'Hasta 250.000 €',
       active: filters.maxPrice === 250000,
@@ -61,7 +75,12 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
   return (
     <div className="listing">
       <div className="chip-row chip-row--scroll listing__filters">
-        <button type="button" className="chip chip--active" onClick={() => setSheetOpen(true)}>
+        <button
+          type="button"
+          className="chip chip--active"
+          onClick={() => setSheetOpen(true)}
+          aria-haspopup="dialog"
+        >
           <Icon name="filter" className="button__icon" />
           {`Filtros${active > 0 ? ` · ${active}` : ''}`}
         </button>
@@ -136,6 +155,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
       <FilterSheet
         open={sheetOpen}
         filters={filters}
+        towns={towns}
         types={types}
         count={matching.length}
         onChange={setFilters}
