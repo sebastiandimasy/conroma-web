@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { posts } from './src/data/blog.ts';
 import { site } from './src/data/site.ts';
+import { getListings, propertySlug } from './src/data/properties.ts';
 
 import cloudflare from '@astrojs/cloudflare';
 
@@ -11,7 +12,15 @@ const draftPaths = posts.filter((post) => post.draft).map((post) => `/es/blog/${
 // El catálogo entra al sitemap cuando se marca indexable (bandera independiente
 // del aviso de 'web en construcción' que controla `sampleData`).
 const samplePaths = site.catalogIndexable ? [] : ['/es/inmueble/', '/es/venta/'];
-const hiddenPaths = ['/privacidad/', '/estilo/', '/guardados/', '/admin/', ...draftPaths, ...samplePaths];
+// Una ficha sin fotos lleva `noindex` (ver src/pages/es/inmueble/[slug].astro), asi que
+// tampoco puede estar en el sitemap: pedirle a Google que rastree una URL que luego le
+// dice "no me indexes" es una senal contradictoria. Hoy son 8 de 126.
+const photolessPaths = site.catalogIndexable
+  ? getListings()
+      .filter((property) => !property.images || property.images.length === 0)
+      .map((property) => `/es/inmueble/${propertySlug(property)}/`)
+  : [];
+const hiddenPaths = ['/estilo/', '/guardados/', '/admin/', ...draftPaths, ...samplePaths, ...photolessPaths];
 
 export default defineConfig({
   site: 'https://conromaasesores.com',
