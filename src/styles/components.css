@@ -478,11 +478,20 @@
     border-color: var(--color-ink);
   }
 
+  /* Negro, no amarillo: el amarillo esta reservado al CTA principal ("Valorar mi
+     piso"). Un chip de filtro en el mismo amarillo competia con el y se leia como
+     si fuese la accion importante de la pantalla. */
   .chip[aria-pressed="true"],
   .chip--active {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: var(--color-on-accent);
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  .chip[aria-pressed="true"]:hover,
+  .chip--active:hover {
+    border-color: var(--color-ink);
+    opacity: 0.88;
   }
 
   @media (pointer: coarse) {
