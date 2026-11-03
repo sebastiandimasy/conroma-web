@@ -14,6 +14,7 @@ const intentByNeed: Record<string, string> = {
 
 export default function ContactForm() {
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [need, setNeed] = useState(needs[0]);
   const [message, setMessage] = useState('');
   const [privacy, setPrivacy] = useState(false);
@@ -25,6 +26,7 @@ export default function ContactForm() {
     event.preventDefault();
     const next: Record<string, string> = {};
     if (name.trim().length < 2) next.name = 'Dinos cómo te llamas.';
+    if (!/^(\+?\d[\d\s]{7,14})$/.test(phone.trim())) next.phone = 'Déjanos un teléfono para poder contestarte.';
     if (!privacy) next.privacy = 'Necesitamos que aceptes la política de privacidad para contestarte.';
     setErrors(next);
     if (Object.keys(next).length > 0) return;
@@ -36,6 +38,7 @@ export default function ContactForm() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
+          phone: phone.trim(),
           message: message.trim(),
           intent: intentByNeed[need] ?? 'otro',
           source: 'web',
@@ -80,6 +83,24 @@ export default function ContactForm() {
           onChange={(event) => setName(event.target.value)}
         />
         {errors.name && <span className="field__error">{errors.name}</span>}
+      </label>
+      <label className="field">
+        <span className="field__label">Teléfono</span>
+        <input
+          className="field__control"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="Ej. 612 345 678"
+          value={phone}
+          aria-invalid={Boolean(errors.phone)}
+          aria-describedby="contacto-telefono-ayuda"
+          onChange={(event) => setPhone(event.target.value)}
+        />
+        {errors.phone && <span className="field__error">{errors.phone}</span>}
+        <span className="field__hint" id="contacto-telefono-ayuda">
+          Para poder contestarte aunque no llegues a enviar el WhatsApp.
+        </span>
       </label>
       <label className="field">
         <span className="field__label">¿Qué necesitas?</span>

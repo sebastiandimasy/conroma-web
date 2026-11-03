@@ -8,11 +8,20 @@ import { homeFaq } from '../../data/faq';
 import HeroSearch from '../../islands/HeroSearch';
 import Contador from '../../components/sections/Contador.astro';
 import { site } from '../../data/site';
+import { propertiesIn } from '../../data/properties';
+import { publishedCatalogTowns } from '../../data/towns';
 import { whatsappUrl } from '../../lib/links';
 import { formatRating } from '../../lib/format';
 import { agentSchema, faqSchema } from '../../lib/seo';
 
 const rating = site.googleRating;
+
+// Pueblos con cartera, de más a menos inmuebles, para el "dónde" del buscador.
+const searchTowns = publishedCatalogTowns
+  .map((town) => ({ slug: town.slug, name: town.name, total: propertiesIn(town.slug, 'venta').length }))
+  .filter((town) => town.total > 0)
+  .sort((a, b) => b.total - a.total)
+  .map(({ slug, name }) => ({ slug, name }));
 
 // Servicios de la home como acordeón (textos de services.ts; "Compra y venta" fusiona comprar+vender).
 const homeServices = [
@@ -38,7 +47,7 @@ const homeServices = [
 
 <BaseLayout
   title="Inmobiliaria en Malgrat de Mar | Conroma"
-  description="Conroma Asesores Inmobiliarios: especialistas en gestión inmobiliaria y gestión de patrimonios. Compra, venta, alquiler y reformas. Te atendemos en catalán, castellano, inglés y francés."
+  description="Inmobiliaria en Malgrat de Mar: compra, venta, alquiler, patrimonio y reformas en el Alt Maresme. Te atendemos en catalán, castellano, inglés y francés."
   path="/es/"
   schemas={[agentSchema(), faqSchema(homeFaq)]}
   overlay
@@ -50,7 +59,7 @@ const homeServices = [
       <p class="hero__lead">
         Compramos, vendemos y alquilamos contigo. Y nos quedamos para lo que venga después.
       </p>
-      <HeroSearch client:idle />
+      <HeroSearch client:idle towns={searchTowns} />
       {
         rating && (
           <div class="hero__proof">
@@ -179,24 +188,47 @@ const homeServices = [
           </a>
         )
       }
-      {/* Widget Trustindex: reseñas de Google en vivo (cuenta de Conroma). */}
-      <script is:inline defer async src="https://cdn.trustindex.io/loader.js?d045063849cb67522f863d5cb82"></script>
+      {/* Widget Trustindex: reseñas de Google en vivo. Es un tercero que deja cookies,
+          así que solo se carga si el visitante ha aceptado. Mientras tanto se queda el
+          resumen propio de arriba, que lleva la cifra con fecha de comprobación. */}
+      <div data-reviews-widget></div>
     </div>
-    {/* Oculta el resumen de reserva cuando el widget de Trustindex llega a inyectarse. */}
     <script is:inline>
       (function () {
         var sec = document.currentScript.closest('[data-reviews]');
         if (!sec) return;
         var fb = sec.querySelector('[data-reviews-fallback]');
-        if (!fb) return;
-        var obs = new MutationObserver(function () {
-          if (sec.querySelector('.ti-widget, [class*="trustindex"]')) {
-            fb.style.display = 'none';
-            obs.disconnect();
-          }
+        var slot = sec.querySelector('[data-reviews-widget]');
+        if (!slot) return;
+        var loaded = false;
+
+        function load() {
+          if (loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.defer = true;
+          s.async = true;
+          s.src = 'https://cdn.trustindex.io/loader.js?d045063849cb67522f863d5cb82';
+          slot.appendChild(s);
+          // El resumen propio solo se retira cuando el widget pinta algo de verdad:
+          // si no llega a cargar, el visitante sigue viendo la nota y las reseñas.
+          if (!fb) return;
+          var obs = new MutationObserver(function () {
+            if (slot.querySelector('div, iframe')) {
+              fb.style.display = 'none';
+              obs.disconnect();
+            }
+          });
+          obs.observe(slot, { childList: true, subtree: true });
+          setTimeout(function () { obs.disconnect(); }, 15000);
+        }
+
+        try {
+          if (localStorage.getItem('conroma:cookies') === 'aceptado') load();
+        } catch (e) {}
+        window.addEventListener('conroma:consent', function (event) {
+          if (event.detail === 'aceptado') load();
         });
-        obs.observe(sec, { childList: true, subtree: true });
-        setTimeout(function () { obs.disconnect(); }, 15000);
       })();
     </script>
   </section>

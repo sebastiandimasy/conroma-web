@@ -169,6 +169,14 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* "Precio a consultar": mismo hueco que el precio pero sin fingir una cifra. */
+  .property-card__price--ask {
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--color-ink-2);
+  }
+
   .property-card__ref {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
@@ -245,7 +253,14 @@
     position: sticky;
     top: calc(var(--header-height) + 18px);
     z-index: 20;
-    padding-block: 6px;
+    /* Al quedarse pegada, las tarjetas pasan por debajo: necesita fondo propio o
+       se leen los precios entre los huecos de los chips. */
+    margin-inline: calc(var(--space-gutter) * -1);
+    padding-block: var(--space-3);
+    padding-inline: var(--space-gutter);
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+    border-bottom: 1px solid var(--color-line);
   }
 
   .listing__bar {
@@ -827,6 +842,54 @@
 
   .contact-options__hint {
     font-size: var(--text-caption);
+    color: var(--color-ink-3);
+  }
+}
+
+@layer components {
+  /* Índice de pueblos de /es/venta/: enlaces reales (no filtro de cliente) para que
+     cada pueblo tenga su puerta de entrada y se pueda rastrear. */
+  .town-index__list {
+    @apply grid gap-3;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    margin-top: var(--space-5);
+    list-style: none;
+    padding: 0;
+  }
+
+  .town-index__link {
+    @apply flex items-center gap-3;
+    min-height: 56px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-on-surface);
+    text-decoration: none;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .town-index__link:hover,
+  .town-index__link:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .town-index__name {
+    font-weight: 600;
+  }
+
+  .town-index__count {
+    margin-left: auto;
+    font-size: var(--text-caption);
+    color: var(--color-ink-2);
+  }
+
+  .town-index__arrow {
+    flex: none;
+    width: 16px;
+    height: 16px;
     color: var(--color-ink-3);
   }
 }

@@ -74,6 +74,12 @@ export function setConsent(value: 'aceptado' | 'rechazado'): void {
   } catch {
     // seguimos: el update de consentimiento no debe depender de localStorage
   }
+  // Avisa a los scripts de terceros que esperan consentimiento (widget de reseñas, etc.).
+  try {
+    window.dispatchEvent(new CustomEvent('conroma:consent', { detail: value }));
+  } catch {
+    // sin CustomEvent no pasa nada: se cargarán en la siguiente visita
+  }
   // Consent Mode v2: avisa a GTM en cuanto el usuario decide, usando el `gtag` global del <head>.
   try {
     const granted = value === 'aceptado' ? 'granted' : 'denied';

@@ -47,6 +47,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return json({ error: 'El servidor no está configurado para recibir el mensaje.' }, 500);
   }
 
+  // RGPD: aceptar la política de privacidad (`consent`) permite contestar, pero NO es
+  // consentimiento de marketing. Eso solo lo da la casilla separada (`marketing`).
+  const marketing = body.marketing === true;
+
   const now = new Date().toISOString();
   const { data, error } = await supabase
     .from('lead')
@@ -59,7 +63,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       property_ref: str(body.property_ref) || null,
       source,
       status: 'nuevo',
-      consent_marketing: true,
+      consent_marketing: marketing,
       consent_at: now,
       consent_source: source,
     })

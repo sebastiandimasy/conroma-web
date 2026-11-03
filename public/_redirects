@@ -10,6 +10,11 @@
 /contacto/                  /es/contacto/                   301
 /blogs                      /es/blog/                       301
 /blogs/                     /es/blog/                       301
+# Las entradas sueltas colgaban de /blog/<slug>/<id>/, no de /blogs/: sin esta
+# regla, las dos publicaciones vivas del sitio antiguo caían en un 404.
+# Comprobado contra el rastreo real de www.conromaasesores.com (nov 2026).
+/blog                       /es/blog/                       301
+/blog/*                     /es/blog/                       301
 /favoritos                  /es/guardados/                  301
 /favoritos/                 /es/guardados/                  301
 /captacion                  /es/vender/                     301

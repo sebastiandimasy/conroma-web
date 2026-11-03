@@ -141,7 +141,7 @@ export function FilterSheet({ open, filters, types, count, onChange, onClose }: 
               Quitar
             </Button>
             <Button variant="primary" onPress={onClose}>
-              {count === 0 ? 'Ninguna así' : `Ver ${count} ${count === 1 ? 'vivienda' : 'viviendas'}`}
+              {count === 0 ? 'Ninguno así' : `Ver ${count} ${count === 1 ? 'inmueble' : 'inmuebles'}`}
             </Button>
           </div>
         </motion.div>

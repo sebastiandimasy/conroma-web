@@ -88,6 +88,7 @@ export default function ChatDemo() {
     { id: 0, from: 'bot', text: 'Hola. Dime qué necesitas y te oriento en un momento.' },
   ]);
 
+  const [hiddenByHero, setHiddenByHero] = useState(false);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -118,6 +119,20 @@ export default function ChatDemo() {
     if (log) log.scrollTop = log.scrollHeight;
   }, [messages, open]);
 
+  // El lanzador es una pestaña fija al borde derecho y, en móvil, cae justo encima
+  // del botón "Buscar" del héroe: un dedo en la parte derecha del CTA abría el chat.
+  // Mientras el buscador del héroe está a la vista, el lanzador se aparta.
+  useEffect(() => {
+    const hero = document.querySelector('.hero-search');
+    if (!hero || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setHiddenByHero(entry.isIntersecting),
+      { threshold: 0.2 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
   async function ask(intent: Intent) {
     if (busy) return;
     setBusy(true);
@@ -128,7 +143,7 @@ export default function ChatDemo() {
   }
 
   return (
-    <div className="chatdemo">
+    <div className="chatdemo" data-hidden={hiddenByHero && !open ? 'true' : undefined}>
       {open && (
         <div
           className="chatdemo__panel"

@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import Faq from '../../../components/Faq.astro';
+import ListingExplorer from '../../../islands/ListingExplorer';
+import { cheapestPrice, getListings, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
+import { publishedCatalogTowns } from '../../../data/towns';
+import { formatPrice } from '../../../lib/format';
+import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../../lib/seo';
+import { whatsappUrl } from '../../../lib/links';
+import { site } from '../../../data/site';
+
+// Hasta ahora el único listado vivía bajo un pueblo (/es/venta/malgrat-de-mar/), así que
+// 100 de los 124 inmuebles no tenían puerta de entrada. Esta es la portada de la cartera.
+const path = '/es/venta/';
+const catalog = getListings({ operation: 'venta' });
+const breakdown = typeBreakdown(catalog, 4);
+const cheapest = cheapestPrice(catalog);
+
+const townRows = publishedCatalogTowns
+  .map((town) => ({
+    town,
+    total: propertiesIn(town.slug, 'venta').length,
+    homes: homesIn(town.slug, 'venta').length,
+  }))
+  .filter((row) => row.total > 0)
+  .sort((a, b) => b.total - a.total);
+
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Inmuebles en venta', path },
+];
+
+const faq = [
+  {
+    question: '¿Cuántos inmuebles tenéis en venta?',
+    answer: `Ahora mismo ${catalog.length} en ${townRows.length} pueblos del Alt Maresme y La Selva: ${breakdown}. La lista cambia cada semana.`,
+  },
+  {
+    question: '¿Puedo ver el precio sin dejar mis datos?',
+    answer: 'Sí. Cada inmueble lleva el precio a la vista. Solo nos escribes si quieres verlo o preguntar algo.',
+  },
+  {
+    question: '¿Y si no veo lo que busco?',
+    answer:
+      'Dinos qué buscas y te avisamos cuando entre algo así. Muchas operaciones se cierran antes de llegar a los portales.',
+  },
+];
+---
+
+<BaseLayout
+  title="Inmuebles en venta en el Maresme y La Selva"
+  description={`${catalog.length} inmuebles en venta${cheapest ? ` desde ${formatPrice(cheapest)}` : ''} en ${townRows.length} pueblos: ${breakdown}. Precio a la vista y contacto directo.`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema('Inmuebles en venta', path), faqSchema(faq)]}
+  noindex={!site.catalogIndexable}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Todo lo que tenemos en venta</h1>
+      <p class="page-head__lead">
+        {catalog.length} inmuebles en {townRows.length} pueblos{cheapest ? `, desde ${formatPrice(cheapest)}` : ''}: {breakdown}.
+      </p>
+    </div>
+  </section>
+
+  <section class="section town-index">
+    <div class="wrap">
+      <h2 class="section__title">Por pueblo</h2>
+      <ul class="town-index__list">
+        {
+          townRows.map((row) => (
+            <li class="town-index__item">
+              <a class="town-index__link" href={`/es/venta/${row.town.slug}/`}>
+                <span class="town-index__name">{row.town.name}</span>
+                <span class="town-index__count">
+                  {row.total} {row.total === 1 ? 'inmueble' : 'inmuebles'}
+                  {row.homes > 0 && <> · {row.homes} de vivienda</>}
+                </span>
+                <Icon name="arrow" class="town-index__arrow" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="listing-section">
+    <div class="wrap">
+      <ListingExplorer client:load properties={catalog} townName="el Maresme y La Selva" />
+      <aside class="alert-card" data-reveal>
+        <span class="alert-card__corner alert-card__corner--tl" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--tr" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--bl" aria-hidden="true"><Icon name="plus" /></span>
+        <span class="alert-card__corner alert-card__corner--br" aria-hidden="true"><Icon name="plus" /></span>
+        <div class="alert-card__text">
+          <p class="alert-card__eyebrow">Búsqueda a medida</p>
+          <h2 class="alert-card__title">¿No ves el tuyo?</h2>
+          <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
+        </div>
+        <a
+          class="button button--ink button--large alert-card__cta"
+          href={whatsappUrl({ reason: 'general' })}
+          data-contact="whatsapp"
+          data-origin="listado-general-aviso"
+        >
+          <Icon name="whatsapp" class="button__icon" />
+          Avisadme por WhatsApp
+        </a>
+      </aside>
+      <Faq items={faq} name="venta" />
+    </div>
+  </section>
+</BaseLayout>

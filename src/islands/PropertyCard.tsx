@@ -1,5 +1,5 @@
 import type { Property } from '../data/properties';
-import { propertyTitle, propertyUrl } from '../data/properties';
+import { hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
 import { formatPrice } from '../lib/format';
 import { phoneUrl, whatsappUrl } from '../lib/links';
 import { Icon } from './Icon';
@@ -43,6 +43,8 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
               className="chip chip--on-photo property-card__hide"
               onClick={() => onHide(property.ref)}
               aria-label={`Descartar ${title}`}
+              /* El icono solo no dice nada: sin el title, nadie sabe qué hace el ojo tachado. */
+              title="Descartar: lo quita de la lista. Puedes recuperarlo arriba."
             >
               <Icon name="hide" className="save-button__icon" />
               <span>Descartar</span>
@@ -54,7 +56,11 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
       <div className="property-card__body">
         <div className="property-card__top">
           <p className="property-card__price">
-            <data value={property.price}>{formatPrice(property.price)}</data>
+            {hasPublicPrice(property) ? (
+              <data value={property.price}>{formatPrice(property.price)}</data>
+            ) : (
+              <span className="property-card__price--ask">Precio a consultar</span>
+            )}
           </p>
           <span className="property-card__ref">{`Ref. ${property.ref}`}</span>
         </div>

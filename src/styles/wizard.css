@@ -47,6 +47,17 @@
     color: var(--color-ink-3);
   }
 
+  /* Título de la página: antes el H1 era el rótulo del paso y cambiaba en cada
+     pantalla. Este se queda fijo y dice de qué va la página. */
+  .wizard__page-title {
+    font-family: var(--font-body);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
   .wizard__panel {
     @apply flex flex-1 flex-col gap-6;
   }

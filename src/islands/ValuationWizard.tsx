@@ -97,6 +97,8 @@ export default function ValuationWizard() {
   const [direction, setDirection] = useState(1);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [answers, setAnswers] = useState<Answers>({
     moment: null,
     address: '',
@@ -136,7 +138,7 @@ export default function ValuationWizard() {
     go(2);
   }
 
-  function submitContact(event: FormEvent<HTMLFormElement>) {
+  async function submitContact(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const next: Record<string, string> = {};
     if (answers.name.trim().length < 2) next.name = 'Dinos cómo te llamas.';
@@ -146,7 +148,39 @@ export default function ValuationWizard() {
     if (!answers.privacy) next.privacy = 'Necesitamos que aceptes la política de privacidad para contestarte.';
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`, '_blank', 'noopener');
+    if (sending) return;
+    setSending(true);
+
+    // El lead se guarda SIEMPRE, antes de abrir nada: si el visitante no llega a enviar
+    // el WhatsApp, la solicitud no se pierde.
+    let stored = false;
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          name: answers.name.trim(),
+          phone: answers.phone.trim(),
+          message: buildMessage(answers),
+          intent: 'valoracion',
+          source: 'valoracion',
+          zone: answers.address.trim(),
+          consent: answers.privacy,
+          marketing: answers.news,
+          company: '',
+        }),
+      });
+      stored = response.ok;
+    } catch {
+      stored = false;
+    }
+
+    // Solo abrimos WhatsApp si es el canal que ha pedido el visitante.
+    if (answers.channel === 'whatsapp') {
+      window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`, '_blank', 'noopener');
+    }
+    setSaved(stored);
+    setSending(false);
     setSent(true);
   }
 
@@ -159,17 +193,51 @@ export default function ValuationWizard() {
       };
 
   if (sent) {
+    const callMe = answers.channel === 'llamada';
     return (
       <section className="wizard wizard--done" aria-live="polite">
         <span className="tag">Listo</span>
-        <h1 className="wizard__title">Se ha abierto WhatsApp con tu solicitud ya escrita.</h1>
+        <h1 className="visually-hidden">¿Cuánto vale mi piso?</h1>
+        <h2 className="wizard__title">
+          {callMe
+            ? `Recibido, ${answers.name.trim().split(' ')[0]}. Te llamamos nosotros.`
+            : 'Se ha abierto WhatsApp con tu solicitud ya escrita.'}
+        </h2>
         <p className="wizard__text">
-          Dale a enviar y te contestamos nosotros, en persona. Si no se ha abierto, llámanos al{' '}
-          <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
-            {site.phoneDisplay}
-          </a>
-          .
+          {callMe ? (
+            <>
+              Tenemos tu teléfono y la dirección del piso. Te llamamos en horario de oficina, normalmente el mismo
+              día. Si prefieres adelantarlo, llámanos tú al{' '}
+              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
+                {site.phoneDisplay}
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              Dale a enviar y te contestamos nosotros, en persona. Si no se ha abierto, llámanos al{' '}
+              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
+                {site.phoneDisplay}
+              </a>
+              .
+            </>
+          )}
         </p>
+        {callMe && !saved && (
+          <p className="wizard__text">
+            No hemos podido guardar la solicitud automáticamente. Para que no se pierda, escríbenos por{' '}
+            <a
+              href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`}
+              target="_blank"
+              rel="noopener"
+              data-contact="whatsapp"
+              data-origin="valoracion-fin-fallback"
+            >
+              WhatsApp
+            </a>{' '}
+            o llámanos al {site.phoneDisplay}.
+          </p>
+        )}
         <a className="button button--ghost" href="/es/venta/malgrat-de-mar/">
           Ver pisos en venta mientras tanto
         </a>
@@ -201,6 +269,8 @@ export default function ValuationWizard() {
         <p className="wizard__step">{`Paso ${step + 1} de 4`}</p>
       </header>
 
+      <h1 className="wizard__page-title">¿Cuánto vale mi piso?</h1>
+
       <AnimatePresence mode="wait" custom={direction} initial={false}>
         <motion.div
           key={step}
@@ -212,9 +282,9 @@ export default function ValuationWizard() {
           exit="exit"
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h1 className="wizard__title" ref={titleRef} tabIndex={-1}>
+          <h2 className="wizard__title" ref={titleRef} tabIndex={-1}>
             {step === 2 && answers.moment === 'herencia' ? '¿Qué lo complica? Cuéntanos' : titles[step]}
-          </h1>
+          </h2>
 
           {step === 0 && (
             <div className="wizard__options">
@@ -407,10 +477,14 @@ export default function ValuationWizard() {
                 <span>Avisadme de novedades de mi zona (si quiero).</span>
               </label>
 
-              <Button variant="primary" className="button--block" type="submit">
-                Va, enviádmelo
+              <Button variant="primary" className="button--block" type="submit" isDisabled={sending}>
+                {sending ? 'Enviando…' : 'Va, enviádmelo'}
               </Button>
-              <p className="field__hint">Se abre WhatsApp con tu solicitud ya escrita. Solo tienes que darle a enviar.</p>
+              <p className="field__hint">
+                {answers.channel === 'llamada'
+                  ? 'Nos llega tu solicitud y te llamamos nosotros. No tienes que hacer nada más.'
+                  : 'Se abre WhatsApp con tu solicitud ya escrita. Solo tienes que darle a enviar.'}
+              </p>
             </form>
           )}
 

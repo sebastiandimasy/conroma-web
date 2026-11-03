@@ -8,7 +8,9 @@ import { site } from './src/data/site.ts';
 import cloudflare from '@astrojs/cloudflare';
 
 const draftPaths = posts.filter((post) => post.draft).map((post) => `/es/blog/${post.slug}/`);
-const samplePaths = site.sampleData ? ['/es/inmueble/', '/es/venta/'] : [];
+// El catálogo entra al sitemap cuando se marca indexable (bandera independiente
+// del aviso de 'web en construcción' que controla `sampleData`).
+const samplePaths = site.catalogIndexable ? [] : ['/es/inmueble/', '/es/venta/'];
 const hiddenPaths = ['/privacidad/', '/estilo/', '/guardados/', '/admin/', ...draftPaths, ...samplePaths];
 
 export default defineConfig({

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { hydrateStore, intent, setIntent } from '../lib/store';
+import { cookieConsent, hydrateStore, intent, setIntent } from '../lib/store';
 import { Icon } from './Icon';
 
 const options = [
@@ -11,6 +11,7 @@ const options = [
 
 export default function IntentWelcome() {
   const current = useStore(intent);
+  const consent = useStore(cookieConsent);
   const [ready, setReady] = useState(false);
   const firstRef = useRef<HTMLAnchorElement>(null);
   const reduceMotion = useReducedMotion();
@@ -20,7 +21,9 @@ export default function IntentWelcome() {
     setReady(true);
   }, []);
 
-  const visible = ready && current === 'pendiente';
+  // Una interrupción cada vez: el aviso de cookies es la puerta legal y va primero.
+  // Hasta que no hay decisión, su overlay dejaría el banner visible pero sin poder pulsarlo.
+  const visible = ready && current === 'pendiente' && consent !== 'pendiente';
 
   useEffect(() => {
     if (!visible) return;

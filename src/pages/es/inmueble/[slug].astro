@@ -7,7 +7,7 @@ import FavoriteToggle from '../../../islands/FavoriteToggle';
 import ContactOptions from '../../../islands/ContactOptions';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
-import { getListings, propertySlug, propertyTitle, type Property } from '../../../data/properties';
+import { getListings, hasPublicPrice, propertySlug, propertyTitle, type Property } from '../../../data/properties';
 import { findTown } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
@@ -32,13 +32,17 @@ const listingPath = `/es/venta/${property.town}/`;
 const drop = property.previousPrice ? property.previousPrice - property.price : 0;
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
-  { name: `Pisos en venta en ${townName}`, path: listingPath },
+  { name: `Inmuebles en venta en ${townName}`, path: listingPath },
   { name: `${property.type} en ${property.zone}`, path },
 ];
 const similar = getListings({ town: property.town, operation: property.operation })
   .filter((item) => item.ref !== property.ref)
   .sort((a, b) => Math.abs(a.price - property.price) - Math.abs(b.price - property.price))
   .slice(0, 3);
+// Una ficha sin fotos no merece estar en Google: se queda fuera aunque la cartera
+// ya sea indexable (hoy son 8 de 126).
+const hasPhotos = Boolean(property.images && property.images.length > 0);
+const indexable = site.catalogIndexable && hasPhotos;
 const features = [
   { label: 'Estado', value: property.state },
   { label: 'Planta', value: formatFloor(property.floor) },
@@ -50,13 +54,13 @@ const features = [
 ---
 
 <BaseLayout
-  title={`${title} — ${formatPrice(property.price)}`}
+  title={hasPublicPrice(property) ? `${title} — ${formatPrice(property.price)}` : title}
   description={`${title}: ${property.rooms} habitaciones, ${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}, ${property.area} m². ${property.description}`}
   path={path}
   schemas={[breadcrumbSchema(crumbs), listingSchema(property)]}
   contact={{ propertyRef: property.ref, propertyTitle: title }}
   primaryAction={{ label: 'Pedir visita', href: '#contacto' }}
-  noindex={site.sampleData}
+  noindex={!indexable}
 >
   <article class="property">
     <div class="wrap property__top">
@@ -78,7 +82,13 @@ const features = [
         <header class="property__summary">
           <span class="tag">{property.tag}</span>
           <p class="property__price">
-            <data value={property.price}>{formatPrice(property.price)}</data>
+            {
+              hasPublicPrice(property) ? (
+                <data value={property.price}>{formatPrice(property.price)}</data>
+              ) : (
+                <span class="property-card__price--ask">Precio a consultar</span>
+              )
+            }
           </p>
           {
             drop > 0 && property.previousPrice && (

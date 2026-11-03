@@ -40,7 +40,16 @@ export interface SiteData {
     facts: { label: string; value: string }[];
   } | null;
   languages: string[];
+  /** Muestra el aviso "web en construcción" mientras faltan fotos. */
   sampleData: boolean;
+  /**
+   * Permite que Google indexe la cartera (listados y fichas). Mientras está en
+   * `false`, 149 páginas —el activo SEO más grande del sitio, una por pueblo y
+   * una por inmueble— quedan fuera del índice y del sitemap.
+   * Ponerlo en `true` es la decisión del dueño: 118 de los 126 inmuebles ya
+   * tienen fotos, y los 8 que no las tienen se quedan fuera igualmente.
+   */
+  catalogIndexable: boolean;
   instagram: { handle: string; url: string; about: string }[];
   // Publicaciones (reels o posts) a embeber. Lista vacía = la sección no se muestra.
   instagramVideos: { url: string; label: string; video?: string }[];
@@ -116,6 +125,9 @@ export const site: SiteData = {
   },
   languages: ['Català', 'Castellano', 'English', 'Français'],
   sampleData: true,
+  // Aprobado por el dueño (3-nov-2026): el catálogo se indexa. Los 8 inmuebles
+  // sin fotos quedan fuera automáticamente hasta que Habitatsoft entregue el archivo.
+  catalogIndexable: true,
   instagram: [
     { handle: '@conromaasesores', url: 'https://www.instagram.com/conromaasesores/', about: 'Pisos, consejos y datos curiosos del sector.' },
     { handle: '@conromaenobras', url: 'https://www.instagram.com/conromaenobras/', about: 'El antes y el después de nuestras reformas.' },

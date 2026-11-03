@@ -4,6 +4,9 @@ export interface NavLink {
 }
 
 export const mainNav: NavLink[] = [
+  // "Pisos" entra la primera: el visitante que llega a comprar quiere ver la
+  // cartera, no una página de servicio. Antes solo se llegaba con un clic extra.
+  { label: 'Pisos', href: '/es/venta/' },
   { label: 'Comprar', href: '/es/comprar/' },
   { label: 'Vender', href: '/es/vender/' },
   { label: 'Alquilar', href: '/es/alquilar/' },
@@ -13,6 +16,7 @@ export const mainNav: NavLink[] = [
 ];
 
 export const serviceNav: NavLink[] = [
+  { label: 'Inmuebles en venta', href: '/es/venta/' },
   { label: 'Comprar vivienda', href: '/es/comprar/' },
   { label: 'Vender vivienda', href: '/es/vender/' },
   { label: 'Alquilar', href: '/es/alquilar/' },

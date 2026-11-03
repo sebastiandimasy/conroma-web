@@ -1,6 +1,6 @@
 import { site } from '../data/site';
 import type { Property } from '../data/properties';
-import { propertyTitle, propertyUrl } from '../data/properties';
+import { hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
 import type { FaqItem } from '../data/faq';
 import { findTown } from '../data/towns';
 
@@ -101,33 +101,72 @@ export function faqSchema(items: FaqItem[]) {
   };
 }
 
+/**
+ * Antes todo lo que no fuera "Casa" se declaraba `Apartment`: terrenos, locales,
+ * parkings y restaurantes iban a Google como pisos. Cada tipo con lo suyo.
+ */
+const HOUSE_TYPES = new Set([
+  'Casa',
+  'Casa adosada',
+  'Casa unifamiliar',
+  'Casa de campo',
+  'Casa cueva',
+  'Chalet',
+  'Chalet unifamiliar',
+  'Bungalow',
+  'Masia',
+]);
+const APARTMENT_TYPES = new Set(['Piso', 'Ático', 'Dúplex']);
+
+function listingEntityType(type: string): 'House' | 'Apartment' | 'Place' {
+  if (HOUSE_TYPES.has(type)) return 'House';
+  if (APARTMENT_TYPES.has(type)) return 'Apartment';
+  return 'Place';
+}
+
 export function listingSchema(property: Property) {
   const town = findTown(property.town)?.name ?? property.town;
+  const entityType = listingEntityType(property.type);
+  const isAccommodation = entityType !== 'Place';
+
+  const address = {
+    '@type': 'PostalAddress',
+    addressLocality: town,
+    addressRegion: site.address.region,
+    addressCountry: site.address.country,
+  };
+
+  const mainEntity: Record<string, unknown> = {
+    '@type': entityType,
+    floorSize: { '@type': 'QuantitativeValue', value: property.area, unitCode: 'MTK' },
+    address,
+  };
+  // Habitaciones y baños solo tienen sentido en vivienda: un terreno con
+  // "0 habitaciones" es ruido para Google y para quien lee el resultado.
+  if (isAccommodation) {
+    mainEntity.numberOfRooms = property.rooms;
+    mainEntity.numberOfBathroomsTotal = property.baths;
+  }
+
+  // El inventario usa 10 € como "precio a consultar": no se publica como oferta.
+  const offers = hasPublicPrice(property)
+    ? {
+        '@type': 'Offer',
+        price: property.price,
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        seller: { '@id': `${site.url}/#agencia` },
+      }
+    : undefined;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
     name: propertyTitle(property),
     url: absoluteUrl(propertyUrl(property)),
     description: property.description,
-    offers: {
-      '@type': 'Offer',
-      price: property.price,
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-      seller: { '@id': `${site.url}/#agencia` },
-    },
-    mainEntity: {
-      '@type': property.type === 'Casa' ? 'House' : 'Apartment',
-      numberOfRooms: property.rooms,
-      numberOfBathroomsTotal: property.baths,
-      floorSize: { '@type': 'QuantitativeValue', value: property.area, unitCode: 'MTK' },
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: town,
-        addressRegion: site.address.region,
-        addressCountry: site.address.country,
-      },
-    },
+    ...(offers ? { offers } : {}),
+    mainEntity,
   };
 }
 

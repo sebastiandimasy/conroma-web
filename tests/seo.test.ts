@@ -37,12 +37,43 @@ describe('seo', () => {
 
   it('describes a listing with its price', () => {
     const schema = listingSchema(properties[0]);
-    expect(schema.offers.price).toBe(properties[0].price);
-    expect(schema.offers.priceCurrency).toBe('EUR');
+    expect(schema.offers?.price).toBe(properties[0].price);
+    expect(schema.offers?.priceCurrency).toBe('EUR');
+  });
+
+  it('omits the offer when the price is the "a consultar" placeholder', () => {
+    const schema = listingSchema({ ...properties[0], price: 10 });
+    expect(schema.offers).toBeUndefined();
+  });
+
+  it('does not declare land or commercial units as flats', () => {
+    expect(listingSchema({ ...properties[0], type: 'Terreno' }).mainEntity['@type']).toBe('Place');
+    expect(listingSchema({ ...properties[0], type: 'Local' }).mainEntity['@type']).toBe('Place');
+    expect(listingSchema({ ...properties[0], type: 'Piso' }).mainEntity['@type']).toBe('Apartment');
+    expect(listingSchema({ ...properties[0], type: 'Casa adosada' }).mainEntity['@type']).toBe('House');
+  });
+
+  it('drops rooms and baths on land and commercial units', () => {
+    expect(listingSchema({ ...properties[0], type: 'Terreno' }).mainEntity.numberOfRooms).toBeUndefined();
+    expect(listingSchema({ ...properties[0], type: 'Piso' }).mainEntity.numberOfRooms).toBe(properties[0].rooms);
   });
 
   it('builds stable slugs and titles', () => {
     expect(propertySlug(properties[0])).toBe('chalet-mont-lloret-lloret-de-mar-c-1280-a');
     expect(propertyTitle(properties[0])).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
+  });
+});
+
+describe('URLs de inmueble', () => {
+  it('no deja espacios ni símbolos en el slug aunque la referencia los traiga', () => {
+    const slug = propertySlug({ ...properties[0], type: 'Local', zone: 'Centre', town: 'malgrat-de-mar', ref: 'L - 1045 - H' });
+    expect(slug).toBe('local-centre-malgrat-de-mar-l-1045-h');
+    expect(slug).toMatch(/^[a-z0-9-]+$/);
+  });
+
+  it('sanea referencias con palabras sueltas', () => {
+    const slug = propertySlug({ ...properties[0], type: 'Bungalow', zone: 'Malgrat de Mar', town: 'malgrat-de-mar', ref: 'B-0045-A PLA' });
+    expect(slug).toMatch(/^[a-z0-9-]+$/);
+    expect(slug.endsWith('b-0045-a-pla')).toBe(true);
   });
 });

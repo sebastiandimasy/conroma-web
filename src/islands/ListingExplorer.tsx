@@ -74,7 +74,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
 
       <div className="listing__bar">
         <p className="listing__count" aria-live="polite">
-          {`${visible.length} ${visible.length === 1 ? 'vivienda' : 'viviendas'}`}
+          {`${visible.length} ${visible.length === 1 ? 'inmueble' : 'inmuebles'}`}
           {hiddenCount > 0 && (
             <>
               {' · '}
@@ -130,7 +130,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
       )}
 
       {filters.maxPrice !== null && visible.length > 0 && (
-        <p className="visually-hidden">{`Mostrando viviendas hasta ${formatPrice(filters.maxPrice)}.`}</p>
+        <p className="visually-hidden">{`Mostrando inmuebles hasta ${formatPrice(filters.maxPrice)}.`}</p>
       )}
 
       <FilterSheet

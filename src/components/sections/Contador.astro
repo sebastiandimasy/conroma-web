@@ -1,12 +1,18 @@
 ---
 import StatCounters from '../../islands/StatCounters';
+import { site } from '../../data/site';
+import { getListings } from '../../data/properties';
 
-// Cifras PROVISIONALES (confirmadas como editables). Cambiar cuando haya datos reales.
+// Solo cifras comprobables: las reseñas de Google (con fecha en site.ts), los años que
+// lleva abierta la agencia, los idiomas en los que se atiende y la cartera real.
+// Nada redondeado "a ojo": si no se puede enseñar la fuente, no va aquí.
+const catalog = getListings();
+
 const stats = [
-  { target: 100, prefix: '+', label: 'clientes satisfechos' },
-  { target: 300, prefix: '+', label: 'inmuebles gestionados' },
-  { target: 200, prefix: '+', label: 'pisos vendidos' },
-];
+  { target: site.googleRating?.count ?? 0, label: 'reseñas en Google' },
+  { target: site.yearsActive ?? 0, label: 'años en el Alt Maresme' },
+  { target: catalog.length, label: 'inmuebles en cartera' },
+].filter((stat) => stat.target > 0);
 ---
 
 <section class="section contador">

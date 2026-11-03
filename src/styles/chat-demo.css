@@ -18,6 +18,25 @@
   visibility: hidden;
 }
 
+/* Tampoco se pone encima del CTA del héroe: se aparta mientras el buscador está a la vista. */
+.chatdemo[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+}
+
+.chatdemo {
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatdemo {
+    transition: none;
+  }
+}
+
 @media (min-width: 60rem) {
   .chatdemo {
     bottom: calc(24px + env(safe-area-inset-bottom));

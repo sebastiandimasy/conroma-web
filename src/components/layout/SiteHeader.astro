@@ -11,13 +11,24 @@ const current = Astro.url.pathname;
 const isActive = (href: string) => current === href || (href !== '/es/' && current.startsWith(href));
 
 // Dock móvil: Inicio + el nav sin Blog (lista propia; no altera el nav de escritorio).
-const dockLinks = [{ label: 'Inicio', href: '/es/' }, ...mainNav.filter((link) => link.label !== 'Blog')];
+// El dock no es el menú: son las cinco cosas que alguien viene a hacer. Con siete
+// entradas a 390 px las etiquetas se tocaban y los objetivos bajaban de 44 px.
+// "Empresa" y "Equipo" siguen en la cabecera y en el pie.
+const dockLinks: { label: string; href: string }[] = [
+  { label: 'Inicio', href: '/es/' },
+  { label: 'Pisos', href: '/es/venta/' },
+  { label: 'Vender', href: '/es/vender/' },
+  { label: 'Alquilar', href: '/es/alquilar/' },
+  { label: 'Contacto', href: '/es/contacto/' },
+];
 
 const dockIcons: Record<string, IconName> = {
   Inicio: 'home',
+  Pisos: 'search',
   Comprar: 'search',
   Vender: 'tag',
   Alquilar: 'key',
+  Contacto: 'phone',
   Empresa: 'building',
   Equipo: 'users',
 };

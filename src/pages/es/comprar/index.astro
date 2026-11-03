@@ -10,7 +10,7 @@ import Testimonials from '../../../components/sections/Testimonials.astro';
 import FaqSection from '../../../components/sections/FaqSection.astro';
 import ContactSection from '../../../components/sections/ContactSection.astro';
 import PropertyGrid from '../../../islands/PropertyGrid';
-import { propertiesIn } from '../../../data/properties';
+import { getListings, homesIn, typeBreakdown } from '../../../data/properties';
 import { buySteps } from '../../../data/steps';
 import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 
@@ -19,7 +19,11 @@ const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Comprar', path },
 ];
-const catalog = propertiesIn('malgrat-de-mar', 'venta');
+// Antes esta página solo miraba Malgrat: 100 de los 124 inmuebles quedaban fuera
+// del recorrido de compra. El contador y el botón hablan ya de toda la cartera.
+const catalog = getListings({ operation: 'venta' });
+const localHomes = homesIn('malgrat-de-mar', 'venta');
+const breakdown = typeBreakdown(catalog, 4);
 const faq = [
   {
     question: '¿Cobráis algo por enseñarme pisos?',
@@ -47,9 +51,9 @@ const faq = [
     eyebrow="¿Cómo compro?"
     title="Comprar casa, "
     highlight="sin perderte por el camino."
-    lead="Te enseñamos lo que hay de verdad, con el precio a la vista, y te decimos lo que pensamos de cada piso."
+    lead={`Te enseñamos lo que hay de verdad, con el precio a la vista, y te decimos lo que pensamos de cada piso. Hoy tenemos ${catalog.length} inmuebles: ${breakdown}.`}
   >
-    <a class="button button--primary button--large" href="/es/venta/malgrat-de-mar/">Ver los {catalog.length} pisos en venta</a>
+    <a class="button button--primary button--large" href="/es/venta/">Ver los {catalog.length} inmuebles en venta</a>
     <a class="button button--ghost button--large" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
   </PageHero>
 
@@ -85,7 +89,7 @@ const faq = [
           <li><Icon name="check" class="buy-intro__check" />Te acompañamos hasta la firma en notaría</li>
         </ul>
         <div class="buy-intro__actions">
-          <a class="button button--primary" href="/es/venta/malgrat-de-mar/">Ver pisos en venta</a>
+          <a class="button button--primary" href="/es/venta/">Ver inmuebles en venta</a>
           <a class="button button--ghost" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
         </div>
       </div>
@@ -101,10 +105,10 @@ const faq = [
         <h2 class="section__title">Pisos en venta en <span class="highlight">Malgrat de Mar</span></h2>
       </div>
       <div data-reveal>
-        <PropertyGrid client:visible properties={catalog.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
+        <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
       </div>
       <p class="featured__more">
-        <a class="button button--ghost button--large" href="/es/venta/malgrat-de-mar/">Ver todas las viviendas</a>
+        <a class="button button--ghost button--large" href="/es/venta/">Ver los {catalog.length} inmuebles en venta</a>
       </p>
     </div>
   </section>

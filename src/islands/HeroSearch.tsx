@@ -1,24 +1,40 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
-// Buscador del hero: operación (compra/alquiler) + tipo + buscar. Rutea a la sección elegida.
+// Buscador del hero: operación (compra/alquiler) + dónde + tipo. Rutea a la sección elegida.
 const modes = [
-  { id: 'compra', label: 'Comprar', href: '/es/comprar/' },
+  { id: 'compra', label: 'Comprar', href: '/es/venta/' },
   { id: 'alquiler', label: 'Alquilar', href: '/es/alquilar/' },
 ] as const;
 
 const types = ['Piso', 'Ático', 'Casa', 'Local', 'Terreno'];
 
-export default function HeroSearch() {
+export interface TownOption {
+  slug: string;
+  name: string;
+}
+
+interface HeroSearchProps {
+  /** Pueblos con cartera, ordenados por número de inmuebles. */
+  towns?: TownOption[];
+}
+
+export default function HeroSearch({ towns = [] }: HeroSearchProps) {
   const [mode, setMode] = useState<'compra' | 'alquiler'>('compra');
+  const [town, setTown] = useState('');
   const [type, setType] = useState('');
   const reduceMotion = useReducedMotion();
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const href = modes.find((m) => m.id === mode)!.href;
     const suffix = type ? `?tipo=${encodeURIComponent(type)}` : '';
-    window.location.assign(`${href}${suffix}`);
+    // "Dónde" es la primera pregunta de quien busca piso aquí: si elige pueblo,
+    // va directo a su listado en vez de al catálogo entero.
+    if (mode === 'compra' && town) {
+      window.location.assign(`/es/venta/${town}/${suffix}`);
+      return;
+    }
+    window.location.assign(`${modes.find((m) => m.id === mode)!.href}${suffix}`);
   }
 
   return (
@@ -45,6 +61,19 @@ export default function HeroSearch() {
         ))}
       </div>
       <div className="hero-search__row">
+        {mode === 'compra' && towns.length > 0 && (
+          <label className="field hero-search__field">
+            <span className="field__label">Dónde</span>
+            <select className="field__control" value={town} onChange={(e) => setTown(e.target.value)}>
+              <option value="">Todo el Maresme y La Selva</option>
+              {towns.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label className="field hero-search__field">
           <span className="field__label">Tipo de vivienda</span>
           <select className="field__control" value={type} onChange={(e) => setType(e.target.value)}>
