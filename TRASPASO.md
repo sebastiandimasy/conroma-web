@@ -5,6 +5,17 @@ Todo lo de esta sesión está **subido a GitHub** en la rama `feat/crm-leads` de
 
 ---
 
+## 0. Dos proyectos, dos repos. No se mezclan.
+
+| Proyecto | Carpeta | Repo | Stack |
+|---|---|---|---|
+| **Web pública** | `~/conroma-web` | `github.com/sebastiandimasy/conroma-web` (rama `feat/crm-leads`) | Astro + Cloudflare |
+| **CRM interno** | `~/conroma-crm-ui` | `github.com/sebastiandimasy/conroma-crm-ui` *(pendiente de crear)* | Vite + React + Tailwind |
+
+Cada uno tiene su propio `CLAUDE.md`. **Abre Claude Code dentro de la carpeta del proyecto en
+el que vas a trabajar**, nunca en la carpeta padre: si lo abres un nivel por encima, mezcla los
+dos contextos y acaba aplicando las reglas de uno al otro.
+
 ## 1. Qué hacer en el Mac personal (3 comandos)
 
 ```bash
@@ -62,7 +73,7 @@ Son pesados o contienen datos, por eso no se commitean:
 |---|---|
 | `conroma-preview-hostinger/` y `.zip` | La demo lista para subir a Hostinger (78 MB). Se regenera con `bash scripts/preparar-preview.sh`. |
 | `backup-conromaasesores-antigua.tar.gz` | La web antigua entera: 285 páginas, 908 recursos, 18 MB. **No la borres** hasta que el swipe lleve meses. |
-| `conroma-crm-ui-para-subir/` | El CRM, pendiente de subir a GitHub. Instrucciones dentro, en `SUBIR-A-GITHUB.md`. |
+| `conroma-crm-ui-para-subir/` | Copia antigua del CRM. **Ya no hace falta**: usa el repo `~/conroma-crm-ui`, que tiene el historial completo y el remote configurado. |
 | `conroma-contexto/` | `CLAUDE.md`, `CONTEXT.md`, `COMO-SINCRONIZAR.md` y `VOLCADO-desde-Pro.md`: el puente de contexto entre las dos cuentas. |
 
 > Las **skills y la memoria de Claude** no están en ninguna de esas carpetas ni en GitHub: viven
