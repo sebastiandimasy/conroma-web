@@ -22,7 +22,7 @@ Pégale esto tal cual:
 > Lee `ESTADO.md` y `TRASPASO.md` del repo. Vengo de otra sesión donde dejamos la web lista
 > para el swipe pero sin ejecutarlo. Sigue por el punto que te diga.
 
-## 3. Qué hay en GitHub (6 commits de hoy, 3-nov-2026)
+## 3. Qué hay en GitHub (9 commits de hoy, 3-nov-2026)
 
 | Commit | Qué hizo |
 |---|---|
@@ -45,6 +45,7 @@ Está toda en el repo. No hace falta buscar nada fuera:
 | `docs/HOSTINGER.md` | Hostinger o Cloudflare: qué hace cada uno y cuál conviene. Decisión abierta. |
 | `docs/PREVIEW-HOSTINGER.md` | Subir la demo privada al subdominio, sin que Google la indexe. |
 | `docs/USUARIOS.md` | Dar de alta a Rosa y a Marc en el panel. |
+| `docs/REUNION-STAKEHOLDER.md` | Guion para la reunión: qué enseñar, qué pedir, estado del CRM. |
 | `docs/INTEGRACIONES.md` | Cómo se conecta la web con el CRM. |
 | `ESTANDAR.md` | Reglas de marca y de diseño. |
 
@@ -73,7 +74,7 @@ Son pesados o contienen datos, por eso no se commitean:
 - **www o sin www** cuando se haga el swipe. Hoy Google tiene todo indexado en `www`; la web
   nueva canonicaliza el apex. Sea cual sea la elección, **el servidor tiene que responder en los
   dos hosts** o las 301 no se ejecutan.
-- **El CTA «Valorar mi piso» del header en móvil**: se come el 37 % del ancho y duplica el
-  «Vender» del dock inferior, que está más a mano. En escritorio está bien.
+- ~~El CTA «Valorar mi piso» del header~~ **Resuelto el 3-nov**: ahora es WhatsApp
+  («Escríbenos»), en icono a partir de móvil y con texto desde 48rem.
 - **¿Versión en catalán?** La antigua tenía 4 idiomas sin hreflang; la nueva es solo castellano.
 - **Lloret tiene 36 inmuebles y Malgrat 23**, pero los textos tratan Malgrat como único mercado.
