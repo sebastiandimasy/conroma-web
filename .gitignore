@@ -13,3 +13,4 @@ dist
 .superpowers/
 graphify-out/
 dist/client/_frame390.html
+.hostinger*
