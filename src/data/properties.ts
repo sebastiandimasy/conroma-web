@@ -96,6 +96,15 @@ export function faltanDatosDeAlquilerTensionado(property: Property): boolean {
   return property.rentIndexMax == null || property.largeHolder == null;
 }
 
+/**
+ * La única fuente de inmuebles de todo el sitio.
+ *
+ * Hoy es el volcado del inventario. Cuando la Fase 1 del CRM esté entera se
+ * cambia `site.inventarioDesde` a `'supabase'` y esta constante pasa a leer la
+ * tabla `property` con `web_visibility = 'publicado'`. Si algo va mal, se
+ * vuelve a `'json'` y la web sigue sirviendo fichas: el catálogo público no
+ * depende de que el CRM funcione.
+ */
 const source: Property[] = withPhotos.filter((property) => !faltanDatosDeAlquilerTensionado(property));
 
 /** Las que se quedan fuera por el filtro de arriba, para poder avisar en el panel. */
