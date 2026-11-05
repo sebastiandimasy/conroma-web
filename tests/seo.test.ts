@@ -58,9 +58,20 @@ describe('seo', () => {
     expect(listingSchema({ ...properties[0], type: 'Piso' }).mainEntity.numberOfRooms).toBe(properties[0].rooms);
   });
 
+  // Antes esto comprobaba properties[0], así que se rompía cada vez que cambiaba
+  // el inventario (y se rompió al retirar los alquileres sin datos de zona tensionada).
+  // Lo que se quiere probar es la función, no qué piso ocupa la primera posición.
   it('builds stable slugs and titles', () => {
-    expect(propertySlug(properties[0])).toBe('chalet-mont-lloret-lloret-de-mar-c-1280-a');
-    expect(propertyTitle(properties[0])).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
+    const piso = {
+      ...properties[0],
+      type: 'Chalet',
+      operation: 'alquiler' as const,
+      zone: 'Mont Lloret',
+      town: 'lloret-de-mar',
+      ref: 'C-1280-A',
+    };
+    expect(propertySlug(piso)).toBe('chalet-mont-lloret-lloret-de-mar-c-1280-a');
+    expect(propertyTitle(piso)).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
   });
 });
 
