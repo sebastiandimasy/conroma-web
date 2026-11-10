@@ -80,9 +80,10 @@ quieres las mismas en el Mac personal, hay un paquete preparado en `~/Desktop/Cl
    `src/lib/useData.js`, estados de carga/error/vacío, y el indicador de origen de datos.
 2. **Subir `conroma-crm-ui` a GitHub.** Hay un paquete listo en
    `~/Desktop/conroma-crm-ui-para-subir/` con las instrucciones en `SUBIR-A-GITHUB.md`.
-3. **Vídeos sin optimizar**: `public/video/` pesa **44 MB**, con `historia-3.mp4` a **19 MB**.
-   En móvil con datos eso es inaceptable. Hay que recomprimirlos (y servir un póster + carga
-   diferida) antes de publicar.
+3. ~~**Vídeos sin optimizar**~~ **HECHO (10-nov)**: `public/video/` 44 MB → 13 MB (reels
+   reescalados a 405x720, sin audio, H.264 CRF 30) + póster JPG por vídeo y `preload="none"`
+   en `StoryVideos.tsx`, así no se descargan hasta que entran en pantalla. Originales
+   respaldados fuera del repo.
 4. **Endpoint de descripción con IA** para la ficha de piso. El botón «Generar con IA» existe pero
    está simulado. Diseño previsto en `docs/INTEGRACIONES.md` (`POST /api/describe-property`).
 
