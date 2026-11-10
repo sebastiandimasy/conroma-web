@@ -113,7 +113,7 @@ export default function StoryVideos({ items }: { items: StoryVideo[] }) {
           rel="noopener"
           aria-label={`${item.label}, abrir en Instagram`}
         >
-          <video src={item.video} muted loop playsInline preload="metadata" aria-hidden="true" />
+          <video src={item.video} poster={item.video.replace(/\.mp4$/, '-poster.jpg')} muted loop playsInline preload="none" aria-hidden="true" />
         </a>
       ))}
     </div>
