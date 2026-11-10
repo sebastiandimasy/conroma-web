@@ -14,15 +14,18 @@ que sustituye a la antigua de `conromaasesores.com`. Responde siempre **en espa�
 - Reglas completas en `ESTANDAR.md`.
 
 ## Arquitectura
-- **Astro** + islas **React** + **Cloudflare Workers** (`wrangler.jsonc`, salida en `dist/`).
-- **Supabase**: Postgres + Auth + Storage + RLS. Migraciones en `supabase/migrations/`.
+- **Astro** estático, **se publica en Hostinger** (no Cloudflare). El build aún usa el adaptador
+  Cloudflare (`wrangler.jsonc`), pero la web es estática; ver `docs/HOSTINGER.md`.
+- **Este repo es SOLO la web pública.** El CRM es otro repo (`conroma-crm-ui`, Vite). No se
+  mezclan. La arquitectura completa (web ↔ CRM ↔ Supabase), la **seguridad** y la **migración de
+  Habitatsoft** están en **`docs/INTEGRACIONES.md`** (léelo antes de tocar datos).
+- **Supabase**: Postgres + Auth + Storage + RLS. Esquema canónico en `supabase/migrations/`.
 - Roles en `app_metadata.role`: `admin` | `comercial`. **Nunca** en `user_metadata` (el usuario
   podría editarlo).
-- Panel interno en `src/islands/AdminApp.tsx`, montado en `src/pages/es/admin/index.astro`
-  (`client:only="react"`, con `noindex`).
-- Clientes de Supabase en `src/lib/supabase.ts`:
-  - `createBrowserClient()` → anon key + RLS. Para el navegador.
-  - `createServiceClient()` → service_role. **Solo en rutas API del Worker**, jamás en el cliente.
+- **Captación de leads (opción A)**: la web estática inserta directo en `lead` con la anon key +
+  policy RLS solo-INSERT (`migrations/0003`). El Worker `api/leads.ts` (service_role) se retira.
+- `src/lib/supabase.ts`: cliente anon para la web. La `service_role` solo la usa el script local
+  de altas de usuarios, jamás el navegador ni un commit.
 
 ## Convenciones de trabajo
 - **El móvil es ~97% del tráfico.** Verifica siempre a 390 px antes de dar algo por bueno.

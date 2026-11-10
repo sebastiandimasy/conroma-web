@@ -20,7 +20,7 @@ const photolessPaths = site.catalogIndexable
       .filter((property) => !property.images || property.images.length === 0)
       .map((property) => `/es/inmueble/${propertySlug(property)}/`)
   : [];
-const hiddenPaths = ['/estilo/', '/guardados/', '/admin/', ...draftPaths, ...samplePaths, ...photolessPaths];
+const hiddenPaths = ['/estilo/', '/guardados/', ...draftPaths, ...samplePaths, ...photolessPaths];
 
 export default defineConfig({
   site: 'https://conromaasesores.com',
