@@ -1,11 +1,8 @@
 ---
-import '@fontsource/pacifico/latin-400.css';
-import '@fontsource/playfair-display/latin-400-italic.css';
-import '@fontsource-variable/hanken-grotesk';
+import '../styles/fonts.css';
 import '../styles/global.css';
 import SiteHeader from '../components/layout/SiteHeader.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
-import CookieNotice from '../islands/CookieNotice';
 import IntentWelcome from '../islands/IntentWelcome';
 import ChatDemo from '../islands/ChatDemo';
 import { site } from '../data/site';
@@ -62,6 +59,8 @@ const languageLinks = alternates(path);
     <meta name="twitter:image" content={absoluteUrl(ogImage)} />
     <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0B0B0A" media="(prefers-color-scheme: dark)" />
+    <link rel="preload" href="/fonts/hanken-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/playfair-display-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/brand/conroma-logo.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
@@ -99,6 +98,14 @@ const languageLinks = alternates(path);
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-KWJHKHR2');</script>
+    {/* Muestra el banner de cookies desde el primer paint SOLO si el consentimiento está pendiente.
+        Así el banner deja de ser un LCP tardío (antes era una isla React que hidrataba a los ~3,6 s). */}
+    <script is:inline>
+      try {
+        var c = localStorage.getItem('conroma:cookies');
+        if (c !== 'aceptado' && c !== 'rechazado') document.documentElement.classList.add('has-cookie-notice');
+      } catch (e) {}
+    </script>
   </head>
   <body class:list={{ 'page--bare': bare, 'page--overlay': overlay }}>
     {/* Google Tag Manager (noscript) */}
@@ -138,7 +145,43 @@ const languageLinks = alternates(path);
     {!bare && <SiteFooter />}
     {!bare && <ChatDemo client:idle />}
     {!bare && <IntentWelcome client:idle />}
-    <CookieNotice client:idle />
+    {/* Banner de cookies servido como HTML (no isla React), para que pinte al instante.
+        El script del <head> le pone la clase has-cookie-notice si el consentimiento está pendiente;
+        este cablea los botones al mismo localStorage + evento conroma:consent + Consent Mode. */}
+    <aside id="cookie-notice" class="cookie-notice" role="dialog" aria-label="Aviso de cookies">
+      <div class="cookie-notice__body">
+        <p class="cookie-notice__title">Usamos cookies</p>
+        <p class="cookie-notice__text">
+          Usamos cookies propias y de terceros para medir las visitas con Google Analytics y mejorar
+          la web. Las de medición solo se activan si las aceptas. Más información en nuestra
+          <a href="/es/cookies/">política de cookies</a>.
+        </p>
+      </div>
+      <div class="cookie-notice__actions">
+        <button type="button" class="button button--ghost" data-consent="rechazado">Rechazar</button>
+        <button type="button" class="button button--ghost" data-consent="rechazado">Solo las necesarias</button>
+        <button type="button" class="button button--primary" data-consent="aceptado">Aceptar todas</button>
+      </div>
+    </aside>
+    <script is:inline>
+      (function () {
+        var el = document.getElementById('cookie-notice');
+        if (!el) return;
+        function decide(v) {
+          try { localStorage.setItem('conroma:cookies', v); } catch (e) {}
+          try { window.dispatchEvent(new CustomEvent('conroma:consent', { detail: v })); } catch (e) {}
+          try {
+            var g = window.gtag, s = v === 'aceptado' ? 'granted' : 'denied';
+            if (typeof g === 'function') g('consent', 'update', { ad_storage: s, ad_user_data: s, ad_personalization: s, analytics_storage: s });
+          } catch (e) {}
+          document.documentElement.classList.remove('has-cookie-notice');
+        }
+        var btns = el.querySelectorAll('[data-consent]');
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener('click', (function (b) { return function () { decide(b.getAttribute('data-consent')); }; })(btns[i]));
+        }
+      })();
+    </script>
     <script>
       import { initMotion } from '../lib/motion';
       initMotion();

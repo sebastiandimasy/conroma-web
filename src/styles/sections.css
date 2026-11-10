@@ -301,7 +301,8 @@
 
   /* Banner de cookies: tarjeta SÓLIDA y visible (no glass), con texto explícito y "Aceptar" destacado. */
   .cookie-notice {
-    @apply fixed flex flex-col;
+    @apply fixed flex-col;
+    display: none; /* lo muestra el script del <head> vía .has-cookie-notice */
     gap: var(--space-4);
     left: var(--space-3);
     right: var(--space-3);
@@ -315,6 +316,10 @@
     border: 1px solid var(--color-line);
     box-shadow: var(--shadow-3);
     font-size: var(--text-small);
+  }
+
+  .has-cookie-notice .cookie-notice {
+    display: flex;
   }
 
   .cookie-notice__title {
@@ -335,7 +340,7 @@
   }
 
   .cookie-notice__actions {
-    @apply flex;
+    @apply flex flex-col;
     gap: var(--space-2);
   }
 
@@ -355,6 +360,7 @@
     }
 
     .cookie-notice__actions {
+      flex-direction: row;
       justify-content: flex-end;
     }
   }
