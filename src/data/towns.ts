@@ -100,17 +100,17 @@ export const towns: Town[] = [
   // Municipios del Excel de inventario sin ficha editorial propia todavía.
   // hasCatalog:true porque tienen >=1 propiedad en venta; intro/sellerIntro
   // vacíos a propósito: no se publican páginas de captación vacías.
-  { slug: 'arbucies', name: 'Arbúcies', hasCatalog: true, intro: '', sellerIntro: '' },
+  { slug: 'arbucies', name: 'Arbúcies', hasCatalog: true, intro: 'En plena Selva, al pie del Montseny. Casas de pueblo y de montaña; tenemos alguna en venta, así que si te tira la zona, pregúntanos.', sellerIntro: '' },
   { slug: 'besalu', name: 'Besalú', hasCatalog: true, intro: '', sellerIntro: '' },
-  { slug: 'caldes-de-malavella', name: 'Caldes de Malavella', hasCatalog: true, intro: '', sellerIntro: '' },
+  { slug: 'caldes-de-malavella', name: 'Caldes de Malavella', hasCatalog: true, intro: 'Pueblo de La Selva famoso por sus aguas termales, entre Girona y la costa. Tenemos algún inmueble en venta; dinos qué buscas y te lo enseñamos.', sellerIntro: '' },
   { slug: 'carretera-de-santa-coloma', name: 'Carretera de Santa Coloma', hasCatalog: true, intro: '', sellerIntro: '' },
   { slug: 'comajuliana', name: 'Comajuliana', hasCatalog: true, intro: '', sellerIntro: '' },
   { slug: 'el-serrat', name: 'El Serrat', hasCatalog: true, intro: '', sellerIntro: '' },
-  { slug: 'fogars-de-la-selva', name: 'Fogars de la Selva', hasCatalog: true, intro: '', sellerIntro: '' },
+  { slug: 'fogars-de-la-selva', name: 'Fogars de la Selva', hasCatalog: true, intro: 'Entre el Maresme y La Selva, siguiendo el río Tordera. Pueblo pequeño con casas y terreno; pregúntanos por lo que tenemos.', sellerIntro: '' },
   { slug: 'hostalric', name: 'Hostalric', hasCatalog: true, intro: '', sellerIntro: '' },
-  { slug: 'macanet-de-la-selva', name: 'Maçanet de la Selva', hasCatalog: true, intro: '', sellerIntro: '' },
+  { slug: 'macanet-de-la-selva', name: 'Maçanet de la Selva', hasCatalog: true, intro: 'Ya en La Selva, tierra adentro pasada la autopista. Aquí sí tenemos varios pisos y casas; dinos qué buscas y te enseñamos lo que hay.', sellerIntro: '' },
   { slug: 'massanes', name: 'Massanes', hasCatalog: true, intro: '', sellerIntro: '' },
-  { slug: 'riudarenes', name: 'Riudarenes', hasCatalog: true, intro: '', sellerIntro: '' },
+  { slug: 'riudarenes', name: 'Riudarenes', hasCatalog: true, intro: 'Pueblo tranquilo de La Selva, de campo y casas con espacio. Aquí tenemos alguna propiedad en venta; te la enseñamos sin compromiso.', sellerIntro: '' },
   { slug: 'sant-cebria-de-vallalta', name: 'Sant Cebrià de Vallalta', hasCatalog: true, intro: '', sellerIntro: '' },
   { slug: 'sant-genis-de-palafolls', name: 'Sant Genís de Palafolls', hasCatalog: true, intro: '', sellerIntro: '' },
   { slug: 'sant-hilari-sacalm', name: 'Sant Hilari Sacalm', hasCatalog: true, intro: '', sellerIntro: '' },
@@ -119,7 +119,10 @@ export const towns: Town[] = [
   { slug: 'vilobi-d-onyar', name: "Vilobí d'Onyar", hasCatalog: true, intro: '', sellerIntro: '' },
 ];
 
-export const publishedCatalogTowns = towns.filter((town) => town.hasCatalog);
+// Solo entran al catálogo indexable los pueblos con intro escrita. Los que el feed trae con
+// 1 piso suelto (o que son zonas, no municipios) se quedan fuera para no indexar páginas finas;
+// sus pisos siguen apareciendo en el listado general y en su ficha.
+export const publishedCatalogTowns = towns.filter((town) => town.hasCatalog && town.intro !== '');
 /**
  * Pueblos con página propia. Solo los que tienen texto real escrito: Blanes,
  * Tordera y Lloret son además el hueco que la competencia no cubre. El resto

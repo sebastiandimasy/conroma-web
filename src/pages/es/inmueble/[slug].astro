@@ -8,7 +8,7 @@ import ContactOptions from '../../../islands/ContactOptions';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
 import { getListings, hasPublicPrice, propertySlug, propertyTitle, type Property } from '../../../data/properties';
-import { findTown } from '../../../data/towns';
+import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
 import { breadcrumbSchema, listingSchema } from '../../../lib/seo';
@@ -28,7 +28,10 @@ const townName = town?.name ?? property.town;
 const mapGeo = property.geo ?? town?.geo ?? null;
 const title = propertyTitle(property);
 const path = `/es/inmueble/${propertySlug(property)}/`;
-const listingPath = `/es/venta/${property.town}/`;
+// Si el pueblo no tiene página de catálogo (pueblo fino, fuera del índice), enlaza al listado general.
+const listingPath = publishedCatalogTowns.some((t) => t.slug === property.town)
+  ? `/es/venta/${property.town}/`
+  : '/es/venta/';
 const drop = property.previousPrice ? property.previousPrice - property.price : 0;
 const crumbs = [
   { name: 'Inicio', path: '/es/' },

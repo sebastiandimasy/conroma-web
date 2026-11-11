@@ -43,6 +43,26 @@ export const homeFaq: FaqItem[] = [
     question: '¿Valorar mi piso me compromete a algo?',
     answer: 'No. La valoración es gratis y no te obliga a vender con nosotros.',
   },
+  {
+    question: '¿Qué zonas cubre Conroma Asesores?',
+    answer:
+      'Trabajamos en el Alt Maresme y el sur de la Costa Brava: Malgrat de Mar (donde está la oficina), Santa Susanna, Pineda de Mar, Calella, Palafolls, Blanes, Lloret de Mar y Tordera, además de pueblos de La Selva como Maçanet de la Selva.',
+  },
+  {
+    question: '¿Dónde está Conroma Asesores?',
+    answer:
+      'En Malgrat de Mar (Alt Maresme, provincia de Barcelona), en la Avenida Mediterránea. Nos tienes en la oficina de lunes a viernes, y por teléfono y WhatsApp en el +34 626 378 687.',
+  },
+  {
+    question: '¿Conroma hace reformas?',
+    answer:
+      'Sí. Con Conroma en Obras reformamos la vivienda antes de venderla o de que entres a vivir, de la cocina al último detalle.',
+  },
+  {
+    question: '¿Conroma gestiona patrimonio inmobiliario?',
+    answer:
+      'Sí. Administramos inmuebles y ayudamos a sacarles rentabilidad, además de la compraventa y el alquiler de viviendas.',
+  },
 ];
 
 export const guarantees: FaqItem[] = [
