@@ -67,6 +67,18 @@ export function agentSchema() {
   return schema;
 }
 
+export function websiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    url: site.url,
+    name: site.name,
+    inLanguage: 'es-ES',
+    publisher: { '@id': `${site.url}/#agencia` },
+  };
+}
+
 export function breadcrumbSchema(crumbs: Crumb[]) {
   return {
     '@context': 'https://schema.org',
