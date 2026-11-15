@@ -1,7 +1,49 @@
 # Traspaso a la sesión de Claude Pro (Mac personal)
 
-Todo lo de esta sesión está **subido a GitHub** en la rama `feat/crm-leads` del repo
-`github.com/sebastiandimasy/conroma-web`. No hay nada pendiente de subir.
+> **Estado a 5-nov-2026.** Lee esto antes que nada: hay una parte subida y otra que no.
+
+| Repo | Estado |
+|---|---|
+| **`conroma-web`** (este) | Todo subido, rama `feat/crm-leads`. Nada pendiente |
+| **`conroma-crm-ui`** | **5 commits SOLO en el Mac de trabajo.** El `git push` devuelve **403**: el token disponible no tiene acceso de escritura a ese repo |
+
+### Cómo recuperar los 5 commits del CRM
+
+**Opción A — la buena: un token con acceso.** Un PAT clásico con permiso `repo` sobre
+`sebastiandimasy/conroma-crm-ui`, un `git push`, y se acabó el problema para siempre.
+Todo lo demás son apaños.
+
+**Opción B — paquete git, sin GitHub.** En el Mac de trabajo hay un archivo con el
+historial completo:
+
+```
+~/Desktop/conroma-crm-ui.bundle          (262 KB, historial completo verificado)
+```
+
+Pásalo al otro Mac (AirDrop, iCloud, un USB) y:
+
+```bash
+# si NO tienes el repo clonado todavia
+git clone ~/Downloads/conroma-crm-ui.bundle conroma-crm-ui
+cd conroma-crm-ui && git checkout main
+
+# si YA lo tienes clonado y quieres solo lo nuevo
+cd ~/conroma-crm-ui
+git pull ~/Downloads/conroma-crm-ui.bundle main
+```
+
+Un `.bundle` es un repositorio entero en un archivo: se clona y se extrae de él igual
+que de un remoto. No pierdes historial ni mensajes de commit.
+
+Los 5 commits que viajan en él:
+
+```
+f2bb0c3  Fase 1: el gestor de pisos puede escribir, y marcha atras por capas
+a69880c  docs: guion de lanzamiento con el orden de conexion
+5724c5c  Reglas de movil y el tablero de leads con un solo eje
+60f88b6  Captacion de particulares y barrido movil a 390 px
+1c24b53  Ficha de inmueble de verdad, publicacion en portales y esqueletos
+```
 
 ---
 
@@ -99,3 +141,99 @@ Son pesados o contienen datos, por eso no se commitean:
   («Escríbenos»), en icono a partir de móvil y con texto desde 48rem.
 - **¿Versión en catalán?** La antigua tenía 4 idiomas sin hreflang; la nueva es solo castellano.
 - **Lloret tiene 36 inmuebles y Malgrat 23**, pero los textos tratan Malgrat como único mercado.
+
+---
+
+# Anexo · Sesión del 5-nov-2026 (CRM)
+
+Todo lo de este anexo vive en **`conroma-crm-ui`**, no en este repo. Si no has recuperado
+los 5 commits, vuelve a la cabecera de este documento.
+
+## Qué se hizo
+
+**El recorrido del comercial no se podía terminar.** El botón «Nueva cita» no tenía
+manejador, las citas no eran clicables y desde la ficha del lead no se podía agendar: ibas
+a la visita y no había dónde decir cómo había ido. Ahora se crea, se confirma y se cierra
+una cita, y el resultado **baja solo** a la ficha del lead y al historial del inmueble.
+
+**No existía pantalla para ver una ficha de inmueble**, solo para crearla: `App.jsx` montaba
+`<FichaPiso>` sin inmueble. Ahora es un expediente de 6 pestañas con la estructura de
+HabitatSoft (Datos · Fotos y textos · Publicación · Interno · Documentos) más Historial,
+que ellos no tienen.
+
+**El gestor de pisos estaba entero en modo lectura.** No había ninguna escritura de
+inmuebles en `useData.js`. Ahora se puede crear, editar y **publicar o retirar de la web**,
+con las migraciones `0001_cartera.sql` y `0002_leads.sql` que faltaban en el repo.
+
+**El Panel enseñaba tres métricas inventadas** con la etiqueta «ejemplo». Fuera. Ahora todo
+sale de los datos que hay.
+
+**Móvil**: «Más» llevaba directo a Valoraciones y había **siete pantallas inalcanzables**
+desde un móvil. La tabla del kit tenía `min-w-[640px]` dentro de 390 px. Y el tablero de
+leads metía scroll horizontal dentro del vertical. Las tres cosas, corregidas.
+
+**Nuevo**: módulo de publicación en portales con los cupos reales y bloqueo legal sin
+certificado energético, y pantalla de **captación de particulares** ordenada por para quién
+ya tenemos comprador.
+
+## Las dos reglas que no se tocan
+
+1. **`docs/REGLAS-MOVIL.md`** — un solo eje de desplazamiento, las tablas cambian de forma
+   con `<Table movil={…}>`, todo alcanzable desde «Más». Cada regla existe porque algo se
+   rompió, no por gusto.
+2. **Las migraciones son solo aditivas.** Una fase añade; nunca cambia lo que usa la
+   anterior. Deshacer una fase es dejar de usarla.
+
+## Marcha atrás, en cuatro capas
+
+| Si falla | Se deshace con |
+|---|---|
+| La web no lee bien el catálogo | `src/data/site.ts` → `inventarioDesde: 'json'` (en **este** repo) |
+| Un módulo del CRM | `src/config/modulos.js` → su bandera a `false` |
+| Una migración | El `rollback` comentado al pie de cada archivo |
+| Una fase entera | `git revert` del merge |
+
+## Documentación nueva (toda en `conroma-crm-ui/docs/`)
+
+| Archivo | Para qué |
+|---|---|
+| `PLAN-FASES.md` | Las 4 fases y cómo deshacer cada una |
+| `LANZAMIENTO.md` | El orden de conexión y qué papeleo empezar el día 1 |
+| `PUBLICACION-PORTALES.md` | Cómo se publica de verdad en Idealista y Fotocasa, con fuentes |
+| `CAPTACION-PARTICULARES.md` | De dónde salen los datos y qué exige el RGPD |
+| `QUE-CUBRE.md` | Qué cubre el CRM y qué **no**: ni facturación, ni firma digital, ni MLS |
+| `REGLAS-MOVIL.md` | Las 8 reglas de diseño móvil |
+| `AUDITORIA-TRES-CRM.md` | Habitatsoft vs Clientify vs el nuestro |
+
+## Lo que hay que saber antes de enseñarlo
+
+**Nada de lo que se escribe sobrevive a recargar la página.** Está avisado en pantalla con
+el punto ámbar de «datos de demostración», pero no se puede presentar como que guarda.
+
+## Para retomar, por orden
+
+1. **Terminar la Fase 1**: fotos a Storage, que la web lea de `property`, usuarios reales.
+2. **Aplicar las migraciones** en el proyecto de Supabase.
+3. **Decidir el alojamiento** (sigue abierto y bloquea dónde viven las claves).
+4. **Empezar el papeleo** de Idealista, Meta y Google: tarda semanas y no depende de nosotros.
+
+## Texto para pegarle a la otra sesión
+
+```
+Retomo el CRM de Conroma (~/conroma-crm-ui). Lee primero CLAUDE.md,
+docs/PLAN-FASES.md y docs/REGLAS-MOVIL.md.
+
+Estamos en la Fase 1: el gestor de pisos. Ya se puede crear, editar y
+publicar o retirar un inmueble de la web, y están escritas las migraciones
+0001_cartera y 0002_leads. Falta: subir fotos a Storage, que la web lea de
+la tabla property en vez del JSON, y dar de alta a los usuarios reales.
+
+Tres reglas que no se tocan:
+· Móvil es el 97%: verifica a 390 px en navegador real, y sigue
+  docs/REGLAS-MOVIL.md.
+· Las migraciones son solo aditivas, cada una con su rollback al pie.
+· Marca: negro principal, amarillo solo de acento, nada de azul.
+
+Y una advertencia: hoy nada de lo que se escribe sobrevive a recargar la
+página. No lo enseñes como si guardara.
+```

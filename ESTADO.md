@@ -75,16 +75,23 @@ quieres las mismas en el Mac personal, hay un paquete preparado en `~/Desktop/Cl
 
 ## 4. Falta (código)
 
-1. **Enchufar a Supabase las pantallas que quedan** del CRM: Pisos, Ficha de piso (alta y
-   guardado), Agenda, Valoraciones, Contactos. El patrón ya está hecho en `Leads.jsx`: hook en
-   `src/lib/useData.js`, estados de carga/error/vacío, y el indicador de origen de datos.
-2. **Subir `conroma-crm-ui` a GitHub.** Hay un paquete listo en
-   `~/Desktop/conroma-crm-ui-para-subir/` con las instrucciones en `SUBIR-A-GITHUB.md`.
-3. ~~**Vídeos sin optimizar**~~ **HECHO (10-nov)**: `public/video/` 44 MB → 13 MB (reels
+1. **El esquema de la base de datos no está versionado.** `src/lib/useData.js` consulta cuatro
+   tablas —`lead`, `lead_event`, `property`, `agent`— pero en `supabase/migrations/` solo hay
+   `0003_last_contact.sql`: faltan las migraciones que las crean. Nadie puede levantar la base
+   desde el repo. **Esto bloquea todo lo demás de Supabase** y va primero.
+2. **Enchufar a Supabase las pantallas que quedan** del CRM: Ficha de piso (alta y guardado),
+   Valoraciones, Contactos, Difusión, Asesores, Movimientos y Operaciones. Ya están conectadas
+   Panel, Leads, ficha de lead, Pisos, Agenda y Estadísticas. El patrón está en `Leads.jsx`.
+3. **Nada de lo que se escribe en el CRM sobrevive a recargar la página.** Citas, notas,
+   movimientos y cambios de etapa viven en memoria del proceso (`citasManuales` y `parches` en
+   `src/data/agenda.js`, `movimientosManuales` en `src/data/movimientos.js`, `demoLeadPatches`
+   y `demoEvents` en `src/lib/useData.js`). Es correcto para una demostración y está avisado en
+   pantalla, pero **no se puede enseñar como si guardara**.
+4. ~~**Vídeos sin optimizar**~~ **HECHO (10-nov)**: `public/video/` 44 MB → 13 MB (reels
    reescalados a 405x720, sin audio, H.264 CRF 30) + póster JPG por vídeo y `preload="none"`
    en `StoryVideos.tsx`, así no se descargan hasta que entran en pantalla. Originales
    respaldados fuera del repo.
-4. **Endpoint de descripción con IA** para la ficha de piso. El botón «Generar con IA» existe pero
+5. **Endpoint de descripción con IA** para la ficha de piso. El botón «Generar con IA» existe pero
    está simulado. Diseño previsto en `docs/INTEGRACIONES.md` (`POST /api/describe-property`).
 
 ## 4 bis. Dónde se aloja la web: decisión abierta

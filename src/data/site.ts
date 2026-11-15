@@ -50,6 +50,20 @@ export interface SiteData {
    * tienen fotos, y los 8 que no las tienen se quedan fuera igualmente.
    */
   catalogIndexable: boolean;
+  /**
+   * De dónde salen los inmuebles.
+   *
+   * `'json'`  → `properties.real.json`, el volcado del inventario. Es lo que
+   *             hay hoy y funciona sin depender de nada.
+   * `'supabase'` → la tabla `property`, que alimenta el CRM.
+   *
+   * **Este es el botón de marcha atrás de la Fase 1.** Si el gestor de pisos
+   * da problemas después de migrar, se pone `'json'` y la web vuelve a servir
+   * el volcado al instante: el catálogo público no se cae por culpa del CRM.
+   * Toda lectura de inmuebles pasa por `getListings()`, así que no hay que
+   * tocar ninguna página.
+   */
+  inventarioDesde: 'json' | 'supabase';
   instagram: { handle: string; url: string; about: string }[];
   // Publicaciones (reels o posts) a embeber. Lista vacía = la sección no se muestra.
   instagramVideos: { url: string; label: string; video?: string }[];
@@ -132,6 +146,9 @@ export const site: SiteData = {
   // Aprobado por el dueño (3-nov-2026): el catálogo se indexa. Los 8 inmuebles
   // sin fotos quedan fuera automáticamente hasta que Habitatsoft entregue el archivo.
   catalogIndexable: true,
+  // Mientras la Fase 1 no esté entera, la web sigue leyendo el volcado.
+  // Ver ../conroma-crm-ui/docs/PLAN-FASES.md
+  inventarioDesde: 'json',
   instagram: [
     { handle: '@conromaasesores', url: 'https://www.instagram.com/conromaasesores/', about: 'Pisos, consejos y datos curiosos del sector.' },
     { handle: '@conromaenobras', url: 'https://www.instagram.com/conromaenobras/', about: 'El antes y el después de nuestras reformas.' },
