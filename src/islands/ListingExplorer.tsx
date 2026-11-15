@@ -24,10 +24,13 @@ interface ListingExplorerProps {
   townName: string;
 }
 
+const PAGE = 24;
+
 export default function ListingExplorer({ properties, townName }: ListingExplorerProps) {
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [order, setOrder] = useState<SortOrder>('recientes');
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [shown, setShown] = useState(PAGE);
   const hidden = useStore(hiddenRefs);
 
   useEffect(() => {
@@ -51,6 +54,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
     () => sortProperties(matching.filter((property) => !hidden.includes(property.ref)), order),
     [matching, hidden, order],
   );
+  useEffect(() => setShown(PAGE), [filters, order]);
   const active = countActive(filters);
   const hiddenCount = matching.length - visible.length;
 
@@ -133,7 +137,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
         </div>
       ) : (
         <ul className="property-grid">
-          {visible.map((property, index) => (
+          {visible.slice(0, shown).map((property, index) => (
             <li key={property.ref} className="property-grid__item">
               <PropertyCard
                 property={property}
@@ -146,6 +150,14 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
             </li>
           ))}
         </ul>
+      )}
+
+      {visible.length > shown && (
+        <div className="listing__more">
+          <Button variant="ghost" onPress={() => setShown(shown + PAGE)}>
+            {`Ver más (${visible.length - shown} restantes)`}
+          </Button>
+        </div>
       )}
 
       {filters.maxPrice !== null && visible.length > 0 && (

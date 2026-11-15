@@ -20,14 +20,16 @@ export default function TestimonialCarousel({ testimonials, ratingUrl, intervalM
   const reduceMotion = useReducedMotion();
   const count = testimonials.length;
   const [index, setIndex] = React.useState(0);
-  const [paused, setPaused] = React.useState(false);
+  const [paused, setPaused] = React.useState(false); // pausa temporal (hover/foco)
+  const [stopped, setStopped] = React.useState(false); // pausa elegida con el botón
+  const [interacted, setInteracted] = React.useState(false); // aria-live solo tras interactuar
 
   // Auto-play: avanza solo salvo pausa o reduced-motion.
   React.useEffect(() => {
-    if (reduceMotion || paused || count < 2) return;
+    if (reduceMotion || paused || stopped || count < 2) return;
     const id = setTimeout(() => setIndex((i) => (i + 1) % count), intervalMs);
     return () => clearTimeout(id);
-  }, [index, paused, reduceMotion, count, intervalMs]);
+  }, [index, paused, stopped, reduceMotion, count, intervalMs]);
 
   const current = testimonials[index];
   if (!current) return null;
@@ -38,7 +40,7 @@ export default function TestimonialCarousel({ testimonials, ratingUrl, intervalM
   return (
     <div
       className="tcar"
-      role="region"
+      role="group"
       aria-roledescription="carousel"
       aria-label="Reseñas de clientes"
       onMouseEnter={() => setPaused(true)}
@@ -46,7 +48,7 @@ export default function TestimonialCarousel({ testimonials, ratingUrl, intervalM
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="tcar__stage" aria-live="polite">
+      <div className="tcar__stage" aria-live={interacted || stopped || reduceMotion ? 'polite' : 'off'}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.figure
             key={index}
@@ -76,16 +78,29 @@ export default function TestimonialCarousel({ testimonials, ratingUrl, intervalM
       </div>
 
       {count > 1 && (
-        <div className="tcar__dots" role="tablist" aria-label="Elegir reseña">
+        <div className="tcar__dots" role="group" aria-label="Elegir reseña">
+          {!reduceMotion && (
+            <button
+              type="button"
+              aria-pressed={stopped}
+              aria-label={stopped ? 'Reanudar el cambio automático de reseñas' : 'Pausar el cambio automático de reseñas'}
+              style={{ minHeight: 44, minWidth: 44, padding: '0 8px', font: 'inherit', fontSize: '0.875rem', background: 'none', border: 0, color: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
+              onClick={() => setStopped((v) => !v)}
+            >
+              {stopped ? 'Reanudar' : 'Pausar'}
+            </button>
+          )}
           {testimonials.map((t, i) => (
             <button
               key={i}
               type="button"
-              role="tab"
-              aria-selected={i === index}
+              aria-current={i === index ? 'true' : undefined}
               aria-label={`Reseña ${i + 1} de ${count}: ${t.author}`}
               className={`tcar__dot${i === index ? ' is-active' : ''}`}
-              onClick={() => setIndex(i)}
+              onClick={() => {
+                setInteracted(true);
+                setIndex(i);
+              }}
             />
           ))}
         </div>

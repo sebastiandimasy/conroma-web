@@ -7,6 +7,14 @@ import { getListings } from '../../data/properties';
 import { breadcrumbSchema } from '../../lib/seo';
 
 const path = '/es/guardados/';
+// Solo lo que pinta la tarjeta: sin descripciones ni galerías completas (el HTML pasaba de 850 KB).
+const slim = getListings().map(({ description, likes, watchOut, geo, images, ...p }) => ({
+  ...p,
+  description: '',
+  likes: '',
+  watchOut: '',
+  images: images?.slice(0, 1),
+}));
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Guardados', path },
@@ -30,7 +38,7 @@ const crumbs = [
 
   <section class="section">
     <div class="wrap">
-      <SavedProperties client:load properties={getListings()} listingUrl="/es/venta/malgrat-de-mar/" />
+      <SavedProperties client:load properties={slim} listingUrl="/es/venta/malgrat-de-mar/" />
     </div>
   </section>
 

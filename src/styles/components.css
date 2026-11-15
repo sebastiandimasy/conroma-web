@@ -226,41 +226,6 @@
       inset 0 1px 0 var(--glass-highlight);
   }
 
-  /* PRUEBA liquid-glass (técnica refracción SVG). Reverter: borrar este bloque + el <svg> de BaseLayout + las clases .liquid-glass. */
-  .liquid-glass {
-    position: relative;
-    background: var(--glass-fill-2);
-    border: 1px solid var(--glass-edge);
-    box-shadow:
-      var(--shadow-3),
-      inset 0 1px 0 var(--glass-highlight),
-      inset 0 -1px 3px var(--glass-lowlight);
-  }
-
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    .liquid-glass {
-      /* iOS no soporta url() en backdrop-filter → cae a blur suave; escritorio añade la refracción. */
-      -webkit-backdrop-filter: blur(8px) saturate(180%) brightness(1.06);
-      backdrop-filter: url(#liquid-glass) blur(8px) saturate(180%) brightness(1.06);
-    }
-  }
-
-  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
-    .liquid-glass {
-      background: var(--color-surface);
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-      border-color: var(--color-ink);
-    }
-  }
-
-  .liquid-glass-defs {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-  }
-
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
     .glass {
       background: var(--glass-fill-2);
@@ -596,9 +561,9 @@
   }
 
   .field__control:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-focus);
     outline-offset: 1px;
-    border-color: var(--color-accent);
+    border-color: var(--color-focus);
     box-shadow: none;
   }
 
@@ -635,9 +600,9 @@
   }
 
   .float-field__control:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-focus);
     outline-offset: 1px;
-    border-color: var(--color-accent);
+    border-color: var(--color-focus);
   }
 
   .float-field__label {

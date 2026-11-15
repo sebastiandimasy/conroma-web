@@ -5,9 +5,11 @@ import ContactSection from '../../components/sections/ContactSection.astro';
 import OfficeMap from '../../components/sections/OfficeMap.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import TownLinks from '../../components/sections/TownLinks.astro';
+import { site } from '../../data/site';
 import { homeFaq } from '../../data/faq';
 import { agentSchema, breadcrumbSchema } from '../../lib/seo';
 
+const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ');
 const path = '/es/contacto/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
@@ -29,6 +31,17 @@ const crumbs = [
     lead="Escríbenos por WhatsApp, llámanos o pásate por la oficina. Si tienes cualquier duda adicional, aquí estamos."
   />
   <ContactSection />
+  <section class="section">
+    <div class="wrap">
+      <address>
+        <strong>{site.legalName}</strong><br />
+        {site.address.street}, {site.address.postalCode} {site.address.locality} ({site.address.region})<br />
+        Horario: lunes a viernes, {hours}<br />
+        WhatsApp y móvil: <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> · Fijo: <a href={`tel:${site.landline}`}>{site.landlineDisplay}</a><br />
+        Email: <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+    </div>
+  </section>
   <OfficeMap />
   <TownLinks />
   <FaqSection items={homeFaq} />

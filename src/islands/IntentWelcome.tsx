@@ -13,7 +13,7 @@ export default function IntentWelcome() {
   const current = useStore(intent);
   const consent = useStore(cookieConsent);
   const [ready, setReady] = useState(false);
-  const firstRef = useRef<HTMLAnchorElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -25,32 +25,32 @@ export default function IntentWelcome() {
   // Hasta que no hay decisión, su overlay dejaría el banner visible pero sin poder pulsarlo.
   const visible = ready && current === 'pendiente' && consent !== 'pendiente';
 
+  // <dialog> nativo con showModal(): atrapa el foco, Esc lo cierra (evento cancel) y devuelve el foco.
   useEffect(() => {
-    if (!visible) return;
-    firstRef.current?.focus();
-    function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setIntent('mirando');
-    }
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    const dialog = dialogRef.current;
+    if (visible && dialog && !dialog.open) dialog.showModal();
   }, [visible]);
 
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <motion.dialog
+          ref={dialogRef}
           className="intent-modal__overlay"
+          aria-labelledby="intent-title"
+          style={{ width: '100%', height: '100%', maxWidth: 'none', maxHeight: 'none', margin: 0, border: 0, color: 'inherit' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          onCancel={(event) => {
+            event.preventDefault();
+            setIntent('mirando');
+          }}
           onClick={() => setIntent('mirando')}
         >
           <motion.div
             className="intent-modal glass glass--thick"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="intent-title"
             initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
@@ -68,7 +68,7 @@ export default function IntentWelcome() {
               {options.map((option, index) => (
                 <a
                   key={option.id}
-                  ref={index === 0 ? firstRef : undefined}
+                  autoFocus={index === 0}
                   className="option"
                   href={option.href}
                   onClick={() => setIntent(option.id)}
@@ -85,7 +85,7 @@ export default function IntentWelcome() {
               Solo estoy mirando
             </button>
           </motion.div>
-        </motion.div>
+        </motion.dialog>
       )}
     </AnimatePresence>
   );

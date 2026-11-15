@@ -33,14 +33,15 @@
   --color-fixed-backdrop: oklch(0.147 0.004 49.25); /* stone-950 */
   --color-ink: oklch(0.216 0.006 56.043); /* stone-900 */
   --color-ink-2: oklch(0.444 0.011 73.639); /* stone-600 */
-  --color-ink-3: oklch(0.553 0.013 58.071); /* stone-500 */
+  --color-ink-3: oklch(0.5 0.013 58.071); /* ≈stone-500 oscurecido: 6.0:1 s/blanco, 5.5:1 s/surface-2 */
+  --color-focus: oklch(0.216 0.006 56.043); /* anillo de foco: tinta (17.5:1 s/blanco); amarillo en oscuro */
   --color-canvas: oklch(1 0 0); /* white */
   --color-surface: oklch(1 0 0); /* white */
   --color-surface-2: oklch(0.97 0.001 106.424); /* stone-100 */
-  --color-line: oklch(0.923 0.003 48.717); /* stone-200 */
+  --color-line: oklch(0.64 0.01 58); /* borde de UI ≥3:1 (3.4:1 s/blanco, 3.1:1 s/surface-2) */
   --color-dot: rgb(28 25 23 / 0.05); /* puntos de fondo decorativos (stone) */
   --color-positive: oklch(76.5% 0.177 163.223); /* Tailwind emerald-500 */
-  --color-negative: oklch(63.7% 0.237 25.331); /* Tailwind red-500 */
+  --color-negative: oklch(55% 0.2 27); /* red-600 aprox.: 5.4:1 s/blanco */
   --color-whatsapp: oklch(0.723 0.219 149.579); /* Tailwind green-500 (≈ WhatsApp) */
 
   --font-display: "Helvetica Neue", Helvetica, "Hanken Grotesk Variable", Arial, sans-serif;
@@ -154,11 +155,12 @@
 :root[data-theme="dark"] {
   --color-ink: oklch(0.97 0.001 106.424);
   --color-ink-2: oklch(0.709 0.01 56.259);
-  --color-ink-3: oklch(0.553 0.013 58.071);
+  --color-ink-3: oklch(0.66 0.013 58.071); /* 6.3:1 s/canvas, 5.6:1 s/surface */
+  --color-focus: oklch(0.879 0.169 91.605); /* amarillo de marca: 12:1 s/superficie oscura */
   --color-canvas: oklch(0.147 0.004 49.25);
   --color-surface: oklch(0.216 0.006 56.043);
   --color-surface-2: oklch(0.185 0.005 56.043);
-  --color-line: oklch(0.268 0.007 34.298);
+  --color-line: oklch(0.54 0.01 58); /* ≥3:1 (3.9:1 s/canvas, 3.5:1 s/surface) */
   --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
   --color-accent-deep: oklch(0.879 0.169 91.605);
   --color-accent-wash: oklch(0.27 0.04 75);
@@ -196,11 +198,12 @@
   :root:not([data-theme="light"]) {
     --color-ink: oklch(0.97 0.001 106.424);
     --color-ink-2: oklch(0.709 0.01 56.259);
-    --color-ink-3: oklch(0.553 0.013 58.071);
+    --color-ink-3: oklch(0.66 0.013 58.071);
+    --color-focus: oklch(0.879 0.169 91.605);
     --color-canvas: oklch(0.147 0.004 49.25);
     --color-surface: oklch(0.216 0.006 56.043);
     --color-surface-2: oklch(0.185 0.005 56.043);
-    --color-line: oklch(0.268 0.007 34.298);
+    --color-line: oklch(0.54 0.01 58);
     --color-dot: rgb(245 245 239 / 0.045); /* puntos de fondo decorativos */
     --color-accent-deep: oklch(0.879 0.169 91.605);
     --color-accent-wash: oklch(0.27 0.04 75);

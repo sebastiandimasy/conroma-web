@@ -41,8 +41,12 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
     track.scrollBy({ left: delta * track.clientWidth, behavior: 'smooth' });
   }
 
-  function openViewer() {
-    dialogRef.current?.showModal();
+  function openViewer(index = current - 1) {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    dialog.showModal();
+    // Las imágenes del visor son lazy: tras abrir, se centra la pulsada.
+    dialog.querySelectorAll('.gallery__viewer-list img')[index]?.scrollIntoView({ block: 'start' });
   }
 
   // Sin fotos reales todavía: marcador elegante, sin SVG de muestra ni lightbox/contador.
@@ -62,7 +66,7 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
       <div className="gallery__track" ref={trackRef} tabIndex={0} aria-label={`Fotos de ${title}`}>
         {srcs.map((src, index) => (
           <figure key={index} className="gallery__slide" data-index={index + 1}>
-            <button type="button" className="gallery__zoom" onClick={openViewer} aria-label={`Ampliar foto ${index + 1} de ${count}`}>
+            <button type="button" className="gallery__zoom" onClick={() => openViewer(index)} aria-label={`Ampliar foto ${index + 1} de ${count}`}>
               <img
                 className="gallery__photo"
                 src={src}
@@ -90,7 +94,7 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
         </>
       )}
 
-      <button type="button" className="chip chip--on-photo gallery__counter" onClick={openViewer}>
+      <button type="button" className="chip chip--on-photo gallery__counter" onClick={() => openViewer()}>
         {`${current} / ${count} · Ver todas`}
       </button>
 

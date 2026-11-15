@@ -10,11 +10,15 @@ export interface BlogPost {
   description: string;
   category: string;
   date: string;
+  /** Firma del artículo: el fundador (team.ts). shortcut: autoría asignada por defecto, pendiente de confirmar con el dueño. */
+  author: { name: string; role: string; href: string };
   draft: boolean;
   intro: string;
   sections: BlogSection[];
   cta: { label: string; href: string };
 }
+
+const founder = { name: 'Boris Conde Jr.', role: 'CEO y fundador de Conroma Asesores', href: '/es/equipo/' };
 
 export const posts: BlogPost[] = [
   {
@@ -23,6 +27,7 @@ export const posts: BlogPost[] = [
     description: 'Los pasos para vender un piso sin líos, en orden: saber cuánto vale, preparar los papeles, enseñarlo bien y llegar a notaría.',
     category: 'Vender',
     date: '2026-10-13',
+    author: founder,
     draft: false,
     intro: 'Vender un piso impone, sobre todo la primera vez. Te lo contamos fácil, en el orden en que pasa de verdad.',
     sections: [
@@ -58,6 +63,7 @@ export const posts: BlogPost[] = [
     description: 'Los papeles que te van a pedir para vender un piso en Cataluña, y qué pasa si tiene hipoteca o si viene de una herencia.',
     category: 'Vender',
     date: '2026-10-13',
+    author: founder,
     draft: false,
     intro: 'No es la parte divertida, pero es la que más retrasa una venta cuando falta algo. Esta es la lista habitual.',
     sections: [
@@ -95,6 +101,7 @@ export const posts: BlogPost[] = [
     description: 'Cómo comprar una vivienda en Malgrat de Mar si vives en otro país: qué papeles necesitas y cómo firmar sin tener que venir.',
     category: 'Comprar',
     date: '2026-10-13',
+    author: founder,
     draft: false,
     intro: 'Mucha gente que compra en la costa no vive aquí. Se puede hacer bien y sin venir diez veces.',
     sections: [

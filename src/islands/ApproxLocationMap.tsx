@@ -56,6 +56,7 @@ export default function ApproxLocationMap({ latitude, longitude, label, radiusMe
       center: [longitude, latitude],
       zoom: 16,
       attributionControl: { compact: true },
+      cooperativeGestures: true, // un dedo hace scroll de página, dos mueven el mapa
       scrollZoom: false,
       dragRotate: false,
     });
@@ -80,5 +81,5 @@ export default function ApproxLocationMap({ latitude, longitude, label, radiusMe
     };
   }, [latitude, longitude, label, radiusMeters]);
 
-  return <div ref={containerRef} className="approx-map__canvas" aria-label={`Ubicación aproximada: ${label}`} role="img" />;
+  return <div ref={containerRef} className="approx-map__canvas" aria-label={`Ubicación aproximada: ${label}`} role="group" />;
 }

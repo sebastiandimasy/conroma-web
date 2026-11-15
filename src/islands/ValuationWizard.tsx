@@ -134,6 +134,7 @@ export default function ValuationWizard() {
     event.preventDefault();
     if (answers.address.trim().length < 5) {
       setErrors({ address: 'Pon la calle y el número, aunque sea aproximado.' });
+      document.getElementById('valoracion-address')?.focus();
       return;
     }
     go(2);
@@ -148,11 +149,15 @@ export default function ValuationWizard() {
     }
     if (!answers.privacy) next.privacy = 'Necesitamos que aceptes la política de privacidad para contestarte.';
     setErrors(next);
-    if (Object.keys(next).length > 0) return;
+    const first = (['name', 'phone', 'privacy'] as const).find((k) => next[k]);
+    if (first) {
+      document.getElementById(`valoracion-${first}`)?.focus();
+      return;
+    }
     if (sending) return;
     setSending(true);
 
-    // El lead se guarda SIEMPRE, antes de abrir nada: si el visitante no llega a enviar
+    // El lead se guarda SIEMPRE, antes de ofrecer WhatsApp: si el visitante no llega a enviar
     // el WhatsApp, la solicitud no se pierde.
     // Insert directo en Supabase (web estática, sin Worker): anon key + policy RLS solo-INSERT.
     let stored = false;
@@ -176,10 +181,6 @@ export default function ValuationWizard() {
       stored = false;
     }
 
-    // Solo abrimos WhatsApp si es el canal que ha pedido el visitante.
-    if (answers.channel === 'whatsapp') {
-      window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`, '_blank', 'noopener');
-    }
     setSaved(stored);
     setSending(false);
     setSent(true);
@@ -195,6 +196,7 @@ export default function ValuationWizard() {
 
   if (sent) {
     const callMe = answers.channel === 'llamada';
+    const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`;
     return (
       <section className="wizard wizard--done" aria-live="polite">
         <span className="tag">Listo</span>
@@ -202,7 +204,7 @@ export default function ValuationWizard() {
         <h2 className="wizard__title">
           {callMe
             ? `Recibido, ${answers.name.trim().split(' ')[0]}. Te llamamos nosotros.`
-            : 'Se ha abierto WhatsApp con tu solicitud ya escrita.'}
+            : 'Recibido. Pulsa para continuar por WhatsApp.'}
         </h2>
         <p className="wizard__text">
           {callMe ? (
@@ -216,7 +218,8 @@ export default function ValuationWizard() {
             </>
           ) : (
             <>
-              Dale a enviar y te contestamos nosotros, en persona. Si no se ha abierto, llámanos al{' '}
+              Se abre WhatsApp con tu solicitud ya escrita: dale a enviar y te contestamos nosotros, en persona. Si
+              prefieres, llámanos al{' '}
               <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
                 {site.phoneDisplay}
               </a>
@@ -224,11 +227,23 @@ export default function ValuationWizard() {
             </>
           )}
         </p>
+        {!callMe && (
+          <a
+            className="button button--primary button--large button--block"
+            href={waHref}
+            target="_blank"
+            rel="noopener"
+            data-contact="whatsapp"
+            data-origin="valoracion-whatsapp"
+          >
+            Continuar por WhatsApp
+          </a>
+        )}
         {callMe && !saved && (
           <p className="wizard__text">
             No hemos podido guardar la solicitud automáticamente. Para que no se pierda, escríbenos por{' '}
             <a
-              href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`}
+              href={waHref}
               target="_blank"
               rel="noopener"
               data-contact="whatsapp"
@@ -313,18 +328,21 @@ export default function ValuationWizard() {
           {step === 1 && (
             <form className="wizard__form" onSubmit={submitAddress} noValidate>
               <label className="field">
-                <span className="visually-hidden">Dirección del piso</span>
+                <span className="visually-hidden">Dirección del piso (obligatorio)</span>
                 <input
+                  id="valoracion-address"
                   className="field__control"
                   type="text"
                   autoComplete="street-address"
+                  required
+                  aria-required="true"
                   placeholder="Ej. Carrer de Mar 24, Malgrat"
                   value={answers.address}
                   aria-invalid={Boolean(errors.address)}
-                  aria-describedby="direccion-ayuda"
+                  aria-describedby={`${errors.address ? 'valoracion-address-error ' : ''}direccion-ayuda`}
                   onChange={(event) => setAnswers({ ...answers, address: event.target.value })}
                 />
-                {errors.address && <span className="field__error">{errors.address}</span>}
+                {errors.address && <span className="field__error" id="valoracion-address-error" role="alert">{errors.address}</span>}
                 <span className="field__hint" id="direccion-ayuda">
                   Con la calle sabemos a qué precio se está vendiendo de verdad en tu zona.
                 </span>
@@ -405,8 +423,12 @@ export default function ValuationWizard() {
           {step === 3 && (
             <form className="wizard__form" onSubmit={submitContact} noValidate>
               <label className="field">
-                <span className="field__label">Tu nombre</span>
+                <span className="field__label">Tu nombre <span aria-hidden="true">*</span></span>
                 <input
+                  id="valoracion-name"
+                  required
+                  aria-required="true"
+                  aria-describedby={errors.name ? 'valoracion-name-error' : undefined}
                   className="field__control"
                   type="text"
                   autoComplete="given-name"
@@ -415,7 +437,7 @@ export default function ValuationWizard() {
                   aria-invalid={Boolean(errors.name)}
                   onChange={(event) => setAnswers({ ...answers, name: event.target.value })}
                 />
-                {errors.name && <span className="field__error">{errors.name}</span>}
+                {errors.name && <span className="field__error" id="valoracion-name-error" role="alert">{errors.name}</span>}
               </label>
 
               <div className="segmented" role="group" aria-label="Cómo prefieres que te contestemos">
@@ -441,8 +463,12 @@ export default function ValuationWizard() {
 
               {answers.channel === 'llamada' && (
                 <label className="field">
-                  <span className="field__label">Tu teléfono</span>
+                  <span className="field__label">Tu teléfono <span aria-hidden="true">*</span></span>
                   <input
+                    id="valoracion-phone"
+                    required
+                    aria-required="true"
+                    aria-describedby={errors.phone ? 'valoracion-phone-error' : undefined}
                     className="field__control"
                     type="tel"
                     inputMode="tel"
@@ -452,22 +478,27 @@ export default function ValuationWizard() {
                     aria-invalid={Boolean(errors.phone)}
                     onChange={(event) => setAnswers({ ...answers, phone: event.target.value })}
                   />
-                  {errors.phone && <span className="field__error">{errors.phone}</span>}
+                  {errors.phone && <span className="field__error" id="valoracion-phone-error" role="alert">{errors.phone}</span>}
                 </label>
               )}
 
               <label className="check">
                 <input
+                  id="valoracion-privacy"
                   className="check__input"
                   type="checkbox"
+                  required
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.privacy)}
+                  aria-describedby={errors.privacy ? 'valoracion-privacy-error' : undefined}
                   checked={answers.privacy}
                   onChange={(event) => setAnswers({ ...answers, privacy: event.target.checked })}
                 />
                 <span>
-                  He leído la <a href="/es/privacidad/">política de privacidad</a>.
+                  He leído la <a href="/es/privacidad/">política de privacidad</a>. <span aria-hidden="true">*</span>
                 </span>
               </label>
-              {errors.privacy && <span className="field__error">{errors.privacy}</span>}
+              {errors.privacy && <span className="field__error" id="valoracion-privacy-error" role="alert">{errors.privacy}</span>}
               <label className="check">
                 <input
                   className="check__input"
@@ -484,7 +515,7 @@ export default function ValuationWizard() {
               <p className="field__hint">
                 {answers.channel === 'llamada'
                   ? 'Nos llega tu solicitud y te llamamos nosotros. No tienes que hacer nada más.'
-                  : 'Se abre WhatsApp con tu solicitud ya escrita. Solo tienes que darle a enviar.'}
+                  : 'Guardamos tu solicitud y te damos un botón para seguir por WhatsApp.'}
               </p>
             </form>
           )}

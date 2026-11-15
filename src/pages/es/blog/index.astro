@@ -6,6 +6,7 @@ import ContactSection from '../../../components/sections/ContactSection.astro';
 import { posts } from '../../../data/blog';
 import { breadcrumbSchema } from '../../../lib/seo';
 
+const fmt = (d: string) => new Date(d).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const path = '/es/blog/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
@@ -37,6 +38,9 @@ const crumbs = [
                 <span class="tag">{post.category}</span>
                 <h2 class="feature__title">{post.title}</h2>
                 <p class="feature__text">{post.description}</p>
+                <p class="feature__text">
+                  {post.author.name} · <time datetime={post.date}>{fmt(post.date)}</time>
+                </p>
                 <span class="services__more">
                   Leer
                   <Icon name="arrow" class="link-list__arrow" />

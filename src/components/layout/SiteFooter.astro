@@ -21,6 +21,9 @@ const year = 2026;
         {site.address.street}<br />
         {site.address.postalCode} {site.address.locality}
       </address>
+      <p class="site-footer__hours">
+        Horario: lunes a viernes, {site.openingHours?.slice(0, 2).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ')}
+      </p>
     </div>
 
     <nav class="site-footer__col" aria-label="Enlaces rápidos">

@@ -14,26 +14,45 @@ interface PropertyCardProps {
   onHide?: (ref: string) => void;
 }
 
+// El CDN sirve variantes por ancho (xl 800, 2xl 1024, 3xl 1280); la tarjeta no necesita la maxima.
+const cdnSize = (url: string, size: string) => url.replace('/3xl/', `/${size}/`);
+
 export function PropertyCard({ property, townName, origin, eager = false, headingLevel: Heading = 'h3', onHide }: PropertyCardProps) {
   const title = propertyTitle(property);
   const url = propertyUrl(property);
+  const hasPhotos = (property.images?.length ?? 0) > 0 || property.photos > 0;
+  const cardPhoto = property.images?.[0];
   const drop = property.previousPrice ? property.previousPrice - property.price : 0;
 
   return (
     <article className="property-card">
       <div className="property-card__media">
         <a className="property-card__photo-link" href={url} aria-label={title}>
-          <img
-            className="property-card__photo"
-            src={property.images?.[0] ?? `/img/muestra-${property.tone}.svg`}
-            alt={`${title}, foto principal`}
-            width="1200"
-            height="900"
-            loading={eager ? 'eager' : 'lazy'}
-            fetchPriority={eager ? 'high' : 'auto'}
-            decoding="async"
-            style={{ viewTransitionName: `foto-${property.ref.toLowerCase()}` }}
-          />
+          {/* Mismo criterio que PropertyGallery: sin fotos reales, marcador etiquetado en vez de pseudo-foto. */}
+          {hasPhotos ? (
+            <img
+              className="property-card__photo"
+              src={cardPhoto ? cdnSize(cardPhoto, 'xl') : `/img/muestra-${property.tone}.svg`}
+              srcSet={
+                cardPhoto?.includes('/3xl/')
+                  ? `${cdnSize(cardPhoto, 'xl')} 800w, ${cdnSize(cardPhoto, '2xl')} 1024w`
+                  : undefined
+              }
+              sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+              alt={`${title}, foto principal`}
+              width="800"
+              height="600"
+              loading={eager ? 'eager' : 'lazy'}
+              fetchPriority={eager ? 'high' : 'auto'}
+              decoding="async"
+              style={{ viewTransitionName: `foto-${property.ref.toLowerCase()}` }}
+            />
+          ) : (
+            <div className="gallery__empty property-card__photo" style={{ borderRadius: 0 }}>
+              <Icon name="camera" />
+              <span>Fotos próximamente</span>
+            </div>
+          )}
         </a>
         <span className="tag property-card__tag">{property.tag}</span>
         <div className="property-card__tools">

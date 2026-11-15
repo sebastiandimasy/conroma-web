@@ -1,23 +1,24 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ValuationWizard from '../../islands/ValuationWizard';
-import { serviceSchema } from '../../lib/seo';
+import { breadcrumbSchema, serviceSchema } from '../../lib/seo';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Valoración', path: '/es/valoracion/' },
+];
 ---
 
 <BaseLayout
   title="¿Cuánto vale mi piso? Valoración gratis"
   description="Dinos dónde está tu piso y en qué estado, y te decimos cuánto vale. Cuatro preguntas, gratis y sin compromiso."
   path="/es/valoracion/"
-  schemas={[serviceSchema('Valoración de inmuebles', 'Valoración gratis de tu piso en cuatro preguntas, sin compromiso.', '/es/valoracion/')]}
+  schemas={[breadcrumbSchema(crumbs), serviceSchema('Valoración de inmuebles', 'Valoración gratis de tu piso en cuatro preguntas, sin compromiso.', '/es/valoracion/')]}
   bare
 >
-  <h1 class="visually-hidden">¿Cuánto vale tu piso? Valoración gratis en Malgrat de Mar</h1>
   <ValuationWizard client:load />
   <noscript>
     <div class="wrap wizard-fallback">
-      <p>
-        <strong>¿Cuánto vale mi piso?</strong>
-      </p>
+      <h1>¿Cuánto vale mi piso?</h1>
       <p>Para la valoración paso a paso hace falta JavaScript. Escríbenos por WhatsApp o llámanos y te lo decimos igual.</p>
     </div>
   </noscript>

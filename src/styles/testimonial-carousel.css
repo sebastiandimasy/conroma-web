@@ -115,13 +115,13 @@
   width: 9px;
   height: 9px;
   border-radius: var(--radius-pill);
-  background: var(--color-line);
+  background: var(--color-ink-3);
   transition: background-color 0.2s ease, width 0.2s ease;
 }
 
 .tcar__dot.is-active::before {
   width: 22px;
-  background: var(--color-accent);
+  background: var(--color-ink);
 }
 
 .tcar__dot:active::before {
@@ -130,7 +130,7 @@
 
 .tcar__dot:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-focus);
 }
 
 .tcar__more {

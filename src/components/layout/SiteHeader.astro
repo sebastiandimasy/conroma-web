@@ -36,12 +36,12 @@ const dockIcons: Record<string, IconName> = {
 
 ---
 
-<header class="site-header liquid-glass" data-site-header>
+<header class="site-header" data-site-header>
   <div class="wrap site-header__bar">
     <a class="brand-lock" href="/es/" aria-label={`${site.legalName}, inicio`}>
       <Logo class="brand-lock__mark" size={32} />
     </a>
-    <nav class="site-header__nav" aria-label="Navegación principal">
+    <nav class="site-header__nav" aria-label="Principal">
       {
         links.map((link) => (
           <a
@@ -79,7 +79,7 @@ const dockIcons: Record<string, IconName> = {
   </div>
 </header>
 
-<nav class="mobile-dock glass glass--thick" aria-label="Navegación principal">
+<nav class="mobile-dock glass glass--thick" aria-label="Accesos rápidos">
   {
     dockLinks.map((link) => (
       <a

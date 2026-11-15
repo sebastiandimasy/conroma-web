@@ -85,10 +85,8 @@
 
   .chip--on-photo {
     border-color: rgb(255 255 255 / 0.75);
-    background: rgb(255 255 255 / 0.86);
+    background: rgb(255 255 255 / 0.94);
     color: var(--color-fixed-ink);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
   }
 
   .property-card__hide span {
@@ -117,11 +115,9 @@
     padding: 0;
     border-radius: var(--radius-pill);
     border: 1px solid rgb(255 255 255 / 0.75);
-    background: rgb(255 255 255 / 0.86);
+    background: rgb(255 255 255 / 0.94);
     color: var(--color-fixed-ink);
     cursor: pointer;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
     transition:
       transform var(--duration-fast) var(--ease-out),
       background-color var(--duration-fast) var(--ease-out),
@@ -261,6 +257,12 @@
     background: var(--color-canvas);
     color: var(--color-on-canvas);
     border-bottom: 1px solid var(--color-line);
+  }
+
+  .listing__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
   }
 
   .listing__bar {

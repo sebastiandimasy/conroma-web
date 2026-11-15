@@ -8,7 +8,8 @@ import { homeFaq } from '../../data/faq';
 import HeroSearch from '../../islands/HeroSearch';
 import Contador from '../../components/sections/Contador.astro';
 import { site } from '../../data/site';
-import { propertiesIn } from '../../data/properties';
+import PropertyGrid from '../../islands/PropertyGrid';
+import { getListings, homesIn, propertiesIn } from '../../data/properties';
 import { publishedCatalogTowns } from '../../data/towns';
 import { whatsappUrl } from '../../lib/links';
 import { formatRating } from '../../lib/format';
@@ -22,6 +23,10 @@ const searchTowns = publishedCatalogTowns
   .filter((town) => town.total > 0)
   .sort((a, b) => b.total - a.total)
   .map(({ slug, name }) => ({ slug, name }));
+
+// Destacados: pisos reales de Malgrat (hasta 3), como en /es/comprar/.
+const featuredHomes = homesIn('malgrat-de-mar', 'venta').slice(0, 3);
+const ventaTotal = getListings({ operation: 'venta' }).length;
 
 // Servicios de la home como acordeón (textos de services.ts; "Compra y venta" fusiona comprar+vender).
 const homeServices = [
@@ -80,6 +85,25 @@ const homeServices = [
   </section>
 
   <Contador />
+
+  {
+    featuredHomes.length > 0 && (
+      <section class="section featured" aria-labelledby="destacados-titulo">
+        <div class="wrap">
+          <div class="section__head section__head--center" data-reveal>
+            <p class="eyebrow">¿Qué tenemos ahora?</p>
+            <h2 class="section__title" id="destacados-titulo">Pisos en venta en <span class="highlight">Malgrat de Mar</span></h2>
+          </div>
+          <div data-reveal>
+            <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" />
+          </div>
+          <p class="featured__more">
+            <a class="button button--primary button--large" href="/es/venta/">Ver los {ventaTotal} inmuebles en venta</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   <section class="section home-services">
     <div class="wrap home-services__grid">

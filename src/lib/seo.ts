@@ -30,16 +30,39 @@ export function alternates(path: string, translations: Partial<Record<Locale, st
   return [...links, { hreflang: 'x-default', href: absoluteUrl(path) }];
 }
 
+export function founderSchema() {
+  if (!site.ceo) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${site.url}/#fundador`,
+    name: site.ceo.name,
+    jobTitle: 'CEO y fundador',
+    url: absoluteUrl('/es/equipo/'),
+    image: absoluteUrl('/img/equipo/boris.jpg'),
+    worksFor: { '@id': `${site.url}/#agencia` },
+    knowsLanguage: ['ca', 'es', 'en', 'fr'],
+  };
+}
+
 export function agentSchema() {
+  const phones = [
+    { telephone: site.phone, contactType: 'customer service' },
+    { telephone: site.landline, contactType: 'sales' },
+  ].filter((p) => p.telephone);
   const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
     '@id': `${site.url}/#agencia`,
     name: site.legalName,
+    alternateName: site.name,
     url: site.url,
-    telephone: site.phone,
+    telephone: [site.phone, site.landline].filter(Boolean),
     email: site.email,
-    image: absoluteUrl('/brand/conroma-logo.svg'),
+    image: absoluteUrl('/img/og-conroma.jpg'),
+    logo: absoluteUrl('/img/og-conroma.jpg'), // shortcut: solo hay logo SVG; raster del equipo hasta tener un PNG del logotipo
+    description:
+      'Inmobiliaria familiar en Malgrat de Mar (Alt Maresme): compraventa y alquiler de viviendas, gestión de patrimonio y reformas en el Maresme y la Costa Brava.',
     address: {
       '@type': 'PostalAddress',
       streetAddress: site.address.street,
@@ -48,11 +71,26 @@ export function agentSchema() {
       addressRegion: site.address.region,
       addressCountry: site.address.country,
     },
-    areaServed: ['Malgrat de Mar', 'Blanes', 'Tordera', 'Pineda de Mar', 'Santa Susanna', 'Palafolls', 'Calella', 'Lloret de Mar'],
+    contactPoint: phones.map((p) => ({
+      '@type': 'ContactPoint',
+      telephone: p.telephone,
+      contactType: p.contactType,
+      email: site.email,
+      areaServed: 'ES',
+      availableLanguage: ['Catalan', 'Spanish', 'English', 'French'],
+    })),
+    areaServed: SERVICE_AREA.map((name) => ({ '@type': 'City', name })),
     knowsLanguage: ['ca', 'es', 'en', 'fr'],
     sameAs: [...site.instagram.map((account) => account.url), ...(site.tiktok ? [site.tiktok] : [])],
     hasMap: site.mapsUrl,
   };
+  if (site.ceo) {
+    schema.founder = { '@id': `${site.url}/#fundador` };
+    schema.employee = { '@id': `${site.url}/#fundador` };
+  }
+  // Nota: NO emitimos aggregateRating. Son reseñas propias de Google (self-serving),
+  // que Google no muestra como rich result y puede ignorar/penalizar. El 4,7/107 vive
+  // en el texto visible, no en el schema.
   if (site.geo) {
     schema.geo = { '@type': 'GeoCoordinates', latitude: site.geo.latitude, longitude: site.geo.longitude };
   }
@@ -65,6 +103,15 @@ export function agentSchema() {
     }));
   }
   return schema;
+}
+
+/** Grafo global (WebSite + agencia + fundador), emitido en todas las páginas con @id estables. */
+export function siteGraph() {
+  const nodes = [websiteSchema(), agentSchema(), founderSchema()].filter(Boolean) as Record<string, unknown>[];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': nodes.map(({ '@context': _ctx, ...rest }) => rest),
+  };
 }
 
 export function websiteSchema() {
@@ -186,12 +233,26 @@ export function listingSchema(property: Property) {
       }
     : undefined;
 
+  // Sin descripción propia, resumen factual con los datos del inventario.
+  const parts = [
+    `${property.type} en ${property.operation} en ${property.zone ? `${property.zone}, ` : ''}${town}`,
+    `${property.area} m²`,
+    ...(isAccommodation ? [`${property.rooms} habitaciones`] : []),
+    ...(hasPublicPrice(property) ? [`${property.price.toLocaleString('es-ES')} €`] : []),
+  ];
+  const description = property.description?.trim() || `${parts.join(', ')}.`;
+  const images = (property.images ?? []).filter((src) => !src.endsWith('.svg')).map((src) => absoluteUrl(src));
+  if (property.geo) {
+    mainEntity.geo = { '@type': 'GeoCoordinates', latitude: property.geo.latitude, longitude: property.geo.longitude };
+  }
+
   return {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
     name: propertyTitle(property),
     url: absoluteUrl(propertyUrl(property)),
-    description: property.description,
+    description,
+    ...(images.length ? { image: images } : {}),
     ...(offers ? { offers } : {}),
     mainEntity,
   };
@@ -204,9 +265,11 @@ export function articleSchema(post: { title: string; description: string; date: 
     headline: post.title,
     description: post.description,
     datePublished: post.date,
+    dateModified: post.date, // el blog no guarda fecha de edición: hasta tenerla, igual a la de publicación
+    image: absoluteUrl('/img/og-conroma.jpg'),
     inLanguage: 'es',
     mainEntityOfPage: absoluteUrl(`/es/blog/${post.slug}/`),
-    author: { '@id': `${site.url}/#agencia` },
+    author: site.ceo ? { '@id': `${site.url}/#fundador` } : { '@id': `${site.url}/#agencia` },
     publisher: { '@id': `${site.url}/#agencia` },
   };
 }

@@ -6,7 +6,7 @@ import SiteFooter from '../components/layout/SiteFooter.astro';
 import IntentWelcome from '../islands/IntentWelcome';
 import ChatDemo from '../islands/ChatDemo';
 import { site } from '../data/site';
-import { absoluteUrl, alternates, pageTitle, websiteSchema } from '../lib/seo';
+import { absoluteUrl, alternates, pageTitle, siteGraph } from '../lib/seo';
 import type { ContactContext } from '../lib/links';
 
 interface Props {
@@ -63,7 +63,7 @@ const languageLinks = alternates(path);
     <link rel="preload" href="/fonts/playfair-display-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/brand/conroma-logo.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema())} />
+    <script type="application/ld+json" set:html={JSON.stringify(siteGraph())} />
     {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     <script is:inline>
       try {
@@ -129,14 +129,6 @@ const languageLinks = alternates(path);
         });
       }, true);
     </script>
-    {/* PRUEBA liquid-glass: filtro de refracción. Quitar junto con la clase .liquid-glass para revertir. */}
-    <svg class="liquid-glass-defs" aria-hidden="true" focusable="false">
-      <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.009 0.009" numOctaves="2" seed="7" result="noise" />
-        <feGaussianBlur in="noise" stdDeviation="1.5" result="soft" />
-        <feDisplacementMap in="SourceGraphic" in2="soft" scale="26" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </svg>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
     {site.sampleData && <p class="sample-notice">Web en construcción: los pisos son reales; estamos añadiendo sus fotos.</p>}
     {!bare && <SiteHeader />}
@@ -154,12 +146,10 @@ const languageLinks = alternates(path);
         <p class="cookie-notice__title">Usamos cookies</p>
         <p class="cookie-notice__text">
           Usamos cookies propias y de terceros para medir las visitas con Google Analytics y mejorar
-          la web. Las de medición solo se activan si las aceptas. Más información en nuestra
-          <a href="/es/cookies/">política de cookies</a>.
+          la web. Las de medición solo se activan si las aceptas. Más información en nuestra <a href="/es/cookies/">política de cookies</a>.
         </p>
       </div>
       <div class="cookie-notice__actions">
-        <button type="button" class="button button--ghost" data-consent="rechazado">Rechazar</button>
         <button type="button" class="button button--ghost" data-consent="rechazado">Solo las necesarias</button>
         <button type="button" class="button button--primary" data-consent="aceptado">Aceptar todas</button>
       </div>
