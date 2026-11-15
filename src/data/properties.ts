@@ -78,7 +78,12 @@ function rowToProperty(r: any): Property {
   const images: string[] = ((r.property_photo ?? []) as any[])
     .slice()
     .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-    .map((p) => `${base}/storage/v1/object/public/property-photos/${p.storage_key}`);
+    .map((p) => {
+      const k = String(p.storage_key);
+      // storage_key puede ser una clave del bucket (sube el CRM) o una URL completa (seed del
+      // volcado de Habitatsoft). Si ya es URL, se usa tal cual.
+      return k.startsWith('http') ? k : `${base}/storage/v1/object/public/property-photos/${k}`;
+    });
   return {
     ref: r.ref,
     operation: r.operation,
