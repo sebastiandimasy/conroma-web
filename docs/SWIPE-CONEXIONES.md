@@ -66,8 +66,11 @@ Etiquetas creadas en el contenedor:
       `ad_storage`, CAPI desactivada (ver §5).
 - [x] Activador **CE - contacto_click** y variable **DLV - metodo** (clave de dataLayer `metodo`).
 - [ ] Opcional: añadir parámetros `origen` y `contacto` al evento GA4 (crear DLVs igual que `metodo`).
-- [ ] **Revisar en Vista previa (modo debug de GTM) y PUBLICAR** el contenedor antes del swipe.
-      (Hoy sigue SIN publicar: nada mide todavía hasta pulsar *Enviar*.)
+- [x] **PUBLICADO** — Versión 2 "Medición inicial — GA4 + Meta Pixel" (16/11/2026). Nada mide
+      todavía porque la web nueva no está desplegada (la antigua no carga este GTM). **Al hacer el
+      swipe:** verificar en Vista previa (debug de GTM) + GA4 Tiempo real + Meta Pixel Helper que las
+      etiquetas disparan **solo tras aceptar cookies** (ad_storage/analytics_storage). Rollback: la
+      Versión 1 estaba vacía, se puede revertir desde Versiones.
 
 ## 5. Meta Pixel — ID `1550066012961447`
 El Pixel/Dataset **ya existía** en Meta Events Manager (cuenta de Boris, business `362040946769680`),
