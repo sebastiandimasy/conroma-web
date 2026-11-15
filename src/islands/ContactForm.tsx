@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '@heroui/react';
 import { site } from '../data/site';
+import { createBrowserClient } from '../lib/supabase';
 
 const needs = ['Comprar', 'Vender', 'Alquilar', 'Reformar', 'Otra cosa'];
 const intentByNeed: Record<string, string> = {
@@ -31,23 +32,27 @@ export default function ContactForm() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // Guardamos el lead en el sistema (no bloquea la apertura de WhatsApp si algo falla).
-    try {
-      await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          phone: phone.trim(),
-          message: message.trim(),
-          intent: intentByNeed[need] ?? 'otro',
-          source: 'web',
-          consent: privacy,
-          company,
-        }),
-      });
-    } catch {
-      /* si no guarda, seguimos: el contacto por WhatsApp no se pierde */
+    // Guardamos el lead directo en Supabase (web estática: sin Worker). Insert con anon key y
+    // policy RLS solo-INSERT (migrations/0003). El honeypot filtra bots: si está relleno, no se
+    // guarda. Nunca bloquea la apertura de WhatsApp si algo falla: el contacto no se pierde.
+    if (!company.trim()) {
+      try {
+        await createBrowserClient()
+          .from('lead')
+          .insert({
+            name: name.trim(),
+            phone: phone.trim(),
+            message: message.trim() || null,
+            intent: intentByNeed[need] ?? 'otro',
+            source: 'web',
+            status: 'nuevo',
+            consent_marketing: false, // aceptar privacidad ≠ consentimiento de marketing
+            consent_at: new Date().toISOString(),
+            consent_source: 'web',
+          });
+      } catch {
+        /* si no guarda, seguimos: el contacto por WhatsApp no se pierde */
+      }
     }
 
     const lines = [`Hola, soy ${name.trim()}.`, `Necesito: ${need.toLowerCase()}.`, message.trim()];

@@ -5,6 +5,10 @@
 -- campos enormes. NO hay policy de SELECT/UPDATE/DELETE para anon → no puede leer leads.
 -- Aplicar en Supabase → SQL Editor. Aditivo y seguro.
 
+-- Mensaje libre del formulario web. Anon no puede escribir en lead_event, así que la nota
+-- del contacto va en esta columna de `lead`.
+alter table public.lead add column if not exists message text;
+
 create policy lead_anon_insert on public.lead
   for insert to anon
   with check (
@@ -17,6 +21,7 @@ create policy lead_anon_insert on public.lead
     and char_length(coalesce(phone, '')) <= 40
     and char_length(coalesce(zone, '')) <= 120
     and char_length(coalesce(property_ref, '')) <= 40
+    and char_length(coalesce(message, '')) <= 2000
     and char_length(coalesce(email, '') || coalesce(phone, '')) >= 5  -- algo de contacto
   );
 

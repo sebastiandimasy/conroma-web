@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Button } from '@heroui/react';
 import { site } from '../data/site';
 import { formatRating } from '../lib/format';
+import { createBrowserClient } from '../lib/supabase';
 import { Icon } from './Icon';
 
 type Moment = 'ya' | 'curiosidad' | 'herencia';
@@ -153,24 +154,24 @@ export default function ValuationWizard() {
 
     // El lead se guarda SIEMPRE, antes de abrir nada: si el visitante no llega a enviar
     // el WhatsApp, la solicitud no se pierde.
+    // Insert directo en Supabase (web estática, sin Worker): anon key + policy RLS solo-INSERT.
     let stored = false;
     try {
-      const response = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+      const { error } = await createBrowserClient()
+        .from('lead')
+        .insert({
           name: answers.name.trim(),
           phone: answers.phone.trim(),
           message: buildMessage(answers),
           intent: 'valoracion',
           source: 'valoracion',
-          zone: answers.address.trim(),
-          consent: answers.privacy,
-          marketing: answers.news,
-          company: '',
-        }),
-      });
-      stored = response.ok;
+          zone: answers.address.trim().slice(0, 120) || null, // la policy acota zone a 120
+          status: 'nuevo',
+          consent_marketing: answers.news, // la casilla de novedades sí es consentimiento de marketing
+          consent_at: new Date().toISOString(),
+          consent_source: 'valoracion',
+        });
+      stored = !error;
     } catch {
       stored = false;
     }
