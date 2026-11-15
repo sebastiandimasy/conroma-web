@@ -6,7 +6,7 @@ import ServicesGrid from '../../components/sections/ServicesGrid.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
 import ContactSection from '../../components/sections/ContactSection.astro';
 import type { StepItem } from '../../data/steps';
-import { breadcrumbSchema } from '../../lib/seo';
+import { breadcrumbSchema, serviceSchema } from '../../lib/seo';
 
 const path = '/es/gestion-de-patrimonio/';
 const crumbs = [
@@ -24,7 +24,7 @@ const points: StepItem[] = [
   title="Gestión de patrimonio inmobiliario en Malgrat de Mar"
   description="Gestión de patrimonio con Conroma: nos ocupamos de tus pisos en Malgrat de Mar y alrededores para que te den tranquilidad y no trabajo."
   path={path}
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs), serviceSchema('Gestión de patrimonio inmobiliario', 'Nos ocupamos de tus pisos en Malgrat de Mar y alrededores para que te den tranquilidad y no trabajo.', '/es/gestion-de-patrimonio/')]}
 >
   <PageHero
     crumbs={crumbs}

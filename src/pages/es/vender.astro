@@ -8,7 +8,7 @@ import Testimonials from '../../components/sections/Testimonials.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ContactSection from '../../components/sections/ContactSection.astro';
 import { sellSteps } from '../../data/steps';
-import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 
 const path = '/es/vender/';
 const crumbs = [
@@ -39,7 +39,7 @@ const faq = [
   title="Vender piso en Malgrat de Mar"
   description="Vende tu piso en Malgrat de Mar con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría."
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Venta de viviendas', 'Valoración gratis, fotos, visitas y acompañamiento hasta notaría para vender tu piso en Malgrat de Mar y alrededores.', '/es/vender/')]}
 >
   <PageHero
     crumbs={crumbs}

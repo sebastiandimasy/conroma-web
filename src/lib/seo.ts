@@ -79,6 +79,21 @@ export function websiteSchema() {
   };
 }
 
+const SERVICE_AREA = ['Malgrat de Mar', 'Santa Susanna', 'Pineda de Mar', 'Calella', 'Palafolls', 'Blanes', 'Lloret de Mar', 'Tordera'];
+
+export function serviceSchema(name: string, description: string, path: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    serviceType: name,
+    description,
+    provider: { '@id': `${site.url}/#agencia` },
+    areaServed: SERVICE_AREA,
+    url: absoluteUrl(path),
+  };
+}
+
 export function breadcrumbSchema(crumbs: Crumb[]) {
   return {
     '@context': 'https://schema.org',

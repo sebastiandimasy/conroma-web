@@ -8,7 +8,7 @@ import Testimonials from '../../components/sections/Testimonials.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ContactSection from '../../components/sections/ContactSection.astro';
 import { rentSteps } from '../../data/steps';
-import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 import { whatsappUrl } from '../../lib/links';
 
 const path = '/es/alquilar/';
@@ -32,7 +32,7 @@ const faq = [
   title="Alquilar piso en Malgrat de Mar"
   description="Alquiler en Malgrat de Mar con Conroma: te ayudamos a encontrar piso de alquiler o a encontrar inquilino para el tuyo."
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Alquiler de viviendas', 'Te ayudamos a encontrar piso de alquiler o a encontrar inquilino para el tuyo en Malgrat de Mar y alrededores.', '/es/alquilar/')]}
 >
   <PageHero
     crumbs={crumbs}

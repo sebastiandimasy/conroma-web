@@ -7,7 +7,7 @@ import InstagramSection from '../../../components/sections/InstagramSection.astr
 import ServicesGrid from '../../../components/sections/ServicesGrid.astro';
 import ContactSection from '../../../components/sections/ContactSection.astro';
 import type { StepItem } from '../../../data/steps';
-import { breadcrumbSchema } from '../../../lib/seo';
+import { breadcrumbSchema, serviceSchema } from '../../../lib/seo';
 
 const path = '/es/reformas/';
 const crumbs = [
@@ -25,7 +25,7 @@ const points: StepItem[] = [
   title="Reformas en Malgrat de Mar: Conroma en Obras"
   description="Conroma en Obras: reformamos pisos en Malgrat de Mar y alrededores, para venderlos mejor o para entrar a vivir."
   path={path}
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs), serviceSchema('Reformas e interiorismo', 'Conroma en Obras reforma pisos en Malgrat de Mar y alrededores, para venderlos mejor o para entrar a vivir.', '/es/reformas/')]}
 >
   <PageHero
     crumbs={crumbs}
