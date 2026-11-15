@@ -1,6 +1,7 @@
 import raw from './properties.real.json';
 import photoMap from './property-photos.json';
 import { findTown } from './towns';
+import { parseHabitatsoftXml } from '../lib/habitatsoft';
 
 export interface Property {
   ref: string;
@@ -63,7 +64,34 @@ export type Operation = Property['operation'];
 const photos = photoMap as Record<string, string[]>;
 const normRef = (ref: string): string => ref.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-const withPhotos: Property[] = (raw as Property[]).map((property) => {
+/**
+ * Sincronización automática con Habitatsoft. Si hay `HABITATSOFT_FEED_URL` (variable de build,
+ * SIN prefijo PUBLIC_ para que no llegue al navegador), se lee el feed XML "Enlace Web 2.0" en
+ * cada build con `parseHabitatsoftXml`. Si no está o falla, se usa el volcado estático.
+ * Para refrescar el inventario basta con reconstruir y volver a desplegar.
+ */
+async function loadInventory(): Promise<Property[]> {
+  const url = import.meta.env.HABITATSOFT_FEED_URL;
+  if (url) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const pisos = parseHabitatsoftXml(await res.text());
+        if (pisos.length) return pisos;
+        console.warn('[habitatsoft] el feed no trajo inmuebles; uso el volcado.');
+      } else {
+        console.warn(`[habitatsoft] feed HTTP ${res.status}; uso el volcado.`);
+      }
+    } catch (error) {
+      console.warn('[habitatsoft] feed no disponible; uso el volcado.', error);
+    }
+  }
+  return raw as Property[];
+}
+
+const inventory = await loadInventory();
+
+const withPhotos: Property[] = inventory.map((property) => {
   const images = photos[normRef(property.ref)];
   return images && images.length ? { ...property, images, photos: images.length } : property;
 });
