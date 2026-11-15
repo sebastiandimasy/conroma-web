@@ -1,5 +1,69 @@
 # Conroma — config para Hostinger (Apache/LiteSpeed) sirviendo la web estática.
-# En Cloudflare esto se ignora; allí mandaba public/_headers.
+# En Cloudflare esto se ignora; allí mandaba public/_headers y public/_redirects.
+
+# ── Redirecciones 301 de la migración ─────────────────────────────────────────
+# La web antigua vive en www.conromaasesores.com con OTRA estructura de URLs.
+# En Cloudflare las 301 las hacía public/_redirects; en Hostinger (Apache/LiteSpeed)
+# ese archivo se IGNORA, así que sin estas reglas cada URL antigua muere en 404 y
+# se pierde el SEO heredado. Fuente: dist/client/_redirects. Gana la 1ª regla que
+# coincide -> por eso [L], y lo específico va antes que el comodín.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Canónico: www -> apex (Google tiene indexada la web en www.conromaasesores.com,
+  # y la web nueva declara como oficial la versión SIN www).
+  RewriteCond %{HTTP_HOST} ^www\.conromaasesores\.com$ [NC]
+  RewriteRule ^(.*)$ https://conromaasesores.com/$1 [R=301,L]
+
+  # Raíz -> /es/ (el build NO genera index.html en la raíz: sin esto, la home 404).
+  RewriteRule ^$ /es/ [R=301,L]
+
+  # Cambio interno: simulador de hipoteca -> calculadora "¿puedo comprar?".
+  RewriteRule ^es/comprar/simulador-hipoteca/?$ /es/comprar/puedo-comprar/ [R=301,L]
+
+  # --- Páginas estáticas (1:1) ---
+  RewriteRule ^contacto/?$         /es/contacto/             [R=301,L]
+  RewriteRule ^blogs/?$            /es/blog/                 [R=301,L]
+  RewriteRule ^blog(/.*)?$         /es/blog/                 [R=301,L]
+  RewriteRule ^favoritos/?$        /es/guardados/            [R=301,L]
+  RewriteRule ^captacion/?$        /es/vender/               [R=301,L]
+  RewriteRule ^destacados/?$       /es/venta/malgrat-de-mar/ [R=301,L]
+  RewriteRule ^texto_legal/?$      /es/privacidad/           [R=301,L]
+  RewriteRule ^politica_cookies/?$ /es/privacidad/           [R=301,L]
+  RewriteRule ^mapa_web/?$         /es/                      [R=301,L]
+
+  # --- Fichas de inmueble -> listado de su municipio (alquiler primero: la
+  #     intención manda; las páginas de pueblo son de compraventa) ---
+  # Origen: /detalle/<operacion>/<tipo>/<provincia>/<municipio>[/<barrio>]/<id>/
+  RewriteRule ^detalle/en_alquiler(/.*)?$                       /es/alquilar/                   [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/malgrat_de_mar(/.*)?$  /es/venta/malgrat-de-mar/       [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/blanes(/.*)?$          /es/inmobiliaria/blanes/        [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/tordera(/.*)?$         /es/inmobiliaria/tordera/       [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/lloret_de_mar(/.*)?$   /es/inmobiliaria/lloret-de-mar/ [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/pineda_de_mar(/.*)?$   /es/inmobiliaria/pineda-de-mar/ [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/calella(/.*)?$         /es/inmobiliaria/calella/       [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/santa_susanna(/.*)?$   /es/inmobiliaria/santa-susanna/ [R=301,L]
+  RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/palafolls(/.*)?$       /es/inmobiliaria/palafolls/     [R=301,L]
+  RewriteRule ^detalle(/.*)?$                                   /es/comprar/                    [R=301,L]
+
+  # --- Buscador por facetas -> equivalente más cercano ---
+  # Origen: /buscador/<operacion>/<tipo>/<provincia>/<municipio>/
+  RewriteRule ^buscador/en_alquiler(/.*)?$                      /es/alquilar/                   [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/malgrat_de_mar(/.*)?$ /es/venta/malgrat-de-mar/       [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/blanes(/.*)?$         /es/inmobiliaria/blanes/        [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/tordera(/.*)?$        /es/inmobiliaria/tordera/       [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/lloret_de_mar(/.*)?$  /es/inmobiliaria/lloret-de-mar/ [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/pineda_de_mar(/.*)?$  /es/inmobiliaria/pineda-de-mar/ [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/calella(/.*)?$        /es/inmobiliaria/calella/       [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/santa_susanna(/.*)?$  /es/inmobiliaria/santa-susanna/ [R=301,L]
+  RewriteRule ^buscador/[^/]+/[^/]+/[^/]+/palafolls(/.*)?$      /es/inmobiliaria/palafolls/     [R=301,L]
+  RewriteRule ^buscador(/.*)?$                                  /es/comprar/                    [R=301,L]
+
+  # --- Restos técnicos del sitio antiguo ---
+  RewriteRule ^idioma(/.*)?$ /es/ [R=301,L]
+  RewriteRule ^uikit(/.*)?$  /es/ [R=301,L]
+</IfModule>
+
 
 # ── Compresión (clave: sin esto, el móvil cae ~25 puntos en PageSpeed) ──
 <IfModule mod_brotli.c>
