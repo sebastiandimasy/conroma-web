@@ -169,7 +169,7 @@ const features = [
             mapGeo && (
               <div class="property__map">
                 <ApproxLocationMap
-                  client:only="react"
+                  client:visible
                   latitude={mapGeo.latitude}
                   longitude={mapGeo.longitude}
                   label={`${property.zone}, ${townName}`}
