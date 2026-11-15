@@ -641,11 +641,17 @@
       gap: 24px;
     }
 
-    /* Cifras a la izquierda en móvil: coherentes con la cabecera (pedido del usuario).
-       Especificidad > base .stat para ganar al text-center de la clase base. */
+    /* Cifras y cabecera CENTRADAS en móvil (pedido del usuario): con los números
+       grandes se veía mal justificado a la izquierda. Anula, solo para el contador,
+       la regla global que alinea las cabeceras de sección a la izquierda en móvil. */
     .stats .stat {
-      align-items: flex-start;
-      text-align: left;
+      align-items: center;
+      text-align: center;
+    }
+    .contador .section__head--center {
+      align-items: center;
+      text-align: center;
+      margin-inline: auto;
     }
   }
 
