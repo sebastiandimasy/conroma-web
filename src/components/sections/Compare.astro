@@ -1,46 +1,56 @@
 ---
-import type { CompareRow } from '../../data/vender';
+import Icon from '../Icon.astro';
+import type { CompareOption } from '../../data/vender';
 
 interface Props {
   title: string;
-  columns: [string, string];
-  rows: CompareRow[];
+  /** Las dos opciones, cada una con a quién le encaja. */
+  options: [CompareOption, CompareOption];
+  lead?: string;
   /** Frase que anuncia la sección siguiente. */
   bridge?: string;
   /** Etiqueta corta entre paréntesis sobre el título. */
   kicker?: string;
 }
 
-const { title, columns, rows, bridge, kicker } = Astro.props;
+const { title, options, lead, bridge, kicker } = Astro.props;
 const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-// Dos fichas en vez de tabla: en 390 px una tabla de tres columnas no se lee.
-const cards = [
-  { name: columns[0], us: true, values: rows.map((row) => row.withUs) },
-  { name: columns[1], us: false, values: rows.map((row) => row.alone) },
-];
 ---
 
+{/* Dos mitades sin bordes (la segunda sobre gris): dos opciones válidas, no «bien contra mal». */}
 <section class="section compare" aria-labelledby={titleId}>
-  <div class="wrap">
+  <div class="wrap compare__head">
     {kicker && <p class="kicker">{kicker}</p>}
     <h2 class="section__title" id={titleId} data-reveal>{title}</h2>
-    <div class="compare__grid">
-      {
-        cards.map((card) => (
-          <article class:list={['compare__card', card.us && 'compare__card--us']} data-reveal>
-            <h3 class="compare__name">{card.name}</h3>
-            <dl class="compare__list">
-              {rows.map((row, index) => (
-                <div class="compare__row">
-                  <dt>{row.aspect}</dt>
-                  <dd>{card.values[index]}</dd>
+    {lead && <p class="section__lead">{lead}</p>}
+  </div>
+  <div class="compare__halves">
+    {
+      options.map((option) => (
+        <div class="compare__half">
+          <div class="compare__inner">
+            <h3 class="compare__name" data-reveal>{option.title}</h3>
+            <div class="compare__groups">
+              {option.groups.map((group) => (
+                <div class="compare__group">
+                  <h4 class="compare__group-title">{group.title}</h4>
+                  <ul class="compare__items">
+                    {group.items.map((item) => (
+                      <li>
+                        <span class="compare__check">
+                          <Icon name="check" />
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
-            </dl>
-          </article>
-        ))
-      }
-    </div>
-    {bridge && <p class="section__bridge">{bridge}</p>}
+            </div>
+          </div>
+        </div>
+      ))
+    }
   </div>
+  {bridge && <p class="wrap section__bridge compare__bridge">{bridge}</p>}
 </section>

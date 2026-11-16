@@ -4,7 +4,7 @@ import { site } from '../src/data/site';
 
 const words = (s: string) => s.trim().split(/\s+/).length;
 const allText = [venderAnswer, ...venderSteps.flatMap((s) => [s.title, s.text, s.alt]),
-  ...venderCompare.flatMap((r) => [r.aspect, r.withUs, r.alone]), ...venderFaq.flatMap((f) => [f.question, f.answer])];
+  ...venderCompare.flatMap((o) => [o.title, ...o.groups.flatMap((g) => [g.title, ...g.items])]), ...venderFaq.flatMap((f) => [f.question, f.answer])];
 
 describe('textos de Vender', () => {
   it('abre con una respuesta autocontenida de 2 o 3 frases', () => {
@@ -18,9 +18,21 @@ describe('textos de Vender', () => {
     expect(venderSteps.every((s) => s.image && s.alt.length > 0)).toBe(true);
   });
 
-  it('compara en tiempo, papeles, precio y seguridad, con celdas cortas', () => {
-    expect(venderCompare.map((r) => r.aspect)).toEqual(['Tiempo', 'Papeles', 'Precio', 'Seguridad']);
-    expect(venderCompare.every((r) => words(r.withUs) <= 12 && words(r.alone) <= 12)).toBe(true);
+  it('compara dos opciones válidas en tiempo, papeles, precio y seguridad, con frases cortas', () => {
+    expect(venderCompare).toHaveLength(2);
+    for (const option of venderCompare) {
+      expect(option.groups.map((g) => g.title)).toEqual(['Tiempo', 'Papeles', 'Precio', 'Seguridad']);
+      expect(option.groups.every((g) => g.items.length > 0 && g.items.every((i) => words(i) <= 14))).toBe(true);
+    }
+  });
+
+  it('presenta vender por tu cuenta como opción, sin alarmar ni dar órdenes', () => {
+    // Cada punto describe a quién le encaja la opción; ninguno asusta ni impone.
+    const alone = venderCompare[1].groups.flatMap((g) => g.items).join(' ').toLowerCase();
+    for (const alarm of ['quema', 'desconocid', 'riesgo', 'cuidado', 'tú solo', 'buscas tú', 'atiendes tú']) {
+      expect(alone).not.toContain(alarm);
+    }
+    expect(venderCompare.every((o) => o.title.endsWith('si…'))).toBe(true);
   });
 
   it('FAQ con respuestas de 60 palabras como máximo y los cuatro temas del spec', () => {

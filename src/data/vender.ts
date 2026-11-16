@@ -13,10 +13,11 @@ export interface StoryStep {
   alt: string;
 }
 
-export interface CompareRow {
-  aspect: string;
-  withUs: string;
-  alone: string;
+/** Una opción de venta y a quién le encaja, por temas. Las dos son válidas: no se compara
+    «bien contra mal», se ayuda a elegir. */
+export interface CompareOption {
+  title: string;
+  groups: { title: string; items: string[] }[];
 }
 
 /* Textos de /es/vender/. Solo datos que ya están en el repo (faq.ts, blog.ts, site.ts):
@@ -59,26 +60,24 @@ export const venderSteps: StoryStep[] = [
   },
 ];
 
-export const venderCompare: CompareRow[] = [
+export const venderCompare: [CompareOption, CompareOption] = [
   {
-    aspect: 'Tiempo',
-    withUs: 'Las llamadas, las visitas y los papeles los llevamos nosotros.',
-    alone: 'Atiendes tú cada llamada y cada visita.',
+    title: 'Conroma te encaja si…',
+    groups: [
+      { title: 'Tiempo', items: ['Prefieres que las llamadas y las visitas pasen por nosotros.'] },
+      { title: 'Papeles', items: ['Quieres que te digamos qué hace falta y prepararlo juntos.'] },
+      { title: 'Precio', items: ['Quieres salir con un precio realista desde el primer día.'] },
+      { title: 'Seguridad', items: ['Prefieres que entren compradores que pueden comprar y que revisemos las arras.'] },
+    ],
   },
   {
-    aspect: 'Papeles',
-    withUs: 'Te decimos qué hace falta y lo preparamos contigo.',
-    alone: 'Buscas tú la cédula, el certificado y la nota simple.',
-  },
-  {
-    aspect: 'Precio',
-    withUs: 'Sales con un precio realista desde el primer día.',
-    alone: 'Si sales alto, el piso se quema en los portales.',
-  },
-  {
-    aspect: 'Seguridad',
-    withUs: 'Solo entran compradores que pueden comprar, y revisamos las arras.',
-    alone: 'Abres la puerta a desconocidos y redactas tú las arras.',
+    title: 'Venderlo por tu cuenta te encaja si…',
+    groups: [
+      { title: 'Tiempo', items: ['Tienes tiempo para atender llamadas y enseñar el piso.'] },
+      { title: 'Papeles', items: ['Ya tienes la cédula, el certificado energético y la nota simple.'] },
+      { title: 'Precio', items: ['Conoces bien los precios de tu zona.'] },
+      { title: 'Seguridad', items: ['Te manejas bien con las visitas y con el contrato de arras.'] },
+    ],
   },
 ];
 

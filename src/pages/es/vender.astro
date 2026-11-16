@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
 import StoryScroll from '../../components/sections/StoryScroll.astro';
 import Compare from '../../components/sections/Compare.astro';
@@ -8,10 +9,11 @@ import ValuationBlock from '../../components/sections/ValuationBlock.astro';
 import GuideTeaser from '../../components/sections/GuideTeaser.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
-import heroPhoto from '../../assets/equipo/conroma-74.jpg';
+import heroPhoto from '../../assets/lugares/malgrat-de-mar/vista.jpg';
 import closingPhoto from '../../assets/equipo/conroma-82.jpg';
 import { venderAnswer, venderCompare, venderFaq, venderSteps } from '../../data/vender';
 import { publishedSellerTowns } from '../../data/towns';
+import { placePhotos } from '../../data/creditos-fotos';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 
 /* Dueña de la búsqueda regional y de proceso («vender piso en el Maresme», «cómo vender mi
@@ -21,6 +23,8 @@ const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Vender', path },
 ];
+// Foto CC BY-SA: el crédito va visible en el propio hero.
+const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'vista')!;
 const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría.';
 ---
 
@@ -33,11 +37,14 @@ const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración
   <HeroStory
     crumbs={crumbs}
     title="Vender tu piso en el Maresme"
-    lead={venderAnswer}
+    lead="Valoración gratis, fotos, visitas y acompañamiento hasta notaría."
     image={heroPhoto}
-    alt="Una persona del equipo de Conroma explicando una operación en la pizarra"
+    alt={heroCredit.alt}
     cta={{ label: '¿Cuánto vale mi piso?', href: '#valoracion' }}
+    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
   />
+
+  <Statement kicker="Vender con Conroma" text={venderAnswer} />
 
   <ProofBand kicker="En cifras" bridge="Esto es lo que hacemos con tu piso desde el primer día." />
 
@@ -45,14 +52,14 @@ const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración
     kicker="El proceso"
     title="Cómo vendemos tu piso"
     steps={venderSteps}
-    bridge="Si prefieres venderlo por tu cuenta, mira lo que cambia."
+    bridge="¿Y si prefieres venderlo por tu cuenta? Aquí ves cuándo encaja cada opción."
   />
 
   <Compare
     kicker="Comparativa"
     title="Con Conroma o por tu cuenta"
-    columns={['Con Conroma', 'Por tu cuenta']}
-    rows={venderCompare}
+    lead="Las dos opciones funcionan. Elige la que encaje con tu tiempo y con lo que ya tienes."
+    options={venderCompare}
     bridge="Todo empieza por saber cuánto vale tu piso."
   />
 

@@ -751,12 +751,13 @@
     gap: var(--space-4);
   }
 
+  /* Rampa larga (128 px) para que el velo no corte la foto en una franja. */
   .hero-story__foot::before {
     content: '';
     position: absolute;
-    inset: calc(-1 * var(--space-12)) calc(50% - 50vw) calc(-1 * var(--space-10));
+    inset: -128px calc(50% - 50vw) calc(-1 * var(--space-10));
     z-index: -1;
-    background: linear-gradient(to bottom, transparent, var(--veil-text) var(--space-12));
+    background: linear-gradient(to bottom, transparent, var(--veil-text) 128px);
   }
 
   .hero-story .breadcrumbs,
@@ -774,9 +775,44 @@
   }
 
   .hero-story__lead {
-    max-width: 48ch;
-    font-size: var(--text-body);
-    line-height: 1.5;
+    max-width: 36ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    line-height: 1.4;
+  }
+
+  /* Crédito CC BY-SA, visible y discreto, en la esquina. */
+  .hero-story__credit {
+    position: absolute;
+    right: var(--space-gutter);
+    bottom: calc(var(--space-3) + 76px + env(safe-area-inset-bottom));
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    font-size: 0.6875rem;
+    color: var(--color-on-fixed-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-on-fixed-ink-faint);
+    text-underline-offset: 2px;
+  }
+
+  @media (min-width: 60rem) {
+    .hero-story__credit {
+      bottom: var(--space-3);
+    }
+  }
+
+  /* Statement: la respuesta corta en grande y fina, como apertura editorial. */
+  .statement {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .statement__text {
+    max-width: 30ch;
+    font-size: clamp(1.625rem, 1.1rem + 2.2vw, 3rem);
+    font-weight: var(--weight-display);
+    line-height: 1.15;
+    letter-spacing: -0.035em;
   }
 
   /* ClosingCTA: una sola acción principal y la llamada como enlace. Con foto: a sangre,
@@ -1005,70 +1041,113 @@
     20%, 80% { opacity: 1; }
   }
 
-  /* Compare: dos fichas con borde fino; la nuestra con borde de tinta (sin fondo de color). */
+  /* Compare: dos mitades a sangre sin bordes; la segunda sobre gris. Marca con ✓ amarillo. */
   .compare {
+    padding-bottom: 0;
     background: var(--color-canvas);
     color: var(--color-on-canvas);
   }
 
-  .compare__grid {
+  .compare__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .compare__head .section__lead {
+    margin-top: var(--space-5);
+  }
+
+  .compare__halves {
     display: grid;
-    gap: var(--space-5);
     margin-top: var(--space-12);
   }
 
-  .compare__card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-    padding: var(--space-8) var(--space-6) var(--space-6);
-    border: 1px solid var(--color-line);
-    border-radius: 2px;
+  .compare__half:nth-child(2) {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
-  .compare__card--us {
-    border-color: var(--color-ink);
+  .compare__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    max-width: 36rem;
+    margin-inline: auto;
+    padding: var(--space-12) var(--space-gutter) calc(var(--space-section) / 2);
   }
 
   .compare__name {
-    font-size: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+    font-size: clamp(1.875rem, 1.4rem + 2vw, 3rem);
     font-weight: var(--weight-display);
-    line-height: 1;
-    letter-spacing: -0.04em;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+    text-align: center;
   }
 
-  .compare__list {
+  .compare__groups {
     display: grid;
+    gap: var(--space-8);
   }
 
-  .compare__row {
-    display: grid;
-    gap: var(--space-1);
-    padding-block: var(--space-4);
-    border-top: 1px solid var(--color-line);
-  }
-
-  .compare__row dt {
-    font-size: var(--text-caption);
+  .compare__group-title {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-title);
     font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
-  .compare__row dd {
-    color: var(--color-ink-2);
+  .compare__items {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
   }
 
-  .compare__card--us .compare__row dd {
-    color: var(--color-ink);
+  .compare__items li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .compare__check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .compare__check svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 3;
+  }
+
+  /* El puente va después de las mitades, sobre blanco. */
+  .compare__bridge {
+    margin-top: 0;
+    padding-block: var(--space-10) calc(var(--space-section) / 2);
+    max-width: calc(var(--content-max) + var(--space-gutter) * 2);
   }
 
   @media (min-width: 60rem) {
-    .compare__grid {
+    .compare__halves {
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
     }
 
-    .compare__card {
-      padding: var(--space-12) var(--space-10) var(--space-8);
+    .compare__inner {
+      padding-block: var(--space-section);
+    }
+
+    /* Títulos de 1 y 2 líneas: misma altura para que los temas queden alineados. */
+    .compare__name {
+      min-height: 2.1em;
     }
   }
 

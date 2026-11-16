@@ -12,9 +12,11 @@ interface Props {
   image: ImageMetadata;
   alt: string;
   cta: { label: string; href: string };
+  /** Crédito visible de la foto (obligatorio en fotos CC BY-SA). */
+  credit?: { text: string; href: string };
 }
 
-const { crumbs, title, lead, image, alt, cta } = Astro.props;
+const { crumbs, title, lead, image, alt, cta, credit } = Astro.props;
 ---
 
 <section class="hero-story">
@@ -28,7 +30,7 @@ const { crumbs, title, lead, image, alt, cta } = Astro.props;
     loading="eager"
     fetchpriority="high"
   />
-  {/* Composición editorial: titular arriba, migas + respuesta + acción abajo, con su velo. */}
+  {/* Composición editorial: titular arriba; migas, una línea y la acción abajo, con su velo. */}
   <div class="wrap hero-story__content">
     <h1 class="hero-story__title">{title}</h1>
     <div class="hero-story__foot">
@@ -40,4 +42,11 @@ const { crumbs, title, lead, image, alt, cta } = Astro.props;
       </a>
     </div>
   </div>
+  {
+    credit && (
+      <a class="hero-story__credit" href={credit.href} rel="noopener" target="_blank">
+        {credit.text}
+      </a>
+    )
+  }
 </section>
