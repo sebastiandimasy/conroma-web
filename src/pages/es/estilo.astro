@@ -9,7 +9,9 @@ import HeroStory from '../../components/sections/HeroStory.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
 import heroSample from '../../assets/equipo/conroma-74.jpg';
 import StoryScroll from '../../components/sections/StoryScroll.astro';
-import { venderSteps } from '../../data/vender';
+import { venderCompare, venderSteps } from '../../data/vender';
+import Compare from '../../components/sections/Compare.astro';
+import GuideTeaser from '../../components/sections/GuideTeaser.astro';
 
 const theme = css.slice(css.indexOf('@theme'), css.indexOf(':root {'));
 const darkBlock = css.slice(css.indexOf(':root[data-theme="dark"]'), css.indexOf('@media (prefers-color-scheme: dark)'));
@@ -123,6 +125,9 @@ const variants = ['primary', 'ghost', 'ink'] as const;
     cta={{ label: 'Acción principal', href: '#' }}
   />
   <StoryScroll title="StoryScroll de muestra" steps={venderSteps} bridge="Frase puente hacia la sección siguiente." />
+  <Compare title="Compare de muestra" columns={['Con Conroma', 'Por tu cuenta']} rows={venderCompare} />
+  <GuideTeaser title="GuideTeaser de muestra" category="Vender" />
+  <GuideTeaser title="No debe pintarse" category="No existe" />
   <ClosingCTA title="Título del cierre" text="Una frase de apoyo." origin="estilo-muestra" reason="general">
     <p>Contenido del slot.</p>
   </ClosingCTA>

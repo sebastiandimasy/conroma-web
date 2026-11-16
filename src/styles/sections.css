@@ -858,6 +858,104 @@
     20%, 80% { opacity: 1; }
   }
 
+  /* Compare: tabla real, columna propia marcada con borde de acento (sin fondo amarillo). */
+  .compare__table {
+    width: 100%;
+    margin-top: var(--space-8);
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--text-small);
+  }
+
+  .compare__table th,
+  .compare__table td {
+    padding: var(--space-4) var(--space-3);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-line);
+    overflow-wrap: anywhere;
+  }
+
+  .compare__table thead th {
+    font-weight: 700;
+  }
+
+  .compare__table tbody th {
+    width: 26%;
+    font-weight: 700;
+  }
+
+  .compare__table thead td {
+    width: 26%;
+  }
+
+  .compare__table td:not(.compare__us) {
+    color: var(--color-ink-2);
+  }
+
+  .compare__us {
+    border-left: 2px solid var(--color-accent);
+  }
+
+  @media (min-width: 60rem) {
+    .compare__table {
+      font-size: var(--text-body);
+    }
+
+    .compare__table tbody th,
+    .compare__table thead td {
+      width: 20%;
+    }
+  }
+
+  /* GuideTeaser: artículos con fecha visible. Hover solo de borde. */
+  .guide-teaser__list {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    list-style: none;
+    padding: 0;
+  }
+
+  .guide-teaser__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-6);
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-on-surface);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .guide-teaser__card:hover {
+      border-color: var(--color-ink);
+    }
+  }
+
+  .guide-teaser__date {
+    font-size: var(--text-caption);
+    color: var(--color-ink-2);
+  }
+
+  .guide-teaser__title {
+    font-size: var(--text-h3);
+    font-weight: 700;
+  }
+
+  .guide-teaser__text {
+    color: var(--color-ink-2);
+  }
+
+  @media (min-width: 60rem) {
+    .guide-teaser__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   .section__bridge {
     margin-top: var(--space-8);
     max-width: 60ch;

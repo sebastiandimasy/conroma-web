@@ -1,0 +1,41 @@
+---
+import type { CompareRow } from '../../data/vender';
+
+interface Props {
+  title: string;
+  columns: [string, string];
+  rows: CompareRow[];
+  /** Frase que anuncia la sección siguiente. */
+  bridge?: string;
+}
+
+const { title, columns, rows, bridge } = Astro.props;
+const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+<section class="section compare">
+  <div class="wrap">
+    <h2 class="section__title" id={titleId}>{title}</h2>
+    <table class="compare__table" aria-labelledby={titleId}>
+      <thead>
+        <tr>
+          <td></td>
+          <th scope="col" class="compare__us">{columns[0]}</th>
+          <th scope="col">{columns[1]}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <th scope="row">{row.aspect}</th>
+              <td class="compare__us">{row.withUs}</td>
+              <td>{row.alone}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    {bridge && <p class="section__bridge">{bridge}</p>}
+  </div>
+</section>

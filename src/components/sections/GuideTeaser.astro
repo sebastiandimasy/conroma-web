@@ -1,0 +1,37 @@
+---
+import { postsIn } from '../../data/blog';
+
+interface Props {
+  title: string;
+  category: string;
+  limit?: number;
+}
+
+const { title, category, limit = 3 } = Astro.props;
+// Solo artículos que existen: si la intención no tiene ninguno, la sección no se pinta.
+const list = postsIn(category, limit);
+const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
+---
+
+{
+  list.length > 0 && (
+    <section class="section guide-teaser">
+      <div class="wrap">
+        <h2 class="section__title">{title}</h2>
+        <ul class="guide-teaser__list">
+          {list.map((post) => (
+            <li>
+              <a class="guide-teaser__card" href={`/es/blog/${post.slug}/`}>
+                <time class="guide-teaser__date" datetime={post.date}>
+                  {longDate.format(new Date(`${post.date}T12:00:00Z`))}
+                </time>
+                <h3 class="guide-teaser__title">{post.title}</h3>
+                <p class="guide-teaser__text">{post.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
