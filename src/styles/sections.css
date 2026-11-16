@@ -632,8 +632,8 @@
     @apply mx-auto mt-6 flex flex-wrap items-center justify-center gap-2;
   }
 
-  /* ProofBand: cifras reales apiladas y centradas, enormes y finas. Con scroll-driven, la
-     cifra que pasa por el centro se enciende (base.css); sin soporte, todas en tinta. */
+  /* ProofBand: cifras reales, enormes y finas, en rejilla 2×2 (móvil) o en fila (escritorio).
+     Con scroll-driven la cifra se enciende al cruzar el centro (base.css); sin soporte, en tinta. */
   .proof-band {
     padding-block: calc(var(--space-section) / 2);
     background: var(--color-canvas);
@@ -641,14 +641,20 @@
     text-align: center;
   }
 
-  .proof-band__kicker {
-    margin-bottom: var(--space-12);
-  }
-
   .proof-band__list {
     display: grid;
-    gap: var(--space-12);
-    justify-items: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-12) var(--space-4);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    /* Una fila con tantas columnas como cifras haya (2 a 4). */
+    .proof-band__list {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+    }
   }
 
   .proof-band__item {
@@ -661,7 +667,7 @@
   /* El valor va primero a la vista; en el DOM, dt antes que dd (orden válido de <dl>). */
   .proof-band__value {
     order: -1;
-    font-size: clamp(4.5rem, 2.4rem + 9vw, 9rem);
+    font-size: clamp(3.75rem, 1.6rem + 6vw, 7.5rem);
     font-weight: var(--weight-display);
     line-height: 0.9;
     letter-spacing: var(--tracking-display);
@@ -669,7 +675,7 @@
   }
 
   .proof-band__label {
-    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.375rem);
     letter-spacing: -0.02em;
   }
 
@@ -1139,9 +1145,9 @@
 
   .story-scroll__inline img {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    /* Las fotos del equipo son verticales: encuadre alto para no cortar caras. */
+    /* Fotos verticales recortadas en apaisado: encuadre alto para no cortar caras. */
     object-position: center 20%;
   }
 
@@ -1663,10 +1669,6 @@
     @apply flex flex-col gap-2;
     padding-block: var(--space-6);
     border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
-  }
-
-  .valuation__option .kicker {
-    margin-bottom: var(--space-1);
   }
 
   @media (min-width: 60rem) {

@@ -5,8 +5,6 @@ import { proofFigures, type ProofFigure } from '../../lib/proof';
 
 interface Props {
   figures?: ProofFigure[];
-  /** Etiqueta corta entre paréntesis sobre las cifras. */
-  kicker?: string;
   /** Frase que anuncia la sección siguiente. */
   bridge?: string;
 }
@@ -19,7 +17,6 @@ const {
     listings: getListings().length,
     builtOn: new Date(),
   }),
-  kicker,
   bridge,
 } = Astro.props;
 ---
@@ -28,13 +25,13 @@ const {
   figures.length > 0 && (
     <section class="proof-band" aria-label="Datos de Conroma">
       <div class="wrap">
-        {kicker && <p class="kicker proof-band__kicker">{kicker}</p>}
         <dl class="proof-band__list">
-          {figures.map((figure) => (
+          {figures.map((figure, index) => (
             <div class="proof-band__item">
               <dt class="proof-band__label">{figure.label}</dt>
               <dd class="proof-band__value">{figure.value}</dd>
-              {figure.source && (
+              {/* Nota y reseñas comparten fuente: se cita una vez. */}
+              {figure.source && figure.source !== figures[index - 1]?.source && (
                 <dd class="proof-band__source">
                   {figure.href ? (
                     <a href={figure.href} rel="noopener" target="_blank">

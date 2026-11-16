@@ -9,18 +9,15 @@ interface Props {
   lead?: string;
   /** Frase que anuncia la sección siguiente. */
   bridge?: string;
-  /** Etiqueta corta entre paréntesis sobre el título. */
-  kicker?: string;
 }
 
-const { title, options, lead, bridge, kicker } = Astro.props;
+const { title, options, lead, bridge } = Astro.props;
 const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 ---
 
 {/* Dos mitades sin bordes (la segunda sobre gris): dos opciones válidas; la nuestra, con sus ventajas. */}
 <section class="section compare" aria-labelledby={titleId}>
   <div class="wrap compare__head">
-    {kicker && <p class="kicker">{kicker}</p>}
     <h2 class="section__title" id={titleId} data-reveal>{title}</h2>
     {lead && <p class="section__lead">{lead}</p>}
   </div>

@@ -6,8 +6,6 @@ import { whatsappUrl, type ContactReason } from '../../lib/links';
 interface Props {
   title?: string;
   items: FaqItem[];
-  /** Etiqueta corta entre paréntesis sobre el título. */
-  kicker?: string;
   /** Frase corta bajo el título. */
   lead?: string;
   /** data-origin para GTM; si se pasa, sale el bloque «¿Te queda alguna duda?» con WhatsApp. */
@@ -15,14 +13,13 @@ interface Props {
   reason?: ContactReason;
 }
 
-const { title = 'Preguntas frecuentes', items, kicker, lead, origin, reason } = Astro.props;
+const { title = 'Preguntas frecuentes', items, lead, origin, reason } = Astro.props;
 ---
 
 {/* Columna estrecha y centrada: filas suaves que se abren, y al final una salida por WhatsApp. */}
 <section class="section faq-section" id="preguntas">
   <div class="wrap faq-section__inner">
     <div class="faq-section__head">
-      {kicker && <p class="kicker">{kicker}</p>}
       <h2 class="section__title" data-reveal>{title}</h2>
       {lead && <p class="section__lead">{lead}</p>}
     </div>

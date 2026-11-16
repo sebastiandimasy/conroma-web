@@ -44,19 +44,19 @@ const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración
     credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
   />
 
-  <Statement kicker="Vender con Conroma" text={venderAnswer} />
+  <Statement text={venderAnswer} />
 
-  <ProofBand kicker="En cifras" bridge="Esto es lo que hacemos con tu piso desde el primer día." />
+  <ProofBand bridge="Esto es lo que hacemos con tu piso desde el primer día." />
 
   <StoryScroll
-    kicker="El proceso"
+   
     title="Cómo vendemos tu piso"
     steps={venderSteps}
     bridge="¿Y si prefieres venderlo por tu cuenta? Aquí ves cuándo encaja cada opción."
   />
 
   <Compare
-    kicker="Comparativa"
+   
     title="Con Conroma o por tu cuenta"
     lead="Las dos opciones funcionan. Elige la que encaje con tu tiempo y con lo que ya tienes."
     options={venderCompare}
@@ -65,10 +65,10 @@ const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración
 
   <ValuationBlock />
 
-  <GuideTeaser kicker="Guías" title="Para leer antes de vender" category="Vender" />
+  <GuideTeaser title="Para leer antes de vender" category="Vender" />
 
   <FaqSection
-    kicker="Preguntas frecuentes"
+   
     title="Dudas al vender tu piso"
     lead="Lo que más nos preguntan antes de poner un piso a la venta."
     items={venderFaq}

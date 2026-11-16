@@ -1,17 +1,14 @@
 ---
 interface Props {
   text: string;
-  /** Etiqueta corta entre paréntesis sobre el texto. */
-  kicker?: string;
 }
 
-const { text, kicker } = Astro.props;
+const { text } = Astro.props;
 ---
 
 {/* Respuesta corta en grande, justo bajo el hero: la primera frase que leen Google y las IA. */}
 <section class="section statement">
   <div class="wrap">
-    {kicker && <p class="kicker">{kicker}</p>}
     <p class="statement__text" data-reveal>{text}</p>
   </div>
 </section>

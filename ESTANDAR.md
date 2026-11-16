@@ -118,8 +118,15 @@ colores por la puerta de atrás y ningún repaso del CSS propio lo detecta.
 
 Gradientes como decoración, glow de color, cristal esmerilado en elementos de interfaz,
 texto con degradado, rejilla de tarjetas-métrica por defecto, y la combinación
-*etiqueta en versalitas + titular* repetida en cada sección. **Excepción decidida por el dueño:**
-el kicker editorial `(Etiqueta)` entre paréntesis del sistema de §5.
+*etiqueta en versalitas + titular* repetida en cada sección.
+
+**Prohibido en secciones (regla del dueño, 2026-11-16) — son tics de diseño hecho por IA:**
+- **Etiquetas sobre el título** (eyebrow, kicker, `(EL PROCESO)`, «Comparativa», «Guías»): la
+  sección empieza por su título.
+- **Chapas y badges** («Recomendada», «Rápida», «Nuevo», «Popular») dentro de bloques de contenido.
+- **Toggles de adorno** (interruptores, controles segmentados, pestañas) que no filtran datos reales.
+  Un control solo existe si cambia lo que el usuario ve y lo necesita.
+Si la sección necesita contexto, lo da el título o una frase de entrada (`.section__lead`), no una etiqueta.
 
 ### Tipografía
 
@@ -168,7 +175,7 @@ El móvil es el **97%** del tráfico. Se verifica a 390px antes de dar nada por 
   (contraste correcto, incluido el icono de WhatsApp). Secundario = contorno (`button--ghost`).
 - **Alineación coherente.** En páginas rediseñadas manda §5 (héroe abajo a la izquierda; Compare,
   FAQ y cierre centrados). En el resto: el **héroe** se centra (elemento distintivo); **todas las demás
-  cabeceras de sección** (eyebrow + título + lead) van a la **izquierda** de forma uniforme en
+  cabeceras de sección** (título + lead) van a la **izquierda** de forma uniforme en
   móvil (las `section__head--center` se alinean a la izquierda en `<40rem`). Las cifras del
   contador también van a la izquierda en móvil (coherencia con la cabecera).
 
@@ -237,7 +244,7 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 - Ritmo de sección con `--space-section`; dentro, escala de Tailwind (4px). Nada de valores sueltos.
 
 ### `Section` (envoltura)
-- Anatomía: `section.section > .wrap > [.section__head (eyebrow? + h2.section__title + lead?)] + slot`.
+- Anatomía: `section.section > .wrap > [.section__head (h2.section__title + lead?)] + slot`.
 - Usar la primitiva `src/components/Section.astro`. El `h2` va en el slot `title` (admite `highlight`).
 - `.section__title`: peso 300, leading 1.02, tracking −0.05em (sistema editorial, §5).
 - Para un `wrap` con clase extra (grid propio), usar el prop `wrapClass` (p.ej. `wrapClass="town-links__grid"`).
@@ -295,8 +302,8 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
 ### Ritmo de página
 - **Bandas planas alternas** `--color-canvas` / `--color-surface-2`, sin bordes ni tarjetas entre ellas.
   Nada de patrón de puntos de fondo.
-- Cada sección abre con **kicker** `(Etiqueta)` (`.kicker`: 12px, versalitas, tracking 0.08em, ink-2,
-  paréntesis por CSS) + `.section__title` Hanken 300. Una frase de **puente** (`.section__bridge`)
+- Cada sección abre **directamente con su `.section__title`** Hanken 300. Sin etiquetas, chapas ni
+  toggles encima o dentro (§1, «Prohibido en secciones»). Una frase de **puente** (`.section__bridge`)
   anuncia la sección siguiente cuando el paso no es obvio.
 - **Un solo acento:** amarillo. Checks y cursor en `--color-accent`; botones en `--color-button` (§0).
 
@@ -308,14 +315,14 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
 | Cifras | `ProofBand` | Cifras gigantes centradas, estáticas, con fuente enlazada (≥44px). Pasan de gris a tinta con el scroll. |
 | Proceso | `StoryScroll` | Numeral grande + título + texto; en escritorio la foto queda fija y los pasos pasan (scroll-driven, con fallback). |
 | Comparativa | `Compare` | **Dos mitades sin bordes** (la segunda sobre gris). Las dos opciones son válidas y en positivo («te encaja si…»); **el check amarillo solo en la opción Conroma**, la otra lleva punto gris. Conroma lista más ventajas. Prohibido el tono de alarma. |
-| Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave y kicker, sin chapas. |
+| Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave, sin chapas ni etiquetas. |
 | Guías | `GuideTeaser` | Lista editorial con fecha, título y entradilla; separadores finos. |
-| FAQ | `FaqSection` | Cabecera **centrada** (kicker, título, lead) y columna de 44rem. Filas sueltas con contorno muy suave (`--color-line` al 40%), radio 8px, separadas 8px. Cerrada: pregunta en ink-2; abierta: en tinta, velo de fondo al 4% y chevron girado 180°. Cierra con «¿Te queda alguna duda?» y **botón estándar** a WhatsApp (`origin` obligatorio para GTM). |
+| FAQ | `FaqSection` | Cabecera **centrada** (título y lead) y columna de 44rem. Filas sueltas con contorno muy suave (`--color-line` al 40%), radio 8px, separadas 8px. Cerrada: pregunta en ink-2; abierta: en tinta, velo de fondo al 4% y chevron girado 180°. Cierra con «¿Te queda alguna duda?» y **botón estándar** a WhatsApp (`origin` obligatorio para GTM). |
 | Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Es el único momento animado «firmado» (0,7s); con reduced-motion todo se ve a la vez. |
 
 ### Bordes
 - Si un borde se nota más que el contenido, sobra. Separadores: 1px `--color-line` al 40% o nada.
-- Nada de tarjetas con borde en bandas editoriales; las chapas («Recomendada») pasan a kicker.
+- Nada de tarjetas con borde en bandas editoriales, ni chapas («Recomendada»).
 
 ### Movimiento
 - Scroll-driven en CSS (`animation-timeline: view()`) dentro de `prefers-reduced-motion: no-preference`
