@@ -27,7 +27,7 @@ describe('officeStatus (hora de Madrid)', () => {
 
   it('usa la hora de Madrid, no la del navegador ni UTC', () => {
     // 08:30 UTC = 09:30 en Madrid (abierto); en UTC aún estaría cerrado.
-    expect(at('2026-11-16T08:30:00Z').open).toBe(true);
+    expect(at('2026-11-16T08:30:00Z')?.open).toBe(true);
   });
 
   it('sin horario publicado no afirma nada', () => {
