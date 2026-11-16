@@ -73,7 +73,27 @@ const normRef = (ref: string): string => ref.toLowerCase().replace(/[^a-z0-9]/g,
  */
 const inventory = raw as Property[];
 
-const withPhotos: Property[] = inventory.map((property) => {
+// Partículas que van en minúscula dentro de un nombre propio, y palabras que el feed escribe sin tilde.
+const SMALL_WORDS = new Set(['de', 'del', 'la', 'las', 'los', 'el', 'els', 'les', 'i', 'y']);
+const ACCENTED: Record<string, string> = { urbanizacion: 'urbanización', nucleo: 'núcleo' };
+
+/** Zona tal y como se lee: el feed trae algunas en mayúsculas («SANT LLOP») y el
+    acento agudo como apóstrofo («d´Onyar»). Lo que ya viene bien escrito no se toca. */
+export function tidyZone(zone: string): string {
+  const fixed = zone.replace(/´/g, '’');
+  if (fixed !== fixed.toUpperCase()) return fixed;
+  return fixed
+    .toLowerCase()
+    .split(' ')
+    .map((word, index) => {
+      const accented = ACCENTED[word] ?? word;
+      return index > 0 && SMALL_WORDS.has(word) ? word : accented.charAt(0).toUpperCase() + accented.slice(1);
+    })
+    .join(' ');
+}
+
+const withPhotos: Property[] = inventory.map((item) => {
+  const property = { ...item, zone: tidyZone(item.zone) };
   const images = photos[normRef(property.ref)];
   return images && images.length ? { ...property, images, photos: images.length } : property;
 });
