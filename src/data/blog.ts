@@ -128,6 +128,14 @@ export const posts: BlogPost[] = [
   },
 ];
 
+/** Artículos publicados de una categoría, del más reciente al más antiguo. */
+export function postsIn(category: string, limit = 3): BlogPost[] {
+  return posts
+    .filter((post) => post.category === category && !post.draft)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, limit);
+}
+
 export function findPost(slug: string): BlogPost | undefined {
   return posts.find((post) => post.slug === slug);
 }
