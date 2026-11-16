@@ -415,7 +415,8 @@
 
   .hero {
     @apply relative flex items-center overflow-hidden;
-    min-height: min(88svh, 760px);
+    min-height: min(100svh, 920px);
+    overflow: hidden;
     margin-top: calc(var(--header-height) * -1);
     color: var(--color-ink);
     /* Fallback estático bajo el canvas WebGL; flipa por tema vía el token. */
@@ -631,38 +632,45 @@
     @apply mx-auto mt-6 flex flex-wrap items-center justify-center gap-2;
   }
 
-  /* ProofBand: cifras reales en fila, sin tarjetas. Única sección con fondo distinto. */
+  /* ProofBand: cifras reales apiladas y centradas, enormes y finas. Con scroll-driven, la
+     cifra que pasa por el centro se enciende (base.css); sin soporte, todas en tinta. */
   .proof-band {
-    padding-block: var(--space-12);
-    background: var(--color-surface-2);
-    color: var(--color-on-surface-2);
+    padding-block: calc(var(--space-section) / 2);
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+    text-align: center;
+  }
+
+  .proof-band__kicker {
+    margin-bottom: var(--space-12);
   }
 
   .proof-band__list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-8) var(--space-4);
+    gap: var(--space-12);
+    justify-items: center;
   }
 
   .proof-band__item {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    align-items: center;
+    gap: var(--space-2);
   }
 
   /* El valor va primero a la vista; en el DOM, dt antes que dd (orden válido de <dl>). */
   .proof-band__value {
     order: -1;
-    font-size: var(--text-h2);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
+    font-size: clamp(4.5rem, 2.4rem + 9vw, 9rem);
+    font-weight: var(--weight-display);
+    line-height: 0.9;
+    letter-spacing: var(--tracking-display);
     font-variant-numeric: tabular-nums;
   }
 
   .proof-band__label {
-    font-size: var(--text-small);
-    font-weight: 600;
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+    letter-spacing: -0.02em;
   }
 
   .proof-band__source {
@@ -671,22 +679,31 @@
   }
 
   .proof-band__source a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     text-decoration: underline;
     text-decoration-color: var(--color-line);
     text-underline-offset: 3px;
   }
 
-  /* HeroStory: foto a sangre con velo funcional bajo el texto (único degradado permitido).
+  .proof-band .section__bridge {
+    margin-inline: auto;
+  }
+
+  /* HeroStory: foto a sangre, titular enorme arriba y pie con migas, respuesta y acción.
      Texto con tokens fijos: sobre la foto no cambia con el tema. */
   .hero-story {
     position: relative;
     display: flex;
-    align-items: flex-end;
-    min-height: min(88svh, 760px);
-    padding-top: var(--header-height);
+    /* Pantalla completa bajo la cabecera fija (que va en el flujo, no encima). */
+    min-height: min(calc(100svh - var(--header-height)), 920px);
     color: var(--color-on-fixed-ink);
     background: var(--color-fixed-backdrop);
     isolation: isolate;
+    overflow: hidden;
+    /* Sobre la foto, el anillo de foco negro no se vería: amarillo de marca (par fijo). */
+    --color-focus: var(--color-accent);
   }
 
   .hero-story__photo {
@@ -696,23 +713,50 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Fotos verticales del equipo: encuadre alto para no cortar la cabeza en escritorio. */
+    object-position: center 25%;
   }
 
+  /* Velo uniforme para el titular grande (≥3:1 sobre el píxel más claro). */
   .hero-story::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    /* Medido: ≥4,5:1 de texto blanco sobre el píxel más claro de la foto (scripts de contraste). */
-    background: linear-gradient(to bottom, rgb(0 0 0 / 0) 15%, rgb(0 0 0 / 0.6) 40%, rgb(0 0 0 / 0.82) 60%);
+    background: var(--veil-photo);
   }
 
   .hero-story__content {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-12);
+    /* En móvil, el dock fijo (≈76 px + zona segura) no puede tapar la acción. */
+    padding-block: var(--space-8) calc(var(--space-10) + 76px + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 60rem) {
+    .hero-story__content {
+      padding-block: var(--space-10) var(--space-12);
+    }
+  }
+
+  /* El velo del texto pequeño va anclado a su bloque, no a la altura de la sección:
+     así las migas y la respuesta tienen el mismo contraste en cualquier móvil. */
+  .hero-story__foot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     align-items: flex-start;
     gap: var(--space-4);
-    padding-block: var(--space-12);
+  }
+
+  .hero-story__foot::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--space-12)) calc(50% - 50vw) calc(-1 * var(--space-10));
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--veil-text) var(--space-12));
   }
 
   .hero-story .breadcrumbs,
@@ -722,20 +766,69 @@
   }
 
   .hero-story__title {
-    max-width: 16ch;
-    font-size: var(--text-h1);
-    font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    max-width: 12ch;
+    font-size: var(--text-display);
+    font-weight: var(--weight-display);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-display);
   }
 
   .hero-story__lead {
-    max-width: 52ch;
+    max-width: 48ch;
     font-size: var(--text-body);
     line-height: 1.5;
   }
 
-  /* ClosingCTA: cierre plano, una sola acción principal y la llamada como enlace. */
+  /* ClosingCTA: una sola acción principal y la llamada como enlace. Con foto: a sangre,
+     centrado y con velo (texto con tokens fijos, no cambia con el tema). */
+  .closing-cta .section__title {
+    max-width: 14ch;
+    font-size: var(--text-h1);
+  }
+
+  .closing-cta--photo {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: var(--space-section);
+    color: var(--color-on-fixed-ink);
+    background: var(--color-fixed-backdrop);
+    text-align: center;
+    --color-focus: var(--color-accent);
+    --color-ink-2: var(--color-on-fixed-ink);
+    --color-line: var(--color-on-fixed-ink-muted);
+  }
+
+  .closing-cta__photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .closing-cta--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--veil-text);
+  }
+
+  .closing-cta--photo .closing-cta__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .closing-cta--photo .section__lead,
+  .closing-cta--photo .closing-cta__actions,
+  .closing-cta--photo .closing-cta__towns ul {
+    margin-inline: auto;
+    justify-content: center;
+  }
+
   .closing-cta__actions {
     display: flex;
     flex-wrap: wrap;
@@ -782,45 +875,75 @@
 
   /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
      escritorio con scroll-driven y sin reduced-motion. */
+  .story-scroll {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
   .story-scroll__steps {
     display: grid;
-    gap: var(--space-12);
-    margin-top: var(--space-8);
+    gap: calc(var(--space-section) / 2);
+    margin-top: var(--space-12);
     list-style: none;
     padding: 0;
   }
 
+  /* Numeral enorme a la izquierda; título y texto a su derecha; foto encima en móvil. */
   .story-scroll__step {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'photo photo'
+      'num title'
+      'num text';
+    align-content: start;
+    gap: var(--space-3) var(--space-5);
   }
 
   .story-scroll__count {
-    font-size: var(--text-caption);
-    font-weight: 700;
-    color: var(--color-ink-2);
+    grid-area: num;
+    font-size: clamp(4rem, 2rem + 6vw, 8rem);
+    font-weight: var(--weight-display);
+    line-height: 0.8;
+    letter-spacing: var(--tracking-display);
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.04em;
+  }
+
+  /* Foto a sangre en móvil: la foto manda. */
+  .story-scroll__inline {
+    grid-area: photo;
+    margin: 0 calc(-1 * var(--space-gutter)) var(--space-5);
+    overflow: hidden;
   }
 
   .story-scroll__inline img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
     /* Las fotos del equipo son verticales: encuadre alto para no cortar caras. */
     object-position: center 20%;
-    border-radius: 12px;
   }
 
   .story-scroll__title {
-    font-size: var(--text-h3);
-    font-weight: 700;
+    grid-area: title;
+    font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
   .story-scroll__text {
+    grid-area: text;
     max-width: 46ch;
     color: var(--color-ink-2);
+  }
+
+  /* Escritorio sin scroll-driven (o con reduced-motion): fotos acotadas, no a todo el ancho. */
+  @media (min-width: 60rem) {
+    .story-scroll__inline {
+      max-width: 40rem;
+      margin-inline: 0;
+    }
   }
 
   .story-scroll__stage {
@@ -828,7 +951,7 @@
   }
 
   @media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
-    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @supports ((animation-timeline: view()) and (animation-range: entry) and (timeline-scope: none)) {
       .story-scroll__body {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -841,7 +964,10 @@
 
       .story-scroll__step {
         min-height: 70vh;
-        justify-content: center;
+        grid-template-areas:
+          'num title'
+          'num text';
+        align-content: center;
         animation: story-step linear both;
         animation-timeline: view();
       }
@@ -861,7 +987,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 12px;
+        border-radius: 2px;
         animation-name: story-photo;
         animation-timing-function: linear;
         animation-fill-mode: both;
@@ -870,7 +996,7 @@
   }
 
   @keyframes story-step {
-    0%, 100% { opacity: 0.4; }
+    0%, 100% { opacity: 0.6; }
     35%, 65% { opacity: 1; }
   }
 
@@ -879,63 +1005,84 @@
     20%, 80% { opacity: 1; }
   }
 
-  /* Compare: tabla real, columna propia marcada con borde de acento (sin fondo amarillo). */
-  .compare__table {
-    width: 100%;
-    margin-top: var(--space-8);
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: var(--text-small);
+  /* Compare: dos fichas con borde fino; la nuestra con borde de tinta (sin fondo de color). */
+  .compare {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
   }
 
-  .compare__table th,
-  .compare__table td {
-    padding: var(--space-4) var(--space-3);
-    text-align: left;
-    vertical-align: top;
-    border-bottom: 1px solid var(--color-line);
-    overflow-wrap: anywhere;
+  .compare__grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-12);
   }
 
-  .compare__table thead th {
-    font-weight: 700;
+  .compare__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-6) var(--space-6);
+    border: 1px solid var(--color-line);
+    border-radius: 2px;
   }
 
-  .compare__table tbody th {
-    width: 26%;
-    font-weight: 700;
+  .compare__card--us {
+    border-color: var(--color-ink);
   }
 
-  .compare__table thead td {
-    width: 26%;
+  .compare__name {
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+    font-weight: var(--weight-display);
+    line-height: 1;
+    letter-spacing: -0.04em;
   }
 
-  .compare__table td:not(.compare__us) {
+  .compare__list {
+    display: grid;
+  }
+
+  .compare__row {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .compare__row dt {
+    font-size: var(--text-caption);
+    font-weight: 600;
+  }
+
+  .compare__row dd {
     color: var(--color-ink-2);
   }
 
-  .compare__us {
-    border-left: 2px solid var(--color-accent);
+  .compare__card--us .compare__row dd {
+    color: var(--color-ink);
   }
 
   @media (min-width: 60rem) {
-    .compare__table {
-      font-size: var(--text-body);
+    .compare__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
     }
 
-    .compare__table tbody th,
-    .compare__table thead td {
-      width: 20%;
+    .compare__card {
+      padding: var(--space-12) var(--space-10) var(--space-8);
     }
   }
 
-  /* GuideTeaser: artículos con fecha visible. Hover solo de borde. */
+  /* GuideTeaser: lista tipográfica con fecha visible, sin tarjetas. Hover solo de subrayado. */
   .guide-teaser__list {
     display: grid;
-    gap: var(--space-4);
     margin-top: var(--space-8);
     list-style: none;
     padding: 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .guide-teaser__list > li {
+    border-bottom: 1px solid var(--color-line);
   }
 
   .guide-teaser__card {
@@ -943,17 +1090,14 @@
     flex-direction: column;
     gap: var(--space-2);
     height: 100%;
-    padding: var(--space-6);
-    border: 1px solid var(--color-line);
-    border-radius: 12px;
-    background: var(--color-surface);
-    color: var(--color-on-surface);
-    transition: border-color var(--duration-fast) var(--ease-out);
+    padding-block: var(--space-8);
   }
 
   @media (hover: hover) {
-    .guide-teaser__card:hover {
-      border-color: var(--color-ink);
+    .guide-teaser__card:hover .guide-teaser__title {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
     }
   }
 
@@ -962,9 +1106,16 @@
     color: var(--color-ink-2);
   }
 
+  .guide-teaser {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
   .guide-teaser__title {
-    font-size: var(--text-h3);
-    font-weight: 700;
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
   .guide-teaser__text {
@@ -974,6 +1125,7 @@
   @media (min-width: 60rem) {
     .guide-teaser__list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--space-8);
     }
   }
 
@@ -981,14 +1133,6 @@
     margin-top: var(--space-8);
     max-width: 60ch;
     color: var(--color-ink-2);
-  }
-
-  @media (min-width: 60rem) {
-    .proof-band__list {
-      grid-auto-flow: column;
-      grid-auto-columns: 1fr;
-      grid-template-columns: none;
-    }
   }
 
   .hero-cta {
@@ -1197,6 +1341,13 @@
     max-width: 640px;
     margin-inline: auto;
     margin-top: 32px;
+  }
+
+  /* Fondos alternos blanco / gris, planos, como bandas editoriales. */
+  .valuation,
+  .faq-section {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
   .valuation__card {

@@ -28,9 +28,70 @@
 
   .section__title {
     font-size: var(--text-h2);
-    /* apple-design: en títulos grandes, leading corto y tracking negativo. */
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-weight: var(--weight-display);
+    /* Titular editorial: grande, fino, leading corto y tracking muy negativo. */
+    line-height: 1.02;
+    letter-spacing: -0.05em;
+  }
+
+  /* Etiqueta de sección entre paréntesis: «(EL PROCESO)». Los paréntesis no se leen en voz. */
+  .kicker {
+    display: block;
+    margin-bottom: var(--space-5);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-2);
+  }
+
+  .kicker::before {
+    content: '(';
+    content: '(' / '';
+  }
+
+  .kicker::after {
+    content: ')';
+    content: ')' / '';
+  }
+
+  /* Enlace con cuadrado de flecha: la acción principal sin botón de bloque. */
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    font-weight: 500;
+    color: inherit;
+  }
+
+  .arrow-link__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 2px;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+
+  .arrow-link__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .arrow-link:active .arrow-link__icon {
+    scale: 0.94;
+  }
+
+  @media (hover: hover) {
+    .arrow-link:hover .arrow-link__label {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
+    }
   }
 
   .section__lead {

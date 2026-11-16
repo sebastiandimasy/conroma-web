@@ -298,6 +298,28 @@ ronda con la misma librería.
   página de alto valor educativo. *Llamada mía:* va en **Empresa** (Equipo se queda con las
   personas). Los artículos salen del contenido real de cada reel (texto del post y lo que se
   dice en el vídeo). No se inventa nada que el reel no diga, y cada artículo enlaza a su reel.
+- **(2026-11-16) Estilo visual: `apple-design` + `ui-styling`.** Minimalista y fotográfico de
+  impacto, componentes más simples, mucho más aire entre secciones, y **animaciones que se
+  mantienen** para dar dinamismo y fluidez. Esto ajusta §3.1:
+  - El movimiento ligado al scroll se amplía: parallax de la foto del hero, fotos que se
+    asientan (escala 1,08 → 1) al entrar y textos que entran escalonados.
+  - El hero puede asentar la foto al cargar (solo `scale`, nunca opacidad: no retrasa el LCP ni
+    oculta texto).
+  - Sigue igual: nada crítico depende de JS, todo va dentro de `prefers-reduced-motion:
+    no-preference` y `@supports`, y sin soporte todo se ve quieto y completo.
+  - Componentes: menos bordes y fondos, más tipografía y foto. Fotos a sangre en móvil.
+- **(2026-11-16) Referencia de estilo: concretemanagement.ch, con la paleta de Conroma.** Se
+  recrea su lenguaje visual (no su contenido, fotos ni código):
+  - Titulares enormes, finos y apretados. *Decisión del dueño:* en **Hanken Grotesk** (marca),
+    no en serif; peso 300, tracking −0,06 em. `--font-display` deja Helvetica Neue.
+  - Etiqueta de sección entre paréntesis, «(EL PROCESO)». Va contra la regla de no-slop-ui
+    («sin eyebrows»); manda el pedido del dueño.
+  - Bandas planas a sangre que alternan blanco y gris (su beige y crema pasan a `surface-2` y
+    `canvas`; su casi-negro, a la tinta #1A1912). Sin puntos de fondo.
+  - Cifras gigantes centradas que se encienden al cruzar el centro; pasos con numeral enorme;
+    comparativa en dos fichas de borde fino; cierre sobre foto a sangre.
+  - Acción principal como enlace con cuadrado de flecha, en **amarillo** (único acento).
+  - Componentes que falten: buscar antes en 21st.dev (MCP).
 - Delegó el cómo. Llamadas mías marcadas como tales: enfoque A, motion CSS-first, orden de
   trabajo empezando por Vender, Alquilar orientado a propietario, Empresa/Equipo separadas por papel.
 

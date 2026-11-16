@@ -5,9 +5,11 @@ interface Props {
   title: string;
   category: string;
   limit?: number;
+  /** Etiqueta corta entre paréntesis sobre el título. */
+  kicker?: string;
 }
 
-const { title, category, limit = 3 } = Astro.props;
+const { title, category, limit = 3, kicker } = Astro.props;
 // Solo artículos que existen: si la intención no tiene ninguno, la sección no se pinta.
 const list = postsIn(category, limit);
 const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
@@ -17,10 +19,11 @@ const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long
   list.length > 0 && (
     <section class="section guide-teaser">
       <div class="wrap">
-        <h2 class="section__title">{title}</h2>
+        {kicker && <p class="kicker">{kicker}</p>}
+        <h2 class="section__title" data-reveal>{title}</h2>
         <ul class="guide-teaser__list">
           {list.map((post) => (
-            <li>
+            <li data-reveal>
               <a class="guide-teaser__card" href={`/es/blog/${post.slug}/`}>
                 <time class="guide-teaser__date" datetime={post.date}>
                   {longDate.format(new Date(`${post.date}T12:00:00Z`))}

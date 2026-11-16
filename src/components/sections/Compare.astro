@@ -7,35 +7,40 @@ interface Props {
   rows: CompareRow[];
   /** Frase que anuncia la sección siguiente. */
   bridge?: string;
+  /** Etiqueta corta entre paréntesis sobre el título. */
+  kicker?: string;
 }
 
-const { title, columns, rows, bridge } = Astro.props;
+const { title, columns, rows, bridge, kicker } = Astro.props;
 const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+// Dos fichas en vez de tabla: en 390 px una tabla de tres columnas no se lee.
+const cards = [
+  { name: columns[0], us: true, values: rows.map((row) => row.withUs) },
+  { name: columns[1], us: false, values: rows.map((row) => row.alone) },
+];
 ---
 
-<section class="section compare">
+<section class="section compare" aria-labelledby={titleId}>
   <div class="wrap">
-    <h2 class="section__title" id={titleId}>{title}</h2>
-    <table class="compare__table" aria-labelledby={titleId}>
-      <thead>
-        <tr>
-          <td></td>
-          <th scope="col" class="compare__us">{columns[0]}</th>
-          <th scope="col">{columns[1]}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          rows.map((row) => (
-            <tr>
-              <th scope="row">{row.aspect}</th>
-              <td class="compare__us">{row.withUs}</td>
-              <td>{row.alone}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
+    {kicker && <p class="kicker">{kicker}</p>}
+    <h2 class="section__title" id={titleId} data-reveal>{title}</h2>
+    <div class="compare__grid">
+      {
+        cards.map((card) => (
+          <article class:list={['compare__card', card.us && 'compare__card--us']} data-reveal>
+            <h3 class="compare__name">{card.name}</h3>
+            <dl class="compare__list">
+              {rows.map((row, index) => (
+                <div class="compare__row">
+                  <dt>{row.aspect}</dt>
+                  <dd>{card.values[index]}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))
+      }
+    </div>
     {bridge && <p class="section__bridge">{bridge}</p>}
   </div>
 </section>
