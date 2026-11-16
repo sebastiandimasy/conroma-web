@@ -1,0 +1,36 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Breadcrumbs from '../layout/Breadcrumbs.astro';
+import type { Crumb } from '../../lib/seo';
+
+interface Props {
+  crumbs: Crumb[];
+  title: string;
+  lead: string;
+  image: ImageMetadata;
+  alt: string;
+  cta: { label: string; href: string };
+}
+
+const { crumbs, title, lead, image, alt, cta } = Astro.props;
+---
+
+<section class="hero-story">
+  {/* Imagen LCP: nunca lazy. El hero llega quieto: sin reveal ni parallax. */}
+  <Image
+    class="hero-story__photo"
+    src={image}
+    alt={alt}
+    widths={[390, 780, 1200, 1800]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="wrap hero-story__content">
+    <Breadcrumbs crumbs={crumbs} />
+    <h1 class="hero-story__title">{title}</h1>
+    <p class="hero-story__lead">{lead}</p>
+    <a class="button button--primary button--large" href={cta.href}>{cta.label}</a>
+  </div>
+</section>

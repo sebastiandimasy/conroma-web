@@ -676,6 +676,89 @@
     text-underline-offset: 3px;
   }
 
+  /* HeroStory: foto a sangre con velo funcional bajo el texto (único degradado permitido).
+     Texto con tokens fijos: sobre la foto no cambia con el tema. */
+  .hero-story {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(88svh, 760px);
+    padding-top: var(--header-height);
+    color: var(--color-on-fixed-ink);
+    background: var(--color-fixed-backdrop);
+    isolation: isolate;
+  }
+
+  .hero-story__photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-story::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Medido: ≥4,5:1 de texto blanco sobre el píxel más claro de la foto (scripts de contraste). */
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0) 15%, rgb(0 0 0 / 0.6) 40%, rgb(0 0 0 / 0.82) 60%);
+  }
+
+  .hero-story__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block: var(--space-12);
+  }
+
+  .hero-story .breadcrumbs,
+  .hero-story .breadcrumbs__current {
+    color: var(--color-on-fixed-ink);
+  }
+
+  .hero-story__title {
+    max-width: 16ch;
+    font-size: var(--text-h1);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+
+  .hero-story__lead {
+    max-width: 52ch;
+    font-size: var(--text-body);
+    line-height: 1.5;
+  }
+
+  /* ClosingCTA: cierre plano, una sola acción principal y la llamada como enlace. */
+  .closing-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    margin-top: var(--space-6);
+  }
+
+  .closing-cta__call {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 3px;
+  }
+
+  @media (hover: hover) {
+    .closing-cta__call:hover {
+      text-decoration-color: var(--color-ink);
+    }
+  }
+
   .section__bridge {
     margin-top: var(--space-8);
     max-width: 60ch;

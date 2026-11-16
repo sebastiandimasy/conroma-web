@@ -1,0 +1,32 @@
+---
+import Icon from '../Icon.astro';
+import { site } from '../../data/site';
+import { phoneUrl, whatsappUrl, type ContactReason } from '../../lib/links';
+
+interface Props {
+  title: string;
+  text?: string;
+  /** data-origin para GTM (la conversión se mide por la URL wa.me / tel:). */
+  origin: string;
+  reason?: ContactReason;
+}
+
+const { title, text, origin, reason } = Astro.props;
+---
+
+<section class="section closing-cta">
+  <div class="wrap">
+    <h2 class="section__title">{title}</h2>
+    {text && <p class="section__lead">{text}</p>}
+    <div class="closing-cta__actions">
+      <a class="button button--primary button--large" href={whatsappUrl({ reason })} data-contact="whatsapp" data-origin={origin}>
+        <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
+        Escríbenos por WhatsApp
+      </a>
+      <a class="closing-cta__call" href={phoneUrl()} data-contact="llamada" data-origin={origin}>
+        O llámanos al {site.phoneDisplay}
+      </a>
+    </div>
+    <slot />
+  </div>
+</section>

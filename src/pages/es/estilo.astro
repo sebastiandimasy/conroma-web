@@ -5,6 +5,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import Button from '../../components/Button.astro';
 import MediaCard from '../../components/MediaCard.astro';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import heroSample from '../../assets/equipo/conroma-74.jpg';
 
 const theme = css.slice(css.indexOf('@theme'), css.indexOf(':root {'));
 const darkBlock = css.slice(css.indexOf(':root[data-theme="dark"]'), css.indexOf('@media (prefers-color-scheme: dark)'));
@@ -107,6 +110,19 @@ const variants = ['primary', 'ghost', 'ink'] as const;
       </MediaCard>
     </div>
   </Section>
+
+  {/* Muestras de la librería de secciones del rediseño (spec §5.1). */}
+  <HeroStory
+    crumbs={[{ name: 'Inicio', path: '/es/' }, { name: 'Estilo', path: '/es/estilo/' }]}
+    title="Título del HeroStory sobre foto"
+    lead="Respuesta corta de dos o tres frases. Se lee en claro y en oscuro porque va sobre el velo."
+    image={heroSample}
+    alt="Una persona del equipo de Conroma explicando una operación en la pizarra"
+    cta={{ label: 'Acción principal', href: '#' }}
+  />
+  <ClosingCTA title="Título del cierre" text="Una frase de apoyo." origin="estilo-muestra" reason="general">
+    <p>Contenido del slot.</p>
+  </ClosingCTA>
 </BaseLayout>
 
 <style>
