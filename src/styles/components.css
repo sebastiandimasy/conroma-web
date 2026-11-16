@@ -796,6 +796,12 @@
     transition: background-color var(--duration-fast) var(--ease-out);
   }
 
+  /* HeroUI usa la misma clase y le pinta un separador de 1px abajo (::after). Aquí sobra:
+     cada pregunta ya tiene su contorno. */
+  .accordion__item::after {
+    content: none;
+  }
+
   .accordion__item[open] {
     background: color-mix(in oklab, var(--color-ink) 4%, transparent);
   }
