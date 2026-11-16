@@ -5,7 +5,7 @@ import Icon from '../../../components/Icon.astro';
 import Faq from '../../../components/Faq.astro';
 import ListingExplorer from '../../../islands/ListingExplorer';
 import { cheapestPrice, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
-import { publishedCatalogTowns, type Town } from '../../../data/towns';
+import { publishedCatalogTowns, publishedSellerTowns, type Town } from '../../../data/towns';
 import { formatPrice } from '../../../lib/format';
 import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../../lib/seo';
 import { whatsappUrl } from '../../../lib/links';
@@ -21,6 +21,8 @@ interface Props {
 
 const { town } = Astro.props;
 const path = `/es/venta/${town.slug}/`;
+// Cada catálogo enlaza a SU hub (antes todos apuntaban a mano al de Blanes).
+const hubPath = publishedSellerTowns.some((t) => t.slug === town.slug) ? `/es/inmobiliaria/${town.slug}/` : null;
 const catalog = propertiesIn(town.slug, 'venta');
 const homes = homesIn(town.slug, 'venta');
 const cheapest = cheapestPrice(catalog);
@@ -96,8 +98,8 @@ const faq = [
             ¿Vendes en {town.name}? Mira cuánto vale
             <Icon name="arrow" class="link-list__arrow" />
           </a>
-          <a class="link-list__link" href="/es/inmobiliaria/blanes/">
-            Inmobiliaria en Blanes
+          <a class="link-list__link" href={hubPath ?? '/es/inmobiliaria/'}>
+            {hubPath ? `Inmobiliaria en ${town.name}` : 'Todas las zonas donde trabajamos'}
             <Icon name="arrow" class="link-list__arrow" />
           </a>
         </nav>

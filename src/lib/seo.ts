@@ -18,7 +18,10 @@ export function absoluteUrl(path: string): string {
 }
 
 export function pageTitle(title: string): string {
-  return title.includes(site.name) ? title : `${title} | ${site.name}`;
+  if (title.includes(site.name)) return title;
+  const branded = `${title} | ${site.name}`;
+  // Google corta hacia los 60 caracteres: si no cabe la marca, se sacrifica la marca y no el contenido.
+  return branded.length <= 60 ? branded : title;
 }
 
 export function alternates(path: string, translations: Partial<Record<Locale, string>> = {}) {

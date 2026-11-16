@@ -9,9 +9,10 @@ import FaqSection from '../../../components/sections/FaqSection.astro';
 import ContactSection from '../../../components/sections/ContactSection.astro';
 import Icon from '../../../components/Icon.astro';
 import { townFaq } from '../../../data/faq';
-import { publishedSellerTowns, type Town } from '../../../data/towns';
+import { publishedCatalogTowns, publishedSellerTowns, type Town } from '../../../data/towns';
+import { propertiesIn } from '../../../data/properties';
 import { whatsappUrl } from '../../../lib/links';
-import { agentSchema, breadcrumbSchema, faqSchema } from '../../../lib/seo';
+import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 
 export function getStaticPaths() {
   return publishedSellerTowns.map((town) => ({ params: { town: town.slug }, props: { town } }));
@@ -25,14 +26,20 @@ const { town } = Astro.props;
 const path = `/es/inmobiliaria/${town.slug}/`;
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
+  { name: 'Zonas', path: '/es/inmobiliaria/' },
   { name: `Inmobiliaria en ${town.name}`, path },
 ];
+// Si el pueblo tiene catálogo publicado, la FAQ y el botón lo dicen y enlazan (antes decían que no lo había).
+const forSale = publishedCatalogTowns.some((t) => t.slug === town.slug) ? propertiesIn(town.slug, 'venta').length : 0;
+const catalogPath = forSale ? `/es/venta/${town.slug}/` : null;
 const faq = town.buyerIntro
   ? [
       ...townFaq(town.name),
       {
         question: `¿Tenéis pisos en venta en ${town.name}?`,
-        answer: `Trabajamos en ${town.name}, pero todavía no publicamos ahí el catálogo en la web. Escríbenos diciendo qué buscas y te contamos qué hay, incluido lo que aún no está anunciado.`,
+        answer: forSale
+          ? `Sí: ahora mismo ${forSale} ${forSale === 1 ? 'inmueble' : 'inmuebles'} en venta en ${town.name}, con fotos y precio, en nuestra página de pisos en venta en ${town.name}. Si buscas algo que no ves, dinos qué y te contamos también lo que aún no está anunciado.`
+          : `Trabajamos en ${town.name}, pero todavía no publicamos ahí el catálogo en la web. Escríbenos diciendo qué buscas y te contamos qué hay, incluido lo que aún no está anunciado.`,
       },
       {
         question: `¿Me avisáis si entra algo en ${town.name}?`,
@@ -46,7 +53,7 @@ const faq = town.buyerIntro
   title={`Inmobiliaria en ${town.name}: comprar y vender | Conroma`}
   description={`¿Compras o vendes en ${town.name}? Te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`}
   path={path}
-  schemas={[agentSchema(), breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
 >
   <section class="page-head">
     <div class="wrap">
@@ -99,8 +106,8 @@ const faq = town.buyerIntro
               <Icon name="whatsapp" class="button__icon" />
               {`Decidnos qué buscáis en ${town.name}`}
             </a>
-            <a class="button button--ghost button--large" href="/es/venta/malgrat-de-mar/">
-              Ver lo que sí tenemos publicado
+            <a class="button button--ghost button--large" href={catalogPath ?? '/es/venta/'}>
+              {catalogPath ? `Ver pisos en venta en ${town.name}` : 'Ver lo que sí tenemos publicado'}
             </a>
           </div>
         </div>

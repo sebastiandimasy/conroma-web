@@ -9,7 +9,7 @@ import CeoSection from '../../components/sections/CeoSection.astro';
 import TownLinks from '../../components/sections/TownLinks.astro';
 import ContactSection from '../../components/sections/ContactSection.astro';
 import { site } from '../../data/site';
-import { agentSchema, breadcrumbSchema } from '../../lib/seo';
+import { breadcrumbSchema } from '../../lib/seo';
 
 const path = '/es/empresa/';
 const crumbs = [
@@ -22,7 +22,7 @@ const crumbs = [
   title="Nuestra empresa: quién es Conroma Asesores"
   description="Conroma Asesores Inmobiliarios es una inmobiliaria familiar de Malgrat de Mar. Te acompañamos antes, durante y después de la venta."
   path={path}
-  schemas={[agentSchema(), breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs)]}
 >
   <PageHero
     crumbs={crumbs}

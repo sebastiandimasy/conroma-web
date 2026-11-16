@@ -7,7 +7,7 @@ import FaqSection from '../../components/sections/FaqSection.astro';
 import TownLinks from '../../components/sections/TownLinks.astro';
 import { site } from '../../data/site';
 import { homeFaq } from '../../data/faq';
-import { agentSchema, breadcrumbSchema } from '../../lib/seo';
+import { breadcrumbSchema } from '../../lib/seo';
 
 const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ');
 const path = '/es/contacto/';
@@ -21,7 +21,7 @@ const crumbs = [
   title="Contacto: habla con Conroma en Malgrat de Mar"
   description="Escríbenos por WhatsApp, llámanos o pásate por la oficina de la Av. Mediterránea 16, en Malgrat de Mar."
   path={path}
-  schemas={[agentSchema(), breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs)]}
 >
   <PageHero
     crumbs={crumbs}

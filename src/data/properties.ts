@@ -158,7 +158,9 @@ export function propertySlug(property: Property): string {
 
 export function propertyTitle(property: Property): string {
   const town = findTown(property.town)?.name ?? property.town;
-  return `${property.type} en ${property.operation} en ${property.zone}, ${town}`;
+  // Zona igual al pueblo (o vacía) salía repetida: «…en Maçanet de la Selva, Maçanet de la Selva».
+  const place = property.zone && property.zone.trim().toLowerCase() !== town.toLowerCase() ? `${property.zone}, ${town}` : town;
+  return `${property.type} en ${property.operation} en ${place}`;
 }
 
 export function propertyUrl(property: Property): string {

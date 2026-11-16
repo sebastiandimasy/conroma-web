@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
+import ContactSection from '../../../components/sections/ContactSection.astro';
+import Icon from '../../../components/Icon.astro';
+import { publishedCatalogTowns, publishedSellerTowns } from '../../../data/towns';
+import { propertiesIn } from '../../../data/properties';
+import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
+
+// Índice de zonas: la única puerta a los hubs de pueblo, que antes solo se descubrían por el sitemap.
+const path = '/es/inmobiliaria/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Zonas', path },
+];
+const catalogSlugs = new Set(publishedCatalogTowns.map((town) => town.slug));
+const sellerSlugs = new Set(publishedSellerTowns.map((town) => town.slug));
+const forSaleIn = (slug: string) => (catalogSlugs.has(slug) ? propertiesIn(slug, 'venta').length : 0);
+const zones = publishedSellerTowns.map((town) => ({ ...town, forSale: forSaleIn(town.slug) }));
+// Pueblos con cartera publicada pero sin página de agencia: solo su listado.
+const moreTowns = publishedCatalogTowns
+  .filter((town) => !sellerSlugs.has(town.slug))
+  .map((town) => ({ ...town, forSale: forSaleIn(town.slug) }))
+  .filter((town) => town.forSale > 0);
+const plural = (n: number) => `${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`;
+const title = 'Inmobiliaria en el Alt Maresme y la Costa Brava';
+---
+
+<BaseLayout
+  title={title}
+  description={`Trabajamos en ${zones.map((zone) => zone.name).join(', ')}. Elige tu pueblo: lo que tenemos en venta y cómo vendemos allí, desde la oficina de Malgrat de Mar.`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(title, path)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Zonas donde trabajamos"
+    title="Inmobiliaria en el Alt Maresme "
+    highlight="y la Costa Brava."
+    lead="La oficina está en Malgrat de Mar y nos movemos por la costa y el interior. Elige tu pueblo y mira lo que tenemos en venta, o cómo vendemos allí."
+  />
+
+  <section class="section">
+    <div class="wrap">
+      <ul class="zones__grid">
+        {
+          zones.map((zone) => (
+            <li class="card zones__card" data-reveal>
+              <h2 class="zones__name">{zone.name}</h2>
+              <p class="zones__intro">{zone.intro || zone.sellerIntro}</p>
+              <div class="link-list">
+                <a class="link-list__link" href={`/es/inmobiliaria/${zone.slug}/`}>
+                  {`Inmobiliaria en ${zone.name}`}
+                  <Icon name="arrow" class="link-list__arrow" />
+                </a>
+                {zone.forSale > 0 && (
+                  <a class="link-list__link" href={`/es/venta/${zone.slug}/`}>
+                    {`${plural(zone.forSale)} en venta`}
+                    <Icon name="arrow" class="link-list__arrow" />
+                  </a>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    moreTowns.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <h2 class="section__title">Más pueblos con inmuebles en venta</h2>
+          <div class="link-list zones__more">
+            {moreTowns.map((town) => (
+              <a class="link-list__link" href={`/es/venta/${town.slug}/`}>
+                {`${town.name} · ${plural(town.forSale)}`}
+                <Icon name="arrow" class="link-list__arrow" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .zones__grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .zones__card {
+    display: flex;
+    flex-direction: column;
+    padding: 22px 22px 8px;
+  }
+
+  .zones__name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .zones__intro {
+    flex: 1;
+    margin-block: 10px 14px;
+    color: var(--color-ink-2);
+  }
+
+  .zones__more {
+    max-width: 40rem;
+    margin-top: 18px;
+  }
+</style>

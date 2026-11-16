@@ -3,6 +3,7 @@ import Icon from '../Icon.astro';
 import Logo from '../Logo.astro';
 import { site } from '../../data/site';
 import { mainNav } from '../../data/nav';
+import { publishedSellerTowns } from '../../data/towns';
 import { whatsappUrl } from '../../lib/links';
 
 const year = 2026;
@@ -34,6 +35,17 @@ const year = 2026;
         ))}
         <li><a href="/es/servicios/">Servicios</a></li>
         <li><a href="/es/contacto/">Contacto</a></li>
+      </ul>
+    </nav>
+
+    {/* En móvil la barra inferior solo tiene 5 enlaces: el pie es la única vía a los hubs de pueblo. */}
+    <nav class="site-footer__col" aria-label="Zonas">
+      <h2 class="site-footer__title">Zonas</h2>
+      <ul class="site-footer__links site-footer__links--cols">
+        {publishedSellerTowns.map((town) => (
+          <li><a href={`/es/inmobiliaria/${town.slug}/`}>{town.name}</a></li>
+        ))}
+        <li><a href="/es/inmobiliaria/">Todas las zonas</a></li>
       </ul>
     </nav>
 
@@ -271,6 +283,12 @@ const year = 2026;
     }
   }
 
+  .site-footer__links--cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+  }
+
   @media (min-width: 40rem) {
     .site-footer__grid {
       grid-template-columns: 1fr 1fr;
@@ -279,8 +297,12 @@ const year = 2026;
 
   @media (min-width: 60rem) {
     .site-footer__grid {
-      grid-template-columns: 1.7fr 1fr 1.3fr 1fr;
+      grid-template-columns: 1.6fr 1fr 1fr 1.3fr 0.9fr;
       gap: 40px;
+    }
+
+    .site-footer__links--cols {
+      grid-template-columns: 1fr;
     }
   }
 </style>

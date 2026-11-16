@@ -29,7 +29,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Si quieres vender en Blanes, pasamos a ver tu piso, te decimos lo que vale y nos encargamos de todo.',
     buyerIntro:
-      'Todavía no publicamos los pisos de Blanes en la web, así que aquí no vas a ver un listado. Lo que sí hacemos: nos dices qué buscas y te decimos qué hay, también lo que aún no está anunciado.',
+      'Lo que tenemos en venta en Blanes lo ves en su listado, con fotos y precio. Y si buscas algo concreto, dinos qué: te contamos también lo que aún no está anunciado.',
   },
   {
     slug: 'tordera',
@@ -40,7 +40,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Si vendes en Tordera, pasamos a verlo, te decimos lo que vale y nos ocupamos de visitas y papeles.',
     buyerIntro:
-      'En Tordera no tenemos catálogo publicado todavía. Dinos qué buscas —casa con terreno, piso en el centro, presupuesto— y te contamos qué hay.',
+      'Mira lo que tenemos publicado en Tordera. Si no está lo tuyo —casa con terreno, piso en el centro—, dinos qué buscas y cuánto quieres gastarte y te contamos qué hay.',
   },
   {
     slug: 'pineda-de-mar',
@@ -51,7 +51,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Si vendes en Pineda, vamos a ver tu piso, te decimos lo que vale hoy y llevamos visitas y papeles.',
     buyerIntro:
-      'En Pineda aún no colgamos catálogo en la web. Dinos qué buscas y para qué, y te contamos qué hay, también lo que no está anunciado.',
+      'Lo que tenemos en Pineda está en su listado. Si buscas otra cosa, dinos qué y para qué, y te contamos lo que se mueve, también lo que no está anunciado.',
   },
   {
     slug: 'santa-susanna',
@@ -62,7 +62,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Vendes en Santa Susanna: pasamos a verlo, te damos un precio con los pies en el suelo y nos ocupamos del resto.',
     buyerIntro:
-      'Todavía no tenemos listado de Santa Susanna en la web. Cuéntanos qué necesitas y te decimos qué se mueve por aquí.',
+      'Mira lo que tenemos en venta en Santa Susanna. Si no encaja, cuéntanos qué necesitas y te decimos qué se mueve por aquí.',
   },
   {
     slug: 'palafolls',
@@ -73,7 +73,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Si tienes casa o piso en Palafolls y quieres venderlo, lo vemos, te decimos lo que vale y nos encargamos de todo.',
     buyerIntro:
-      'En Palafolls no publicamos catálogo por ahora. Dinos qué buscas —casa con terreno, piso en el centro— y te decimos qué hay.',
+      'En Palafolls tienes publicado lo que tenemos ahora mismo. ¿Buscas casa con terreno o piso en el centro y no lo ves? Dínoslo y te avisamos.',
   },
   {
     slug: 'calella',
@@ -84,7 +84,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Vendes en Calella: vamos a verlo, te decimos el precio de verdad y llevamos la venta de principio a fin.',
     buyerIntro:
-      'En Calella aún no verás un listado en la web. Nos dices qué buscas y para qué lo quieres, y te contamos qué hay.',
+      'Lo que tenemos en Calella lo tienes en su listado, con el precio a la vista. Si buscas otra cosa, dinos qué y para qué lo quieres y te contamos qué hay.',
   },
   {
     slug: 'lloret-de-mar',
@@ -95,7 +95,7 @@ export const towns: Town[] = [
     sellerIntro:
       'Si tienes un piso en Lloret y quieres venderlo, vamos a verlo y te decimos lo que vale de verdad hoy.',
     buyerIntro:
-      'En Lloret todavía no publicamos catálogo en la web. Cuéntanos qué buscas y para qué lo quieres —vivir, alquilar, veranear— y te decimos qué hay.',
+      'Lo que tenemos en Lloret lo ves en su listado. Cuéntanos para qué lo quieres —vivir, alquilar, veranear— y te ayudamos a elegir, también entre lo que aún no está anunciado.',
   },
   // Municipios del Excel de inventario sin ficha editorial propia todavía.
   // hasCatalog:true porque tienen >=1 propiedad en venta; intro/sellerIntro

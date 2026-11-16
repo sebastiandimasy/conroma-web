@@ -10,6 +10,8 @@ describe('seo', () => {
   it('appends the brand to titles once', () => {
     expect(pageTitle('Pisos en venta en Malgrat de Mar')).toBe('Pisos en venta en Malgrat de Mar | Conroma');
     expect(pageTitle('Conroma')).toBe('Conroma');
+    const long = 'Casa adosada en venta en Urbanització Mas Pla, Lloret de Mar — 245.000 €';
+    expect(pageTitle(long)).toBe(long);
   });
 
   it('does not declare alternates for unpublished languages', () => {
@@ -72,6 +74,13 @@ describe('seo', () => {
     };
     expect(propertySlug(piso)).toBe('chalet-mont-lloret-lloret-de-mar-c-1280-a');
     expect(propertyTitle(piso)).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
+  });
+
+  it('no repite el pueblo cuando la zona es el propio pueblo o viene vacía', () => {
+    const base = { ...properties[0], type: 'Parcela', operation: 'venta' as const, town: 'lloret-de-mar' };
+    expect(propertyTitle({ ...base, zone: 'Lloret de Mar' })).toBe('Parcela en venta en Lloret de Mar');
+    expect(propertyTitle({ ...base, zone: 'LLORET DE MAR' })).toBe('Parcela en venta en Lloret de Mar');
+    expect(propertyTitle({ ...base, zone: '' })).toBe('Parcela en venta en Lloret de Mar');
   });
 });
 
