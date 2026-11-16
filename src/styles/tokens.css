@@ -118,7 +118,7 @@
   --duration-slow: 450ms;
 
   /* Velos sobre foto (pares fijos, no cambian con el tema). */
-  --veil-photo: rgb(0 0 0 / 0.45);
+  --veil-photo: rgb(0 0 0 / 0.2);
   --veil-text: rgb(0 0 0 / 0.72);
 
   --header-height: 68px;

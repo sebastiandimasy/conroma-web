@@ -729,8 +729,7 @@
   .hero-story__content {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: var(--space-12);
+    justify-content: flex-end;
     /* En móvil, el dock fijo (≈76 px + zona segura) no puede tapar la acción. */
     padding-block: var(--space-8) calc(var(--space-10) + 76px + env(safe-area-inset-bottom));
   }
@@ -741,18 +740,20 @@
     }
   }
 
-  /* El velo del texto pequeño va anclado a su bloque, no a la altura de la sección:
-     así las migas y la respuesta tienen el mismo contraste en cualquier móvil. */
-  .hero-story__foot {
+  /* Ritmo: corto dentro del bloque (migas 12 → titular 20 → apoyo 32 → acción). */
+  .hero-story__copy {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-4);
   }
 
-  /* Rampa larga (128 px) para que el velo no corte la foto en una franja. */
-  .hero-story__foot::before {
+  .hero-story__cta {
+    margin-top: var(--space-8);
+  }
+
+  /* Velo anclado al bloque de texto, con rampa larga (128 px) para no cortar la foto. */
+  .hero-story__copy::before {
     content: '';
     position: absolute;
     inset: -128px calc(50% - 50vw) calc(-1 * var(--space-10));
@@ -768,6 +769,7 @@
 
   .hero-story__title {
     max-width: 12ch;
+    margin-top: var(--space-3);
     font-size: var(--text-display);
     font-weight: var(--weight-display);
     line-height: 0.95;
@@ -776,6 +778,7 @@
 
   .hero-story__lead {
     max-width: 36ch;
+    margin-top: var(--space-5);
     font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
     line-height: 1.4;
   }

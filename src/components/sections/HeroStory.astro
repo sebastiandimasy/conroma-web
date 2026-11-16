@@ -30,13 +30,13 @@ const { crumbs, title, lead, image, alt, cta, credit } = Astro.props;
     loading="eager"
     fetchpriority="high"
   />
-  {/* Composición editorial: titular arriba; migas, una línea y la acción abajo, con su velo. */}
+  {/* Un solo bloque anclado abajo: migas → titular → apoyo → acción. La foto respira arriba. */}
   <div class="wrap hero-story__content">
-    <h1 class="hero-story__title">{title}</h1>
-    <div class="hero-story__foot">
+    <div class="hero-story__copy">
       <Breadcrumbs crumbs={crumbs} />
+      <h1 class="hero-story__title">{title}</h1>
       <p class="hero-story__lead">{lead}</p>
-      <a class="arrow-link" href={cta.href}>
+      <a class="arrow-link hero-story__cta" href={cta.href}>
         <span class="arrow-link__icon"><Icon name="arrow" /></span>
         <span class="arrow-link__label">{cta.label}</span>
       </a>
