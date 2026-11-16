@@ -759,6 +759,105 @@
     }
   }
 
+  /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
+     escritorio con scroll-driven y sin reduced-motion. */
+  .story-scroll__steps {
+    display: grid;
+    gap: var(--space-12);
+    margin-top: var(--space-8);
+    list-style: none;
+    padding: 0;
+  }
+
+  .story-scroll__step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .story-scroll__count {
+    font-size: var(--text-caption);
+    font-weight: 700;
+    color: var(--color-ink-2);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  .story-scroll__inline img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    /* Las fotos del equipo son verticales: encuadre alto para no cortar caras. */
+    object-position: center 20%;
+    border-radius: 12px;
+  }
+
+  .story-scroll__title {
+    font-size: var(--text-h3);
+    font-weight: 700;
+  }
+
+  .story-scroll__text {
+    max-width: 46ch;
+    color: var(--color-ink-2);
+  }
+
+  .story-scroll__stage {
+    display: none;
+  }
+
+  @media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      .story-scroll__body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-12);
+      }
+
+      .story-scroll__inline {
+        display: none;
+      }
+
+      .story-scroll__step {
+        min-height: 70vh;
+        justify-content: center;
+        animation: story-step linear both;
+        animation-timeline: view();
+      }
+
+      .story-scroll__stage {
+        display: block;
+        position: sticky;
+        top: calc(var(--header-height) + var(--space-6));
+        height: calc(100svh - var(--header-height) - var(--space-12));
+        align-self: start;
+      }
+
+      /* La línea de tiempo de cada foto (--paso-N) va en línea, en el componente. */
+      .story-scroll__stage-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        animation-name: story-photo;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+      }
+    }
+  }
+
+  @keyframes story-step {
+    0%, 100% { opacity: 0.4; }
+    35%, 65% { opacity: 1; }
+  }
+
+  @keyframes story-photo {
+    0%, 100% { opacity: 0; }
+    20%, 80% { opacity: 1; }
+  }
+
   .section__bridge {
     margin-top: var(--space-8);
     max-width: 60ch;
