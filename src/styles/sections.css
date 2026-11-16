@@ -1181,7 +1181,7 @@
   .valuation__card {
     @apply grid gap-8;
     padding: clamp(22px, 4vw, 44px);
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
   }
 
   .valuation__intro {
@@ -1775,18 +1775,8 @@
     max-width: 860px;
   }
 
-  .faq-section__card {
-    padding: 4px 24px;
-  }
-
-  .faq-section__card:hover {
-    transform: none;
-    box-shadow: var(--shadow-1);
-  }
-
-  .faq-section__card .accordion,
-  .faq-section__card .accordion__item:last-child {
-    border: 0;
+  .faq-section__list {
+    margin-top: var(--space-8);
   }
 
   .contact__intro {

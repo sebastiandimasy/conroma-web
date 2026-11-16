@@ -248,9 +248,8 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
   fondo sutil (`--color-surface-2`), NUNCA pasa a amarillo; el `--ink` oscurece ligeramente. Sin dorados.
 - **`:active`: `transform: scale(0.97)`** — único sitio donde se permite transform (es respuesta a la acción).
 - Táctil ≥44×44px. `button--large` para CTAs protagonistas.
-- *Glass en CTAs*: permitido en los CTA primarios cuando van sobre contenido/foto (no sobre fondo plano
-  blanco, donde no se aprecia y solo añade coste). Sólido en el resto. (Revisión de §1: el vidrio deja de
-  estar limitado al chrome para los CTA, manteniendo legibilidad y el coste móvil bajo control.)
+- *Sin vidrio en CTAs* (revisión 2026-11-16, base `no-slop-ui`): los CTA son sólidos siempre, también
+  sobre foto. Sobre foto, la legibilidad la da el velo funcional bajo el texto, no el botón.
 
 ### Card
 - Base `.card`: radio 12–18px, borde 1px `--color-line`, sombra máx `--shadow-3`, fondo `--color-surface`.
