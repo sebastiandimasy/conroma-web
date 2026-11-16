@@ -603,31 +603,6 @@
     margin-top: 36px;
   }
 
-  /* Buscador del hero (operación + tipo + buscar). */
-  .hero-search {
-    @apply mx-auto flex flex-col gap-3;
-    max-width: 560px;
-    margin-top: 32px;
-  }
-
-  .hero-search__row {
-    @apply flex flex-col gap-3;
-  }
-
-  .hero-search__field {
-    @apply flex-1;
-  }
-
-  @media (min-width: 40rem) {
-    .hero-search__row {
-      @apply flex-row items-end;
-    }
-
-    .hero-search__submit {
-      flex: none;
-    }
-  }
-
   .hero__proof {
     @apply mx-auto mt-6 flex flex-wrap items-center justify-center gap-2;
   }
@@ -1123,6 +1098,176 @@
     margin-top: var(--space-8);
   }
 
+  /* Inicio · escaparate: tres pisos de Malgrat + un enlace por pueblo con su recuento. */
+  .home-featured {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .home-featured__grid {
+    margin-top: var(--space-10);
+  }
+
+  .home-featured__grid + .home-featured__towns {
+    margin-top: calc(var(--space-8) * 2);
+  }
+
+  .home-featured__towns-title {
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  .home-featured__town-list {
+    display: grid;
+    margin-top: var(--space-6);
+  }
+
+  .home-featured__town {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 52px;
+    padding-block: var(--space-3);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .home-featured__count {
+    flex: none;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .home-featured__town:hover {
+      color: var(--color-ink);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .home-featured__town-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+  }
+
+  .home-featured__more {
+    margin-top: var(--space-12);
+  }
+
+  /* Índice de servicios: filas con borde suave; nombre, frase y flecha. */
+  .service-index {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .service-index__list {
+    margin-top: var(--space-10);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .service-index__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-2) var(--space-6);
+    align-items: center;
+    padding-block: var(--space-6);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .service-index__name {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+    font-weight: var(--weight-display);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .service-index__text {
+    grid-column: 1;
+    max-width: 52ch;
+    color: var(--color-ink-2);
+  }
+
+  /* Flecha discreta: cinco cuadrados amarillos en columna gritarían más que los nombres. */
+  .service-index__icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 24px;
+    height: 24px;
+    color: var(--color-ink-2);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .service-index__row:hover .service-index__icon,
+    .service-index__row:hover .service-index__name {
+      color: var(--color-ink);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .service-index__row {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) auto;
+    }
+
+    .service-index__text {
+      grid-column: 2;
+    }
+
+    .service-index__icon {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+
+  /* Foto y texto a dos columnas. La banda (canvas/surface) la elige la página para alternar. */
+  .split-feature--surface {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .split-feature--canvas {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .split-feature__grid {
+    display: grid;
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  .split-feature__photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .split-feature__copy .section__lead {
+    margin-top: var(--space-4);
+  }
+
+  .split-feature__link {
+    margin-top: var(--space-8);
+  }
+
+  @media (min-width: 60rem) {
+    .split-feature__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: calc(var(--space-8) * 2);
+    }
+
+    .split-feature--reverse .split-feature__photo {
+      order: 2;
+    }
+  }
+
   /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
      escritorio con scroll-driven y sin reduced-motion. */
   .story-scroll {
@@ -1604,11 +1749,6 @@
       width: auto;
       min-height: 48px;
     }
-  }
-
-  .featured__more {
-    @apply flex justify-center;
-    margin-top: 36px;
   }
 
   /* Cabecera centrada, igual que el hero del home y las cabeceras de sección. */
@@ -2934,80 +3074,12 @@
     margin-top: 32px;
   }
 
-  /* Home · Servicios ("Nos encargamos de todo"): dos columnas estilo Calvet.
-     Izquierda: cabecera + acordeón de servicios (reutiliza .accordion de components.css).
-     Derecha: foto vertical a sangre que llena la columna. Apila a 1 col en móvil. */
-  .home-services__grid {
-    @apply grid gap-10;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-  }
-
-  .home-services__col {
-    @apply flex flex-col items-start;
-  }
-
-  .home-services__accordion {
-    @apply w-full;
-    margin-top: 32px;
-  }
-
-  .home-services__more {
-    margin-top: 28px;
-  }
-
-  .home-services__figure {
-    @apply relative w-full overflow-hidden;
-    margin: 0;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
-  }
-
-  /* Fotos apiladas: solo se ve la del servicio abierto (crossfade por opacidad). */
-  .home-services__photo {
-    @apply absolute inset-0 h-full w-full object-cover;
-    opacity: 0;
-    transition: opacity var(--duration-base) var(--ease-out);
-  }
-
-  /* Por defecto (y con el 1er servicio abierto) se ve la primera foto. */
-  .home-services__photo:first-child {
-    opacity: 1;
-  }
-
-  /* La foto sigue al servicio abierto en el acordeón (:has sobre el detalle n). */
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(2)[open]) .home-services__photo:first-child,
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(3)[open]) .home-services__photo:first-child,
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(4)[open]) .home-services__photo:first-child {
-    opacity: 0;
-  }
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(2)[open]) .home-services__photo:nth-child(2) {
-    opacity: 1;
-  }
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(3)[open]) .home-services__photo:nth-child(3) {
-    opacity: 1;
-  }
-  .home-services__grid:has(.home-services__accordion > details:nth-of-type(4)[open]) .home-services__photo:nth-child(4) {
-    opacity: 1;
-  }
-
-  @media (min-width: 60rem) {
-    .home-services__grid {
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 64px;
-      align-items: stretch;
-    }
-
-    /* La foto llena la altura de la columna del acordeón. */
-    .home-services__figure {
-      height: 100%;
-      aspect-ratio: auto;
-    }
-  }
-
   /* Reseñas · resumen de reserva si el widget de Trustindex no llega a cargar (sin dejar hueco). */
+  .reviews {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
   .reviews__fallback {
     display: flex;
     flex-direction: column;
@@ -3015,12 +3087,8 @@
     gap: 10px;
     width: fit-content;
     max-width: 100%;
+    min-height: 44px;
     margin-inline: auto;
-    padding: 22px 26px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-1);
     text-align: center;
   }
 
@@ -3042,28 +3110,6 @@
 
   .reviews__text strong {
     color: var(--color-ink);
-  }
-
-  /* Home · Equipo: línea de roles bajo el valor diferencial. */
-  .home-team__roles {
-    font-size: var(--text-small);
-    font-weight: 600;
-    color: var(--color-ink-2);
-  }
-
-  /* Recorte (cutout con reflejo) del equipo: va a sangre sobre el fondo plano,
-     sin marco ni card. Funciona igual en claro y oscuro. */
-  .home-team__figure {
-    @apply flex justify-center;
-  }
-
-  .home-team__cutout {
-    @apply w-full h-auto;
-    max-width: 440px;
-    /* Es una foto (no recorte): mismo marco que las demás fotos de la home. */
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
   }
 
   /* Reformas · galería de obras reales: retícula de fotos a sangre dentro de card. */

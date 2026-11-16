@@ -1,53 +1,42 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import Button from '../../components/Button.astro';
-import ContactForm from '../../islands/ContactForm';
-import FaqSection from '../../components/sections/FaqSection.astro';
-import { homeFaq } from '../../data/faq';
-import HeroSearch from '../../islands/HeroSearch';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
-import { site } from '../../data/site';
+import ServiceIndex from '../../components/sections/ServiceIndex.astro';
+import SplitFeature from '../../components/sections/SplitFeature.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
 import PropertyGrid from '../../islands/PropertyGrid';
+import teamPhoto from '../../assets/equipo/equipo.jpg';
+import reformPhoto from '../../assets/reformas/reforma-10.jpg';
+import closingPhoto from '../../assets/equipo/conroma-102.jpg';
+import { homeFaq } from '../../data/faq';
+import { site } from '../../data/site';
 import { getListings, homesIn, propertiesIn } from '../../data/properties';
 import { publishedCatalogTowns } from '../../data/towns';
-import { whatsappUrl } from '../../lib/links';
 import { formatRating } from '../../lib/format';
 import { faqSchema } from '../../lib/seo';
 
 const rating = site.googleRating;
-
-// Pueblos con cartera, de más a menos inmuebles, para el "dónde" del buscador.
-const searchTowns = publishedCatalogTowns
-  .map((town) => ({ slug: town.slug, name: town.name, total: propertiesIn(town.slug, 'venta').length }))
-  .filter((town) => town.total > 0)
-  .sort((a, b) => b.total - a.total)
-  .map(({ slug, name }) => ({ slug, name }));
+// Foto de portada del equipo (site.ts): la agencia es la gente que te atiende.
+const hero = site.heroImage!;
 
 // Destacados: pisos reales de Malgrat (hasta 3), como en /es/comprar/.
 const featuredHomes = homesIn('malgrat-de-mar', 'venta').slice(0, 3);
 const ventaTotal = getListings({ operation: 'venta' }).length;
 
-// Servicios de la home como acordeón (textos de services.ts; "Compra y venta" fusiona comprar+vender).
-const homeServices = [
-  {
-    name: 'Compra y venta',
-    summary:
-      'Te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves. Y si vendes, empezamos por decirte cuánto vale tu piso. Gratis y sin compromiso.',
-  },
-  {
-    name: 'Alquiler',
-    summary: '¿Buscas piso de alquiler? ¿Tienes uno y quieres un buen inquilino? Te ayudamos en los dos casos.',
-  },
-  {
-    name: 'Gestión de patrimonio',
-    summary: 'Si tienes uno o varios pisos, te buscamos inquilino y vemos contigo qué hacer con cada uno.',
-  },
-  {
-    name: 'Reformas e interiorismo',
-    summary: 'Conroma en Obras: le damos una segunda vida al piso antes de venderlo o de entrar a vivir.',
-  },
-];
+// Pueblos con cartera, de más a menos inmuebles: enlaces directos a cada listado (un toque en
+// móvil y enlaces internos que Google sigue, en lugar del buscador de tres pasos).
+const townRows = publishedCatalogTowns
+  .map((town) => ({ slug: town.slug, name: town.name, total: propertiesIn(town.slug, 'venta').length }))
+  .filter((town) => town.total > 0)
+  .sort((a, b) => b.total - a.total);
+
+const answer =
+  'Conroma Asesores es una inmobiliaria familiar con oficina en Malgrat de Mar. Trabajamos en el Alt Maresme y La Selva, ' +
+  'y la misma persona te atiende del primer contacto a la firma, en catalán, castellano, inglés y francés.';
 ---
 
 <BaseLayout
@@ -57,142 +46,76 @@ const homeServices = [
   schemas={[faqSchema(homeFaq)]}
   overlay
 >
-  <section class="hero">
-    <div class="wrap hero__content">
-      <p class="eyebrow">Donde empieza tu próxima historia</p>
-      <h1 class="hero__title">Encuentra tu <em class="hero__accent">hogar</em> en Malgrat de Mar</h1>
-      <p class="hero__lead">
-        Compramos, vendemos y alquilamos contigo. Y nos quedamos para lo que venga después.
-      </p>
-      <HeroSearch client:idle towns={searchTowns} />
-      {
-        rating && (
-          <div class="hero__proof">
-            <span class="social-proof__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
-              <Icon name="star" class="social-proof__star" />
-              <Icon name="star" class="social-proof__star" />
-              <Icon name="star" class="social-proof__star" />
-              <Icon name="star" class="social-proof__star" />
-              <Icon name="star" class="social-proof__star" />
-            </span>
-            <a class="social-proof__text" href={rating.url} rel="noopener" target="_blank">
-              <strong>{formatRating(rating.value)} en Google</strong> · {rating.count} reseñas de clientes
-            </a>
-          </div>
-        )
-      }
-    </div>
-  </section>
+  <HeroStory
+    title="Inmobiliaria en Malgrat de Mar"
+    lead="Compramos, vendemos y alquilamos contigo. Y nos quedamos para lo que venga después."
+    image={hero.src}
+    alt={hero.alt}
+    cta={{ label: `Ver los ${ventaTotal} inmuebles en venta`, href: '/es/venta/' }}
+    position="40% center"
+  />
+
+  <Statement text={answer} />
 
   <ProofBand />
 
-  {
-    featuredHomes.length > 0 && (
-      <section class="section featured" aria-labelledby="destacados-titulo">
-        <div class="wrap">
-          <div class="section__head section__head--center" data-reveal>
-            <p class="eyebrow">¿Qué tenemos ahora?</p>
-            <h2 class="section__title" id="destacados-titulo">Pisos en venta en <span class="highlight">Malgrat de Mar</span></h2>
-          </div>
-          <div data-reveal>
-            <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" />
-          </div>
-          <p class="featured__more">
-            <a class="button button--primary button--large" href="/es/venta/">Ver los {ventaTotal} inmuebles en venta</a>
-          </p>
-        </div>
-      </section>
-    )
-  }
-
-  <section class="section home-services">
-    <div class="wrap home-services__grid">
-      <div class="home-services__col" data-reveal>
-        <p class="eyebrow">Nuestros servicios</p>
-        <h2 class="section__title">Nos encargamos de <span class="highlight">todo.</span></h2>
-        <div class="accordion home-services__accordion">
+  <section class="section home-featured">
+    <div class="wrap">
+      {
+        featuredHomes.length > 0 && (
+          <>
+            <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
+            <div class="home-featured__grid">
+              <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" />
+            </div>
+          </>
+        )
+      }
+      <div class="home-featured__towns" data-reveal>
+        <h3 class="home-featured__towns-title">Busca en tu pueblo</h3>
+        <ul class="home-featured__town-list">
           {
-            homeServices.map((service, index) => (
-              <details class="accordion__item" name="home-services" open={index === 0}>
-                <summary class="accordion__question">
-                  {service.name}
-                  <Icon name="plus" class="accordion__icon" />
-                </summary>
-                <p class="accordion__answer">{service.summary}</p>
-              </details>
+            townRows.map((town) => (
+              <li>
+                <a class="home-featured__town" href={`/es/venta/${town.slug}/`}>
+                  <span>{town.name}</span>
+                  <span class="home-featured__count">
+                    {town.total} {town.total === 1 ? 'inmueble' : 'inmuebles'}
+                  </span>
+                </a>
+              </li>
             ))
           }
-        </div>
-        <p class="home-services__more">
-          <a class="text-link" href="/es/servicios/">Conoce nuestros servicios</a>
-        </p>
+        </ul>
       </div>
-      <figure class="home-services__figure" data-reveal>
-        {/* Una foto por servicio; se muestra la del servicio abierto en el acordeón (CSS :has). */}
-        <img class="home-services__photo" src="/img/servicios/compra-venta.jpg" alt="Compra y venta de viviendas con Conroma" width="720" height="900" loading="lazy" decoding="async" />
-        <img class="home-services__photo" src="/img/servicios/alquiler.jpg" alt="Piso en alquiler gestionado por Conroma" width="720" height="900" loading="lazy" decoding="async" />
-        <img class="home-services__photo" src="/img/servicios/gestion-patrimonio.jpg" alt="Gestión de patrimonio inmobiliario con Conroma" width="720" height="900" loading="lazy" decoding="async" />
-        <img class="home-services__photo" src="/img/reformas/reforma-07.jpg" alt="Reforma e interiorismo realizada por Conroma" width="720" height="900" loading="lazy" decoding="async" />
-      </figure>
+      <a class="arrow-link home-featured__more" href="/es/venta/">
+        <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+        <span class="arrow-link__label">Ver los {ventaTotal} inmuebles en venta</span>
+      </a>
     </div>
   </section>
 
-  <section class="section story home-team" id="equipo">
-    <div class="wrap story__grid">
-      <figure class="home-team__figure" data-reveal>
-        <img
-          class="home-team__cutout"
-          src="/img/equipo/equipo.jpg"
-          alt="Equipo de Conroma Asesores"
-          width="667"
-          height="1000"
-          loading="lazy"
-          decoding="async"
-        />
-      </figure>
-      <div class="story__copy" data-reveal>
-        <p class="eyebrow">Nuestro equipo</p>
-        <h2 class="section__title">Cercanía, atención y asesoría <span class="highlight">personalizada.</span></h2>
-        <p class="section__lead">
-          Somos una familia de aquí. La misma persona te atiende el primer día y te acompaña hasta la
-          firma, y seguimos a tu lado para lo que venga después.
-        </p>
-        <p class="home-team__roles">
-          Contamos con: Consultores inmobiliarios · Gestores de Patrimonio · Asesores Jurídicos
-        </p>
-        <div class="story__actions">
-          <Button variant="ghost" size="large" class="button--block-mobile" href="/es/equipo/">Conócenos</Button>
-        </div>
-      </div>
-    </div>
-  </section>
+  <ServiceIndex title="Qué hacemos por ti" />
 
-  <section class="section home-reformas">
-    <div class="wrap about__grid">
-      <div class="about__copy" data-reveal>
-        <p class="eyebrow">Reformas e interiorismo</p>
-        <h2 class="section__title">Le damos una <span class="highlight">segunda vida</span> al piso.</h2>
-        <p class="section__lead">
-          Conroma en Obras reforma y viste la vivienda antes de venderla o de que entres a vivir.
-          De la cocina al último detalle, lo dejamos listo.
-        </p>
-        <p>
-          <a class="text-link" href="/es/reformas/">Ver reformas e interiorismo</a>
-        </p>
-      </div>
-      <figure class="about__figure" data-reveal>
-        <img
-          class="story__photo"
-          src="/img/reformas/reforma-10.jpg"
-          alt="Salón reformado por Conroma en Obras"
-          width="880"
-          height="1100"
-          loading="lazy"
-          decoding="async"
-        />
-      </figure>
-    </div>
-  </section>
+  <SplitFeature
+    title="Somos una familia de aquí"
+    text="La misma persona te atiende el primer día y te acompaña hasta la firma, y seguimos a tu lado para lo que venga después. Consultores inmobiliarios, gestores de patrimonio y asesores jurídicos."
+    image={teamPhoto}
+    alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
+    link={{ label: 'Conoce al equipo', href: '/es/equipo/' }}
+  />
+
+  <SplitFeature
+    title="Le damos una segunda vida al piso"
+    text="Conroma en Obras reforma y viste la vivienda antes de venderla o de que entres a vivir. De la cocina al último detalle, lo dejamos listo."
+    image={reformPhoto}
+    alt="Salón reformado por Conroma en Obras"
+    link={{ label: 'Ver reformas e interiorismo', href: '/es/reformas/' }}
+    reverse
+    tone="canvas"
+  />
+
+  <FaqSection title="Dudas al comprar o vender en el Maresme" items={homeFaq} origin="home-faq" />
 
   <section class="section reviews" aria-label="Reseñas de clientes en Google" data-reviews>
     <div class="wrap">
@@ -257,31 +180,5 @@ const homeServices = [
     </script>
   </section>
 
-  <section class="section contact" id="contacto">
-    <div class="wrap contact__grid">
-      <div class="contact__intro" data-reveal>
-        <p class="eyebrow">Hablemos</p>
-        <h2 class="section__title">Contacta con un asesor.</h2>
-        <p class="section__lead">
-          Tanto si quieres vender, comprar o alquilar tu casa o tienes dudas de qué decisión tomar,
-          tenemos un asesor que puede ayudarte y encargarse personalmente de tu consulta.
-        </p>
-        <div class="contact__channels">
-          <Button variant="primary" start href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
-            <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
-            WhatsApp · {site.phoneDisplay}
-          </Button>
-          <Button variant="ghost" start href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
-            <Icon name="phone" class="button__icon contact__icon" />
-            Llamar · {site.phoneDisplay}
-          </Button>
-        </div>
-      </div>
-      <div class="contact__card glass" data-reveal>
-        <ContactForm client:visible />
-      </div>
-    </div>
-  </section>
-
-  <FaqSection title="Dudas frecuentes al comprar o vender en el Maresme" items={homeFaq} />
+  <ClosingCTA title="Hablemos" titleMuted="de tu casa" image={closingPhoto} origin="home-cierre" />
 </BaseLayout>

@@ -1,0 +1,32 @@
+---
+import Icon from '../Icon.astro';
+import { services } from '../../data/services';
+
+interface Props {
+  title: string;
+  exclude?: string;
+}
+
+const { title, exclude } = Astro.props;
+const list = services.filter((service) => service.slug !== exclude);
+---
+
+{/* Índice de servicios: una fila por servicio, toda la fila enlaza. Sin tarjetas ni iconos. */}
+<section class="section service-index">
+  <div class="wrap">
+    <h2 class="section__title" data-reveal>{title}</h2>
+    <ul class="service-index__list">
+      {
+        list.map((service) => (
+          <li data-reveal>
+            <a class="service-index__row" href={service.href}>
+              <h3 class="service-index__name">{service.name}</h3>
+              <p class="service-index__text">{service.summary}</p>
+              <Icon name="arrow" class="service-index__icon" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

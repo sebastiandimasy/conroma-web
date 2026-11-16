@@ -6,7 +6,8 @@ import Icon from '../Icon.astro';
 import type { Crumb } from '../../lib/seo';
 
 interface Props {
-  crumbs: Crumb[];
+  /** Sin migas en Inicio. */
+  crumbs?: Crumb[];
   title: string;
   lead: string;
   image: ImageMetadata;
@@ -36,7 +37,7 @@ const { crumbs, title, lead, image, alt, cta, credit, position } = Astro.props;
   {/* Un solo bloque anclado abajo: migas → titular → apoyo → acción. La foto respira arriba. */}
   <div class="wrap hero-story__content">
     <div class="hero-story__copy">
-      <Breadcrumbs crumbs={crumbs} />
+      {crumbs && <Breadcrumbs crumbs={crumbs} />}
       <h1 class="hero-story__title">{title}</h1>
       <p class="hero-story__lead">{lead}</p>
       <a class="arrow-link hero-story__cta" href={cta.href}>
