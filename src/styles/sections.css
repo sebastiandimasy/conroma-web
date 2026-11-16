@@ -818,11 +818,11 @@
     letter-spacing: -0.035em;
   }
 
-  /* ClosingCTA: una sola acción principal y la llamada como enlace. Con foto: a sangre,
-     centrado y con velo (texto con tokens fijos, no cambia con el tema). */
-  .closing-cta .section__title {
-    max-width: 14ch;
-    font-size: var(--text-h1);
+  /* ClosingCTA: centrado. Estado de la oficina → titular en dos tiempos → círculo que abre el
+     contacto (WhatsApp entre dos líneas + llamada). Con foto: a sangre y con velo; los tokens de
+     tinta pasan a los fijos, así el mismo CSS sirve con y sin foto. */
+  .closing-cta {
+    text-align: center;
   }
 
   .closing-cta--photo {
@@ -832,10 +832,11 @@
     padding-block: var(--space-section);
     color: var(--color-on-fixed-ink);
     background: var(--color-fixed-backdrop);
-    text-align: center;
-    --color-focus: var(--color-accent);
+    --color-ink: var(--color-on-fixed-ink);
     --color-ink-2: var(--color-on-fixed-ink);
+    --color-ink-3: var(--color-on-fixed-ink-muted);
     --color-line: var(--color-on-fixed-ink-muted);
+    --color-focus: var(--color-accent);
   }
 
   .closing-cta__photo {
@@ -855,48 +856,228 @@
     background: var(--veil-text);
   }
 
-  .closing-cta--photo .closing-cta__inner {
+  .closing-cta__inner {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .closing-cta--photo .section__lead,
-  .closing-cta--photo .closing-cta__actions,
-  .closing-cta--photo .closing-cta__towns ul {
-    margin-inline: auto;
-    justify-content: center;
+  /* Sin JS: intro y panel uno debajo del otro. Con JS: apilados en la misma celda. */
+  .closing-cta__stage {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-12);
+    width: 100%;
   }
 
-  .closing-cta__actions {
+  .closing-cta__intro,
+  .closing-cta__panel {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    gap: var(--space-4) var(--space-6);
-    margin-top: var(--space-6);
+  }
+
+  .closing-cta__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-2);
+  }
+
+  .closing-cta__pulse {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-ink-3);
+  }
+
+  .closing-cta__status[data-open='true'] .closing-cta__pulse {
+    background: var(--color-positive);
+  }
+
+  .closing-cta__title {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-8);
+    font-size: clamp(3rem, 1.2rem + 7.5vw, 7rem);
+    font-weight: var(--weight-display);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .closing-cta__line {
+    display: block;
+  }
+
+  .closing-cta__line--muted {
+    color: var(--color-ink-3);
+  }
+
+  .closing-cta__orb {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    margin-top: var(--space-10);
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    color: var(--color-ink);
+    transition:
+      background-color var(--duration-slow) var(--ease-out),
+      border-color var(--duration-slow) var(--ease-out),
+      color var(--duration-slow) var(--ease-out),
+      scale var(--duration-slow) var(--ease-out);
+  }
+
+  /* Flecha en diagonal (↗): la misma de la marca, girada. */
+  .closing-cta__orb svg {
+    width: 26px;
+    height: 26px;
+    rotate: -45deg;
+    stroke-width: 1.5;
+    transition: translate var(--duration-slow) var(--ease-out);
+  }
+
+  /* Solo se ve con JS; sin él, el panel ya está a la vista. */
+  .closing-cta:not(.is-enhanced) .closing-cta__orb {
+    display: none;
+  }
+
+  .closing-cta__orb:active {
+    scale: 0.96;
+  }
+
+  .closing-cta__text {
+    max-width: 40ch;
+    margin-top: var(--space-8);
+    color: var(--color-ink-2);
+  }
+
+  .closing-cta__panel-title {
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+    font-weight: var(--weight-display);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .closing-cta__pill-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+
+  .closing-cta__rule {
+    width: clamp(12px, 3vw, 48px);
+    height: 1px;
+    background: var(--color-line);
+    transition:
+      scale var(--duration-slow) var(--ease-out),
+      opacity var(--duration-slow) var(--ease-out);
+  }
+
+  .closing-cta__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 52px;
+    padding: 0 var(--space-6);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 600;
+    white-space: nowrap;
+    transition: scale var(--duration-base) var(--ease-out);
+  }
+
+  .closing-cta__pill svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .closing-cta__pill:active {
+    scale: 0.97;
   }
 
   .closing-cta__call {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-weight: 600;
+    margin-top: var(--space-4);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
     text-decoration: underline;
     text-decoration-color: var(--color-line);
     text-underline-offset: 3px;
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
+    .closing-cta__orb:hover {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      color: var(--color-on-accent);
+      scale: 1.08;
+    }
+
+    .closing-cta__orb:hover svg {
+      translate: 2px -2px;
+    }
+
+    .closing-cta__pill-row:hover .closing-cta__rule {
+      scale: 0 1;
+      opacity: 0;
+    }
+
     .closing-cta__call:hover {
       text-decoration-color: var(--color-ink);
     }
   }
 
+  /* Con JS: intro y panel en la misma celda; el clic cambia uno por otro (sube y se desvanece). */
+  .closing-cta.is-enhanced .closing-cta__stage > * {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.7s var(--ease-out),
+      translate 0.7s var(--ease-out),
+      scale 0.7s var(--ease-out),
+      visibility 0s linear 0.7s;
+  }
+
+  .closing-cta.is-enhanced .closing-cta__panel {
+    align-self: center;
+    opacity: 0;
+    translate: 0 20px;
+    scale: 0.96;
+    visibility: hidden;
+  }
+
+  .closing-cta.is-open .closing-cta__intro {
+    opacity: 0;
+    translate: 0 -40px;
+    scale: 0.96;
+    visibility: hidden;
+  }
+
+  .closing-cta.is-open .closing-cta__panel {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    visibility: visible;
+    transition-delay: 0.25s, 0.25s, 0.25s, 0s;
+  }
+
   .closing-cta__towns ul {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0 var(--space-6);
-    margin-top: var(--space-8);
+    margin-top: var(--space-12);
     padding: 0;
     list-style: none;
     font-size: var(--text-small);
