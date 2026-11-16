@@ -627,61 +627,67 @@
     }
   }
 
-  /* Contador de cifras. */
-  .stats {
-    @apply grid gap-8;
-    grid-template-columns: repeat(3, 1fr);
-    margin: 24px auto 0;
-    max-width: 920px;
+  .hero__proof {
+    @apply mx-auto mt-6 flex flex-wrap items-center justify-center gap-2;
   }
 
-  @media (max-width: 39.99rem) {
-    .stats {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-
-    /* Cifras y cabecera CENTRADAS en móvil (pedido del usuario): con los números
-       grandes se veía mal justificado a la izquierda. Anula, solo para el contador,
-       la regla global que alinea las cabeceras de sección a la izquierda en móvil. */
-    .stats .stat {
-      align-items: center;
-      text-align: center;
-    }
-    .contador .section__head--center {
-      align-items: center;
-      text-align: center;
-      margin-inline: auto;
-    }
+  /* ProofBand: cifras reales en fila, sin tarjetas. Única sección con fondo distinto. */
+  .proof-band {
+    padding-block: var(--space-12);
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
-  .stat {
-    @apply flex flex-col items-center gap-1 text-center;
+  .proof-band__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-4);
   }
 
-  .stat__value {
-    font-family: var(--font-display);
-    /* Imponente, escala Calvet (~+50%). */
-    font-size: clamp(3.75rem, 2.6rem + 5vw, 6.5rem);
+  .proof-band__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  /* El valor va primero a la vista; en el DOM, dt antes que dd (orden válido de <dl>). */
+  .proof-band__value {
+    order: -1;
+    font-size: var(--text-h2);
     font-weight: 700;
-    line-height: 0.95;
-    letter-spacing: -0.04em;
-    color: var(--color-ink);
+    line-height: 1;
+    letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
 
-  .stat__label {
-    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem);
+  .proof-band__label {
+    font-size: var(--text-small);
+    font-weight: 600;
+  }
+
+  .proof-band__source {
+    font-size: var(--text-caption);
     color: var(--color-ink-2);
-    max-width: 18ch;
   }
 
-  .contador__cta {
-    @apply mt-10 text-center;
+  .proof-band__source a {
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 3px;
   }
 
-  .hero__proof {
-    @apply mx-auto mt-6 flex flex-wrap items-center justify-center gap-2;
+  .section__bridge {
+    margin-top: var(--space-8);
+    max-width: 60ch;
+    color: var(--color-ink-2);
+  }
+
+  @media (min-width: 60rem) {
+    .proof-band__list {
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      grid-template-columns: none;
+    }
   }
 
   .hero-cta {
@@ -845,52 +851,6 @@
     .search-form__panel .button--block {
       width: auto;
       min-height: 48px;
-    }
-  }
-
-  .trust-band {
-    padding-top: 40px;
-  }
-
-  .trust-band__grid {
-    @apply grid grid-cols-2;
-    gap: 20px 14px;
-    padding: 22px 24px;
-    border-radius: var(--radius-md);
-  }
-
-  .trust-band__cell {
-    @apply flex flex-col-reverse items-center gap-1 text-center;
-  }
-
-  .trust-band__value {
-    font-size: clamp(1.5rem, 1.3rem + 1vw, 2.125rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-
-  .trust-band__label {
-    font-size: var(--text-caption);
-    color: var(--color-ink-2);
-  }
-
-  .trust-band__label a {
-    padding-block: 14px;
-    text-decoration: underline;
-    text-decoration-color: var(--color-line);
-    text-underline-offset: 3px;
-  }
-
-  @media (min-width: 60rem) {
-    .trust-band__grid {
-      grid-auto-flow: column;
-      grid-auto-columns: 1fr;
-      grid-template-columns: none;
-    }
-
-    .trust-band__cell + .trust-band__cell {
-      border-left: 1px solid var(--color-line);
     }
   }
 

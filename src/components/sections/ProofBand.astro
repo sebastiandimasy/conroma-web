@@ -1,0 +1,51 @@
+---
+import { site } from '../../data/site';
+import { getListings } from '../../data/properties';
+import { proofFigures, type ProofFigure } from '../../lib/proof';
+
+interface Props {
+  figures?: ProofFigure[];
+  /** Frase que anuncia la sección siguiente. */
+  bridge?: string;
+}
+
+// Cifras escritas en el HTML (Google y las IA las leen tal cual): nada de contador desde 0.
+const {
+  figures = proofFigures({
+    rating: site.googleRating,
+    yearsActive: site.yearsActive,
+    listings: getListings().length,
+    builtOn: new Date(),
+  }),
+  bridge,
+} = Astro.props;
+---
+
+{
+  figures.length > 0 && (
+    <section class="proof-band" aria-label="Datos de Conroma">
+      <div class="wrap">
+        <dl class="proof-band__list">
+          {figures.map((figure) => (
+            <div class="proof-band__item">
+              <dt class="proof-band__label">{figure.label}</dt>
+              <dd class="proof-band__value">{figure.value}</dd>
+              {figure.source && (
+                <dd class="proof-band__source">
+                  {figure.href ? (
+                    <a href={figure.href} rel="noopener" target="_blank">
+                      {figure.source}
+                    </a>
+                  ) : (
+                    figure.source
+                  )}
+                </dd>
+              )}
+            </div>
+          ))}
+        </dl>
+        {bridge && <p class="section__bridge">{bridge}</p>}
+      </div>
+    </section>
+  )
+}
