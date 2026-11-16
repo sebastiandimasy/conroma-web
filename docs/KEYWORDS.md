@@ -14,7 +14,7 @@ informacional (I). La columna **Vol.** se rellena luego.
 |---|---|---|---|---|
 | Home `/es/` | T·L | inmobiliaria Malgrat de Mar | inmobiliaria Maresme, inmobiliaria Alt Maresme, agencia inmobiliaria Malgrat, inmobiliaria Costa Brava | — |
 | Comprar `/es/comprar/` | T·L | comprar piso Malgrat de Mar | pisos en venta Maresme, comprar casa Costa Brava, casas en venta Alt Maresme, comprar vivienda Malgrat | — |
-| Vender `/es/vender/` | T·L | vender piso Malgrat de Mar | vender casa Maresme, cómo vender mi piso, vender piso rápido, inmobiliaria para vender | — |
+| Vender `/es/vender/` | T·L | vender piso Maresme | vender casa Maresme, cómo vender mi piso, inmobiliaria para vender · «vender piso {pueblo}» → hub `/es/inmobiliaria/{pueblo}/` | — |
 | Valoración `/es/valoracion/` | T·L | valoración piso gratis Malgrat | cuánto vale mi piso, tasación piso Maresme, valorar vivienda gratis, precio de mi casa | — |
 | Alquilar `/es/alquilar/` | T·L | pisos en alquiler Malgrat de Mar | alquiler Santa Susanna, alquiler Pineda de Mar, alquilar piso Maresme, buscar inquilino | — |
 | ¿Puedo comprar? `/es/comprar/puedo-comprar/` | I | cuánto puedo pagar por un piso | calcular hipoteca, cuánto me puedo gastar en un piso, ahorro para comprar casa | — |

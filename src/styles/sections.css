@@ -716,6 +716,7 @@
   }
 
   .hero-story .breadcrumbs,
+  .hero-story .breadcrumbs__link,
   .hero-story .breadcrumbs__current {
     color: var(--color-on-fixed-ink);
   }
@@ -757,6 +758,26 @@
     .closing-cta__call:hover {
       text-decoration-color: var(--color-ink);
     }
+  }
+
+  .closing-cta__towns ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+    margin-top: var(--space-8);
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-small);
+  }
+
+  .closing-cta__towns a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 3px;
   }
 
   /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
