@@ -837,6 +837,7 @@
     --color-ink-3: var(--color-on-fixed-ink-muted);
     --color-line: var(--color-on-fixed-ink-muted);
     --color-focus: var(--color-accent);
+    --color-button-line: var(--color-button);
   }
 
   .closing-cta__photo {
@@ -989,8 +990,8 @@
     min-height: 52px;
     padding: 0 var(--space-6);
     border-radius: var(--radius-pill);
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+    background: var(--color-button);
+    color: var(--color-on-button);
     font-weight: 600;
     white-space: nowrap;
     transition: scale var(--duration-base) var(--ease-out);
@@ -1019,9 +1020,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .closing-cta__orb:hover {
-      border-color: var(--color-accent);
-      background: var(--color-accent);
-      color: var(--color-on-accent);
+      border-color: var(--color-button);
+      background: var(--color-button);
+      color: var(--color-on-button);
       scale: 1.08;
     }
 
@@ -1627,10 +1628,9 @@
     color: var(--color-on-surface-2);
   }
 
+  /* Sin tarjeta: el formulario y las dos maneras viven sobre la banda gris. */
   .valuation__card {
-    @apply grid gap-8;
-    padding: clamp(22px, 4vw, 44px);
-    border-radius: 12px;
+    @apply grid gap-10;
   }
 
   .valuation__intro {
@@ -1656,12 +1656,17 @@
   }
 
   .valuation__options {
-    @apply grid gap-4;
+    @apply grid;
   }
 
   .valuation__option {
-    @apply flex flex-col gap-3;
-    padding: 22px;
+    @apply flex flex-col gap-2;
+    padding-block: var(--space-6);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .valuation__option .kicker {
+    margin-bottom: var(--space-1);
   }
 
   @media (min-width: 60rem) {
@@ -2221,11 +2226,41 @@
   }
 
   .faq-section__inner {
-    max-width: 860px;
+    max-width: 44rem;
+  }
+
+  .faq-section__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .faq-section__head .section__lead {
+    margin-top: var(--space-4);
   }
 
   .faq-section__list {
-    margin-top: var(--space-8);
+    margin-top: var(--space-10);
+  }
+
+  .faq-section__contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--space-12);
+    text-align: center;
+  }
+
+  .faq-section__contact-title {
+    font-weight: 600;
+  }
+
+  .faq-section__contact-text {
+    margin-top: var(--space-1);
+    margin-bottom: var(--space-5);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
   }
 
   .contact__intro {

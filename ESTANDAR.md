@@ -67,10 +67,16 @@ la foto no cambia.
 - Verde WhatsApp → letra **verde muy oscura**, nunca blanca. Blanco sobre `#25d366` da 1,98:1
   y es ilegible, aunque sea lo que hace WhatsApp.
 
-### Hover: amarillo
+### Botones: amarillo yellow-300 (regla del dueño, 2026-11-16)
 
-Todos los botones pasan a **amarillo de marca con letra negra** al pasar el cursor
-(11,88:1). El primario, que ya es amarillo, sube al amarillo claro `--color-accent-2`.
+Los botones usan **`--color-button` = `oklch(90.5% 0.182 98.111)`** (Tailwind yellow-300) con
+letra negra `--color-on-button`, en los dos temas. El acento de marca `--color-accent` (amber-300)
+queda para checks, cursores y detalles; **no** para botones.
+
+- **Primario (CTA principal):** relleno `--color-button`, texto negro. Hover: `--color-button-2` (yellow-200).
+- **Estándar (`button--ghost`, todo botón que no es el CTA principal):** contorno y texto en
+  `--color-button-line`: **amarillo en oscuro y sobre foto**, **tinta en claro** (el amarillo sobre
+  crema da 1,3:1 y no se lee). Al pasar el cursor se **rellena de amarillo con texto negro**.
 
 El fondo y el color del texto cambian **juntos**, en la misma regla. Cambiar solo el fondo
 es lo que deja texto ilegible.
@@ -101,7 +107,7 @@ colores por la puerta de atrás y ningún repaso del CSS propio lo detecta.
 
 | Elemento | Regla |
 |---|---|
-| Botones | radio **10px**. Nunca cápsula |
+| Botones | radio **10px**. Excepciones del sistema editorial (§5): flecha cuadrada 40px radio 2px y la píldora del cierre |
 | Enlaces de navegación | radio **8px** |
 | Tarjetas | radio 12–18px |
 | Cápsula (999px) | solo chips, avatares y botones **circulares** de icono |
@@ -112,13 +118,14 @@ colores por la puerta de atrás y ningún repaso del CSS propio lo detecta.
 
 Gradientes como decoración, glow de color, cristal esmerilado en elementos de interfaz,
 texto con degradado, rejilla de tarjetas-métrica por defecto, y la combinación
-*etiqueta en versalitas + titular* repetida en cada sección.
+*etiqueta en versalitas + titular* repetida en cada sección. **Excepción decidida por el dueño:**
+el kicker editorial `(Etiqueta)` entre paréntesis del sistema de §5.
 
 ### Tipografía
 
 - Cuerpo: **Hanken Grotesk**, mínimo **14px**. Ningún texto por debajo de 13px.
-- **Playfair Display**: solo en el remate del H1 del hero. Si baja a subtítulos y tarjetas,
-  deja de ser acento y pasa a ser mezcla sin criterio.
+- **Titulares (sistema editorial, §5):** Hanken Grotesk **300**, tracking `-0.06em` en display y
+  `-0.05em` en `.section__title`. Playfair Display ya no se usa en páginas rediseñadas.
 - **Pacifico**: solo marca.
 - Versalitas con tracking: reservadas a etiquetas realmente categóricas. Nunca en preguntas.
 
@@ -128,10 +135,10 @@ Aquí es donde `no-slop-ui` y `emil-design-eng` se contradicen. Resolución:
 
 | Situación | Regla | Por qué |
 |---|---|---|
-| `:hover` | Solo color, fondo o sombra. **Cero transform** | Mover al pasar el ratón es el tic de interfaz generada |
+| `:hover` | Solo color, fondo o sombra. **Cero transform** salvo el orbe del cierre (§5) | Mover al pasar el ratón es el tic de interfaz generada |
 | `:active` (pulsación) | `transform: scale(0.97)` **sí** | Es respuesta a una acción, no decoración. Sin ella el botón parece muerto |
 | Entradas | Desde `scale(0.95)` + `opacity: 0`. Nunca desde `scale(0)` | Nada aparece de la nada |
-| Duración | 100–250ms | Por encima de 300ms la interfaz se siente lenta |
+| Duración | 100–250ms. Excepción: el revelado del cierre (0,7s), el único momento firmado de la página | Por encima de 300ms la interfaz se siente lenta |
 | Curva | `var(--ease-out)`. **Nunca `ease-in`** | `ease-in` retrasa el arranque, justo cuando se está mirando |
 | `transition` | Propiedades concretas. Nunca `transition: all` | |
 | Hover en táctil | Dentro de `@media (hover: hover) and (pointer: fine)` | En móvil el hover se dispara al tocar |
@@ -159,7 +166,8 @@ El móvil es el **97%** del tráfico. Se verifica a 390px antes de dar nada por 
   tamaño base en `<60rem`.
 - **Jerarquía de CTAs.** Primario = amarillo (`button--primary`), texto/iconos en tinta oscura
   (contraste correcto, incluido el icono de WhatsApp). Secundario = contorno (`button--ghost`).
-- **Alineación coherente.** El **héroe** se centra (elemento distintivo); **todas las demás
+- **Alineación coherente.** En páginas rediseñadas manda §5 (héroe abajo a la izquierda; Compare,
+  FAQ y cierre centrados). En el resto: el **héroe** se centra (elemento distintivo); **todas las demás
   cabeceras de sección** (eyebrow + título + lead) van a la **izquierda** de forma uniforme en
   móvil (las `section__head--center` se alinean a la izquierda en `<40rem`). Las cifras del
   contador también van a la izquierda en móvil (coherencia con la cabecera).
@@ -231,21 +239,22 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 ### `Section` (envoltura)
 - Anatomía: `section.section > .wrap > [.section__head (eyebrow? + h2.section__title + lead?)] + slot`.
 - Usar la primitiva `src/components/Section.astro`. El `h2` va en el slot `title` (admite `highlight`).
-- `.section__title`: leading 1.1, tracking −0.02em (apple-design: titular grande = leading corto).
+- `.section__title`: peso 300, leading 1.02, tracking −0.05em (sistema editorial, §5).
 - Para un `wrap` con clase extra (grid propio), usar el prop `wrapClass` (p.ej. `wrapClass="town-links__grid"`).
 
 ### Hero
-- Fondo: fotos reales como **material ambiente** (difuminadas + velo fuerte) o plano; nunca un fondo
-  que compita con el titular. El texto y el CTA mandan (apple-design §12). Velo legible en ambos temas.
+- Ver §5 (`HeroStory`): foto real nítida a sangre, velo general suave y un velo fuerte anclado
+  solo detrás del bloque de texto. El texto y el CTA mandan.
 - Un H1, un CTA/buscador primario. Prueba social (4,7★ · 107) de apoyo, discreta.
 
 ### Botón
-- Formas: radio 10px (`--radius-sm` conceptual). Cápsula (999px) solo en chips y botones circulares de icono.
-- Variantes: `--primary` (amarillo, texto negro), `--ghost` (borde), `--ink` (negro, texto blanco).
-  El terciario no es botón: es `.text-link` (palabra subrayada que engrosa en hover).
+- Formas: radio 10px (`--radius-sm` conceptual). Cápsula (999px) solo en chips, botones circulares de
+  icono y la píldora de WhatsApp del cierre.
+- Variantes: `--primary` (yellow-300, texto negro), `--ghost` = **estándar** (contorno amarillo en
+  oscuro/foto, tinta en claro), `--ink` (negro, texto blanco). El terciario no es botón: es `.text-link`.
 - **Hover por variante, cambiando fondo y color juntos y CERO `transform`** (§1): el primario sube a
-  amarillo claro (`--color-accent-2`); el secundario `--ghost` mantiene su contorno y solo pinta un
-  fondo sutil (`--color-surface-2`), NUNCA pasa a amarillo; el `--ink` oscurece ligeramente. Sin dorados.
+  yellow-200 (`--color-button-2`); el estándar se **rellena de amarillo con texto negro**; el `--ink`
+  oscurece ligeramente. Ver §0 «Botones».
 - **`:active`: `transform: scale(0.97)`** — único sitio donde se permite transform (es respuesta a la acción).
 - Táctil ≥44×44px. `button--large` para CTAs protagonistas.
 - *Sin vidrio en CTAs* (revisión 2026-11-16, base `no-slop-ui`): los CTA son sólidos siempre, también
@@ -263,8 +272,8 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 - Teclado móvil correcto por `type` (email, tel, number).
 
 ### Contador / Stat
-- `.stats > .stat (.stat__value + .stat__label)`. Cifra en `--font-display`, `tabular-nums`,
-  cuenta desde 0 al entrar en viewport, estática con `prefers-reduced-motion`.
+- En páginas rediseñadas: `ProofBand` (§5), cifras **estáticas** (no cuentan desde 0) que pasan de
+  gris a tinta con el scroll. Resto: `.stats > .stat`, cifra en `--font-display`, `tabular-nums`.
 - Cifras sin fuente = **provisionales**, marcadas en el dato y editables en un solo sitio.
 
 ### Movimiento (todos)
@@ -272,6 +281,42 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 - Solo `transform`/`opacity` se animan. `prefers-reduced-motion` conserva opacidad/color, quita movimiento.
 
 ### Qué revisar en cada componente (checklist)
-Pares fondo/texto ≥4,5:1 en ambos temas · cero `transform` en `:hover` · táctil 44px · 390px sin scroll
+Pares fondo/texto ≥4,5:1 en ambos temas · cero `transform` en `:hover` (salvo orbe) · táctil 44px · 390px sin scroll
 horizontal · ningún hex fuera de tokens · un CTA primario por bloque · estados hover/activo/foco/disabled
 distintos y on-brand.
+
+---
+
+## 5. Sistema editorial (referencia concretemanagement.ch) — fijado al terminar Vender
+
+Decidido por el dueño el 2026-11-16 y construido en `/es/vender/`. **Toda página que se rediseñe
+sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de construirla.
+
+### Ritmo de página
+- **Bandas planas alternas** `--color-canvas` / `--color-surface-2`, sin bordes ni tarjetas entre ellas.
+  Nada de patrón de puntos de fondo.
+- Cada sección abre con **kicker** `(Etiqueta)` (`.kicker`: 12px, versalitas, tracking 0.08em, ink-2,
+  paréntesis por CSS) + `.section__title` Hanken 300. Una frase de **puente** (`.section__bridge`)
+  anuncia la sección siguiente cuando el paso no es obvio.
+- **Un solo acento:** amarillo. Checks y cursor en `--color-accent`; botones en `--color-button` (§0).
+
+### Secciones (anatomía y reglas)
+| Sección | Componente | Regla |
+|---|---|---|
+| Héroe | `HeroStory` | Foto real nítida, bloque de copia **abajo a la izquierda**: migas → H1 → lead → flecha. Ritmo **12 / 20 / 32 px**. H1 máx 12ch, lead máx 36ch y una sola frase. Velo fuerte anclado al bloque, no a toda la foto. Reserva el dock móvil (76px + safe-area). Crédito de foto visible si la licencia lo pide. |
+| Respuesta | `Statement` | Una frase grande (Hanken 300, máx 30ch) sobre gris. Responde la intención de búsqueda; sin botones. |
+| Cifras | `ProofBand` | Cifras gigantes centradas, estáticas, con fuente enlazada (≥44px). Pasan de gris a tinta con el scroll. |
+| Proceso | `StoryScroll` | Numeral grande + título + texto; en escritorio la foto queda fija y los pasos pasan (scroll-driven, con fallback). |
+| Comparativa | `Compare` | **Dos mitades sin bordes** (la segunda sobre gris). Las dos opciones son válidas y en positivo («te encaja si…»); **el check amarillo solo en la opción Conroma**, la otra lleva punto gris. Conroma lista más ventajas. Prohibido el tono de alarma. |
+| Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave y kicker, sin chapas. |
+| Guías | `GuideTeaser` | Lista editorial con fecha, título y entradilla; separadores finos. |
+| FAQ | `FaqSection` | Cabecera **centrada** (kicker, título, lead) y columna de 44rem. Filas sueltas con contorno muy suave (`--color-line` al 40%), radio 8px, separadas 8px. Cerrada: pregunta en ink-2; abierta: en tinta, velo de fondo al 4% y chevron girado 180°. Cierra con «¿Te queda alguna duda?» y **botón estándar** a WhatsApp (`origin` obligatorio para GTM). |
+| Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Es el único momento animado «firmado» (0,7s); con reduced-motion todo se ve a la vez. |
+
+### Bordes
+- Si un borde se nota más que el contenido, sobra. Separadores: 1px `--color-line` al 40% o nada.
+- Nada de tarjetas con borde en bandas editoriales; las chapas («Recomendada») pasan a kicker.
+
+### Movimiento
+- Scroll-driven en CSS (`animation-timeline: view()`) dentro de `prefers-reduced-motion: no-preference`
+  y `@supports`. Sin JS para el movimiento salvo el revelado del cierre.

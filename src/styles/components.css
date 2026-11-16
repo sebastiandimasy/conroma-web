@@ -72,8 +72,8 @@
     width: 40px;
     height: 40px;
     border-radius: 2px;
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+    background: var(--color-button);
+    color: var(--color-on-button);
     transition: scale var(--duration-fast) var(--ease-out);
   }
 
@@ -341,16 +341,15 @@
     transform: scale(0.97);
   }
 
-  /* PRIMARIO: el único protagonista. Amarillo de marca, texto negro. */
+  /* PRIMARIO (CTA principal): relleno amarillo yellow-300, texto negro. */
   .button--primary {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
-    box-shadow: var(--shadow-1);
+    background: var(--color-button);
+    color: var(--color-on-button);
   }
 
   @media (hover: hover) {
     .button--primary:hover {
-      background: var(--color-accent-2);
+      background: var(--color-button-2);
     }
   }
 
@@ -360,16 +359,19 @@
     font-size: 1rem;
   }
 
-  /* SECUNDARIO: contorno. Negro (borde+texto) en claro, blanco en oscuro. No compite con el primario. */
+  /* ESTÁNDAR (todo botón que no es el CTA principal): contorno y texto en --color-button-line
+     (amarillo en oscuro y sobre foto, tinta en claro). Al pasar, se rellena de amarillo con texto negro. */
   .button--ghost {
     background: transparent;
-    color: var(--color-ink);
-    border-color: var(--color-ink);
+    color: var(--color-button-line);
+    border-color: var(--color-button-line);
   }
 
   @media (hover: hover) {
     .button--ghost:hover {
-      background: var(--color-surface-2);
+      background: var(--color-button);
+      border-color: var(--color-button);
+      color: var(--color-on-button);
     }
   }
 
@@ -786,21 +788,44 @@
     font-size: var(--text-small);
   }
 
+  /* FAQ: filas sueltas con un contorno muy suave, sin reglas que chillen.
+     Cerrada: pregunta en gris; abierta: en tinta, con un velo mínimo de fondo. */
   .accordion {
-    border-top: 1px solid var(--color-line);
+    display: grid;
+    gap: var(--space-2);
   }
 
   .accordion__item {
-    border-bottom: 1px solid var(--color-line);
+    border: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+    border-radius: 8px;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .accordion__item[open] {
+    background: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  }
+
+  @media (hover: hover) {
+    .accordion__item:not([open]):hover {
+      background: color-mix(in oklab, var(--color-ink) 3%, transparent);
+    }
   }
 
   .accordion__question {
     @apply flex items-center justify-between gap-4;
-    padding-block: 20px;
-    font-size: var(--text-title);
-    font-weight: 700;
+    min-height: 56px;
+    padding: var(--space-4) var(--space-5);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--color-ink-2);
     cursor: pointer;
     list-style: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .accordion__item[open] .accordion__question {
+    color: var(--color-ink);
   }
 
   .accordion__question::-webkit-details-marker {
@@ -809,18 +834,22 @@
 
   .accordion__icon {
     flex: none;
-    width: 20px;
-    height: 20px;
-    transition: transform var(--duration-base) var(--ease-out);
+    width: 18px;
+    height: 18px;
+    color: var(--color-ink-3);
+    transition: rotate var(--duration-base) var(--ease-out);
   }
 
   .accordion__item[open] .accordion__icon {
-    transform: rotate(45deg);
+    rotate: 180deg;
+    color: var(--color-ink);
   }
 
   .accordion__answer {
     max-width: 62ch;
-    padding-bottom: 20px;
+    padding: 0 var(--space-5) var(--space-5);
+    font-size: var(--text-small);
+    line-height: 1.6;
     color: var(--color-ink-2);
   }
 

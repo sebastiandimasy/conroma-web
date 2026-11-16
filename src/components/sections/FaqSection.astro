@@ -1,25 +1,44 @@
 ---
 import Faq from '../Faq.astro';
 import type { FaqItem } from '../../data/faq';
+import { whatsappUrl, type ContactReason } from '../../lib/links';
 
 interface Props {
   title?: string;
   items: FaqItem[];
   /** Etiqueta corta entre paréntesis sobre el título. */
   kicker?: string;
+  /** Frase corta bajo el título. */
+  lead?: string;
+  /** data-origin para GTM; si se pasa, sale el bloque «¿Te queda alguna duda?» con WhatsApp. */
+  origin?: string;
+  reason?: ContactReason;
 }
 
-const { title = 'Preguntas frecuentes', items, kicker } = Astro.props;
+const { title = 'Preguntas frecuentes', items, kicker, lead, origin, reason } = Astro.props;
 ---
 
+{/* Columna estrecha y centrada: filas suaves que se abren, y al final una salida por WhatsApp. */}
 <section class="section faq-section" id="preguntas">
   <div class="wrap faq-section__inner">
-    <div>
+    <div class="faq-section__head">
       {kicker && <p class="kicker">{kicker}</p>}
       <h2 class="section__title" data-reveal>{title}</h2>
+      {lead && <p class="section__lead">{lead}</p>}
     </div>
     <div class="faq-section__list">
       <Faq items={items} name="preguntas" />
     </div>
+    {
+      origin && (
+        <div class="faq-section__contact">
+          <p class="faq-section__contact-title">¿Te queda alguna duda?</p>
+          <p class="faq-section__contact-text">Escríbenos y te la resolvemos.</p>
+          <a class="button button--ghost" href={whatsappUrl({ reason })} data-contact="whatsapp" data-origin={origin}>
+            Preguntar por WhatsApp
+          </a>
+        </div>
+      )
+    }
   </div>
 </section>
