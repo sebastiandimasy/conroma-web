@@ -77,6 +77,11 @@ queda para checks, cursores y detalles; **no** para botones.
 - **Estándar (`button--ghost`, todo botón que no es el CTA principal):** contorno y texto en
   `--color-button-line`: **amarillo en oscuro y sobre foto**, **tinta en claro** (el amarillo sobre
   crema da 1,3:1 y no se lee). Al pasar el cursor se **rellena de amarillo con texto negro**.
+- **Bloques donde queremos que escriban (fichas de inmueble):** WhatsApp es el principal, relleno
+  de tinta (`button--ink`, blanco en oscuro / negro en claro, hover amarillo); el secundario es una
+  **palabra subrayada** (`text-link--quiet`, gris → tinta al pasar), no otro botón.
+- `.text-link` de HeroUI vive en la capa `utilities` y lee el color de `--link`: para cambiar el
+  color de un enlace de texto se cambia `--link`, no `color`.
 
 El fondo y el color del texto cambian **juntos**, en la misma regla. Cambiar solo el fondo
 es lo que deja texto ilegible.
@@ -318,9 +323,9 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
 | Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave, sin chapas ni etiquetas. |
 | Guías | `GuideTeaser` | Lista editorial con fecha, título y entradilla; separadores finos. |
 | FAQ | `FaqSection` | Cabecera **centrada** (título y lead) y columna de 44rem. Filas sueltas con contorno muy suave (`--color-line` al 40%), radio 8px, separadas 8px. Cerrada: pregunta en ink-2; abierta: en tinta, velo de fondo al 4% y chevron girado 180°. Cierra con «¿Te queda alguna duda?» y **botón estándar** a WhatsApp (`origin` obligatorio para GTM). |
-| Ficha de inmueble | `PropertyCard` | **Sin caja**: foto 4:3 con radio 4px, precio Hanken 300 grande, tipo + zona, pueblo real del inmueble (no el del listado; no se repite si la zona ya lo dice), datos sin ceros (`cardFacts`). WhatsApp y Llamar como **botones estándar**. Sin chapas sobre la foto. Rejilla con aire (48/24 px móvil, 64/32 px escritorio). |
+| Ficha de inmueble | `PropertyCard` | **Sin caja**: foto 4:3 con radio 4px, precio Hanken 300 grande, tipo + zona, pueblo real del inmueble (no el del listado; no se repite si la zona ya lo dice), datos sin ceros (`cardFacts`). Contacto: **WhatsApp es el CTA principal** (`button--ink`: blanco en oscuro, negro en claro; al pasar, amarillo con texto negro) y **Llamar es secundario** (`text-link--quiet`: palabra subrayada en gris que pasa a tinta al pasar). Sin chapas sobre la foto. Rejilla con aire (48/24 px móvil, 64/32 px escritorio). |
 | Escaparate | `buy-featured` | Título + 3 fichas + flecha «Ver los N inmuebles». Nunca dos botones iguales debajo. |
-| Listado | `page-head--editorial` | Cabecera a la izquierda: migas, titular grande y fino, dato real (N inmuebles en X pueblos). Los filtros (chips) sí se quedan: filtran datos reales. Pueblos en una fila desplegable suave, enlaces con línea fina; «¿No ves el tuyo?» plano y centrado, con el CTA principal amarillo. |
+| Listado | `page-head--editorial` | Cabecera a la izquierda: migas, titular grande y fino, dato real (N inmuebles en X pueblos). Los filtros (chips) sí se quedan: filtran datos reales. Pueblos en una fila desplegable suave, enlaces con línea fina; «¿No ves el tuyo?» plano y centrado, con el CTA principal amarillo. La barra de filtros fija va **pegada a la cabecera** (`top: var(--header-height)`), sin hueco por donde asomen las fichas. Los `<select>` llevan el chevron de la casa (no la flecha nativa) con 20px de relleno a cada lado. |
 | Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Es el único momento animado «firmado» (0,7s); con reduced-motion todo se ve a la vez. |
 
 ### Bordes

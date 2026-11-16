@@ -354,7 +354,8 @@
     }
   }
 
-  /* INK: sólido oscuro para contextos concretos (sobre amarillo). Hover sutil, sin volverse amarillo. */
+  /* INK: relleno de tinta (negro en claro, blanco en oscuro). Es el CTA de contacto en bloques
+     donde el amarillo no toca (fichas del listado). Al pasar, amarillo con texto negro (§0). */
   .button--ink {
     background: var(--color-ink);
     color: var(--color-on-ink);
@@ -362,7 +363,8 @@
 
   @media (hover: hover) {
     .button--ink:hover {
-      background: var(--color-ink-2);
+      background: var(--color-button);
+      color: var(--color-on-button);
     }
   }
 
@@ -383,6 +385,25 @@
   @media (hover: hover) {
     .text-link:hover {
       background-size: 100% 2.5px;
+    }
+  }
+
+  /* Secundario discreto: gris (ink-2) que pasa a tinta al pasar; la línea sigue al color.
+     El color va por --link: la utilidad .text-link de HeroUI (capa utilities) lo lee de ahí. */
+  .text-link--quiet {
+    --link: var(--color-ink-2);
+    min-height: 44px;
+    font-weight: 500;
+    color: var(--color-ink-2);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      background-size var(--duration-base) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .text-link--quiet:hover {
+      --link: var(--color-ink);
+      color: var(--color-ink);
     }
   }
 

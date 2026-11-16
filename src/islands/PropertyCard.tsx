@@ -107,7 +107,7 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
         )}
         <div className="property-card__actions">
           <a
-            className="button button--ghost button--small"
+            className="button button--ink button--small"
             href={whatsappUrl({ propertyRef: property.ref, propertyTitle: title })}
             data-contact="whatsapp"
             data-origin={origin}
@@ -118,14 +118,13 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
             WhatsApp
           </a>
           <a
-            className="button button--ghost button--small"
+            className="text-link text-link--quiet"
             href={phoneUrl()}
             data-contact="llamada"
             data-origin={origin}
             data-ref={property.ref}
             aria-label={`Llamar a Conroma para preguntar por ${title}`}
           >
-            <Icon name="phone" className="button__icon" />
             Llamar
           </a>
         </div>

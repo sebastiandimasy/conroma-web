@@ -114,6 +114,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
             <option value="precio-asc">Precio, de menos a más</option>
             <option value="precio-desc">Precio, de más a menos</option>
           </select>
+          <Icon name="chevron" className="listing__sort-icon" />
         </label>
       </div>
 

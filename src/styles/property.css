@@ -202,15 +202,21 @@
     margin-right: 12px;
   }
 
+  /* Contacto de la ficha: WhatsApp manda (botón relleno) y Llamar queda como palabra subrayada. */
   .property-card__actions {
-    @apply mt-auto grid grid-cols-2 gap-2;
+    @apply mt-auto flex items-center;
+    gap: var(--space-5);
     padding-top: var(--space-5);
   }
 
-  /* Los botones son inline-flex y medirían según su texto (WhatsApp más ancho que
-     Llamar). Se estiran a su columna para que queden del mismo tamaño. */
   .property-card__actions .button {
-    width: 100%;
+    flex: 1;
+  }
+
+  .property-card__actions .text-link {
+    flex: none;
+    padding-bottom: 0;
+    background-position: 0 calc(100% - 10px);
   }
 
   .listing-section {
@@ -223,7 +229,8 @@
 
   .listing__filters {
     position: sticky;
-    top: calc(var(--header-height) + 18px);
+    /* Pegada a la cabecera: con hueco, las fichas asomaban entre las dos barras. */
+    top: var(--header-height);
     z-index: 20;
     /* Al quedarse pegada, las tarjetas pasan por debajo: necesita fondo propio o
        se leen los precios entre los huecos de los chips. */
@@ -257,15 +264,35 @@
     cursor: pointer;
   }
 
+  /* Orden: cápsula como los chips de filtro, con el chevron de la casa en vez de la flecha
+     nativa (que cada navegador pega al borde a su manera). Relleno 20 / 44: la flecha queda
+     a 20px del borde, igual que el texto. */
+  .listing__sort {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
   .listing__sort select {
+    appearance: none;
     min-height: 44px;
-    padding-inline: 12px;
+    padding: 0 calc(var(--space-5) + 24px) 0 var(--space-5);
     border-radius: var(--radius-pill);
     border: 1px solid var(--color-line);
     background: var(--color-surface);
     color: var(--color-ink);
     font-size: var(--text-small);
     font-weight: 600;
+    cursor: pointer;
+  }
+
+  .listing__sort-icon {
+    position: absolute;
+    right: var(--space-5);
+    width: 16px;
+    height: 16px;
+    color: var(--color-ink-2);
+    pointer-events: none;
   }
 
   .listing__empty {
