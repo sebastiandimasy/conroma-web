@@ -1,5 +1,6 @@
 import type { Property } from '../data/properties';
-import { hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
+import { cardFacts, hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
+import { findTown } from '../data/towns';
 import { formatPrice } from '../lib/format';
 import { phoneUrl, whatsappUrl } from '../lib/links';
 import { Icon } from './Icon';
@@ -23,6 +24,8 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
   const hasPhotos = (property.images?.length ?? 0) > 0 || property.photos > 0;
   const cardPhoto = property.images?.[0];
   const drop = property.previousPrice ? property.previousPrice - property.price : 0;
+  const facts = cardFacts(property);
+  const place = findTown(property.town)?.name ?? townName;
 
   return (
     <article className="property-card">
@@ -54,7 +57,6 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
             </div>
           )}
         </a>
-        <span className="tag property-card__tag">{property.tag}</span>
         <div className="property-card__tools">
           {onHide && (
             <button
@@ -93,18 +95,19 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
             {`${property.type} en ${property.zone}`}
           </a>
         </Heading>
-        <p className="property-card__place">
-          <Icon name="pin" className="property-card__pin" />
-          {townName}
-        </p>
-        <ul className="property-card__facts">
-          <li>{`${property.rooms} ${property.rooms === 1 ? 'habitación' : 'habitaciones'}`}</li>
-          <li>{`${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}`}</li>
-          <li>{`${property.area} m²`}</li>
-        </ul>
+        {/* El pueblo del propio inmueble (townName si no está en el catálogo). Si la zona ya
+            es el pueblo («Bungalow en Malgrat de Mar»), no se repite. */}
+        {place !== property.zone && <p className="property-card__place">{place}</p>}
+        {facts.length > 0 && (
+          <ul className="property-card__facts">
+            {facts.map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
+          </ul>
+        )}
         <div className="property-card__actions">
           <a
-            className="button button--ink button--small"
+            className="button button--ghost button--small"
             href={whatsappUrl({ propertyRef: property.ref, propertyTitle: title })}
             data-contact="whatsapp"
             data-origin={origin}

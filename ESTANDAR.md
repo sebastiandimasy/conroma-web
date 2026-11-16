@@ -310,14 +310,17 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
 ### Secciones (anatomía y reglas)
 | Sección | Componente | Regla |
 |---|---|---|
-| Héroe | `HeroStory` | Foto real nítida, bloque de copia **abajo a la izquierda**: migas → H1 → lead → flecha. Ritmo **12 / 20 / 32 px**. H1 máx 12ch, lead máx 36ch y una sola frase. Velo fuerte anclado al bloque, no a toda la foto. Reserva el dock móvil (76px + safe-area). Crédito de foto visible si la licencia lo pide. |
+| Héroe | `HeroStory` | Foto real nítida, bloque de copia **abajo a la izquierda**: migas → H1 → lead → flecha. Ritmo **12 / 20 / 32 px**. H1 máx 12ch, lead máx 36ch y una sola frase. Velo fuerte anclado al bloque, no a toda la foto. Reserva el dock móvil (76px + safe-area). Crédito de foto visible si la licencia lo pide. Si la foto tiene mucho cielo, encuadrar con `position` (p. ej. `center 75%`) para que se vea lo que importa. |
 | Respuesta | `Statement` | Una frase grande (Hanken 300, máx 30ch) sobre gris. Responde la intención de búsqueda; sin botones. |
-| Cifras | `ProofBand` | Cifras gigantes centradas, estáticas, con fuente enlazada (≥44px). Pasan de gris a tinta con el scroll. |
+| Cifras | `ProofBand` | Cifras grandes y finas en rejilla **2×2 en móvil** y en una fila en escritorio; estáticas, con fuente enlazada (≥44px) citada una sola vez si se repite. Cada página elige cifras de su tema (Vender: Google y años; Comprar: cartera, pueblos y Google). |
 | Proceso | `StoryScroll` | Numeral grande + título + texto; en escritorio la foto queda fija y los pasos pasan (scroll-driven, con fallback). |
 | Comparativa | `Compare` | **Dos mitades sin bordes** (la segunda sobre gris). Las dos opciones son válidas y en positivo («te encaja si…»); **el check amarillo solo en la opción Conroma**, la otra lleva punto gris. Conroma lista más ventajas. Prohibido el tono de alarma. |
 | Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave, sin chapas ni etiquetas. |
 | Guías | `GuideTeaser` | Lista editorial con fecha, título y entradilla; separadores finos. |
 | FAQ | `FaqSection` | Cabecera **centrada** (título y lead) y columna de 44rem. Filas sueltas con contorno muy suave (`--color-line` al 40%), radio 8px, separadas 8px. Cerrada: pregunta en ink-2; abierta: en tinta, velo de fondo al 4% y chevron girado 180°. Cierra con «¿Te queda alguna duda?» y **botón estándar** a WhatsApp (`origin` obligatorio para GTM). |
+| Ficha de inmueble | `PropertyCard` | **Sin caja**: foto 4:3 con radio 4px, precio Hanken 300 grande, tipo + zona, pueblo real del inmueble (no el del listado; no se repite si la zona ya lo dice), datos sin ceros (`cardFacts`). WhatsApp y Llamar como **botones estándar**. Sin chapas sobre la foto. Rejilla con aire (48/24 px móvil, 64/32 px escritorio). |
+| Escaparate | `buy-featured` | Título + 3 fichas + flecha «Ver los N inmuebles». Nunca dos botones iguales debajo. |
+| Listado | `page-head--editorial` | Cabecera a la izquierda: migas, titular grande y fino, dato real (N inmuebles en X pueblos). Los filtros (chips) sí se quedan: filtran datos reales. Pueblos en una fila desplegable suave, enlaces con línea fina; «¿No ves el tuyo?» plano y centrado, con el CTA principal amarillo. |
 | Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Es el único momento animado «firmado» (0,7s); con reduced-motion todo se ve a la vez. |
 
 ### Bordes

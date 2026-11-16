@@ -366,11 +366,6 @@
     }
   }
 
-  .alert-card .button--ink {
-    background: var(--color-fixed-ink);
-    color: var(--color-fixed-paper);
-  }
-
   /* TERCIARIO: enlace de texto. Palabra subrayada + mini animación (el subrayado engrosa al pasar). */
   .text-link {
     @apply inline-flex items-center gap-1.5;

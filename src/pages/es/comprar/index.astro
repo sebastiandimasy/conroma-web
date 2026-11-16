@@ -1,17 +1,21 @@
 ---
-import { Picture } from 'astro:assets';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PageHero from '../../../components/sections/PageHero.astro';
-import Icon from '../../../components/Icon.astro';
-import { site } from '../../../data/site';
-import Steps from '../../../components/sections/Steps.astro';
-import Trust from '../../../components/sections/Trust.astro';
-import Testimonials from '../../../components/sections/Testimonials.astro';
+import HeroStory from '../../../components/sections/HeroStory.astro';
+import Statement from '../../../components/sections/Statement.astro';
+import ProofBand from '../../../components/sections/ProofBand.astro';
+import StoryScroll from '../../../components/sections/StoryScroll.astro';
 import FaqSection from '../../../components/sections/FaqSection.astro';
-import ContactSection from '../../../components/sections/ContactSection.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import Icon from '../../../components/Icon.astro';
 import PropertyGrid from '../../../islands/PropertyGrid';
-import { getListings, homesIn, typeBreakdown } from '../../../data/properties';
-import { buySteps } from '../../../data/steps';
+import heroPhoto from '../../../assets/lugares/malgrat-de-mar/panoramica.jpg';
+import closingPhoto from '../../../assets/equipo/conroma-74.jpg';
+import { site } from '../../../data/site';
+import { buyAnswer, buyFaq, buySteps } from '../../../data/comprar';
+import { getListings, homesIn, propertiesIn } from '../../../data/properties';
+import { publishedCatalogTowns } from '../../../data/towns';
+import { placePhotos } from '../../../data/creditos-fotos';
+import { proofFigures } from '../../../lib/proof';
 import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 
 const path = '/es/comprar/';
@@ -19,102 +23,70 @@ const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Comprar', path },
 ];
-// Antes esta página solo miraba Malgrat: 100 de los 124 inmuebles quedaban fuera
-// del recorrido de compra. El contador y el botón hablan ya de toda la cartera.
 const catalog = getListings({ operation: 'venta' });
 const localHomes = homesIn('malgrat-de-mar', 'venta');
-const breakdown = typeBreakdown(catalog, 4);
-const faq = [
-  {
-    question: '¿Cobráis algo por enseñarme pisos?',
-    answer: 'No. Ver pisos con nosotros no te cuesta nada ni te compromete a nada.',
-  },
-  {
-    question: '¿Me ayudáis con la hipoteca?',
-    answer: 'Te orientamos sobre qué pedir y a quién, y te acompañamos con los papeles que te pida el banco.',
-  },
-  {
-    question: 'Vivo fuera, ¿puedo comprar igual?',
-    answer: 'Sí. Te atendemos en catalán, castellano, inglés y francés, y te explicamos qué necesitas para comprar desde otro país.',
-  },
+const townCount = publishedCatalogTowns.filter((town) => propertiesIn(town.slug, 'venta').length > 0).length;
+const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'panoramica')!;
+
+// Cifras reales de la cartera y de Google; lo que falte no se pinta (proofFigures).
+const [listingFigure] = proofFigures({ rating: null, yearsActive: null, listings: catalog.length, builtOn: new Date() });
+const figures = [
+  ...(listingFigure ? [{ ...listingFigure, label: 'inmuebles en venta' }] : []),
+  ...(townCount > 0 ? [{ value: String(townCount), label: 'pueblos del Maresme y La Selva' }] : []),
+  ...proofFigures({ rating: site.googleRating, yearsActive: null, listings: 0, builtOn: new Date() }),
 ];
+const seeAll = `Ver los ${catalog.length} inmuebles en venta`;
 ---
 
 <BaseLayout
   title="Comprar piso en Malgrat de Mar"
   description="Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves."
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(buyFaq)]}
 >
-  <PageHero
+  <HeroStory
     crumbs={crumbs}
-    eyebrow="¿Cómo compro?"
-    title="Comprar piso o casa en "
-    highlight="Malgrat de Mar"
-    lead={`Te enseñamos lo que hay de verdad, con el precio a la vista, y te decimos lo que pensamos de cada piso. Hoy tenemos ${catalog.length} inmuebles: ${breakdown}.`}
-  >
-    <a class="button button--primary button--large" href="/es/venta/">Ver los {catalog.length} inmuebles en venta</a>
-    <a class="button button--ghost button--large" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
-  </PageHero>
+    title="Comprar piso o casa en Malgrat de Mar"
+    lead="Precio a la vista y visitas sin compromiso, en cuatro idiomas."
+    image={heroPhoto}
+    alt={heroCredit.alt}
+    cta={{ label: seeAll, href: '/es/venta/' }}
+    position="center 75%"
+    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+  />
 
-  <section class="section buy-intro">
-    <div class="wrap buy-intro__grid">
-      {
-        site.heroImage && (
-          <figure class="buy-intro__figure" data-reveal>
-            <Picture
-              class="buy-intro__photo"
-              src={site.heroImage.src}
-              alt={site.heroImage.alt}
-              formats={['avif', 'webp']}
-              width={880}
-              widths={[440, 660, 880, 1200]}
-              sizes="(min-width: 60rem) 520px, calc(100vw - 40px)"
-              loading="eager"
-              decoding="async"
-            />
-          </figure>
-        )
-      }
-      <div class="buy-intro__copy" data-reveal>
-        <p class="eyebrow">Comprar en Malgrat de Mar</p>
-        <h2 class="section__title">Comprar casa con gente <span class="highlight">de aquí</span></h2>
-        <p class="section__lead">
-          Conocemos cada calle de Malgrat de Mar y del Alt Maresme. Te enseñamos lo que hay de verdad,
-          con el precio a la vista, y te decimos lo bueno y lo malo de cada piso antes de que firmes.
-        </p>
-        <ul class="buy-intro__list">
-          <li><Icon name="check" class="buy-intro__check" />Visitas sin compromiso y en cuatro idiomas</li>
-          <li><Icon name="check" class="buy-intro__check" />Te avisamos de lo que aún no está en los portales</li>
-          <li><Icon name="check" class="buy-intro__check" />Te acompañamos hasta la firma en notaría</li>
-        </ul>
-        <div class="buy-intro__actions">
-          <a class="button button--primary" href="/es/venta/">Ver inmuebles en venta</a>
-          <a class="button button--ghost" href="/es/comprar/puedo-comprar/">¿Puedo comprar?</a>
+  <Statement text={buyAnswer} />
+
+  <ProofBand figures={figures} />
+
+  <StoryScroll title="Cómo compras con nosotros" steps={buySteps} />
+
+  {
+    localHomes.length > 0 && (
+      <section class="section buy-featured">
+        <div class="wrap">
+          <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
+          <div class="buy-featured__grid">
+            <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
+          </div>
+          <a class="arrow-link buy-featured__more" href="/es/venta/">
+            <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+            <span class="arrow-link__label">{seeAll}</span>
+          </a>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    )
+  }
 
-  <Steps eyebrow="El proceso" title="Comprar con Conroma, en tres pasos" steps={buySteps} />
+  <FaqSection title="Dudas al comprar" items={buyFaq} origin="comprar-faq" reason="visita" />
 
-  <section class="section featured">
+  <section class="section buy-budget">
     <div class="wrap">
-      <div class="section__head section__head--center" data-reveal>
-        <p class="eyebrow">¿Qué tenemos ahora?</p>
-        <h2 class="section__title">Pisos en venta en <span class="highlight">Malgrat de Mar</span></h2>
-      </div>
-      <div data-reveal>
-        <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
-      </div>
-      <p class="featured__more">
-        <a class="button button--ghost button--large" href="/es/venta/">Ver los {catalog.length} inmuebles en venta</a>
-      </p>
+      <h2 class="section__title" data-reveal>¿Hasta dónde llegas?</h2>
+      <p class="section__lead">Calcula hasta qué presupuesto puedes comprar, sin dejar tus datos.</p>
+      <a class="button button--ghost buy-budget__cta" href="/es/comprar/puedo-comprar/">Calcular mi presupuesto</a>
     </div>
   </section>
 
-  <Trust />
-  <Testimonials limit={3} />
-  <FaqSection title="Comprar: lo que nos preguntan" items={faq} />
-  <ContactSection />
+  <ClosingCTA title="Hablemos" titleMuted="de lo que buscas" image={closingPhoto} origin="comprar-cierre" reason="visita" />
 </BaseLayout>

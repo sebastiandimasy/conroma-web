@@ -14,9 +14,11 @@ interface Props {
   cta: { label: string; href: string };
   /** Crédito visible de la foto (obligatorio en fotos CC BY-SA). */
   credit?: { text: string; href: string };
+  /** Encuadre de la foto (object-position). Por defecto, el del CSS (center 25%). */
+  position?: string;
 }
 
-const { crumbs, title, lead, image, alt, cta, credit } = Astro.props;
+const { crumbs, title, lead, image, alt, cta, credit, position } = Astro.props;
 ---
 
 <section class="hero-story">
@@ -29,6 +31,7 @@ const { crumbs, title, lead, image, alt, cta, credit } = Astro.props;
     sizes="100vw"
     loading="eager"
     fetchpriority="high"
+    style={position && `object-position: ${position}`}
   />
   {/* Un solo bloque anclado abajo: migas → titular → apoyo → acción. La foto respira arriba. */}
   <div class="wrap hero-story__content">

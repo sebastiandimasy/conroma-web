@@ -210,6 +210,15 @@ export function hasPublicPrice(property: Property): boolean {
   return property.price >= MIN_REAL_PRICE;
 }
 
+/** Datos cortos de la ficha del listado. Sin ceros: un local no tiene «0 habitaciones». */
+export function cardFacts(property: Property): string[] {
+  const facts: string[] = [];
+  if (property.rooms > 0) facts.push(`${property.rooms} ${property.rooms === 1 ? 'habitación' : 'habitaciones'}`);
+  if (property.baths > 0) facts.push(`${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}`);
+  if (property.area > 0) facts.push(`${property.area} m²`);
+  return facts;
+}
+
 /** Precio más bajo real de una lista. `null` si ninguno tiene precio público. */
 export function cheapestPrice(list: Property[]): number | null {
   const prices = list.filter(hasPublicPrice).map((property) => property.price);

@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
-import Faq from '../../../components/Faq.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
 import ListingExplorer from '../../../islands/ListingExplorer';
 import { cheapestPrice, getListings, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
 import { publishedCatalogTowns } from '../../../data/towns';
@@ -56,7 +56,7 @@ const faq = [
   schemas={[breadcrumbSchema(crumbs), collectionPageSchema('Inmuebles en venta', path), faqSchema(faq)]}
   noindex={!site.catalogIndexable}
 >
-  <section class="page-head">
+  <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
       <h1 class="page-head__title" data-split>Todo lo que tenemos en venta</h1>
@@ -94,18 +94,13 @@ const faq = [
         </details>
       </section>
 
-      <aside class="alert-card" data-reveal>
-        <span class="alert-card__corner alert-card__corner--tl" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--tr" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--bl" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--br" aria-hidden="true"><Icon name="plus" /></span>
+      <aside class="alert-card">
         <div class="alert-card__text">
-          <p class="alert-card__eyebrow">Búsqueda a medida</p>
           <h2 class="alert-card__title">¿No ves el tuyo?</h2>
           <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
         </div>
         <a
-          class="button button--ink button--large alert-card__cta"
+          class="button button--primary button--large alert-card__cta"
           href={whatsappUrl({ reason: 'general' })}
           data-contact="whatsapp"
           data-origin="listado-general-aviso"
@@ -114,7 +109,8 @@ const faq = [
           Avisadme por WhatsApp
         </a>
       </aside>
-      <Faq items={faq} name="venta" />
     </div>
   </section>
+
+  <FaqSection title="Dudas sobre los inmuebles" items={faq} origin="listado-faq" />
 </BaseLayout>

@@ -1100,6 +1100,29 @@
     text-underline-offset: 3px;
   }
 
+  /* Comprar: escaparate de pisos y salida a la calculadora, sobre crema (bandas alternas). */
+  .buy-featured,
+  .buy-budget {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .buy-featured__grid {
+    margin-top: var(--space-10);
+  }
+
+  .buy-featured__more {
+    margin-top: var(--space-12);
+  }
+
+  .buy-budget .section__lead {
+    margin-top: var(--space-4);
+  }
+
+  .buy-budget__cta {
+    margin-top: var(--space-8);
+  }
+
   /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
      escritorio con scroll-driven y sin reduced-motion. */
   .story-scroll {
@@ -1616,6 +1639,28 @@
     color: var(--color-ink-2);
   }
 
+  /* Cabecera editorial (ESTANDAR §5) para páginas sin foto, como los listados:
+     a la izquierda, titular grande y fino, dato debajo. */
+  .page-head--editorial {
+    padding-block: var(--space-10) var(--space-12);
+    text-align: left;
+  }
+
+  .page-head--editorial .page-head__title {
+    max-width: 14ch;
+    margin-top: var(--space-6);
+    margin-inline: 0;
+    font-size: clamp(2.75rem, 1rem + 7vw, 6.5rem);
+    font-weight: var(--weight-display);
+    line-height: 0.98;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .page-head--editorial .page-head__lead {
+    margin-top: var(--space-5);
+    margin-inline: 0;
+  }
+
   .page-head__actions {
     @apply flex flex-wrap justify-center gap-3;
     margin-top: 28px;
@@ -1934,50 +1979,6 @@
   }
 
   /* Intro visual de Comprar/Alquilar: foto + texto en dos columnas, una sola en móvil. */
-  .buy-intro__grid {
-    @apply grid items-center gap-8;
-  }
-
-  .buy-intro__figure {
-    margin: 0;
-  }
-
-  .buy-intro__photo {
-    @apply w-full object-cover;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
-  }
-
-  .buy-intro__list {
-    @apply mt-5 flex flex-col gap-2;
-    font-weight: 600;
-    color: var(--color-ink);
-  }
-
-  .buy-intro__list li {
-    @apply flex items-center gap-2;
-  }
-
-  .buy-intro__check {
-    width: 20px;
-    height: 20px;
-    color: var(--color-ink-2);
-    flex: none;
-  }
-
-  .buy-intro__actions {
-    @apply mt-6 flex flex-wrap gap-3;
-  }
-
-  @media (min-width: 60rem) {
-    .buy-intro__grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 56px;
-    }
-  }
-
   .founder__grid {
     @apply grid gap-10;
   }

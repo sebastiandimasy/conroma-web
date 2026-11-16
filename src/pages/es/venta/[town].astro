@@ -57,7 +57,7 @@ const faq = [
   schemas={[breadcrumbSchema(crumbs), collectionPageSchema(heading, path), faqSchema(faq)]}
   noindex={!site.catalogIndexable}
 >
-  <section class="page-head">
+  <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
       <h1 class="page-head__title" data-split>{heading}</h1>
@@ -68,17 +68,12 @@ const faq = [
   <section class="listing-section">
     <div class="wrap">
       <ListingExplorer client:load properties={catalog} townName={town.name} />
-      <aside class="alert-card" data-reveal>
-        <span class="alert-card__corner alert-card__corner--tl" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--tr" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--bl" aria-hidden="true"><Icon name="plus" /></span>
-        <span class="alert-card__corner alert-card__corner--br" aria-hidden="true"><Icon name="plus" /></span>
+      <aside class="alert-card">
         <div class="alert-card__text">
-          <p class="alert-card__eyebrow">Búsqueda a medida</p>
           <h2 class="alert-card__title">¿No ves el tuyo?</h2>
           <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
         </div>
-        <a class="button button--ink button--large alert-card__cta" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
+        <a class="button button--primary button--large alert-card__cta" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
           <Icon name="whatsapp" class="button__icon" />
           Avisadme por WhatsApp
         </a>
