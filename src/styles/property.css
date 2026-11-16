@@ -745,21 +745,28 @@
     color: var(--color-ink-2);
   }
 
+  /* Guardados sin pisos: bloque plano a la izquierda, como la cabecera editorial. */
+  .saved-section {
+    padding-top: 0;
+  }
+
   .saved-empty {
     @apply flex flex-col items-start;
-    gap: 14px;
-    max-width: 48ch;
-    /* El bloque se centra bajo la cabecera centrada; el texto sigue a la izquierda. */
-    margin-inline: auto;
-    padding: 32px;
-    border-radius: var(--radius-lg);
-    border: 1px dashed var(--color-line);
+    gap: var(--space-4);
+    max-width: 44rem;
+    padding-top: var(--space-8);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .saved-empty .button {
+    margin-top: var(--space-4);
   }
 
   .saved-empty__title {
-    font-size: var(--text-title);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
   .saved-empty__text {

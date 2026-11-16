@@ -1155,22 +1155,22 @@
     margin-top: var(--space-10);
   }
 
-  .home-featured__grid + .home-featured__towns {
+  .home-featured__grid + .town-list {
     margin-top: calc(var(--space-8) * 2);
   }
 
-  .home-featured__towns-title {
+  .town-list__title {
     font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
     font-weight: 400;
     letter-spacing: -0.02em;
   }
 
-  .home-featured__town-list {
+  .town-list__items {
     display: grid;
     margin-top: var(--space-6);
   }
 
-  .home-featured__town {
+  .town-list__link {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -1181,14 +1181,14 @@
     transition: color var(--duration-fast) var(--ease-out);
   }
 
-  .home-featured__count {
+  .town-list__count {
     flex: none;
     font-size: var(--text-small);
     color: var(--color-ink-2);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .home-featured__town:hover {
+    .town-list__link:hover {
       color: var(--color-ink);
       text-decoration: underline;
       text-underline-offset: 4px;
@@ -1196,13 +1196,23 @@
   }
 
   @media (min-width: 48rem) {
-    .home-featured__town-list {
+    .town-list__items {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: var(--space-8);
     }
   }
 
-  .home-featured__more {
+  .empresa-towns {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .empresa-towns .town-list__items {
+    margin-top: var(--space-10);
+  }
+
+  .home-featured__more,
+  .team-members__more {
     margin-top: var(--space-12);
   }
 
@@ -1929,29 +1939,6 @@
     line-height: 1;
   }
 
-  .team-gallery {
-    @apply grid gap-5;
-    margin-top: 28px;
-  }
-
-  .team-gallery__item {
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
-    overflow: hidden;
-  }
-
-  .team-gallery__photo {
-    @apply h-full w-full object-cover;
-    aspect-ratio: 4 / 5;
-  }
-
-  @media (min-width: 40rem) {
-    .team-gallery {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
   /* Abanico de vídeos verticales (ver StoryVideos.tsx): GSAP coloca cada carta en el arco. */
   .story-fan {
     @apply relative flex w-full items-center justify-center;
@@ -2165,173 +2152,64 @@
     }
   }
 
-  /* Intro visual de Comprar/Alquilar: foto + texto en dos columnas, una sola en móvil. */
-  .founder__grid {
-    @apply grid gap-10;
+  /* Fundador (Empresa): foto 4:5 fija en escritorio y bio larga al lado. Sin tarjeta ni sombra;
+     la frase de cierre va grande y fina, sin raya lateral. */
+  .founder {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
-  .founder__figure {
-    max-width: 420px;
+  .founder__grid {
+    @apply grid gap-10;
   }
 
   .founder__photo {
     @apply w-full object-cover;
     object-position: 50% 12%;
     aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
+    border-radius: 4px;
   }
 
   .founder__photo--pending {
     @apply flex items-center justify-center;
-    border-style: dashed;
     background: var(--color-surface-2);
-    box-shadow: none;
     font-size: var(--text-small);
     color: var(--color-ink-3);
   }
 
   .founder__copy {
-    @apply flex flex-col items-start gap-4;
-  }
-
-  .founder__name {
-    font-size: var(--text-h1);
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    @apply flex flex-col items-start;
+    gap: var(--space-4);
   }
 
   .founder__role {
-    font-family: var(--font-mono);
-    font-size: var(--text-caption);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
     color: var(--color-ink-2);
   }
 
   .founder__bio {
-    @apply flex flex-col gap-3;
-    max-width: 58ch;
-    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    @apply flex flex-col;
+    gap: var(--space-4);
+    max-width: 62ch;
+    margin-top: var(--space-4);
     color: var(--color-ink-2);
   }
 
   .founder__pending {
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
-    border: 1px dashed var(--color-line);
     font-size: var(--text-small);
     color: var(--color-ink-3);
   }
 
   .founder__closing {
-    max-width: 58ch;
-    margin-top: 4px;
-    padding-left: 16px;
-    border-left: 3px solid var(--color-accent);
-    font-family: var(--font-accent);
-    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-    line-height: 1.3;
+    max-width: 26ch;
+    margin-top: var(--space-6);
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    font-weight: var(--weight-display);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
     color: var(--color-ink);
   }
 
-  /* Sección "Nuestro equipo": tarjeta por integrante (presentación + miniatura en acción). */
-  .team-members__grid {
-    @apply grid gap-8;
-    margin-top: 8px;
-  }
-
-  @media (min-width: 48rem) {
-    .team-members__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-    }
-  }
-
-  .member {
-    @apply flex flex-col overflow-hidden;
-    padding: 0;
-  }
-
-  .member__figure {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    background: var(--color-surface-2);
-  }
-
-  .member__photo {
-    @apply h-full w-full object-cover;
-  }
-
-  .member__action {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    width: 84px;
-    height: 84px;
-    object-fit: cover;
-    border-radius: var(--radius-pill);
-    border: 3px solid var(--color-surface);
-    box-shadow: var(--shadow-2);
-  }
-
-  .member__body {
-    @apply flex flex-col gap-2;
-    padding: 20px;
-  }
-
-  .member__name {
-    font-size: var(--text-h3);
-    font-weight: 700;
-    line-height: 1.15;
-  }
-
-  .member__role {
-    font-family: var(--font-mono);
-    font-size: var(--text-caption);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-ink-2);
-  }
-
-  .member__bio {
-    font-size: var(--text-small);
-    line-height: 1.6;
-    color: var(--color-ink-2);
-  }
-
-  .founder__facts {
-    @apply grid w-full;
-    max-width: 520px;
-    border-top: 1px solid var(--color-line);
-  }
-
-  .founder__fact {
-    @apply flex items-baseline justify-between gap-4;
-    padding-block: 12px;
-    border-bottom: 1px solid var(--color-line);
-    font-size: var(--text-small);
-  }
-
-  .founder__fact dt {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-ink-3);
-  }
-
-  .founder__fact dd {
-    font-weight: 700;
-    text-align: right;
-  }
-
   .founder__signature {
-    margin-top: 4px;
     font-size: 1.875rem;
     line-height: 1.2;
     color: var(--color-ink-2);
@@ -2339,15 +2217,173 @@
 
   @media (min-width: 60rem) {
     .founder__grid {
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 72px;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: calc(var(--space-8) * 2);
       align-items: start;
     }
 
     /* La foto acompaña la bio larga desde arriba, sin quedar flotando en el centro. */
     .founder__figure {
       position: sticky;
-      top: calc(var(--header-height) + 24px);
+      top: calc(var(--header-height) + var(--space-6));
+    }
+  }
+
+  /* Equipo: una ficha por persona, sin caja. Foto 4:5, nombre grande y fino, cargo y bio. */
+  .team-members {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .team-members__grid {
+    display: grid;
+    gap: calc(var(--space-8) * 2);
+    margin-top: var(--space-10);
+  }
+
+  @media (min-width: 48rem) {
+    .team-members__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+  }
+
+  .member__photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .member__name {
+    margin-top: var(--space-6);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-weight: var(--weight-display);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .member__role {
+    margin-top: var(--space-1);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .member__bio {
+    margin-top: var(--space-4);
+    font-size: var(--text-small);
+    line-height: 1.6;
+    color: var(--color-ink-2);
+  }
+
+  /* Citas de clientes: texto grande y fino, autor y contexto debajo; separadores suaves. */
+  .quote-list {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .quote-list__items {
+    display: grid;
+    margin-top: var(--space-10);
+  }
+
+  .quote-list__item {
+    padding-block: var(--space-8);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .quote-list__text {
+    max-width: 34ch;
+    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
+    font-weight: var(--weight-display);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .quote-list__by {
+    margin-top: var(--space-4);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
+  .quote-list__by strong {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+
+  .quote-list__source {
+    margin-top: var(--space-8);
+  }
+
+  @media (min-width: 60rem) {
+    .quote-list__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+  }
+
+  /* Reels: fila de vídeos 9:16 con scroll lateral en móvil y rejilla en escritorio. */
+  .reel-row {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .reel-row .section__lead {
+    margin-top: var(--space-4);
+  }
+
+  .reel-row__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(62vw, 15rem);
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+    margin-inline: calc(var(--space-gutter) * -1);
+    padding-inline: var(--space-gutter);
+    scroll-padding-inline: var(--space-gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .reel-row__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reel-row__item {
+    scroll-snap-align: start;
+  }
+
+  .reel-row__link {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--color-surface-2);
+  }
+
+  .reel-row__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+  }
+
+  .reel-row__accounts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-8);
+    margin-top: var(--space-8);
+  }
+
+  @media (min-width: 60rem) {
+    .reel-row__list {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-auto-columns: auto;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
     }
   }
 
@@ -2608,96 +2644,20 @@
     }
   }
 
-  .story__grid,
   .about__grid {
     @apply grid gap-10;
   }
 
-  .story__figure,
   .about__figure {
     @apply relative;
     max-width: 440px;
   }
 
-  .story__card {
-    @apply absolute flex flex-col gap-1;
-    right: -8px;
-    bottom: -22px;
-    max-width: 250px;
-    padding: 16px 18px;
-    border-radius: var(--radius-md);
-  }
-
-  .story__stars {
-    @apply inline-flex;
-    gap: 2px;
-    color: var(--color-accent);
-  }
-
-  .story__stars svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .story__card-value {
-    font-size: var(--text-title);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .story__card-text {
-    font-size: var(--text-caption);
-    color: var(--color-ink-2);
-  }
-
-  .story__points {
-    @apply flex flex-col gap-2;
-    font-size: var(--text-small);
-    font-weight: 600;
-  }
-
-  .story__points li {
-    @apply flex items-center gap-2;
-  }
-
-  .story__check {
-    width: 18px;
-    height: 18px;
-    flex: none;
-    color: var(--color-ink-2);
-  }
-
-  @media (min-width: 60rem) {
-    .story__card {
-      right: -28px;
-    }
-  }
-
-  .story__photo {
-    @apply w-full object-cover;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
-  }
-
-  .story__copy,
   .about__copy {
     @apply flex flex-col items-start gap-4;
   }
 
-  .story__actions {
-    @apply flex flex-wrap gap-3;
-    margin-top: 12px;
-  }
-
   @media (min-width: 60rem) {
-    .story__grid {
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: 64px;
-      align-items: center;
-    }
-
     .about__grid {
       grid-template-columns: 1.15fr 0.85fr;
       gap: 64px;

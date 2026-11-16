@@ -1,78 +1,100 @@
 ---
-import { Picture } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHero from '../../components/sections/PageHero.astro';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
-import Trust from '../../components/sections/Trust.astro';
-import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import SplitFeature from '../../components/sections/SplitFeature.astro';
 import CeoSection from '../../components/sections/CeoSection.astro';
-import TownLinks from '../../components/sections/TownLinks.astro';
-import ContactSection from '../../components/sections/ContactSection.astro';
+import ServiceIndex from '../../components/sections/ServiceIndex.astro';
+import TownList from '../../components/sections/TownList.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import heroPhoto from '../../assets/equipo/conroma-74.jpg';
+import officePhoto from '../../assets/equipo/conroma-102.jpg';
+import closingPhoto from '../../assets/equipo/conroma-82.jpg';
 import { site } from '../../data/site';
-import { breadcrumbSchema } from '../../lib/seo';
+import type { FaqItem } from '../../data/faq';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
 
 const path = '/es/empresa/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Nuestra empresa', path },
 ];
+const years = site.yearsActive;
+const hours = site.openingHours
+  ?.map((slot) => `${slot.opens.replace(/^0/, '')} a ${slot.closes}`)
+  .join(' y ');
+
+// Respuesta directa (AEO) y preguntas con datos de site.ts: nada que no esté ya publicado.
+const answer =
+  `Conroma Asesores Inmobiliarios es una agencia de Malgrat de Mar especializada en gestión inmobiliaria y de patrimonios. ` +
+  `La dirige su fundador, ${site.ceo?.name ?? 'Boris Conde Jr.'}${years ? `, y lleva ${years} años` : ''} atendiendo el Alt Maresme y La Selva en catalán, castellano, inglés y francés.`;
+
+const faq: FaqItem[] = [
+  {
+    question: '¿Quién dirige Conroma Asesores?',
+    answer:
+      'Boris Conde Jr., CEO y fundador. Empezó a los 18 años en la inmobiliaria de su padre y tres años después montó Conroma con una visión más moderna del sector.',
+  },
+  ...(years
+    ? [{ question: '¿Cuántos años lleva Conroma?', answer: `${years} años trabajando en el Alt Maresme, con oficina en Malgrat de Mar.` }]
+    : []),
+  {
+    question: '¿Qué hace Conroma?',
+    answer:
+      'Compraventa y alquiler de viviendas, gestión de patrimonio y, con Conroma en Obras, reformas e interiorismo antes de vender o de entrar a vivir.',
+  },
+  {
+    question: '¿En qué idiomas atendéis?',
+    answer: 'En catalán, castellano, inglés y francés. Hablamos como te vaya mejor.',
+  },
+  {
+    question: '¿Dónde está la oficina?',
+    answer: `En ${site.address.street}, ${site.address.postalCode} ${site.address.locality}.${hours ? ` Abrimos de lunes a viernes, de ${hours}.` : ''}`,
+  },
+];
 ---
 
 <BaseLayout
   title="Nuestra empresa: quién es Conroma Asesores"
-  description="Conroma Asesores Inmobiliarios es una inmobiliaria familiar de Malgrat de Mar. Te acompañamos antes, durante y después de la venta."
+  description="Conroma Asesores Inmobiliarios: especialistas en gestión inmobiliaria y de patrimonios en Malgrat de Mar. Quién la dirige, qué hacemos y dónde trabajamos."
   path={path}
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
 >
-  <PageHero
+  <HeroStory
     crumbs={crumbs}
-    eyebrow="Nuestra empresa"
-    title="Una pequeña familia que le encuentra "
-    highlight="sentido a tu vivienda."
-    lead={site.about[1]}
-  >
-    <a class="button button--primary button--large" href="/es/equipo/">Conoce al equipo</a>
-    <a class="button button--ghost button--large" href="/es/contacto/">Hablar con Conroma</a>
-  </PageHero>
+    title="Quién es Conroma Asesores"
+    lead="Especialistas en gestión inmobiliaria y de patrimonios, con oficina en Malgrat de Mar."
+    image={heroPhoto}
+    alt="Una persona del equipo de Conroma explicando una operación en la pizarra"
+    cta={{ label: 'Conoce al equipo', href: '/es/equipo/' }}
+    position="center 30%"
+  />
+
+  <Statement text={answer} />
 
   <ProofBand />
 
-  <section class="section about">
-    <div class="wrap about__grid">
-      <div class="about__copy" data-reveal>
-        <p class="eyebrow">Nuestra historia</p>
-        <h2 class="section__title">De Malgrat de Mar, <span class="highlight">con los pies en el pueblo.</span></h2>
-        <p class="section__lead">
-          Venimos con ideales de la primera década de este siglo. Con los años hemos ido renovando la manera de trabajar
-          y las herramientas, pero no la idea: tratarte como a alguien del pueblo.
-        </p>
-        <p class="section__lead">{site.about[2]}</p>
-      </div>
-      {
-        site.teamPhotos[1] && (
-          <figure class="about__figure" data-reveal>
-            <Picture class="story__photo" src={site.teamPhotos[1].src} alt={site.teamPhotos[1].alt} formats={['avif', 'webp']} width={880} widths={[440, 660, 880, 1200]} sizes="(min-width: 30rem) 440px, calc(100vw - 40px)" loading="lazy" decoding="async" />
-          </figure>
-        )
-      }
+  <SplitFeature
+    title="Con los pies en el pueblo"
+    text={`Venimos con ideales de la primera década de este siglo. Con los años hemos renovado la manera de trabajar y las herramientas, pero no la idea: tratarte como a alguien del pueblo. ${site.about[2]}`}
+    image={officePhoto}
+    alt="Dos personas del equipo de Conroma en la oficina"
+    link={{ label: 'Pedir una valoración', href: '/es/valoracion/' }}
+  />
+
+  <ServiceIndex title="Qué hacemos" />
+
+  <CeoSection />
+
+  <section class="section empresa-towns">
+    <div class="wrap">
+      <TownList title="Dónde trabajamos" as="h2" />
     </div>
   </section>
 
-  {/* PENDIENTE DUEÑO: site.yearsActive = 7 y la bio de Herman dice 8 años de sector (no son contradictorios, pero confirmar cifra antes de publicarla). */}
-  <section class="section">
-    <div class="wrap">
-      <p class="section__lead">
-        Dirige Conroma <a href="/es/equipo/">Boris Conde Jr., CEO y fundador</a>, que empezó a los 18 años en la
-        inmobiliaria de su padre. Estamos en {site.address.street}, {site.address.postalCode} {site.address.locality}.
-        Si quieres saber cuánto vale tu piso, <a href="/es/valoracion/">pide una valoración</a>; si prefieres hablar,
-        <a href="/es/contacto/">aquí tienes cómo contactar</a>. Antes de decidir, puedes leer nuestro
-        <a href="/es/blog/">blog</a>.
-      </p>
-    </div>
-  </section>
-  <Trust />
-  <CeoSection />
-  <ServicesGrid />
-  <TownLinks />
-  <ContactSection />
+  <FaqSection title="Sobre Conroma" items={faq} origin="empresa-faq" />
+
+  <ClosingCTA title="Hablemos" titleMuted="cuando quieras" image={closingPhoto} origin="empresa-cierre" />
 </BaseLayout>

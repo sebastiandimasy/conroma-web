@@ -1,0 +1,57 @@
+---
+import { site } from '../../data/site';
+
+interface Props {
+  title: string;
+  lead?: string;
+}
+
+const { title, lead } = Astro.props;
+const videos = site.instagramVideos.filter((item) => item.video);
+---
+
+{/* Reels de clientes: fila con scroll lateral en móvil, rejilla en escritorio. Cada vídeo
+    abre su publicación en Instagram. Solo se reproducen los que se ven (script de abajo). */}
+{
+  videos.length > 0 && (
+    <section class="section reel-row" data-reels>
+      <div class="wrap">
+        <h2 class="section__title" data-reveal>{title}</h2>
+        {lead && <p class="section__lead">{lead}</p>}
+        <ul class="reel-row__list">
+          {videos.map((item, index) => (
+            <li class="reel-row__item">
+              <a class="reel-row__link" href={item.url} target="_blank" rel="noopener" aria-label={`Vídeo ${index + 1} de clientes, abrir en Instagram`}>
+                <video class="reel-row__video" src={item.video} poster={item.video!.replace(/\.mp4$/, '-poster.jpg')} muted loop playsinline preload="none" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="reel-row__accounts">
+          {site.instagram.map((account) => (
+            <a class="text-link" href={account.url} rel="noopener" target="_blank">
+              {account.handle}
+            </a>
+          ))}
+        </p>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const videos = document.querySelectorAll<HTMLVideoElement>('[data-reels] video');
+  if (videos.length && !reduce && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach(({ target, isIntersecting }) => {
+          const video = target as HTMLVideoElement;
+          if (isIntersecting) void video.play().catch(() => {});
+          else video.pause();
+        }),
+      { threshold: 0.5 },
+    );
+    videos.forEach((video) => observer.observe(video));
+  }
+</script>

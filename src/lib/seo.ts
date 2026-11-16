@@ -3,6 +3,7 @@ import type { Property } from '../data/properties';
 import { hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
 import type { FaqItem } from '../data/faq';
 import { findTown } from '../data/towns';
+import { team } from '../data/team';
 
 export const locales = ['es', 'ca', 'en', 'fr'] as const;
 export type Locale = (typeof locales)[number];
@@ -46,6 +47,20 @@ export function founderSchema() {
     worksFor: { '@id': `${site.url}/#agencia` },
     knowsLanguage: ['ca', 'es', 'en', 'fr'],
   };
+}
+
+/** Personas del equipo (el fundador ya va en el grafo del sitio con su propio @id). */
+export function teamSchema() {
+  return team
+    .filter((member) => member.name !== site.ceo?.name)
+    .map((member) => ({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: member.name,
+      jobTitle: member.role,
+      image: absoluteUrl(member.photo),
+      worksFor: { '@id': `${site.url}/#agencia` },
+    }));
 }
 
 export function agentSchema() {

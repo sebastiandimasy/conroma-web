@@ -1,0 +1,36 @@
+---
+import { propertiesIn } from '../../data/properties';
+import { publishedCatalogTowns } from '../../data/towns';
+
+interface Props {
+  title: string;
+  /** Nivel del título según dónde vaya (h3 dentro de una sección, h2 suelto). */
+  as?: 'h2' | 'h3';
+}
+
+const { title, as: Heading = 'h3' } = Astro.props;
+
+// Pueblos con cartera, de más a menos inmuebles: un enlace por pueblo con su recuento real.
+const rows = publishedCatalogTowns
+  .map((town) => ({ slug: town.slug, name: town.name, total: propertiesIn(town.slug, 'venta').length }))
+  .filter((town) => town.total > 0)
+  .sort((a, b) => b.total - a.total);
+---
+
+<div class="town-list" data-reveal>
+  <Heading class={Heading === 'h2' ? 'section__title' : 'town-list__title'}>{title}</Heading>
+  <ul class="town-list__items">
+    {
+      rows.map((town) => (
+        <li>
+          <a class="town-list__link" href={`/es/venta/${town.slug}/`}>
+            <span>{town.name}</span>
+            <span class="town-list__count">
+              {town.total} {town.total === 1 ? 'inmueble' : 'inmuebles'}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
