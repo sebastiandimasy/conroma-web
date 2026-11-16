@@ -144,6 +144,35 @@
 
   --danger: var(--color-negative);
   --danger-foreground: var(--color-on-negative);
+
+  /* El resto de la paleta de HeroUI (gris-violeta, tono 285°). Un solo bloque vale para los
+     dos temas: los --color-* ya cambian solos, y este bloque gana al [data-theme=dark] de
+     HeroUI por orden (misma especificidad, va después). */
+  --foreground: var(--color-on-surface);
+  --muted: var(--color-ink-3);
+  --surface: var(--color-surface);
+  --surface-foreground: var(--color-on-surface);
+  --surface-secondary: var(--color-surface-2);
+  --surface-secondary-foreground: var(--color-on-surface-2);
+  --surface-tertiary: var(--color-surface-2);
+  --surface-tertiary-foreground: var(--color-on-surface-2);
+  --surface-hover: var(--color-surface-2);
+  --overlay: var(--color-surface);
+  --overlay-foreground: var(--color-on-surface);
+  --field-background: var(--color-canvas);
+  --field-foreground: var(--color-on-surface);
+  --field-placeholder: var(--color-ink-3);
+  --field-border: var(--color-line);
+  --segment: var(--color-surface);
+  --segment-foreground: var(--color-on-surface);
+  --border: var(--color-line);
+  --separator: var(--color-line);
+  --focus: var(--color-focus);
+  --link: var(--color-ink);
+  --success: var(--color-positive);
+  --success-foreground: var(--color-on-positive);
+  --warning: var(--color-accent);
+  --warning-foreground: var(--color-on-accent);
 }
 
 @media (min-width: 60rem) {

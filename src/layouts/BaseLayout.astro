@@ -65,11 +65,20 @@ const languageLinks = alternates(path);
     <link rel="sitemap" href="/sitemap-index.xml" />
     <script type="application/ld+json" set:html={JSON.stringify(siteGraph())} />
     {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+    {/* data-theme siempre fijado (guardado o, si no, el del sistema): HeroUI solo cambia a
+        oscuro con el atributo, no con prefers-color-scheme. Sigue al sistema mientras no se guarde. */}
     <script is:inline>
-      try {
-        const saved = localStorage.getItem('conroma:tema');
-        if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
-      } catch {}
+      (() => {
+        const root = document.documentElement;
+        const media = matchMedia('(prefers-color-scheme: dark)');
+        const pick = () => {
+          let saved = null;
+          try { saved = localStorage.getItem('conroma:tema'); } catch {}
+          root.dataset.theme = saved === 'dark' || saved === 'light' ? saved : media.matches ? 'dark' : 'light';
+        };
+        pick();
+        media.addEventListener('change', pick);
+      })();
     </script>
     {/* Consent Mode v2: por defecto denegado hasta que acepten cookies (RGPD). */}
     <script is:inline>

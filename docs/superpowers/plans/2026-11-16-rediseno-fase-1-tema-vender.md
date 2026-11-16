@@ -535,8 +535,8 @@ Cada uno se escribe cuando le toque, con la librería ya hecha:
    - **créditos de foto visibles** (pie de foto o página `/es/creditos/` enlazada desde el footer), obligatorios desde que se use la primera foto CC BY-SA.
 2. **Comprar y Pisos:** HeroSplit, MapTowns y QuoteFeature; el selector Comprar/Alquilar pasa a subrayado.
 3. **Alquilar:** bloqueado hasta que el dueño confirme el enfoque al propietario (spec §9.3).
-4. **Empresa y Equipo:** las piezas que dependen de los datos de personas e historia (spec §9.6) se omiten mientras falten.
-5. **Blog:** plantilla de artículo, índice y clúster Vender (pilar y 4 artículos). Cuando haya volúmenes reales, el resto.
+4. **Empresa y Equipo:** las piezas que dependen de los datos de personas e historia (spec §9.6) se omiten mientras falten. **Empresa destaca la parte digital** (spec §8): una sección de contenido educativo en redes con reels de @conromaasesores embebidos (`site.instagramVideos` y `InstagramVideos.astro` ya existen) y enlaces a los artículos que salen de ellos.
+5. **Blog:** plantilla de artículo, índice y clúster Vender (pilar y 4 artículos). Se añade el **clúster «De nuestros reels»**: un artículo por reel educativo, escrito a partir del texto y del audio reales del reel, con el vídeo embebido y `VideoObject` en el schema. Primero hay que inventariar los reels (URL, tema y texto). Cuando haya volúmenes reales, el resto.
 6. **Home:**
    - quitar `--gradient-hero` y el vidrio de `ContactBand` y del hero;
    - revisar Playfair;

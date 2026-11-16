@@ -292,6 +292,12 @@ ronda con la misma librería.
 - Mantener el orden del menú: Pisos, Comprar, Vender, Alquilar, Empresa, Equipo, Blog (revisando qué hace cada una).
 - Contenido SEO interno de alto valor, blog nutrido y páginas long-tail.
 - Usar las skills de diseño, crítica y `modern-web-guidance`.
+- **(2026-11-16, durante la ejecución de la fase 1)** Empresa debe destacar la parte digital
+  de Conroma: el trabajo en redes con contenido educativo (@conromaasesores), con reels
+  embebidos, y artículos del blog escritos a partir de esos reels educativos. Debe ser una
+  página de alto valor educativo. *Llamada mía:* va en **Empresa** (Equipo se queda con las
+  personas). Los artículos salen del contenido real de cada reel (texto del post y lo que se
+  dice en el vídeo). No se inventa nada que el reel no diga, y cada artículo enlaza a su reel.
 - Delegó el cómo. Llamadas mías marcadas como tales: enfoque A, motion CSS-first, orden de
   trabajo empezando por Vender, Alquilar orientado a propietario, Empresa/Equipo separadas por papel.
 
