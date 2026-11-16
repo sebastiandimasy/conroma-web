@@ -1,7 +1,6 @@
 import raw from './properties.real.json';
 import photoMap from './property-photos.json';
 import { findTown } from './towns';
-import { parseHabitatsoftXml } from '../lib/habitatsoft';
 
 export interface Property {
   ref: string;
@@ -65,97 +64,14 @@ const photos = photoMap as Record<string, string[]>;
 const normRef = (ref: string): string => ref.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 /**
- * Fuente del inventario (en orden de preferencia, resuelto en CADA build):
- *   1. Supabase `property` publicados — cuando los pisos se gestionan desde nuestro CRM.
- *   2. Feed XML de Habitatsoft "Enlace Web 2.0" si hay HABITATSOFT_FEED_URL.
- *   3. Volcado estático properties.real.json (fallback).
- * Cada fuente solo se usa si DEVUELVE inmuebles; si viene vacía o falla, se cae a la siguiente,
- * así la web nunca se queda sin listados. Refrescar = reconstruir y desplegar (cron o webhook).
+ * Fuente del inventario: `properties.real.json`, que el script de pre-build
+ * `scripts/fetch-inventory.mjs` reescribe con el feed de Habitatsoft ANTES de cada build
+ * (hook `prebuild` en package.json). Se hace antes a propósito: el adaptador Cloudflare
+ * prohíbe `fetch()` en el scope global de un módulo, así que leer el feed aquí fallaría
+ * siempre y caería al volcado. Para pasar a Supabase/CRM como fuente, esa rama va en el
+ * script, no aquí.
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function rowToProperty(r: any): Property {
-  const base = import.meta.env.PUBLIC_SUPABASE_URL;
-  const images: string[] = ((r.property_photo ?? []) as any[])
-    .slice()
-    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-    .map((p) => {
-      const k = String(p.storage_key);
-      // storage_key puede ser una clave del bucket (sube el CRM) o una URL completa (seed del
-      // volcado de Habitatsoft). Si ya es URL, se usa tal cual.
-      return k.startsWith('http') ? k : `${base}/storage/v1/object/public/property-photos/${k}`;
-    });
-  return {
-    ref: r.ref,
-    operation: r.operation,
-    type: r.type,
-    town: r.town,
-    zone: r.zone,
-    price: r.price,
-    previousPrice: r.previous_price ?? null,
-    rooms: r.rooms ?? 0,
-    baths: r.baths ?? 0,
-    area: r.area ?? 0,
-    floor: r.floor ?? 0,
-    elevator: Boolean(r.elevator),
-    parking: Boolean(r.parking),
-    terrace: Boolean(r.terrace),
-    state: r.state ?? '',
-    tag: r.tag ?? '',
-    likes: r.likes ?? '',
-    watchOut: r.watch_out ?? '',
-    description: r.description ?? '',
-    photos: images.length,
-    tone: 0,
-    images: images.length ? images : undefined,
-    geo: r.geo_lat != null && r.geo_lng != null ? { latitude: r.geo_lat, longitude: r.geo_lng } : undefined,
-  };
-}
-
-async function fromSupabase(): Promise<Property[] | null> {
-  const url = import.meta.env.PUBLIC_SUPABASE_URL;
-  const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  try {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(url, key);
-    const { data, error } = await supabase
-      .from('property')
-      .select('*, property_photo(storage_key, sort_order)')
-      .eq('status', 'publicado');
-    if (error) {
-      console.warn('[supabase] no se pudo leer property; uso otra fuente.', error.message);
-      return null;
-    }
-    return data && data.length ? (data as any[]).map(rowToProperty) : null;
-  } catch (error) {
-    console.warn('[supabase] inventario no disponible; uso otra fuente.', error);
-    return null;
-  }
-}
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-async function fromHabitatsoft(): Promise<Property[] | null> {
-  const url = import.meta.env.HABITATSOFT_FEED_URL;
-  if (!url) return null;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.warn(`[habitatsoft] feed HTTP ${res.status}.`);
-      return null;
-    }
-    const pisos = parseHabitatsoftXml(await res.text());
-    return pisos.length ? pisos : null;
-  } catch (error) {
-    console.warn('[habitatsoft] feed no disponible.', error);
-    return null;
-  }
-}
-
-async function loadInventory(): Promise<Property[]> {
-  return (await fromSupabase()) ?? (await fromHabitatsoft()) ?? (raw as Property[]);
-}
-
-const inventory = await loadInventory();
+const inventory = raw as Property[];
 
 const withPhotos: Property[] = inventory.map((property) => {
   const images = photos[normRef(property.ref)];

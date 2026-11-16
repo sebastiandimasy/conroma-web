@@ -14,6 +14,23 @@ si no, usa el volcado) y la **despliega a Hostinger por FTP**. Se dispara por **
 **a mano** (botón en Actions) y por **webhook externo** (`repository_dispatch`, p. ej. desde Supabase
 cuando cambie un piso).
 
+## Cómo entra el inventario de Habitatsoft (importante)
+El feed se trae en un **pre-build**: el hook `prebuild` de `package.json` ejecuta
+`scripts/fetch-inventory.mjs`, que descarga el feed "Enlace Web 2.0" (XML), lo parsea y reescribe
+`src/data/properties.real.json` **antes** de `astro build`. Por eso el workflow de arriba funciona tal
+cual (su `npm run build` ya dispara el `prebuild`); **no hay que tocar el YAML**.
+
+Se hace antes del build a propósito: el **adaptador Cloudflare prohíbe `fetch()` en el scope global**
+de un módulo, así que leer el feed dentro del build (como hacía `loadInventory()`) fallaba siempre y
+caía al volcado, en silencio. Sin `HABITATSOFT_FEED_URL`, el `prebuild` no hace nada y se usa el
+volcado commiteado (desarrollo local normal).
+
+**Verificado** (16-11-2026) de punta a punta con un feed de prueba: un piso del feed se generó como
+ficha en `dist`. **Pendiente:** el parser aún NO extrae el **certificado energético** (`energyRating`),
+que por ley debe salir en el anuncio y está en Habitatsoft — hay que mapear su campo cuando tengamos
+el feed real (tocar `scripts/fetch-inventory.mjs` y `src/lib/habitatsoft.ts`). Para que la fuente sea
+Habitatsoft y no Supabase, dejar la tabla `property` de Supabase **vacía** (no correr `seed:pisos`).
+
 ## Activarlo (cuando la web esté lista para publicar)
 En GitHub → Settings → Secrets and variables → Actions:
 - **Variable** `DEPLOY_ENABLED = true` (mientras no sea `true`, NO despliega nada).

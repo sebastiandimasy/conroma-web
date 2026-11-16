@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/fetch-inventory.mjs",
     "build": "astro check && astro build",
     "preview": "npm run build && wrangler dev",
     "test": "vitest run",
