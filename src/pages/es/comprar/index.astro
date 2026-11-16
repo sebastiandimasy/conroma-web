@@ -16,7 +16,7 @@ import { getListings, homesIn, propertiesIn } from '../../../data/properties';
 import { publishedCatalogTowns } from '../../../data/towns';
 import { placePhotos } from '../../../data/creditos-fotos';
 import { proofFigures } from '../../../lib/proof';
-import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../../lib/seo';
 
 const path = '/es/comprar/';
 const crumbs = [
@@ -36,13 +36,15 @@ const figures = [
   ...proofFigures({ rating: site.googleRating, yearsActive: null, listings: 0, builtOn: new Date() }),
 ];
 const seeAll = `Ver los ${catalog.length} inmuebles en venta`;
+const description =
+  'Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves.';
 ---
 
 <BaseLayout
   title="Comprar piso en Malgrat de Mar"
-  description="Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves."
+  description={description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(buyFaq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(buyFaq), serviceSchema('Compra de viviendas', description, path)]}
 >
   <HeroStory
     crumbs={crumbs}

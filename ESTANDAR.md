@@ -229,6 +229,17 @@ aplica. Lo que traslada son los patrones, no el vocabulario.
 5. Revisado a 390px, sin scroll horizontal.
 6. Ningún hex literal fuera de la definición de tokens.
 7. Los titulares nuevos no repiten la forma del titular de al lado.
+8. **SEO, AEO y GEO validados en el HTML compilado** (regla del dueño, 2026-11-16), página a página:
+   - **SEO:** `title` ≤ 60 y `description` ≤ 155 caracteres, con el término de búsqueda;
+     canonical correcto; un solo H1 que lleve el término (no un eslogan) y jerarquía H2/H3 sin
+     saltos; alt en toda foto con contenido (`alt=""` solo en las decorativas o duplicadas).
+   - **AEO:** respuesta directa en el primer párrafo tras el héroe (la que leen Google y las IA);
+     las preguntas del `FAQPage` son las mismas que se ven en la página, ni una más.
+   - **GEO:** cifras citables con su fuente y fecha (reseñas, años, inventario); el JSON-LD del
+     tipo que toca (`Service` en páginas de servicio, `CollectionPage` en listados,
+     `BreadcrumbList` siempre) parsea sin errores; `llms.txt` enlaza la página nueva.
+   - Volúmenes de búsqueda solo de NotFair `getKeywordIdeas`. Si no está conectado, se dice y
+     no se estima.
 
 Verificar en una tanda, arreglar en una tanda, confirmar una vez y parar. Pulir en bucle
 cuesta dinero y no mejora el resultado.
