@@ -79,6 +79,25 @@
   }
 }
 
-@view-transition {
-  navigation: auto;
+/* Movimiento como mejora progresiva: sin soporte o con reduced-motion, todo se ve quieto y
+   completo. Lo que ya está a la vista al cargar tiene su `entry` al 100 %: no se anima. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    [data-reveal] {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
 }
