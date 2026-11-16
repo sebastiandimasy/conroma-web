@@ -62,12 +62,35 @@ export const venderSteps: StoryStep[] = [
 
 export const venderCompare: [CompareOption, CompareOption] = [
   {
-    title: 'Conroma te encaja si…',
+    // Cada punto sale de lo ya publicado en esta página (pasos y respuesta), nada nuevo.
+    title: 'Lo que tienes con Conroma',
     groups: [
-      { title: 'Tiempo', items: ['Prefieres que las llamadas y las visitas pasen por nosotros.'] },
-      { title: 'Papeles', items: ['Quieres que te digamos qué hace falta y prepararlo juntos.'] },
-      { title: 'Precio', items: ['Quieres salir con un precio realista desde el primer día.'] },
-      { title: 'Seguridad', items: ['Prefieres que entren compradores que pueden comprar y que revisemos las arras.'] },
+      {
+        title: 'Tiempo',
+        items: [
+          'Las llamadas y las visitas pasan por nosotros.',
+          'Atendemos en catalán, castellano, inglés y francés.',
+        ],
+      },
+      {
+        title: 'Papeles',
+        items: ['Te decimos qué hace falta y lo preparamos contigo.', 'Preparamos las arras por ti.'],
+      },
+      {
+        title: 'Precio',
+        items: ['Valoración en persona, gratis y sin compromiso.', 'Sales con un precio realista desde el primer día.'],
+      },
+      {
+        title: 'Seguridad',
+        items: [
+          'Enseñamos el piso a gente que de verdad puede comprarlo.',
+          'Vamos contigo a notaría y seguimos ahí después de la firma.',
+        ],
+      },
+      {
+        title: 'Difusión',
+        items: ['Fotos y vídeo de tu piso.', 'Lo publicamos en los portales y en @conromaasesores (Instagram y TikTok).'],
+      },
     ],
   },
   {

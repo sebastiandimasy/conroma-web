@@ -21,9 +21,14 @@ describe('textos de Vender', () => {
   it('compara dos opciones válidas en tiempo, papeles, precio y seguridad, con frases cortas', () => {
     expect(venderCompare).toHaveLength(2);
     for (const option of venderCompare) {
-      expect(option.groups.map((g) => g.title)).toEqual(['Tiempo', 'Papeles', 'Precio', 'Seguridad']);
+      expect(option.groups.map((g) => g.title).slice(0, 4)).toEqual(['Tiempo', 'Papeles', 'Precio', 'Seguridad']);
       expect(option.groups.every((g) => g.items.length > 0 && g.items.every((i) => words(i) <= 14))).toBe(true);
     }
+  });
+
+  it('resalta lo que gana el cliente con Conroma: más puntos que la otra opción', () => {
+    const count = (i: 0 | 1) => venderCompare[i].groups.flatMap((g) => g.items).length;
+    expect(count(0)).toBeGreaterThan(count(1));
   });
 
   it('presenta vender por tu cuenta como opción, sin alarmar ni dar órdenes', () => {
@@ -32,7 +37,7 @@ describe('textos de Vender', () => {
     for (const alarm of ['quema', 'desconocid', 'riesgo', 'cuidado', 'tú solo', 'buscas tú', 'atiendes tú']) {
       expect(alone).not.toContain(alarm);
     }
-    expect(venderCompare.every((o) => o.title.endsWith('si…'))).toBe(true);
+    expect(venderCompare[1].title.endsWith('si…')).toBe(true);
   });
 
   it('FAQ con respuestas de 60 palabras como máximo y los cuatro temas del spec', () => {

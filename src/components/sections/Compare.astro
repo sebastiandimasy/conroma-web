@@ -17,7 +17,7 @@ const { title, options, lead, bridge, kicker } = Astro.props;
 const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 ---
 
-{/* Dos mitades sin bordes (la segunda sobre gris): dos opciones válidas, no «bien contra mal». */}
+{/* Dos mitades sin bordes (la segunda sobre gris): dos opciones válidas; la nuestra, con sus ventajas. */}
 <section class="section compare" aria-labelledby={titleId}>
   <div class="wrap compare__head">
     {kicker && <p class="kicker">{kicker}</p>}
@@ -26,8 +26,8 @@ const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   </div>
   <div class="compare__halves">
     {
-      options.map((option) => (
-        <div class="compare__half">
+      options.map((option, index) => (
+        <div class:list={['compare__half', index === 0 && 'compare__half--us']}>
           <div class="compare__inner">
             <h3 class="compare__name" data-reveal>{option.title}</h3>
             <div class="compare__groups">
@@ -37,9 +37,14 @@ const titleId = `compare-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
                   <ul class="compare__items">
                     {group.items.map((item) => (
                       <li>
-                        <span class="compare__check">
-                          <Icon name="check" />
-                        </span>
+                        {/* El ✓ amarillo solo marca a Conroma; la otra opción lleva un punto neutro. */}
+                        {index === 0 ? (
+                          <span class="compare__check">
+                            <Icon name="check" />
+                          </span>
+                        ) : (
+                          <span class="compare__dot" />
+                        )}
                         {item}
                       </li>
                     ))}

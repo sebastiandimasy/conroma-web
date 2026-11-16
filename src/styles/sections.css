@@ -1129,6 +1129,20 @@
     stroke-width: 3;
   }
 
+  /* Marca neutra de la otra opción: punto gris, sin ✓ ni amarillo. */
+  .compare__dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    margin: 9px 7px 0;
+    border-radius: 50%;
+    background: var(--color-ink-3);
+  }
+
+  .compare__half:not(.compare__half--us) .compare__items li {
+    color: var(--color-ink-2);
+  }
+
   /* El puente va después de las mitades, sobre blanco. */
   .compare__bridge {
     margin-top: 0;
