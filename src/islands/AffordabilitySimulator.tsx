@@ -5,6 +5,7 @@ import { site } from '../data/site';
 import { affordability } from '../lib/finance';
 import { formatPrice } from '../lib/format';
 import { Icon } from './Icon';
+import { FlipLabel } from './FlipLabel';
 
 type Payrolls = 12 | 14;
 
@@ -133,8 +134,10 @@ export default function AffordabilitySimulator() {
               {result.reachesPrice ? `, así que esta vivienda de ${formatPrice(priceN)} te entra.` : `. Esta vivienda de ${formatPrice(priceN)} se te queda algo por encima, pero lo miramos.`}
             </p>
             <a className="button button--primary button--large afford__cta" href={waLink(aptoMessage)} data-contact="whatsapp" data-origin="puedo-comprar">
-              <Icon name="whatsapp" className="button__icon" />
-              Confirma tu préstamo con un asesor
+              <FlipLabel>
+                <Icon name="whatsapp" className="button__icon" />
+                Confirma tu préstamo con un asesor
+              </FlipLabel>
             </a>
           </>
         )}
@@ -148,8 +151,10 @@ export default function AffordabilitySimulator() {
               Tu endeudamiento cabe en el 40%, pero con poca antigüedad en el trabajo el banco pide verlo con calma. No te preocupes, se mira.
             </p>
             <a className="button button--primary button--large afford__cta" href={waLink(reviewMessage)} data-contact="whatsapp" data-origin="puedo-comprar-revisar">
-              <Icon name="whatsapp" className="button__icon" />
-              Míralo con un asesor
+              <FlipLabel>
+                <Icon name="whatsapp" className="button__icon" />
+                Míralo con un asesor
+              </FlipLabel>
             </a>
           </>
         )}
@@ -163,8 +168,10 @@ export default function AffordabilitySimulator() {
               Con estos números tu capacidad de endeudamiento aún no llega: el banco mira que entre la cuota y tus deudas no pases del 40% de tu sueldo, y hoy te pasas. No lo dejes correr: baja un poco las deudas o ahorra algo más para la entrada y vuelve a probar. Cada mes cuentas.
             </p>
             <a className="button button--primary button--large afford__cta" href={waLink(reviewMessage)} data-contact="whatsapp" data-origin="puedo-comprar-no">
-              <Icon name="whatsapp" className="button__icon" />
-              Búscale la vuelta con un asesor
+              <FlipLabel>
+                <Icon name="whatsapp" className="button__icon" />
+                Búscale la vuelta con un asesor
+              </FlipLabel>
             </a>
           </>
         )}
@@ -244,7 +251,9 @@ export default function AffordabilitySimulator() {
         <label className="float-field__label" htmlFor="af-seniority">Antigüedad en tu trabajo (meses)</label>
       </div>
 
-      <button type="submit" className="button button--primary button--large button--block">Hacer mi cálculo</button>
+      <button type="submit" className="button button--primary button--large button--block">
+        <FlipLabel>Hacer mi cálculo</FlipLabel>
+      </button>
     </form>
   );
 }

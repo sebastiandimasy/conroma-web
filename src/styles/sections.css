@@ -152,26 +152,73 @@
     height: 18px;
   }
 
-  .icon-button__icon--sun {
+  /* Interruptor de tema: pista de 48×28 dentro de una zona táctil de 44px. Bola a la
+     izquierda en claro (sol) y a la derecha en oscuro (luna). Antes de hidratar, la posición
+     sale de :root[data-theme]; después, de .is-on / .is-off (lo que anima motion). */
+  .theme-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .theme-switch__track {
+    display: flex;
+    width: 48px;
+    padding: 2px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in oklab, var(--color-ink) 15%, transparent);
+    justify-content: flex-start;
+  }
+
+  :root[data-theme="dark"] .theme-switch:not(.is-off) .theme-switch__track,
+  .theme-switch.is-on .theme-switch__track {
+    justify-content: flex-end;
+  }
+
+  .theme-switch__knob {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-pill);
+    background: var(--color-canvas);
+  }
+
+  .theme-switch__icon {
+    display: flex;
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-switch__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-switch__moon,
+  :root[data-theme="dark"] .theme-switch__sun {
     display: none;
   }
 
-  :root[data-theme="dark"] .icon-button__icon--sun {
+  :root[data-theme="dark"] .theme-switch__moon {
     display: block;
   }
 
-  :root[data-theme="dark"] .icon-button__icon--moon {
-    display: none;
+  .theme-switch:focus-visible {
+    outline: none;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .icon-button__icon--sun {
-      display: block;
-    }
-
-    :root:not([data-theme="light"]) .icon-button__icon--moon {
-      display: none;
-    }
+  .theme-switch:focus-visible .theme-switch__track {
+    outline: 2px solid var(--color-focus, var(--color-ink));
+    outline-offset: 2px;
   }
 
   /* El CTA de WhatsApp se queda en icono hasta que hay sitio: con el texto ocupaba

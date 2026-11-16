@@ -73,7 +73,11 @@ Los botones usan **`--color-button` = `oklch(90.5% 0.182 98.111)`** (Tailwind ye
 letra negra `--color-on-button`, en los dos temas. El acento de marca `--color-accent` (amber-300)
 queda para checks, cursores y detalles; **no** para botones.
 
-- **Primario (CTA principal):** relleno `--color-button`, texto negro. Hover: `--color-button-2` (yellow-200).
+- **Primario (CTA principal):** **píldora** (`--radius-pill`) con relleno `--color-button` y texto
+  negro; el fondo no cambia al pasar. Al pasar el cursor el **texto gira** (FlipButton del dueño,
+  2026-11-16): la cara de delante sale hacia abajo y la de detrás entra desde arriba, con un muelle
+  corto. Dos caras: `<FlipLabel>` en las islas de React y `initFlipButtons()` (BaseLayout) en el
+  marcado de Astro; la cara de detrás lleva `aria-hidden`. Solo con ratón y sin reduced-motion.
 - **Estándar (`button--ghost`, todo botón que no es el CTA principal):** contorno y texto en
   `--color-button-line`: **amarillo en oscuro y sobre foto**, **tinta en claro** (el amarillo sobre
   crema da 1,3:1 y no se lee). Al pasar el cursor se **rellena de amarillo con texto negro**.
@@ -86,6 +90,13 @@ queda para checks, cursores y detalles; **no** para botones.
 El fondo y el color del texto cambian **juntos**, en la misma regla. Cambiar solo el fondo
 es lo que deja texto ilegible.
 
+### Interruptor de tema (regla del dueño, 2026-11-16)
+
+`ThemeSwitch` (isla de React, componente Switch del dueño): pista de 48px en tinta al 15%, bola
+de fondo con sol (claro, a la izquierda) o luna (oscuro, a la derecha) y muelle `motion` al
+cambiar. Zona táctil de 44px, `role="switch"`. Antes de hidratar, la bola se coloca por
+`:root[data-theme]`, así no salta al cargar. Guarda la elección en `conroma:tema`.
+
 ### Librerías de terceros: HeroUI
 
 HeroUI trae su propia paleta y, sin tocarla, **sus botones salen azules**. No es un fallo de
@@ -94,6 +105,10 @@ CSS propio: es que `<Button variant="primary">` usa `--accent` de HeroUI, no tu
 
 Los tokens de HeroUI están mapeados a los de Conroma en `tokens.css`:
 `--accent`, `--accent-foreground`, `--accent-hover`, `--default`, `--background`, `--danger`…
+
+HeroUI también trae CSS para nombres de clase que usamos nosotros (`.accordion__item` le pinta
+un separador `::after` de 1px abajo). Si aparece una línea o un margen que no está en nuestro
+CSS, mirar primero `node_modules/@heroui/styles/dist/components/`.
 
 **Si añades otra librería de componentes, lo primero es mapear su paleta.** Si no, mete sus
 colores por la puerta de atrás y ningún repaso del CSS propio lo detecta.
@@ -224,7 +239,7 @@ aplica. Lo que traslada son los patrones, no el vocabulario.
 
 1. `npm run build` pasa.
 2. Ningún par fondo/texto por debajo de 4,5:1, en los dos temas.
-3. Cero `transform` en reglas `:hover`.
+3. Cero `transform` en reglas `:hover`. Única excepción: el giro del texto del botón primario (pedido del dueño).
 4. Ningún texto por debajo de 13px.
 5. Revisado a 390px, sin scroll horizontal.
 6. Ningún hex literal fuera de la definición de tokens.

@@ -6,6 +6,7 @@ import { site } from '../data/site';
 import { formatRating } from '../lib/format';
 import { createBrowserClient } from '../lib/supabase';
 import { Icon } from './Icon';
+import { FlipLabel } from './FlipLabel';
 
 type Moment = 'ya' | 'curiosidad' | 'herencia';
 type Condition = 'vivir' | 'repaso' | 'reforma' | 'nose';
@@ -236,7 +237,7 @@ export default function ValuationWizard() {
             data-contact="whatsapp"
             data-origin="valoracion-whatsapp"
           >
-            Continuar por WhatsApp
+            <FlipLabel>Continuar por WhatsApp</FlipLabel>
           </a>
         )}
         {callMe && !saved && (

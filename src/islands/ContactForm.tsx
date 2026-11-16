@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Button } from '@heroui/react';
 import { site } from '../data/site';
 import { createBrowserClient } from '../lib/supabase';
+import { FlipLabel } from './FlipLabel';
 
 const needs = ['Comprar', 'Vender', 'Alquilar', 'Reformar', 'Otra cosa'];
 const intentByNeed: Record<string, string> = {
@@ -82,7 +83,7 @@ export default function ContactForm() {
           data-contact="whatsapp"
           data-origin="formulario-contacto"
         >
-          Continuar por WhatsApp
+          <FlipLabel>Continuar por WhatsApp</FlipLabel>
         </a>
         <Button variant="ghost" onPress={() => setSent(false)}>
           Escribir otro mensaje

@@ -4,6 +4,7 @@ import type { Property } from '../data/properties';
 import { findTown } from '../data/towns';
 import { hydrateStore, savedRefs } from '../lib/store';
 import { PropertyCard } from './PropertyCard';
+import { FlipLabel } from './FlipLabel';
 
 interface SavedPropertiesProps {
   properties: Property[];
@@ -30,7 +31,7 @@ export default function SavedProperties({ properties, listingUrl }: SavedPropert
           quien decida contigo.
         </p>
         <a className="button button--primary button--large" href={listingUrl}>
-          Ver pisos en venta
+          <FlipLabel>Ver pisos en venta</FlipLabel>
         </a>
       </div>
     );

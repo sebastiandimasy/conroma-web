@@ -5,6 +5,7 @@ import { formatPrice } from '../lib/format';
 import { AnimatedNumber } from './AnimatedNumber';
 import { Icon } from './Icon';
 import { RangeField } from './RangeField';
+import { FlipLabel } from './FlipLabel';
 
 const qualities = Object.keys(reformRates) as ReformQuality[];
 
@@ -61,8 +62,10 @@ export default function ReformSimulator() {
           data-contact="whatsapp"
           data-origin="simulador-reformas"
         >
-          <Icon name="whatsapp" className="button__icon" />
-          Quiero un presupuesto real
+          <FlipLabel>
+            <Icon name="whatsapp" className="button__icon" />
+            Quiero un presupuesto real
+          </FlipLabel>
         </a>
         <p className="simulator__note">
           Son medias de España, no nuestros precios. Sirve para hacerte una idea; el presupuesto de verdad sale de ver el

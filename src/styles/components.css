@@ -320,17 +320,55 @@
     transform: scale(0.97);
   }
 
-  /* PRIMARIO (CTA principal): relleno amarillo yellow-300, texto negro. */
+  /* PRIMARIO (CTA principal): píldora amarilla yellow-300, texto negro. Al pasar el cursor el
+     texto gira (cara de delante sale hacia abajo, la de detrás entra desde arriba), como el
+     FlipButton que pidió el dueño. Dos caras: <FlipLabel> en React, initFlipButtons() en Astro. */
   .button--primary {
+    overflow: hidden;
+    border-radius: var(--radius-pill);
     background: var(--color-button);
     color: var(--color-on-button);
   }
 
-  @media (hover: hover) {
-    .button--primary:hover {
-      background: var(--color-button-2);
+  .flip {
+    display: inline-grid;
+    perspective: 1000px;
+  }
+
+  .flip__face {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    backface-visibility: hidden;
+  }
+
+  .flip__face--back {
+    opacity: 0;
+    transform: translateY(-50%) rotateX(90deg);
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .flip__face {
+      /* Muelle corto con un punto de rebote (≈ stiffness 280 / damping 20). */
+      transition:
+        transform 0.5s cubic-bezier(0.34, 1.45, 0.64, 1),
+        opacity 0.25s var(--ease-out);
+    }
+
+    .button--primary:hover .flip__face:not(.flip__face--back) {
+      opacity: 0;
+      transform: translateY(50%) rotateX(90deg);
+    }
+
+    .button--primary:hover .flip__face--back {
+      opacity: 1;
+      transform: none;
     }
   }
+
+  /* Sin cambio de fondo al pasar: el amarillo pleno se queda; el giro es el aviso. */
 
   .button--large {
     min-height: 54px;
