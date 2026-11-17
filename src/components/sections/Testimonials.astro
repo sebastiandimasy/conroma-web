@@ -1,25 +1,49 @@
 ---
+import Icon from '../Icon.astro';
 import TestimonialCarousel from '../../islands/TestimonialCarousel.tsx';
 import { testimonials } from '../../data/testimonials';
 import { site } from '../../data/site';
+import { formatRating } from '../../lib/format';
 
 interface Props {
+  title?: string;
+  lead?: string;
   limit?: number;
 }
 
-const { limit = testimonials.length } = Astro.props;
+const {
+  title = 'Lo que dicen nuestros clientes',
+  lead = 'Vecinos del Maresme que compraron, vendieron o alquilaron con nosotros.',
+  limit = testimonials.length,
+} = Astro.props;
 const items = testimonials.slice(0, limit);
 const rating = site.googleRating;
 ---
 
+{/* Dos columnas en escritorio: título, nota de Google y puntos a la izquierda; la reseña a la derecha.
+    En móvil: título, reseña y puntos debajo. */}
 <section class="section testimonials">
-  <div class="wrap">
-    <div class="section__head section__head--center" data-reveal>
-      <p class="eyebrow">Lo que dicen de nosotros</p>
-      <h2 class="section__title">Personas reales, <span class="highlight">casas con nombre.</span></h2>
+  <div class="wrap testimonials__grid" data-reveal>
+    <div class="testimonials__head">
+      <h2 class="section__title">{title}</h2>
+      <p class="testimonials__lead">{lead}</p>
+      {
+        rating && (
+          <a class="testimonials__rating" href={rating.url} rel="noopener" target="_blank">
+            <span class="testimonials__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
+              <Icon name="star" />
+              <Icon name="star" />
+              <Icon name="star" />
+              <Icon name="star" />
+              <Icon name="star" />
+            </span>
+            <span>
+              <strong>{formatRating(rating.value)}</strong> en Google · {rating.count} reseñas
+            </span>
+          </a>
+        )
+      }
     </div>
-    <div data-reveal>
-      <TestimonialCarousel client:visible testimonials={items} ratingUrl={rating?.url} />
-    </div>
+    <TestimonialCarousel client:visible testimonials={items} />
   </div>
 </section>

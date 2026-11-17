@@ -2278,51 +2278,6 @@
   }
 
   /* Citas de clientes: texto grande y fino, autor y contexto debajo; separadores suaves. */
-  .quote-list {
-    background: var(--color-surface-2);
-    color: var(--color-on-surface-2);
-  }
-
-  .quote-list__items {
-    display: grid;
-    margin-top: var(--space-10);
-  }
-
-  .quote-list__item {
-    padding-block: var(--space-8);
-    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
-  }
-
-  .quote-list__text {
-    max-width: 34ch;
-    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
-    font-weight: var(--weight-display);
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-  }
-
-  .quote-list__by {
-    margin-top: var(--space-4);
-    font-size: var(--text-small);
-    color: var(--color-ink-2);
-  }
-
-  .quote-list__by strong {
-    font-weight: 500;
-    color: var(--color-ink);
-  }
-
-  .quote-list__source {
-    margin-top: var(--space-8);
-  }
-
-  @media (min-width: 60rem) {
-    .quote-list__items {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: var(--space-8);
-    }
-  }
-
   /* Reels: fila de vídeos 9:16 con scroll lateral en móvil y rejilla en escritorio. */
   .reel-row {
     background: var(--color-canvas);
@@ -2665,71 +2620,68 @@
     }
   }
 
-  .testimonials__grid {
-    @apply grid gap-5;
+  /* Reseñas: banda surface-2; la tarjeta (isla TestimonialCarousel) va en canvas. */
+  .testimonials {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+    overflow: hidden;
   }
 
-  .testimonials__featured {
-    @apply flex flex-col justify-center gap-4;
-    padding: 30px;
+  .testimonials__grid {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .testimonials__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .testimonials__lead {
+    max-width: 36ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    color: var(--color-ink-2);
+  }
+
+  .testimonials__rating {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    margin-top: var(--space-2);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--color-line) 60%, transparent);
+    text-underline-offset: 4px;
+  }
+
+  .testimonials__rating strong {
+    font-weight: 500;
+    color: var(--color-ink);
   }
 
   .testimonials__stars {
-    @apply inline-flex;
+    display: inline-flex;
     gap: 2px;
     color: var(--color-accent);
   }
 
   .testimonials__stars svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .testimonials__quote {
-    font-size: clamp(1.1875rem, 1.05rem + 0.7vw, 1.5625rem);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.34;
-  }
-
-  .testimonials__column {
-    @apply grid gap-4;
-  }
-
-  .testimonials__small {
-    @apply flex flex-col gap-3;
-    padding: 20px;
-    font-size: var(--text-small);
-    color: var(--color-ink-2);
-  }
-
-  .testimonials__by {
-    @apply flex flex-col;
-    font-size: var(--text-small);
-    color: var(--color-ink);
-  }
-
-  .testimonials__by span {
-    font-size: var(--text-caption);
-    color: var(--color-ink-3);
-  }
-
-  .testimonials__more {
-    @apply flex justify-center;
-    margin-top: 32px;
-  }
-
-  .testimonials__more .button {
-    max-width: 100%;
-    padding-block: 12px;
-    line-height: 1.2;
-    text-align: center;
-    white-space: normal;
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    stroke: none;
   }
 
   @media (min-width: 60rem) {
     .testimonials__grid {
-      grid-template-columns: 1.1fr 1fr;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-12);
+      align-items: center;
     }
   }
 
