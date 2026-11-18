@@ -47,63 +47,66 @@ const trackRecord = [
   schemas={[faqSchema(homeFaq)]}
   overlay
 >
-  <HeroCenter
-    title="Expertos en gestión inmobiliaria en Malgrat de Mar"
-    lead="Somos un equipo preparado para ayudarte a gestionar tu capital inmobiliario. Te acompañamos en la compra, la venta o el alquiler de tu inmueble."
-    image={hero.src}
-    alt={hero.alt}
-    primary={{ label: 'Trabajemos juntos', href: '/es/contacto/' }}
-    secondary={{ label: 'Contáctanos', href: whatsappUrl(), contact: 'whatsapp', origin: 'home-hero' }}
-    position="40% center"
-  />
+  {/* Inicio: títulos de sección centrados y párrafos justificados (petición del dueño, 2026-11-18). */}
+  <div class="page-home">
+    <HeroCenter
+      title="Expertos en gestión inmobiliaria en Malgrat de Mar"
+      lead="Somos un equipo preparado para ayudarte a gestionar tu capital inmobiliario. Te acompañamos en la compra, la venta o el alquiler de tu inmueble."
+      image={hero.src}
+      alt={hero.alt}
+      primary={{ label: 'Trabajemos juntos', href: '/es/contacto/' }}
+      secondary={{ label: 'Contáctanos', href: whatsappUrl(), contact: 'whatsapp', origin: 'home-hero' }}
+      position="40% center"
+    />
 
-  <Statement text={answer} />
+    <Statement text={answer} />
 
-  <ProofBand figures={trackRecord} />
+    <ProofBand figures={trackRecord} />
 
-  <section class="section home-featured">
-    <div class="wrap">
-      {
-        featuredHomes.length > 0 && (
-          <>
-            <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
-            <div class="home-featured__grid">
-              <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" />
-            </div>
-          </>
-        )
-      }
-      <TownList title="Busca en tu pueblo" fold />
-      <a class="arrow-link home-featured__more" href="/es/venta/">
-        <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-        <span class="arrow-link__label">Ver los {ventaTotal} inmuebles en venta</span>
-      </a>
-    </div>
-  </section>
+    <section class="section home-featured">
+      <div class="wrap">
+        {
+          featuredHomes.length > 0 && (
+            <>
+              <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
+              <div class="home-featured__grid">
+                <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" />
+              </div>
+            </>
+          )
+        }
+        <TownList title="Busca en tu pueblo" fold />
+        <a class="arrow-link home-featured__more" href="/es/venta/">
+          <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+          <span class="arrow-link__label">Ver los {ventaTotal} inmuebles en venta</span>
+        </a>
+      </div>
+    </section>
 
-  <ServiceIndex title="Qué hacemos por ti" photos />
+    <ServiceIndex title="Qué hacemos por ti" photos />
 
-  <SplitFeature
-    title="Especialistas en gestión inmobiliaria"
-    text="Y líderes en gestión de patrimonios. Te asesoramos de forma totalmente personalizada, buscando que cada parte salga ganando, y siempre con una atención cercana."
-    image={teamPhoto}
-    alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
-    link={{ label: 'Conoce al equipo', href: '/es/equipo/' }}
-  />
+    <SplitFeature
+      title="Especialistas en gestión inmobiliaria"
+      text="Y líderes en gestión de patrimonios. Te asesoramos de forma totalmente personalizada, buscando que cada parte salga ganando, y siempre con una atención cercana."
+      image={teamPhoto}
+      alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
+      link={{ label: 'Conoce al equipo', href: '/es/equipo/' }}
+    />
 
-  <SplitFeature
-    title="Le damos una segunda vida a tu inmueble"
-    text="Conroma crea sueños y también reforma. Con Conroma en Obras renovamos tu casa, de la cocina al último detalle, para darle una nueva cara antes de venderla o de entrar a vivir."
-    image={reformPhoto}
-    alt="Salón reformado por Conroma en Obras"
-    link={{ label: 'Ver reformas e interiorismo', href: '/es/reformas/' }}
-    reverse
-    tone="canvas"
-  />
+    <SplitFeature
+      title="Le damos una segunda vida a tu inmueble"
+      text="Conroma crea sueños y también reforma. Con Conroma en Obras renovamos tu casa, de la cocina al último detalle, para darle una nueva cara antes de venderla o de entrar a vivir."
+      image={reformPhoto}
+      alt="Salón reformado por Conroma en Obras"
+      link={{ label: 'Ver reformas e interiorismo', href: '/es/reformas/' }}
+      reverse
+      tone="canvas"
+    />
 
-  <FaqSection title="Dudas al comprar o vender en el Maresme" items={homeFaq} origin="home-faq" />
+    <FaqSection title="Dudas al comprar o vender en el Maresme" items={homeFaq} origin="home-faq" />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+    <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu casa" image={closingPhoto} origin="home-cierre" />
+    <ClosingCTA title="Hablemos" titleMuted="de tu casa" image={closingPhoto} origin="home-cierre" />
+  </div>
 </BaseLayout>

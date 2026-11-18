@@ -963,6 +963,29 @@
     }
   }
 
+  /* Inicio: títulos de sección centrados y párrafos justificados con la última línea centrada
+     (petición del dueño, 2026-11-18). Las filas de acordeón y las fichas de piso no cambian. */
+  .page-home {
+    display: contents;
+  }
+
+  .page-home .section__title {
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .page-home :is(.section__lead, .service-index__text, .testimonials__lead, .accordion__answer, .tcar__quote, .faq-section__contact-text) {
+    text-align: justify;
+    text-align-last: center;
+    hyphens: auto;
+  }
+
+  .page-home :is(.split-feature__copy, .testimonials__head, .service-index__body) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   @keyframes statement-word {
     from {
       opacity: 0.18;
