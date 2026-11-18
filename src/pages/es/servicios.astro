@@ -5,6 +5,7 @@ import Statement from '../../components/sections/Statement.astro';
 import ServiceIndex from '../../components/sections/ServiceIndex.astro';
 import SplitFeature from '../../components/sections/SplitFeature.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
+import ContentGuide from '../../components/sections/ContentGuide.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
@@ -29,6 +30,33 @@ const trackRecord = [
   { value: '+300', label: 'inmuebles gestionados' },
   { value: '+100', label: 'clientes satisfechos' },
   { value: '+200', label: 'pisos vendidos' },
+];
+// Qué hace una inmobiliaria (keyword secundaria): las tareas de una compraventa o un alquiler.
+const guide = [
+  {
+    title: 'Valoración',
+    text: 'Fijar un precio realista según lo que se vende en la zona. Un precio bien puesto desde el principio acorta la venta.',
+  },
+  {
+    title: 'Documentación',
+    text: 'Nota simple, certificado energético, cédula de habitabilidad, último IBI y certificado de la comunidad. Se reúne antes de anunciar para que nada frene la operación.',
+  },
+  {
+    title: 'Difusión',
+    text: 'Fotos, vídeo, portales y redes para que el piso llegue a quien lo busca.',
+  },
+  {
+    title: 'Visitas',
+    text: 'Enseñar el piso a compradores o inquilinos con interés real y resolver sus dudas sobre la casa y la zona.',
+  },
+  {
+    title: 'Negociación y contrato',
+    text: 'Acercar posturas en el precio y preparar el contrato de arras o el de alquiler, con todo explicado antes de firmar.',
+  },
+  {
+    title: 'Hasta notaría',
+    text: 'Acompañarte hasta la firma y la entrega de llaves, con una misma persona durante toda la operación.',
+  },
 ];
 const faq = [
   {
@@ -84,8 +112,15 @@ const serviceList = {
 
   <ServiceIndex id="servicios" title="Qué hacemos por ti" photos />
 
-  <SplitFeature
+  <ContentGuide
     tone="surface"
+    title="Qué hace una inmobiliaria por ti"
+    lead="Estas son las tareas que llevamos en una compraventa o un alquiler, para que sepas qué esperar."
+    items={guide}
+  />
+
+  <SplitFeature
+    tone="canvas"
     reverse
     title="¿Cuánto vale tu piso?"
     text="Pasamos a ver tu piso y te damos un precio realista, gratis y sin compromiso. Si decides vender, empezamos por ahí."
@@ -94,11 +129,11 @@ const serviceList = {
     link={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
   />
 
-  <ProofBand figures={trackRecord} count />
-
   <FaqSection title="Servicios: lo que nos preguntan" items={faq} origin="servicios-faq" />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <ProofBand figures={trackRecord} count />
+
+  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
 
   <ClosingCTA title="Hablemos" titleMuted="de lo que necesitas" image={closingPhoto} origin="servicios-cierre" />
 </BaseLayout>

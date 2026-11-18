@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  lead?: string;
+  items: { title: string; text: string }[];
+  id?: string;
+  /** Banda de la página: alterna con la sección de al lado. */
+  tone?: 'canvas' | 'surface';
+}
+
+const { title, lead, items, id, tone = 'canvas' } = Astro.props;
+---
+
+{/* Guía: contenido de valor en filas editoriales (h3 + párrafo), sin tarjetas ni iconos.
+    Responde lo que la gente busca antes de llamar; es texto real en el HTML para Google y las IA. */}
+<section id={id} class:list={['section content-guide', `content-guide--${tone}`]}>
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2 class="section__title">{title}</h2>
+      {lead && <p class="section__lead">{lead}</p>}
+    </div>
+    <div class="content-guide__list">
+      {
+        items.map((item) => (
+          <article class="content-guide__item" data-reveal>
+            <h3 class="content-guide__title">{item.title}</h3>
+            <p class="content-guide__text">{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

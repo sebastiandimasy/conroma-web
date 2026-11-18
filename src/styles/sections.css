@@ -990,6 +990,7 @@
       .faq-section__contact-text,
       .story-scroll__text,
       .guide-teaser__text,
+      .content-guide__text,
       .member__bio,
       .founder__bio,
       .feature__text,
@@ -3325,27 +3326,73 @@
   }
 
   /* Reformas · galería de obras reales: retícula de fotos a sangre dentro de card. */
+  /* Galería de reformas: rejilla de fotos 3:4 con radio 4px, sin tarjetas. */
+  .reform-gallery {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
   .reform-gallery__grid {
-    @apply grid grid-cols-2 gap-4;
-    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .reform-gallery__photo {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+  }
+
+  .reform-gallery__more {
+    margin-top: var(--space-8);
   }
 
   @media (min-width: 48rem) {
     .reform-gallery__grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
+      gap: var(--space-4);
     }
   }
 
-  .reform-gallery__item {
-    @apply overflow-hidden;
-    padding: 0;
-    aspect-ratio: 4 / 3;
-    background: var(--color-surface-2);
+  /* Guía (ContentGuide): filas con línea suave, dos columnas desde 48rem. */
+  .content-guide--canvas {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
   }
 
-  .reform-gallery__photo {
-    @apply h-full w-full object-cover;
+  .content-guide--surface {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
+  }
+
+  .content-guide__list {
+    display: grid;
+  }
+
+  .content-guide__item {
+    padding-block: var(--space-6);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .content-guide__title {
+    font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  .content-guide__text {
+    margin-top: var(--space-3);
+    color: var(--color-ink-2);
+  }
+
+  @media (min-width: 48rem) {
+    .content-guide__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-12);
+    }
   }
 }
 

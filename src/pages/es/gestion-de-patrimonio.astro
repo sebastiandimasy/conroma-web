@@ -5,6 +5,7 @@ import Statement from '../../components/sections/Statement.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
 import StoryScroll from '../../components/sections/StoryScroll.astro';
 import ServiceIndex from '../../components/sections/ServiceIndex.astro';
+import ContentGuide from '../../components/sections/ContentGuide.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
@@ -57,6 +58,33 @@ const steps: StoryStep[] = [
 const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(
   publishedSellerTowns.filter((town) => town.slug !== 'malgrat-de-mar').map((town) => town.name),
 );
+// Qué supone administrar un piso alquilado (normativa general: LAU, INCASÒL, IRPF).
+const guide = [
+  {
+    title: 'El inquilino',
+    text: 'Atender sus avisos y dudas del día a día y ser su interlocutor durante todo el contrato.',
+  },
+  {
+    title: 'Averías y reparaciones',
+    text: 'Por ley, el propietario paga las reparaciones necesarias para que la vivienda siga siendo habitable; las pequeñas, por el desgaste del uso diario, son del inquilino.',
+  },
+  {
+    title: 'Contrato y prórrogas',
+    text: 'Fechas de prórroga, actualización de la renta según lo pactado y fin del contrato, avisando con la antelación que marca la ley.',
+  },
+  {
+    title: 'Fianza y suministros',
+    text: 'Depositar la fianza en el INCASÒL al firmar y ocuparse de los suministros cuando entra o sale un inquilino.',
+  },
+  {
+    title: 'Impuestos',
+    text: 'Las rentas del alquiler se declaran en el IRPF y el IBI llega cada año. Tenerlo ordenado ahorra sustos en la declaración.',
+  },
+  {
+    title: 'Varios inmuebles',
+    text: 'Con más de uno, conviene mirar el conjunto: qué conviene alquilar, vender o reformar en cada caso.',
+  },
+];
 const faq = [
   {
     question: '¿Qué incluye la gestión de patrimonio?',
@@ -99,11 +127,17 @@ const faq = [
 
   <StoryScroll id="que-llevamos" title="Lo que llevamos nosotros" steps={steps} />
 
-  <ServiceIndex title="Lo que podemos hacer con tus inmuebles" exclude="gestion-de-patrimonio" />
+  <ContentGuide
+    title="Qué supone administrar un piso alquilado"
+    lead="Esto es lo que lleva un piso alquilado. Cuéntanos tu caso y vemos qué parte llevamos nosotros."
+    items={guide}
+  />
 
   <FaqSection title="Gestión de patrimonio: lo que nos preguntan" items={faq} origin="patrimonio-faq" />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <ServiceIndex title="Lo que podemos hacer con tus inmuebles" exclude="gestion-de-patrimonio" />
+
+  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
 
   <ClosingCTA title="Hablemos" titleMuted="de tus inmuebles" image={closingPhoto} origin="patrimonio-cierre" />
 </BaseLayout>

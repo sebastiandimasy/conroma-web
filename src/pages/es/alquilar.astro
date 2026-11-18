@@ -7,6 +7,7 @@ import Testimonials from '../../components/sections/Testimonials.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
 import Icon from '../../components/Icon.astro';
+import ContentGuide from '../../components/sections/ContentGuide.astro';
 import heroPhoto from '../../assets/lugares/malgrat-de-mar/parc-del-castell.jpg';
 import searchPhoto from '../../assets/servicios/alquiler.jpg';
 import ownerPhoto from '../../assets/equipo/conroma-102.jpg';
@@ -36,6 +37,33 @@ const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(
 const answer =
   'Conroma te ayuda con el alquiler en Malgrat de Mar y el Alt Maresme, tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad. ' +
   'A quien busca, le decimos qué hay hoy y le avisamos cuando entra algo. Al propietario, le buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar.';
+// Guía general del alquiler en Cataluña (normativa vigente, sin cifras propias).
+const guide = [
+  {
+    title: 'Cédula de habitabilidad',
+    text: 'En Cataluña, para alquilar una vivienda hace falta la cédula de habitabilidad vigente. Si no la tienes o está caducada, se tramita antes de firmar.',
+  },
+  {
+    title: 'Certificado energético',
+    text: 'Es obligatorio para alquilar, y la calificación energética tiene que aparecer en el anuncio del piso.',
+  },
+  {
+    title: 'Fianza',
+    text: 'Para vivienda, la ley fija una mensualidad de fianza. En Cataluña, el propietario la deposita en el INCASÒL.',
+  },
+  {
+    title: 'Honorarios de la inmobiliaria',
+    text: 'Desde la Ley de vivienda de 2023, los gastos de gestión inmobiliaria y de formalización del contrato de alquiler de vivienda los paga el propietario, no el inquilino.',
+  },
+  {
+    title: 'Duración del contrato',
+    text: 'En vivienda habitual, el contrato se prorroga cada año, si el inquilino quiere, hasta cinco años cuando el propietario es una persona y hasta siete cuando es una empresa.',
+  },
+  {
+    title: 'Papeles del inquilino',
+    text: 'Normalmente se pide DNI o NIE y algo que acredite ingresos, como las nóminas o el contrato de trabajo. Tenerlo preparado acelera el proceso.',
+  },
+];
 const faq = [
   {
     question: '¿Tenéis pisos de alquiler ahora mismo?',
@@ -129,9 +157,16 @@ const faq = [
     </div>
   </section>
 
-  <FaqSection title="Lo que más preguntan del alquiler" items={faq} origin="alquilar-faq" reason="alquiler" />
+  <ContentGuide
+    tone="surface"
+    title="Lo que conviene saber antes de alquilar en Cataluña"
+    lead="Tanto si alquilas tu piso como si buscas uno, estos son los puntos que salen en casi todos los alquileres."
+    items={guide}
+  />
 
   <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+
+  <FaqSection title="Lo que más preguntan del alquiler" items={faq} origin="alquilar-faq" reason="alquiler" />
 
   <ClosingCTA title="Hablemos" titleMuted="de tu alquiler" image={closingPhoto} origin="alquilar-cierre" reason="alquiler" />
 </BaseLayout>

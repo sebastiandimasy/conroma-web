@@ -1,35 +1,40 @@
 ---
-// Galería de obras reales de Conroma. Fotos en public/img/reformas/reforma-01..23.jpg.
-const photos = Array.from(
-  { length: 23 },
-  (_, i) => `/img/reformas/reforma-${String(i + 1).padStart(2, '0')}.jpg`,
-);
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const { title = 'Obras que hemos hecho', lead = 'Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.' } = Astro.props;
+
+// Obras reales de Conroma en Obras (public/img/reformas). La 10 vive en src/assets: no se lista aquí.
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
+const photos = numbers.map((n) => `/img/reformas/reforma-${String(n).padStart(2, '0')}.jpg`);
 ---
 
+{/* Galería editorial: fotos con radio 4px en rejilla, sin tarjetas ni etiquetas. Salida a Instagram. */}
 <section class="section reform-gallery" id="obras">
   <div class="wrap">
-    <div class="section__head section__head--center" data-reveal>
-      <p class="eyebrow">Nuestras obras</p>
-      <h2 class="section__title">Reformas que <span class="highlight">hablan solas</span></h2>
-      <p class="section__lead">Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.</p>
+    <div class="section__head" data-reveal>
+      <h2 class="section__title">{title}</h2>
+      <p class="section__lead">{lead}</p>
     </div>
-
     <div class="reform-gallery__grid">
       {
         photos.map((src, i) => (
-          <figure class="reform-gallery__item card" data-reveal>
-            <img
-              class="reform-gallery__photo"
-              src={src}
-              alt={`Reforma de Conroma en Obras, foto ${i + 1}`}
-              width="640"
-              height="480"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
+          <img
+            class="reform-gallery__photo"
+            src={src}
+            alt={`Piso reformado por Conroma en Obras en el Maresme (obra ${i + 1})`}
+            width="600"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
         ))
       }
     </div>
+    <a class="link-cta reform-gallery__more" href="https://www.instagram.com/conromaenobras/" rel="noopener" target="_blank">
+      Más antes y después en Instagram
+    </a>
   </div>
 </section>
