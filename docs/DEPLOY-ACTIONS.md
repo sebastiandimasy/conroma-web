@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24' # el prebuild importa TypeScript (Node ≥ 22.18)
           cache: 'npm'
       - run: npm ci
       - name: Build (inventario fresco del feed de Habitatsoft)

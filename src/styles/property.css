@@ -154,9 +154,31 @@
   }
 
   .property-card__ref {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     color: var(--color-ink-3);
+  }
+
+  /* «Nuevo» la primera semana tras el alta (src/lib/inventory.ts). Fuera de la foto. */
+  .tag-new {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    vertical-align: 0.1em;
+  }
+
+  .property-card__ref .tag-new {
+    margin-right: 0;
   }
 
   .property-card__place {

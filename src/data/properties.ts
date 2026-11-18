@@ -1,6 +1,7 @@
 import raw from './properties.real.json';
 import photoMap from './property-photos.json';
 import legacyMap from './property-legacy.json';
+import { mergeInventoryItem, normRef } from '../lib/inventory';
 import { findTown } from './towns';
 
 export interface Property {
@@ -46,6 +47,10 @@ export interface Property {
   energyPending?: boolean;
   /** Id de la ficha en la web antigua (/detalle/inmueble/<id>), para la 301 a la ficha nueva. */
   legacyId?: string;
+  /** Viene del feed de Habitatsoft (y no del Excel): el feed es la verdad de lo publicado. */
+  fromFeed?: boolean;
+  /** Día (YYYY-MM-DD) en que apareció por primera vez en el feed. Da la etiqueta «Nuevo». */
+  listedAt?: string;
 
   /** Solo alquiler de VIVIENDA en zona de mercado residencial tensionado.
    *  Art. 59.g y 61.2.f de la Ley 18/2007: hay que publicar el precio máximo que
@@ -67,7 +72,6 @@ export type Operation = Property['operation'];
  */
 // Fotos reales por referencia (galerías del CDN de Habitatsoft, por ref normalizada).
 const photos = photoMap as Record<string, string[]>;
-const normRef = (ref: string): string => ref.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 /**
  * Fuente del inventario: `properties.real.json`, que el script de pre-build
@@ -103,10 +107,8 @@ export function tidyZone(zone: string): string {
 const legacy = legacyMap as Record<string, Partial<Property> & { published?: boolean }>;
 
 const withPhotos: Property[] = inventory.map((item) => {
-  const { published: _published, ...fromOldSite } = legacy[normRef(item.ref)] ?? {};
-  const property = { ...item, ...fromOldSite, zone: tidyZone(item.zone) };
-  const images = photos[normRef(property.ref)];
-  return images && images.length ? { ...property, images, photos: images.length } : property;
+  const key = normRef(item.ref);
+  return { ...mergeInventoryItem(item, legacy[key], photos[key]), zone: tidyZone(item.zone) };
 });
 
 /**
@@ -148,7 +150,8 @@ export function faltanDatosDeAlquilerTensionado(property: Property): boolean {
  */
 // El Excel de inventario está desfasado: lo que Habitatsoft ya no publica en la web antigua
 // (vendido, retirado o reservado) tampoco sale aquí. Los que no tienen id antiguo se quedan.
-const retirada = (property: Property): boolean => legacy[normRef(property.ref)]?.published === false;
+// Si el inventario viene del feed, el feed ya es lo publicado y este filtro no aplica.
+const retirada = (property: Property): boolean => !property.fromFeed && legacy[normRef(property.ref)]?.published === false;
 
 /** Fuera porque Habitatsoft ya no las publica (ver scripts/scrape-web-antigua.mjs). */
 export const retiradasEnHabitatsoft: Property[] = withPhotos.filter(retirada);

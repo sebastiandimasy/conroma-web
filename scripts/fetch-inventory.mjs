@@ -3,17 +3,20 @@
  * reescribe src/data/properties.real.json (el volcado que importa el build).
  *
  * Por qué aquí y no en el build: el adaptador Cloudflare prohíbe `fetch()` en el
- * scope global del módulo, así que el fetch dentro de loadInventory() SIEMPRE falla y
- * cae al JSON. Haciéndolo antes, en Node puro, no hay esa restricción.
+ * scope global del módulo. Haciéndolo antes, en Node puro, no hay esa restricción.
  *
- * Se ejecuta solo con `npm run build` (hook `prebuild`). Sin HABITATSOFT_FEED_URL no
- * hace nada (deja el volcado actual). Nunca rompe el build: si el feed falla, avisa y sale 0.
+ * Se ejecuta con `npm run build` (hook `prebuild`). Sin HABITATSOFT_FEED_URL no hace nada
+ * (deja el volcado actual). Nunca rompe el build: si el feed falla, avisa y sale 0.
  *
- * Fuente por ahora: Habitatsoft. Cuando el inventario se gestione en el CRM/Supabase,
- * se añade aquí esa rama (o se cambia la fuente).
+ * Además apunta el día en que cada referencia aparece por primera vez (etiqueta «Nuevo»).
+ * Ese registro se publica en /data/altas.json y el siguiente build lo lee de la web en
+ * producción, así sobrevive aunque el build se haga en una máquina limpia (GitHub Actions).
+ *
+ * Usa el mismo parser que la web (src/lib/habitatsoft.ts): Node ≥ 22.18 ejecuta TypeScript.
  */
-import { readFileSync, existsSync, writeFileSync } from 'node:fs';
-import { XMLParser } from 'fast-xml-parser';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
+import { parseHabitatsoftXml } from '../src/lib/habitatsoft.ts';
+import { feedLooksComplete, madridDate, mergeFirstSeen, normRef } from '../src/lib/inventory.ts';
 
 function cargarEnv() {
   for (const archivo of ['.dev.vars', '.env', '.env.local']) {
@@ -32,68 +35,63 @@ function cargarEnv() {
 cargarEnv();
 
 const FEED = process.env.HABITATSOFT_FEED_URL;
+const SITE = process.env.SITE_URL || 'https://conromaasesores.com';
 const OUT = 'src/data/properties.real.json';
+const SEEN = 'src/data/property-first-seen.json';
+const SEEN_PUBLIC = 'public/data/altas.json';
 
 if (!FEED) {
   console.log('[inventario] sin HABITATSOFT_FEED_URL: uso el volcado actual (' + OUT + ').');
   process.exit(0);
 }
 
-// --- Parser del feed Habitatsoft (mismo mapeo que src/lib/habitatsoft.ts) ---
-const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '', trimValues: true });
-const text = (v) => (v === null || v === undefined || typeof v === 'object' ? '' : String(v).trim());
-const num = (v) => { const n = Number(text(v).replace(',', '.')); return Number.isFinite(n) ? n : 0; };
-const bool01 = (v) => text(v) === '1';
-const asArray = (v) => (v === undefined || v === null ? [] : Array.isArray(v) ? v : [v]);
-const townSlug = (name) => text(name).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const operationFrom = (op) => (/alquiler|lloguer|rent|louer|miet/i.test(op) ? 'alquiler' : 'venta');
-const spanishBlock = (it) => { const l = asArray(it?.LanguageData?.Language); return l.find((x) => x?.idlanguage === 'es') ?? l[0] ?? {}; };
-const photosOf = (it) => asArray(it?.Medias?.Fotos?.Foto).map(text).filter((u) => u.startsWith('http'));
+/** Registro de altas: el publicado en la web (el más al día) o, si no hay, el del repo. */
+async function previousFirstSeen() {
+  try {
+    const res = await fetch(`${SITE}/data/altas.json`, { signal: AbortSignal.timeout(10_000) });
+    const data = res.ok ? await res.json() : null;
+    if (data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length) {
+      console.log(`[inventario] altas leídas de ${SITE}/data/altas.json (${Object.keys(data).length}).`);
+      return data;
+    }
+  } catch {
+    // Antes del swipe la web en producción es la antigua y no tiene este archivo.
+  }
+  return existsSync(SEEN) ? JSON.parse(readFileSync(SEEN, 'utf8')) : {};
+}
 
-function parse(xml) {
-  const data = parser.parse(xml);
-  return asArray(data?.WEB?.Inmuebles?.Inmueble).map((it) => {
-    const es = spanishBlock(it);
-    const rooms = Number(text(it.TotalHab)) || num(it.NumHabDobles) + num(it.NumHabSencillas);
-    const lat = num(it.Latitud);
-    const lng = num(it.Longitud);
-    const images = photosOf(it);
-    const piso = {
-      ref: text(it.NumeroExpediente) || text(it.IdInmueble),
-      operation: operationFrom(text(es.txt_NombreOperacion)),
-      type: text(es.txt_NombreTipoInmueble) || 'Inmueble',
-      town: townSlug(text(it.NombreMunicipio)),
-      zone: text(it.NombreZona) || text(it.NombreMunicipio),
-      price: num(it.Precio1Euros),
-      previousPrice: null,
-      rooms,
-      baths: num(it.NumBanos) + num(it.NumAseos),
-      area: Math.round(num(it.SuperficieTotal)),
-      floor: num(it.AlturaPiso),
-      elevator: bool01(it.box_Ascensor),
-      parking: bool01(it.box_Garaje),
-      terrace: bool01(it.box_Terraza),
-      state: text(es.txt_Estado) || 'Consultar',
-      tag: '',
-      likes: '',
-      watchOut: '',
-      description: text(es.txt_FrasePublicitaria) || text(es.txt_DetalleAlternativo),
-      photos: images.length,
-      tone: 1,
-      images,
-    };
-    if (lat && lng) piso.geo = { latitude: lat, longitude: lng };
-    return piso;
-  });
+/** Lista los campos del feed que podrían ser certificado energético o fecha, para mapearlos. */
+function reportCandidateFields(xml) {
+  const tags = new Set(xml.match(/<([A-Za-z_][\w]*)[\s>]/g)?.map((t) => t.slice(1, -1)) ?? []);
+  const candidates = [...tags].filter((t) => /energ|emisi|consum|certif|calif|fecha|alta|date/i.test(t));
+  if (candidates.length) console.log('[inventario] campos a revisar en el feed: ' + candidates.join(', '));
 }
 
 try {
-  const res = await fetch(FEED);
-  if (!res.ok) { console.warn(`[inventario] feed HTTP ${res.status}: dejo el volcado actual.`); process.exit(0); }
-  const pisos = parse(await res.text());
-  if (!pisos.length) { console.warn('[inventario] el feed vino vacío: dejo el volcado actual.'); process.exit(0); }
+  const res = await fetch(FEED, { signal: AbortSignal.timeout(60_000) });
+  if (!res.ok) {
+    console.warn(`[inventario] feed HTTP ${res.status}: dejo el volcado actual.`);
+    process.exit(0);
+  }
+  const xml = await res.text();
+  const pisos = parseHabitatsoftXml(xml).filter((p) => p.ref);
+  const actuales = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')).length : 0;
+  if (!feedLooksComplete(pisos.length, actuales)) {
+    console.warn(`[inventario] el feed trae ${pisos.length} pisos y hay ${actuales} publicados: parece incompleto, dejo el volcado actual.`);
+    process.exit(0);
+  }
+  reportCandidateFields(xml);
+
+  const today = madridDate();
+  const seen = mergeFirstSeen(await previousFirstSeen(), pisos.map((p) => p.ref), today);
+  for (const piso of pisos) piso.listedAt = seen[normRef(piso.ref)];
+
   writeFileSync(OUT, JSON.stringify(pisos, null, 1) + '\n');
-  console.log(`[inventario] feed de Habitatsoft OK: ${pisos.length} pisos escritos en ${OUT}.`);
+  writeFileSync(SEEN, JSON.stringify(seen, null, 1) + '\n');
+  mkdirSync('public/data', { recursive: true });
+  writeFileSync(SEEN_PUBLIC, JSON.stringify(seen));
+  const nuevos = pisos.filter((p) => p.listedAt === today).length;
+  console.log(`[inventario] feed de Habitatsoft OK: ${pisos.length} pisos (${nuevos} nuevos hoy) en ${OUT}.`);
 } catch (e) {
   console.warn('[inventario] feed no disponible (' + (e?.message || e) + '): dejo el volcado actual.');
   process.exit(0);

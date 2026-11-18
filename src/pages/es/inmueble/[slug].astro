@@ -11,6 +11,7 @@ import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
 import { phoneUrl, whatsappUrl } from '../../../lib/links';
+import { isNewListing } from '../../../lib/inventory';
 import { breadcrumbSchema, listingSchema } from '../../../lib/seo';
 
 export function getStaticPaths() {
@@ -117,7 +118,7 @@ const features = [
       <div class="property__main">
         <header class="property__summary">
           <h1 class="property__title">{title}</h1>
-          <p class="property__place">{place} · Ref. {property.ref}</p>
+          <p class="property__place">{isNewListing(property) && <span class="tag-new">Nuevo</span>}{place} · Ref. {property.ref}</p>
           <div class="property__price-row">
             <p class="property__price">
               {

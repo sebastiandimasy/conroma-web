@@ -31,12 +31,25 @@ por esas reglas y se perdería el SEO heredado.
 
 ## Paso 1 — Build de producción
 
+Primero, con la web antigua aún encendida, refrescar lo que se lee de ella (certificado
+energético, ids para las 301, qué sigue publicado):
+
+```bash
+node scripts/scrape-web-antigua.mjs
+```
+
 En un `.env` local (no se commitea):
 
 ```
 PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=la-anon-key
+HABITATSOFT_FEED_URL=el-enlace-del-feed-Enlace-Web-2.0
 ```
+
+Con `HABITATSOFT_FEED_URL`, el build trae el inventario del feed en vez del Excel y en la
+salida dice cuántos pisos trae, cuántos son nuevos y qué campos del feed parecen certificado
+energético o fecha (para mapearlos en `src/lib/habitatsoft.ts`). Si el feed falla o trae menos
+de la mitad de los pisos, usa el inventario anterior y lo avisa.
 
 `PUBLIC_PREVIEW` tiene que quedar **sin poner**: si vale `true`, toda la web sale con `noindex`.
 
@@ -115,5 +128,12 @@ Por eso el paso 0 no es opcional.
 
 ## Actualizar la web después del swipe
 
-Cada cambio: `npm run build` y volver a subir el contenido de `dist/client/`. Para automatizarlo
-con GitHub Actions, ver `docs/DEPLOY-ACTIONS.md`.
+La web es estática: **un piso dado de alta en Habitatsoft aparece en la web en el siguiente
+build**. Para que pase solo, activar el workflow de `docs/DEPLOY-ACTIONS.md` (build cada noche
+con el feed y subida por FTP). La etiqueta «Nuevo» dura 7 días y se quita en el build de ese
+día: sin el build diario, se quedaría puesta.
+
+Cómo sabe qué es nuevo: el build apunta en `/data/altas.json` (publicado en la web) el día en
+que cada referencia aparece por primera vez, y el siguiente build lo lee de ahí.
+
+A mano: `npm run build` y volver a subir el contenido de `dist/client/`.

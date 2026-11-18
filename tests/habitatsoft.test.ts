@@ -71,6 +71,7 @@ describe('parser Habitatsoft → Property', () => {
       state: 'de 2ª mano',
       description: 'Piso reformado en el centro',
       photos: 2,
+      fromFeed: true,
     });
     expect(items[0].images).toEqual(['http://fotoshs.imghs.net/a.jpg', 'http://fotoshs.imghs.net/b.jpg']);
     expect(items[0].geo).toEqual({ latitude: 41.650106, longitude: 2.741575 });

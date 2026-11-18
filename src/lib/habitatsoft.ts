@@ -92,6 +92,7 @@ export function parseHabitatsoftXml(xml: string): Property[] {
       tone: 1,
       images,
       geo: lat && lng ? { latitude: lat, longitude: lng } : undefined,
+      fromFeed: true,
     };
   });
 }

@@ -2,6 +2,7 @@ import type { Property } from '../data/properties';
 import { cardFacts, hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
 import { findTown } from '../data/towns';
 import { formatPrice } from '../lib/format';
+import { isNewListing } from '../lib/inventory';
 import { phoneUrl, whatsappUrl } from '../lib/links';
 import { Icon } from './Icon';
 import FavoriteToggle from './FavoriteToggle';
@@ -83,7 +84,10 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
               <span className="property-card__price--ask">Precio a consultar</span>
             )}
           </p>
-          <span className="property-card__ref">{`Ref. ${property.ref}`}</span>
+          <span className="property-card__ref">
+            {isNewListing(property) && <span className="tag-new">Nuevo</span>}
+            {`Ref. ${property.ref}`}
+          </span>
         </div>
         {drop > 0 && property.previousPrice && (
           <p className="property-card__drop">
