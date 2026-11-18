@@ -1,21 +1,44 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHero from '../../components/sections/PageHero.astro';
-import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
+import ServiceIndex from '../../components/sections/ServiceIndex.astro';
+import SplitFeature from '../../components/sections/SplitFeature.astro';
+import ProofBand from '../../components/sections/ProofBand.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
-import ContactSection from '../../components/sections/ContactSection.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import heroPhoto from '../../assets/equipo/equipo.jpg';
+import valuationPhoto from '../../assets/equipo/conroma-91.jpg';
+import closingPhoto from '../../assets/equipo/conroma-82.jpg';
+import { services } from '../../data/services';
+import { site } from '../../data/site';
 import { breadcrumbSchema, faqSchema } from '../../lib/seo';
 
+/* Keyword (docs/KEYWORDS.md): «servicios inmobiliaria Malgrat»; secundarias: qué hace una
+   inmobiliaria, servicios de compraventa. Cada servicio enlaza a su página, que es la que compite. */
 const path = '/es/servicios/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Servicios', path },
 ];
+const answer =
+  'Conroma Asesores ofrece en Malgrat de Mar y el Alt Maresme cinco servicios inmobiliarios: compra, venta, alquiler, gestión de patrimonio y reformas con Conroma en Obras. ' +
+  'Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.';
+const trackRecord = [
+  { value: '+300', label: 'inmuebles gestionados' },
+  { value: '+100', label: 'clientes satisfechos' },
+  { value: '+200', label: 'pisos vendidos' },
+];
 const faq = [
   {
     question: '¿Qué servicios ofrece Conroma?',
     answer:
-      'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes varios inmuebles y reformamos pisos con Conroma en Obras.',
+      'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes uno o varios inmuebles y reformamos pisos con Conroma en Obras.',
+  },
+  {
+    question: '¿Una misma persona lleva toda mi operación?',
+    answer: 'Sí. Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.',
   },
   {
     question: '¿Tengo que pagar por una valoración o una primera visita?',
@@ -27,26 +50,55 @@ const faq = [
       'Tenemos oficina en Malgrat de Mar y trabajamos toda la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella y Lloret de Mar.',
   },
 ];
+// Lista de servicios para buscadores e IA: cada uno con su página.
+const serviceList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Servicios de Conroma Asesores',
+  itemListElement: services.map((service, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: service.name,
+    url: `${site.url}${service.href}`,
+  })),
+};
 ---
 
 <BaseLayout
   title="Servicios inmobiliarios en Malgrat de Mar"
   description="Servicios inmobiliarios de Conroma en Malgrat de Mar y el Alt Maresme: comprar, vender, alquilar, gestión de patrimonio y reformas."
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceList]}
 >
-  <PageHero
+  <HeroStory
     crumbs={crumbs}
-    eyebrow="¿Qué hacemos?"
-    title="Servicios inmobiliarios en "
-    highlight="Malgrat de Mar y alrededores."
+    title="Servicios inmobiliarios en Malgrat de Mar"
     lead="Todo lo que pasa alrededor de una casa, con una misma persona de principio a fin."
-  >
-    <a class="button button--primary button--large" href="/es/contacto/">Hablar con Conroma</a>
-    <a class="link-cta" href="/es/valoracion/">Saber cuánto vale mi piso</a>
-  </PageHero>
+    image={heroPhoto}
+    alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
+    cta={{ label: 'Ver qué hacemos', href: '#servicios' }}
+    position="center 30%"
+  />
 
-  <ServicesGrid eyebrow="Cinco servicios" title="En qué te podemos ayudar." />
-  <FaqSection title="Servicios: lo que nos preguntan" items={faq} />
-  <ContactSection />
+  <Statement text={answer} />
+
+  <ServiceIndex id="servicios" title="Qué hacemos por ti" photos />
+
+  <SplitFeature
+    tone="surface"
+    reverse
+    title="¿Cuánto vale tu piso?"
+    text="Pasamos a ver tu piso y te damos un precio realista, gratis y sin compromiso. Si decides vender, empezamos por ahí."
+    image={valuationPhoto}
+    alt="Una asesora de Conroma preparando una valoración en la oficina"
+    link={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
+  />
+
+  <ProofBand figures={trackRecord} count />
+
+  <FaqSection title="Servicios: lo que nos preguntan" items={faq} origin="servicios-faq" />
+
+  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+
+  <ClosingCTA title="Hablemos" titleMuted="de lo que necesitas" image={closingPhoto} origin="servicios-cierre" />
 </BaseLayout>

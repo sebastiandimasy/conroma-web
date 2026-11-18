@@ -7,9 +7,11 @@ interface Props {
   exclude?: string;
   /** Inicio: acordeón con la foto del servicio abierto (al lado en escritorio, dentro en móvil). */
   photos?: boolean;
+  /** Ancla (p. ej. la flecha del héroe de Servicios). */
+  id?: string;
 }
 
-const { title, exclude, photos = false } = Astro.props;
+const { title, exclude, photos = false, id } = Astro.props;
 const list = services.filter((service) => service.slug !== exclude);
 
 // Una foto por servicio (las que ya tenía la home antigua).
@@ -24,7 +26,7 @@ const photoOf: Record<string, { src: string; alt: string }> = {
 
 {
   photos ? (
-    <section class="section service-index service-index--photos">
+    <section class="section service-index service-index--photos" id={id}>
       <div class="wrap service-index__grid">
         <div>
           <h2 class="section__title" data-reveal>{title}</h2>
