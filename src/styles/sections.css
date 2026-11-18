@@ -1782,7 +1782,6 @@
     font-weight: var(--weight-display);
     line-height: 1.05;
     letter-spacing: -0.045em;
-    text-align: center;
   }
 
   .compare__groups {
@@ -2632,6 +2631,11 @@
     color: var(--color-on-surface-2);
   }
 
+  .town-links--canvas {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
   .town-links__arrow {
     flex: none;
     width: 18px;
@@ -2694,12 +2698,12 @@
     margin-top: var(--space-10);
   }
 
+  /* A la izquierda, como el título y las preguntas de encima (sin mezclar alineaciones). */
   .faq-section__contact {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin-top: var(--space-12);
-    text-align: center;
   }
 
   .faq-section__contact-title {
@@ -3101,6 +3105,15 @@
     @apply flex flex-col items-center gap-4 text-center;
     max-width: 560px;
     padding-block: clamp(8px, 3vw, 24px);
+  }
+
+  /* Párrafos del resultado: justificados con la última línea centrada, para que los bordes
+     queden rectos y casen con el icono y el titular centrados (sin mezclar alineaciones). */
+  .afford__result :is(.afford__sub, .afford__financing, .afford__note) {
+    width: 100%;
+    text-align: justify;
+    text-align-last: center;
+    hyphens: auto;
   }
 
   /* Icono en disco tintado: entra con un pop de muelle y suelta dos ondas una sola vez.
