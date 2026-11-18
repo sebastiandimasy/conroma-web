@@ -1,162 +1,119 @@
-# Swipe: poner la web nueva en producción
+# Swipe: poner la web nueva en producción (Hostinger)
 
-Procedimiento para sustituir la web antigua de `conromaasesores.com` por la nueva.
-Verificado el 3 de noviembre de 2026 contra el estado real del dominio y del repo.
+Cómo sustituir la web antigua de `conromaasesores.com` (servidor IIS de Habitatsoft) por la nueva,
+alojada en **Hostinger**. Revisado el 18 de noviembre de 2026.
+
+La web nueva es **100 % estática**: HTML, CSS, JS e imágenes. No hay servidor propio. Los
+formularios escriben directo en Supabase con la `anon key` y una política RLS que solo permite
+insertar (`supabase/migrations/0003_web_lead_insert.sql`).
 
 ---
 
-## ⚠️ Lo primero: hoy la web vive en `www`, y la nueva canonicaliza el apex
+## El riesgo principal: `www` y apex
 
-Esto es **el riesgo principal del swipe**, y no se ve hasta que lo compruebas:
+Google tiene indexada la web antigua en **`www.conromaasesores.com`**. La nueva declara como
+canónica la versión **sin www** (`site` en `astro.config.mjs`).
 
-```
-$ dig +short NS conromaasesores.com
-cosmos.dns-parking.com.        ← DNS de parking (Hostinger), no Cloudflare
-nova.dns-parking.com.
-
-$ curl -I https://conromaasesores.com/
-HTTP/2 301 → http://www.conromaasesores.com/     ← el apex redirige a www
-server: Microsoft-IIS/10.0                        ← servidor de Habitatsoft
-
-$ curl -I https://www.conromaasesores.com/
-HTTP/2 200
-```
-
-Todo lo que Google tiene indexado está bajo **`www.`**. La web nueva declara como canónica la
-versión **sin www** (`site: 'https://conromaasesores.com'` en `astro.config.mjs`).
-
-**Si se despliega el Worker solo en el apex, las 192 rutas antiguas —que son todas `www`— no
-llegan a tocar ninguna regla de `_redirects`, y se pierde el SEO heredado.** Las redirecciones
-están perfectas (192 de 192 cubiertas, 0 destinos rotos), pero no se ejecutarían.
-
-**Solución:** enganchar el Worker como *Custom Domain* en **los dos hosts** (apex y `www`) y
-redirigir `www → apex` con una Redirect Rule de Cloudflare. `_redirects` **no sirve** para esto:
-no admite reglas por host.
+`public/.htaccess` ya hace el 301 de `www` al apex y todas las redirecciones de URLs antiguas
+(las 43 del sitemap viejo, comprobadas). **Solo funciona si `www` y el apex llegan al mismo
+alojamiento de Hostinger.** Si `www` siguiera apuntando a Habitatsoft, ninguna URL antigua pasaría
+por esas reglas y se perdería el SEO heredado.
 
 ---
 
 ## Paso 0 — Antes de tocar nada
 
+- [ ] Apuntar los registros DNS **actuales** de `@` y `www` (tipo y valor). Son la vuelta atrás.
+- [ ] Bajar el TTL de esos dos registros a 300 s **24-48 h antes** del cambio.
+- [ ] Avisar a Habitatsoft de que no apaguen su servidor hasta pasadas 2 semanas.
 - [ ] El backup de la web antigua sigue en `~/Desktop/backup-conromaasesores-antigua.tar.gz`.
-- [ ] Apuntar los **TTL actuales** del DNS. Bájalos a 300 s **24-48 h antes** del cambio: así el
-      cambio se propaga en minutos y la vuelta atrás también.
-- [ ] Avisar a Habitatsoft de que no apaguen su servidor hasta pasadas 2 semanas (por si hay que
-      revertir).
+- [ ] **No tocar los registros `MX` ni los `TXT` (SPF, DKIM, DMARC).** Son el correo.
 
-## Paso 1 — Mover el dominio a Cloudflare
+## Paso 1 — Build de producción
 
-1. Cloudflare → *Add a site* → `conromaasesores.com` → plan Free.
-2. Cloudflare importa los registros DNS actuales. **Revísalos uno a uno**, sobre todo:
-   - `MX` y `TXT` de **correo** (SPF, DKIM, DMARC). Si se pierden, **dejáis de recibir correo**.
-     Esto es lo que más se rompe en una migración de DNS.
-   - Cualquier subdominio en uso (webmail, cpanel, etc.).
-3. En **Hostinger**, cambiar los nameservers por los dos que te da Cloudflare.
-4. Esperar a que Cloudflare marque la zona como *Active* (de minutos a 24 h).
+En un `.env` local (no se commitea):
 
-Comprobación:
-```bash
-dig +short NS conromaasesores.com     # tienen que salir los de Cloudflare
-dig +short MX conromaasesores.com     # el correo tiene que seguir igual que antes
-```
-
-## Paso 2 — Autenticar wrangler
-
-```bash
-npx wrangler login      # abre el navegador; entra con la cuenta Cloudflare del dominio
-npx wrangler whoami     # tiene que decir el email y la cuenta, no "not authenticated"
-```
-
-## Paso 3 — Secretos del Worker
-
-Sin esto, **el formulario de contacto y la valoración devuelven error 500**
-(`src/pages/api/leads.ts`).
-
-```bash
-npx wrangler secret put SUPABASE_URL
-npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-```
-Te los pide por teclado: no quedan en el historial ni en ningún archivo.
-
-Y para el build (archivo `.env` local, que no se commitea):
 ```
 PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=la-anon-key
 ```
-Sin estas dos, el panel `/es/admin/` lanza «Faltan PUBLIC_SUPABASE_URL…» al abrirse.
-**`PUBLIC_PREVIEW` tiene que quedar SIN poner en producción**: si vale `true`, mete `noindex`
-en toda la web.
 
-## Paso 4 — Desplegar sin tocar el dominio todavía
+`PUBLIC_PREVIEW` tiene que quedar **sin poner**: si vale `true`, toda la web sale con `noindex`.
 
 ```bash
-npm run deploy
+npm run build
 ```
-Esto publica en `conroma-web.<tu-cuenta>.workers.dev`. La web antigua sigue intacta.
 
-La primera vez wrangler pedirá **aprovisionar el KV `SESSION`** (está sin `id` en
-`wrangler.jsonc`): acepta.
+El resultado está en **`dist/client/`**. Comprueba que dentro hay un `.htaccess` (es un archivo
+oculto) y un `sitemap-index.xml`.
 
-Prueba ahí, en la URL de `workers.dev`:
-- [ ] La portada carga y **a 390 px** se ve bien (el móvil es el 97% del tráfico).
-- [ ] Enviar el formulario de contacto → el lead aparece en Supabase.
-- [ ] La valoración guarda.
-- [ ] Entrar en `/es/admin/` con el usuario admin (ver `docs/USUARIOS.md`).
+## Paso 2 — Subir a Hostinger
 
-## Paso 5 — Enganchar los dos hosts
+1. hPanel → *Sitios web* → añadir `conromaasesores.com` al plan de hosting (si no está).
+2. *Administrador de archivos* → `public_html/` del dominio → subir **el contenido** de
+   `dist/client/` (no la carpeta en sí), `.htaccess` incluido.
+3. Si `public_html/` trae un `index.html` o `default.php` de Hostinger, borrarlo.
 
-En Cloudflare → *Workers & Pages* → `conroma-web` → *Settings* → *Domains & Routes*:
-- [ ] Añadir Custom Domain **`conromaasesores.com`**
-- [ ] Añadir Custom Domain **`www.conromaasesores.com`**
+## Paso 3 — Apuntar el dominio
 
-Y en *Rules* → *Redirect Rules*, una regla:
+En hPanel → *Dominios* → *DNS*:
 
-| Campo | Valor |
-|---|---|
-| Si | `http.host eq "www.conromaasesores.com"` |
-| Entonces | Dynamic redirect a `concat("https://conromaasesores.com", http.request.uri.path)` |
-| Código | **301** · Preservar query string: **sí** |
+- [ ] `@` (registro `A`) → la IP del hosting de Hostinger (la muestra hPanel en *Detalles del plan*).
+- [ ] `www` → `CNAME` a `conromaasesores.com` (o `A` a la misma IP).
+- [ ] `MX` y `TXT` del correo: **sin tocar**.
 
-> Esto es lo que hace que las URLs antiguas en `www` entren, se redirijan al apex y **allí sí**
-> las recojan las reglas de `_redirects`. Es una cadena de dos saltos (www → apex → destino):
-> aceptable y habitual, Google la sigue sin problema.
+Luego, en *Seguridad* → *SSL*: instalar el certificado gratuito para el dominio **y para `www`**,
+y activar **Forzar HTTPS**. Sin el certificado de `www`, el 301 de `www` falla con error de
+certificado antes de llegar a ejecutarse.
 
-## Paso 6 — Comprobar que las 301 funcionan de verdad
+## Paso 4 — Comprobar que las 301 funcionan
 
 ```bash
 for u in \
+  "http://conromaasesores.com/" \
   "https://www.conromaasesores.com/" \
-  "https://www.conromaasesores.com/detalle/inmueble/1281" \
+  "https://www.conromaasesores.com/detalle/en_venta/piso/barcelona/malgrat_de_mar/1281/" \
   "https://www.conromaasesores.com/texto_legal" \
+  "https://www.conromaasesores.com/captacion" \
   "https://conromaasesores.com/es/venta/malgrat-de-mar/" ; do
   echo "--- $u"
-  curl -sI -L --max-redirs 5 "$u" | grep -E "^HTTP|^location|^Location"
+  curl -sI -L --max-redirs 5 "$u" | grep -iE "^HTTP|^location"
 done
 ```
-Lo que tiene que pasar: cada una acaba en **200** tras uno o dos saltos **301** (nunca 302,
-nunca 404, nunca un bucle).
 
-## Paso 7 — Search Console
+Cada una tiene que acabar en **200** tras uno o dos **301**. Nunca 302, 404 ni bucle.
 
-- [ ] Verificar la propiedad de **dominio** (TXT en DNS, ahora es fácil estando en Cloudflare).
-- [ ] **No borrar** la propiedad antigua de `www`: es donde vas a ver cómo se consumen las 301.
+Y a mano, en el móvil:
+- [ ] La portada carga y se ve bien.
+- [ ] Enviar el formulario de contacto: el lead aparece en la tabla `lead` de Supabase.
+- [ ] La valoración guarda.
+- [ ] El botón de WhatsApp de una ficha abre el chat con la referencia del piso.
+
+## Paso 5 — Search Console
+
+- [ ] Verificar la propiedad de **dominio** (registro `TXT` en el DNS de Hostinger).
+- [ ] **No borrar** la propiedad antigua de `www`: ahí se ve cómo Google consume las 301.
 - [ ] Enviar `https://conromaasesores.com/sitemap-index.xml`.
-- [ ] Vigilar «Cobertura» las 2 primeras semanas: lo normal es ver subir las redirecciones y
-      bajar las URLs antiguas poco a poco.
+- [ ] Revisar *Indexación de páginas* las 2 primeras semanas.
 
-## Paso 8 — Después
+## Paso 6 — Después
 
-- [ ] Comprobar en GTM (`GTM-KWJHKHR2`) que la etiqueta **GA4 Configuration `G-C9WV5S78LX`**
-      existe y dispara en *All Pages*. En el código el `gtag.js` directo está quitado a
-      propósito para no duplicar hits: si esa etiqueta no está dentro de GTM, **GA4 no recibe
-      absolutamente nada**.
-- [ ] Probar cómo se ve al compartir en WhatsApp (la imagen OG es `/img/og-conroma.jpg`,
-      1200x630).
-- [ ] A las 2 semanas, si todo va bien: dar de baja el hosting antiguo.
+- [ ] GTM `GTM-KWJHKHR2`: comprobar que la etiqueta de **GA4 `G-C9WV5S78LX`** existe y se
+      dispara en todas las páginas. El código no carga `gtag.js` directo (para no duplicar
+      visitas): sin esa etiqueta, GA4 no recibe nada.
+- [ ] Probar cómo se ve un enlace compartido por WhatsApp (imagen `/img/og-conroma.jpg`).
+- [ ] Añadir el número AICAT al aviso legal (`company` en `src/data/site.ts`).
+- [ ] A las 2 semanas, si todo va bien, avisar a Habitatsoft de que pueden apagar la web antigua.
+      **El CRM de Habitatsoft sigue en uso**: solo se da de baja la web.
 
 ---
 
 ## Cómo volver atrás
 
-Mientras el dominio esté en Cloudflare, revertir es quitar los dos Custom Domains del Worker y
-devolver los registros `A`/`CNAME` a la IP de Habitatsoft. Con el TTL a 300 s, cuestión de
-minutos. Por eso el paso 0 (bajar TTL y no apagar el servidor viejo) no es opcional.
+Devolver `@` y `www` a los valores apuntados en el paso 0. Con el TTL a 300 s se nota en minutos.
+Por eso el paso 0 no es opcional.
+
+## Actualizar la web después del swipe
+
+Cada cambio: `npm run build` y volver a subir el contenido de `dist/client/`. Para automatizarlo
+con GitHub Actions, ver `docs/DEPLOY-ACTIONS.md`.

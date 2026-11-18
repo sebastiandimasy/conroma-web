@@ -28,7 +28,7 @@
   RewriteRule ^favoritos/?$        /es/guardados/            [R=301,L]
   RewriteRule ^captacion/?$        /es/vender/               [R=301,L]
   RewriteRule ^destacados/?$       /es/venta/malgrat-de-mar/ [R=301,L]
-  RewriteRule ^texto_legal/?$      /es/privacidad/           [R=301,L]
+  RewriteRule ^texto_legal/?$      /es/aviso-legal/          [R=301,L]
   RewriteRule ^politica_cookies/?$ /es/privacidad/           [R=301,L]
   RewriteRule ^mapa_web/?$         /es/                      [R=301,L]
 

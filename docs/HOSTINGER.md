@@ -1,5 +1,10 @@
 # Hostinger o Cloudflare: qué hace cada uno y qué conviene aquí
 
+> **Decidido y hecho: opción A.** La web es 100 % estática y se publica en Hostinger. Los
+> formularios insertan directo en Supabase (`migrations/0003_web_lead_insert.sql`) y
+> `api/leads.ts` ya no existe. Pasos de publicación en `docs/SWIPE.md`. Lo de abajo es el
+> razonamiento original (3 de noviembre).
+
 Escrito el 3 de noviembre de 2026 para responder a una pregunta concreta del dueño:
 *«no sé qué diferencia hay de Cloudflare a Hostinger; si podemos hacer que todo esté en
 Hostinger, genial».*
@@ -84,8 +89,7 @@ punto de fallo (el correo) y un panel más, a cambio de poco.
 La opción A deja la web como lo que realmente es —184 páginas estáticas— y la captación de leads
 funcionando igual.
 
-> **Pendiente de decidir con el stakeholder.** Mientras tanto, la demo se sirve en un subdominio
-> de Hostinger sin indexar: ver `docs/PREVIEW-HOSTINGER.md`.
+La demo previa se sirve en un subdominio de Hostinger sin indexar: ver `docs/PREVIEW-HOSTINGER.md`.
 
 ## Lo que hay que hacer igualmente, elijas lo que elijas
 
