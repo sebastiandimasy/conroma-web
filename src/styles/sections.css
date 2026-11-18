@@ -935,8 +935,10 @@
     color: var(--color-on-surface-2);
   }
 
+  /* Al ancho de la rejilla y centrado (petición del dueño, 2026-11-18). */
   .statement__text {
-    max-width: 32ch;
+    text-align: center;
+    text-wrap: balance;
     font-size: clamp(1.375rem, 1rem + 1.6vw, 2.375rem);
     font-weight: var(--weight-display);
     line-height: 1.22;
