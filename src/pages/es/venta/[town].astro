@@ -52,7 +52,7 @@ const faq = [
 
 <BaseLayout
   title={heading}
-  description={`${catalog.length} inmuebles en venta en ${town.name}${cheapest ? ` desde ${formatPrice(cheapest)}` : ''}: ${breakdown}. Con el precio a la vista y contacto directo por WhatsApp.`}
+  description={`${catalog.length} inmuebles en venta en ${town.name}${cheapest ? ` desde ${formatPrice(cheapest)}` : ''}: ${breakdown}. Precio a la vista y WhatsApp directo.`}
   path={path}
   schemas={[breadcrumbSchema(crumbs), collectionPageSchema(heading, path), faqSchema(faq)]}
   noindex={!site.catalogIndexable}
