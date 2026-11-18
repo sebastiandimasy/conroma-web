@@ -84,10 +84,16 @@ En este repo:
    (`src/data/properties.real.json`, 125 inmuebles). `scripts/fetch-inventory.mjs` y el parser
    `src/lib/habitatsoft.ts` están listos, pero falta la URL del feed («Enlace Web 2.0») en
    `HABITATSOFT_FEED_URL`. Hay que sacarla del panel de Habitatsoft con el dueño logueado.
-2. **Certificado energético**: ningún inmueble lo trae en los datos y es obligatorio en el
-   anuncio. Hay que mapearlo desde el feed cuando esté.
-3. **URLs antiguas de fichas** (`/detalle/.../<id>/`) van a la página del pueblo o a
-   `/es/comprar/`. Con el `IdInmueble` del feed se pueden redirigir 1:1 a la ficha nueva.
+2. **Puente con la web antigua** (18-nov, sin acceso al panel de Habitatsoft):
+   `scripts/scrape-web-antigua.mjs` lee las fichas públicas de `www.conromaasesores.com` y
+   escribe `src/data/property-legacy.json` (id antiguo + certificado energético por ref).
+   Resultado: 55 fichas con letra, 36 exentas, 9 «en trámite». El build genera 117 redirecciones
+   1:1 de `/detalle/.../<id>` a la ficha nueva (`src/lib/legacy-redirects.ts`).
+   **Vuelve a lanzarlo justo antes del swipe**: cuando se apague la web antigua, ya no se puede.
+3. **El inventario del Excel está desfasado.** Contra la web antigua: 22 de nuestros
+   inmuebles ya no están publicados (19 dan 404) y hay 6 publicados allí que no tenemos. Se
+   arregla con el feed o con un Excel nuevo. Mientras, la web nueva enseña pisos que quizá ya
+   se han vendido.
 4. **Títulos largos** en ~30 fichas con nombres de zona largos (más de 65 caracteres). Menor.
 
 En `conroma-crm-ui`:

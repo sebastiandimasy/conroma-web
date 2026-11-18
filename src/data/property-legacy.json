@@ -1,0 +1,743 @@
+{
+ "c1301": {
+  "legacyId": "68421577999.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 64,
+  "energyConsumptionRating": "G",
+  "energyConsumption": 313
+ },
+ "p980": {
+  "legacyId": "67508437576.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 50,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 150
+ },
+ "t2095a": {
+  "legacyId": "61753595001.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "b0041ablau": {
+  "legacyId": "61751981781.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 123
+ },
+ "c1299h": {
+  "legacyId": "65018670693.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 55,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 213
+ },
+ "l1045h": {
+  "legacyId": "40051768974.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 80,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 180
+ },
+ "c1256h": {
+  "legacyId": "55837406433.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "c1198h": {
+  "legacyId": "49263636613.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 46,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 225
+ },
+ "p986": {
+  "legacyId": "68339788340.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 15,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 115
+ },
+ "p985h": {
+  "legacyId": "68342950288.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 52,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 215
+ },
+ "p979h": {
+  "legacyId": "67561567736.527526",
+  "published": false
+ },
+ "l1089m": {
+  "legacyId": "60076448201.527526",
+  "published": false,
+  "energyRating": "C",
+  "energyEmissions": 150,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 50
+ },
+ "p960": {
+  "legacyId": "62520281462.527526",
+  "published": false
+ },
+ "p984h": {
+  "legacyId": "67556619545.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 51,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "c1276m": {
+  "legacyId": "60898728351.527526",
+  "published": false
+ },
+ "c1270h": {
+  "legacyId": "60028324541.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "p983h": {
+  "legacyId": "67511220937.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 55,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "b0056h": {
+  "legacyId": "67553299963.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1280a": {
+  "legacyId": "61758962875.527526",
+  "published": true,
+  "energyRating": "G",
+  "energyEmissions": 92,
+  "energyConsumptionRating": "G",
+  "energyConsumption": 438
+ },
+ "c1293a": {
+  "legacyId": "63400957477.527526",
+  "published": false
+ },
+ "pk041d": {
+  "legacyId": "54169407910.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1097h": {
+  "legacyId": "67529046374.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "pk048": {
+  "legacyId": "66694164857.527526",
+  "published": false
+ },
+ "t2072": {
+  "legacyId": "52553631924.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2068": {
+  "legacyId": "52568449899.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p977h": {
+  "legacyId": "65865984344.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 44,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 210
+ },
+ "pk047h": {
+  "legacyId": "65880185661.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1081d": {
+  "legacyId": "52525719268.527526",
+  "published": false,
+  "energyRating": "C",
+  "energyEmissions": 40,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 207
+ },
+ "c1297h": {
+  "legacyId": "63344890328.527526",
+  "published": false
+ },
+ "p975h": {
+  "legacyId": "65020185922.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "l1096h": {
+  "legacyId": "65048501689.527526",
+  "published": false,
+  "energyRating": "C",
+  "energyEmissions": 60,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 141
+ },
+ "c1221h": {
+  "legacyId": "50917309010.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 46,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "l1095": {
+  "legacyId": "65074492268.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 230
+ },
+ "l1094": {
+  "legacyId": "65082521747.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 220
+ },
+ "c1079m": {
+  "legacyId": "40087930891.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 64,
+  "energyConsumptionRating": "G",
+  "energyConsumption": 319
+ },
+ "p971m": {
+  "legacyId": "64237118002.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "p954a": {
+  "legacyId": "61672619757.527526",
+  "published": false
+ },
+ "t2092m": {
+  "legacyId": "60916565194.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p963a": {
+  "legacyId": "63424555413.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 31,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 186
+ },
+ "l1077d": {
+  "legacyId": "52555406314.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 32,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 95
+ },
+ "c1243": {
+  "legacyId": "52544679850.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 99,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 999
+ },
+ "c1296h": {
+  "legacyId": "63394614848.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "p947": {
+  "legacyId": "60867365164.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 25,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 141
+ },
+ "t2071": {
+  "legacyId": "52541905660.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2073": {
+  "legacyId": "52537104856.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "pk045m": {
+  "legacyId": "60858960319.527526",
+  "published": true,
+  "energyRating": "C",
+  "energyEmissions": 50,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 150
+ },
+ "p969h": {
+  "legacyId": "63370618006.527526",
+  "published": true,
+  "energyRating": "C",
+  "energyEmissions": 52,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 210
+ },
+ "c1294m": {
+  "legacyId": "63366838992.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "t2066": {
+  "legacyId": "52524549797.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2070": {
+  "legacyId": "52509950146.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "pk039d": {
+  "legacyId": "52502511419.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1268h": {
+  "legacyId": "60033885145.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 52,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "p888": {
+  "legacyId": "51750823670.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 31,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 147
+ },
+ "p964a": {
+  "legacyId": "63341868944.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 123
+ },
+ "p893": {
+  "legacyId": "51743469894.527526",
+  "published": false
+ },
+ "t2096a": {
+  "legacyId": "63338029649.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 123
+ },
+ "p943m": {
+  "legacyId": "60022177256.527526",
+  "published": true,
+  "energyRating": "C",
+  "energyEmissions": 50,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 150
+ },
+ "t2061d": {
+  "legacyId": "51731596066.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2091h": {
+  "legacyId": "60014984091.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1233": {
+  "legacyId": "51704921903.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 25,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 125
+ },
+ "pk042": {
+  "legacyId": "59242025808.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1238": {
+  "legacyId": "51678887885.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 99,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 999
+ },
+ "pk043m": {
+  "legacyId": "59239212250.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1265h": {
+  "legacyId": "59237130605.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 52,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "t2059h": {
+  "legacyId": "50915351003.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p941h": {
+  "legacyId": "59228130848.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 215
+ },
+ "c1224": {
+  "legacyId": "50905541697.527526",
+  "published": false
+ },
+ "l1088": {
+  "legacyId": "59214764765.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 56,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 220
+ },
+ "t2057": {
+  "legacyId": "50886515231.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p873h": {
+  "legacyId": "50882808684.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 42,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 200
+ },
+ "p959a": {
+  "legacyId": "62518330580.527526",
+  "published": false
+ },
+ "c1267m": {
+  "legacyId": "59205884292.527526",
+  "published": true,
+  "energyRating": "C",
+  "energyEmissions": 50,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 200
+ },
+ "p887h": {
+  "legacyId": "50878741694.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 46,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 221
+ },
+ "l1071d": {
+  "legacyId": "50863065028.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 140,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 40
+ },
+ "t2089h": {
+  "legacyId": "59203416738.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "l1072d": {
+  "legacyId": "50857483270.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 22,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 131
+ },
+ "c1260m": {
+  "legacyId": "58408242862.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 70,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 334
+ },
+ "t2086h": {
+  "legacyId": "58400558795.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2060": {
+  "legacyId": "50844026624.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1068d": {
+  "legacyId": "50840785028.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 225
+ },
+ "t2087h": {
+  "legacyId": "58390417412.527526",
+  "published": false
+ },
+ "c1257h": {
+  "legacyId": "56698912581.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 38,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 204
+ },
+ "t2054": {
+  "legacyId": "50083090211.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p926h": {
+  "legacyId": "55898509638.527526",
+  "published": false
+ },
+ "t2094a": {
+  "legacyId": "61742540594.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1282m": {
+  "legacyId": "61723655293.527526",
+  "published": true,
+  "energyRating": "C",
+  "energyEmissions": 50,
+  "energyConsumptionRating": "C",
+  "energyConsumption": 200
+ },
+ "c1254h": {
+  "legacyId": "55834348313.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 54,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 252
+ },
+ "l1059": {
+  "legacyId": "48410268510.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 140,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 140
+ },
+ "l1061d": {
+  "legacyId": "48370932951.527526",
+  "published": false
+ },
+ "l1085d": {
+  "legacyId": "55098888719.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1285a": {
+  "legacyId": "61723150586.527526",
+  "published": false
+ },
+ "c1262h": {
+  "legacyId": "55040745586.527526",
+  "published": false
+ },
+ "t2047": {
+  "legacyId": "45899039148.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p819": {
+  "legacyId": "44237173880.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "c1277": {
+  "legacyId": "61714679048.527526",
+  "published": false
+ },
+ "t2078": {
+  "legacyId": "54252560734.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2079d": {
+  "legacyId": "54227929884.527526",
+  "published": false
+ },
+ "t2077d": {
+  "legacyId": "54207565805.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "b0045apla": {
+  "legacyId": "61688196416.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 123
+ },
+ "t2020h": {
+  "legacyId": "40087706684.527526",
+  "published": false
+ },
+ "b0012hpis": {
+  "legacyId": "40080703425.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p912": {
+  "legacyId": "54184679423.527526",
+  "published": true,
+  "energyRating": "E",
+  "energyEmissions": 99,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 999
+ },
+ "c1071": {
+  "legacyId": "40063631943.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 98,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 182
+ },
+ "c1278h": {
+  "legacyId": "61684081893.527526",
+  "published": true,
+  "energyRating": "D",
+  "energyEmissions": 45,
+  "energyConsumptionRating": "D",
+  "energyConsumption": 250
+ },
+ "t2092a": {
+  "legacyId": "61681997438.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "b0015hpis": {
+  "legacyId": "40055769674.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2075d": {
+  "legacyId": "53412648271.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "p621h": {
+  "legacyId": "40052886428.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 87,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 173
+ },
+ "t2074d": {
+  "legacyId": "53393246246.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1082d": {
+  "legacyId": "53390668398.527526",
+  "published": true,
+  "energyPending": true
+ },
+ "t2027h": {
+  "legacyId": "40047263577.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "t2064h": {
+  "legacyId": "52577042781.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "pk040": {
+  "legacyId": "52570749610.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1021h": {
+  "legacyId": "40022736776.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 80,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 180
+ },
+ "t2034h": {
+  "legacyId": "40010487468.527526",
+  "published": true,
+  "energyExempt": true
+ },
+ "l1080": {
+  "legacyId": "52563636817.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 99,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 999
+ },
+ "l1078d": {
+  "legacyId": "52556286481.527526",
+  "published": false
+ },
+ "l1018h": {
+  "legacyId": "40008682130.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 80,
+  "energyConsumptionRating": "F",
+  "energyConsumption": 180
+ },
+ "l1046": {
+  "legacyId": "40002699891.527526",
+  "published": true,
+  "energyRating": "F",
+  "energyEmissions": 147,
+  "energyConsumptionRating": "E",
+  "energyConsumption": 123
+ }
+}

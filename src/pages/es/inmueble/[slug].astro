@@ -76,11 +76,24 @@ const features = [
         { label: 'Terraza o balcón', value: property.terrace ? 'Sí' : 'Consultar' },
       ]
     : []),
-  // Obligatorio en la publicidad (RD 390/2021): sale en cuanto el feed de Habitatsoft lo traiga.
+  // Obligatorio en la publicidad (RD 390/2021). Hoy sale de la web antigua; mañana, del feed.
   ...(property.energyRating
-    ? [{ label: 'Certificado energético', value: `Letra ${property.energyRating}` }]
-    : property.energyExempt
-      ? [{ label: 'Certificado energético', value: 'Exento' }]
+    ? [
+        {
+          label: 'Emisiones de CO₂',
+          value: `${property.energyRating}${property.energyEmissions ? ` · ${property.energyEmissions} kg/m² año` : ''}`,
+        },
+        ...(property.energyConsumptionRating
+          ? [
+              {
+                label: 'Consumo de energía',
+                value: `${property.energyConsumptionRating}${property.energyConsumption ? ` · ${property.energyConsumption} kWh/m² año` : ''}`,
+              },
+            ]
+          : []),
+      ]
+    : property.energyExempt || property.energyPending
+      ? [{ label: 'Certificado energético', value: property.energyExempt ? 'Exento' : 'En trámite' }]
       : []),
   { label: 'Referencia', value: property.ref },
 ];

@@ -29,12 +29,14 @@
   RewriteRule ^captacion/?$        /es/vender/               [R=301,L]
   RewriteRule ^destacados/?$       /es/venta/malgrat-de-mar/ [R=301,L]
   RewriteRule ^texto_legal/?$      /es/aviso-legal/          [R=301,L]
-  RewriteRule ^politica_cookies/?$ /es/privacidad/           [R=301,L]
+  RewriteRule ^politica_cookies/?$ /es/cookies/               [R=301,L]
   RewriteRule ^mapa_web/?$         /es/                      [R=301,L]
 
   # --- Fichas de inmueble -> listado de su municipio (alquiler primero: la
   #     intención manda; las páginas de pueblo son de compraventa) ---
   # Origen: /detalle/<operacion>/<tipo>/<provincia>/<municipio>[/<barrio>]/<id>/
+  # Primero, cada ficha antigua a su ficha nueva (por id); si no está, al pueblo.
+  # @fichas-antiguas (las genera el build: src/lib/legacy-redirects.ts)
   RewriteRule ^detalle/en_alquiler(/.*)?$                       /es/alquilar/                   [R=301,L]
   RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/malgrat_de_mar(/.*)?$  /es/venta/malgrat-de-mar/       [R=301,L]
   RewriteRule ^detalle/[^/]+/[^/]+/[^/]+/blanes(/.*)?$          /es/inmobiliaria/blanes/        [R=301,L]

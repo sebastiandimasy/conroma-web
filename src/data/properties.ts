@@ -1,5 +1,6 @@
 import raw from './properties.real.json';
 import photoMap from './property-photos.json';
+import legacyMap from './property-legacy.json';
 import { findTown } from './towns';
 
 export interface Property {
@@ -35,11 +36,16 @@ export interface Property {
    *  Omitirla son 300-600 € (estatal) y otra leve de 3.000-9.000 € en Cataluña
    *  (art. 125.2.c Ley 18/2007). El dato está en Habitatsoft: hay que traerlo al feed. */
   energyRating?: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
-  /** Consumo kWh/m²·año y emisiones kgCO2/m²·año, si se conocen. */
+  /** Consumo kWh/m²·año y emisiones kgCO2/m²·año, si se conocen. energyRating es la letra de emisiones. */
   energyConsumption?: number;
+  energyConsumptionRating?: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
   energyEmissions?: number;
   /** Inmuebles legalmente exentos de certificado (p. ej. parkings o trasteros sueltos). */
   energyExempt?: boolean;
+  /** Certificado encargado y aún sin emitir (así lo publica la agencia en Habitatsoft). */
+  energyPending?: boolean;
+  /** Id de la ficha en la web antigua (/detalle/inmueble/<id>), para la 301 a la ficha nueva. */
+  legacyId?: string;
 
   /** Solo alquiler de VIVIENDA en zona de mercado residencial tensionado.
    *  Art. 59.g y 61.2.f de la Ley 18/2007: hay que publicar el precio máximo que
@@ -92,8 +98,13 @@ export function tidyZone(zone: string): string {
     .join(' ');
 }
 
+// Certificado energético e id antiguo por referencia, leídos de la web antigua
+// (scripts/scrape-web-antigua.mjs) hasta que el feed de Habitatsoft los traiga.
+const legacy = legacyMap as Record<string, Partial<Property> & { published?: boolean }>;
+
 const withPhotos: Property[] = inventory.map((item) => {
-  const property = { ...item, zone: tidyZone(item.zone) };
+  const { published: _published, ...fromOldSite } = legacy[normRef(item.ref)] ?? {};
+  const property = { ...item, ...fromOldSite, zone: tidyZone(item.zone) };
   const images = photos[normRef(property.ref)];
   return images && images.length ? { ...property, images, photos: images.length } : property;
 });

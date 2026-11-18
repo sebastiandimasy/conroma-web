@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite';
 import { posts } from './src/data/blog.ts';
 import { site } from './src/data/site.ts';
 import { getListings, propertySlug } from './src/data/properties.ts';
+import { injectLegacyRules, legacyRedirectRules } from './src/lib/legacy-redirects.ts';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import cloudflare from '@astrojs/cloudflare';
 
@@ -20,6 +23,17 @@ const photolessPaths = site.catalogIndexable
       .filter((property) => !property.images || property.images.length === 0)
       .map((property) => `/es/inmueble/${propertySlug(property)}/`)
   : [];
+// 301 de cada ficha antigua (/detalle/.../<id>) a su ficha nueva, escritas en el .htaccess del build.
+const legacyRedirects = {
+  name: 'conroma-legacy-redirects',
+  hooks: {
+    'astro:build:done': ({ dir }) => {
+      const file = fileURLToPath(new URL('.htaccess', dir));
+      const rules = legacyRedirectRules(getListings(), propertySlug);
+      writeFileSync(file, injectLegacyRules(readFileSync(file, 'utf8'), rules));
+    },
+  },
+};
 const hiddenPaths = ['/estilo/', '/guardados/', ...draftPaths, ...samplePaths, ...photolessPaths];
 
 export default defineConfig({
@@ -32,7 +46,7 @@ export default defineConfig({
   },
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
   build: { inlineStylesheets: 'auto' },
-  integrations: [react(), sitemap({ filter: (page) => !hiddenPaths.some((path) => page.includes(path)) })],
+  integrations: [react(), legacyRedirects, sitemap({ filter: (page) => !hiddenPaths.some((path) => page.includes(path)) })],
   // worker.format 'es' para que Vite emita bien el web worker de maplibre-gl.
   // ssr.noExternal: evita el error intermitente del optimizador SSR de Vite en `astro dev`.
   vite: {
