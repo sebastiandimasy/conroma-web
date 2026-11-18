@@ -4,13 +4,13 @@ import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
 import PropertyGallery from '../../../islands/PropertyGallery';
 import FavoriteToggle from '../../../islands/FavoriteToggle';
-import ContactOptions from '../../../islands/ContactOptions';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
 import { cardFacts, getListings, hasPublicPrice, isHome, propertySlug, propertyTitle, type Property } from '../../../data/properties';
 import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
+import { phoneUrl, whatsappUrl } from '../../../lib/links';
 import { breadcrumbSchema, listingSchema } from '../../../lib/seo';
 
 export function getStaticPaths() {
@@ -216,7 +216,7 @@ const features = [
 
       <aside class="property__aside" id="contacto">
         <div class="contact-card">
-          <h2 class="property__heading">¿Qué necesitas?</h2>
+          <h2 class="property__heading">Pedir visita</h2>
           {
             site.agent && (
               <div class="agent">
@@ -229,7 +229,22 @@ const features = [
               </div>
             )
           }
-          <ContactOptions client:visible propertyRef={property.ref} propertyTitle={title} />
+          <div class="contact-card__actions">
+            <a
+              class="button button--ink button--block"
+              href={whatsappUrl({ reason: 'visita', propertyRef: property.ref, propertyTitle: title })}
+              data-contact="whatsapp"
+              data-origin="ficha-contacto"
+              data-ref={property.ref}
+            >
+              <Icon name="whatsapp" class="button__icon" />
+              WhatsApp
+            </a>
+            <a class="button button--ghost button--block" href={phoneUrl()} data-contact="llamada" data-origin="ficha-contacto" data-ref={property.ref}>
+              <Icon name="phone" class="button__icon" />
+              Llamar
+            </a>
+          </div>
         </div>
       </aside>
     </div>

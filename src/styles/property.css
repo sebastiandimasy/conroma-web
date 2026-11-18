@@ -741,18 +741,7 @@
     border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
   }
 
-  .contact-options {
-    @apply flex flex-col gap-4;
-  }
-
-  .contact-options__message {
-    padding: 16px;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
-    color: var(--color-ink-2);
-  }
-
-  .contact-options__actions {
+  .contact-card__actions {
     @apply grid gap-2;
   }
 
@@ -844,21 +833,6 @@
   .saved-empty__text {
     color: var(--color-ink-2);
     line-height: 1.55;
-  }
-}
-
-@layer components {
-  /* Vista previa del mensaje de WhatsApp en la ficha: antes aparecía la frase
-     suelta, sin decir qué era ni qué pasaba al pulsar. */
-  .contact-options__preview-label {
-    font-size: var(--text-caption);
-    font-weight: 600;
-    color: var(--color-ink-2);
-  }
-
-  .contact-options__hint {
-    font-size: var(--text-caption);
-    color: var(--color-ink-3);
   }
 }
 
