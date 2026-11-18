@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
-import Faq from '../../../components/Faq.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
 import ListingExplorer from '../../../islands/ListingExplorer';
 import { cheapestPrice, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
 import { publishedCatalogTowns, publishedSellerTowns, type Town } from '../../../data/towns';
@@ -81,25 +81,37 @@ const faq = [
     </div>
   </section>
 
-  <section class="section town-text">
-    <div class="wrap town-text__grid">
-      <div data-reveal>
+  {/* Texto del pueblo y enlaces en filas editoriales (patrón de Alquilar), FAQ en su banda gris. */}
+  <section class="section rent-towns">
+    <div class="wrap">
+      <div class="section__head" data-reveal>
         <h2 class="section__title">Comprar piso en {town.name}</h2>
         <p class="section__lead">{town.intro}</p>
       </div>
-      <div data-reveal>
-        <nav class="link-list" aria-label="Relacionados">
-          <a class="link-list__link" href="/es/valoracion/">
-            ¿Vendes en {town.name}? Mira cuánto vale
-            <Icon name="arrow" class="link-list__arrow" />
-          </a>
-          <a class="link-list__link" href={hubPath ?? '/es/inmobiliaria/'}>
-            {hubPath ? `Inmobiliaria en ${town.name}` : 'Todas las zonas donde trabajamos'}
-            <Icon name="arrow" class="link-list__arrow" />
-          </a>
-        </nav>
-        <Faq items={faq} name="pueblo" />
-      </div>
+      <nav class="town-list" aria-label="Relacionados" data-reveal>
+        <ul class="town-list__items">
+          <li>
+            <a class="town-list__link" href={hubPath ?? '/es/inmobiliaria/'}>
+              <span>{hubPath ? `Inmobiliaria en ${town.name}` : 'Todas las zonas donde trabajamos'}</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+          <li>
+            <a class="town-list__link" href="/es/comprar/puedo-comprar/">
+              <span>¿Puedo comprar? Calcula tu presupuesto</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+          <li>
+            <a class="town-list__link" href="/es/valoracion/">
+              <span>{`¿Vendes en ${town.name}? Mira cuánto vale`}</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </section>
+
+  <FaqSection title={`Comprar en ${town.name}: lo que nos preguntan`} items={faq} origin={`venta-${town.slug}-faq`} />
 </BaseLayout>
