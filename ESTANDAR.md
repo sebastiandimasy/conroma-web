@@ -267,6 +267,14 @@ Regla madre: **todo componente nuevo reutiliza una primitiva existente antes de 
 (`Section.astro`, `.button`, `.card`, `.field`). Si no encaja, se añade la regla aquí antes de
 construirlo. Cada componente declara su anatomía (qué elementos lo forman) y sus estados.
 
+### Estados de carga (skeleton)
+- **Un solo skeleton** (`.skeleton` en `components.css`): tinta al 7 % con un brillo que da 5
+  pasadas y se para. Va detrás de fotos y mapas; la foto lo tapa al llegar, sin JavaScript.
+  Una foto nueva o un mapa nuevo se añaden a la lista de esa regla, no llevan su propio gris.
+- Lo que depende del navegador (favoritos en `localStorage`) enseña tarjetas esqueleto
+  (`.skeleton-card`) hasta saber qué hay. **Nunca** un mensaje de «vacío» que luego cambia.
+- Con movimiento reducido no hay brillo: queda el gris quieto.
+
 ### Escala y espacio (dirección Calvet)
 - **Elementos protagonistas grandes.** Display del hero y cifras del contador son imponentes:
   `--text-display` llega a 7rem; una cifra de contador usa `clamp(3.75rem … 6.5rem)`.

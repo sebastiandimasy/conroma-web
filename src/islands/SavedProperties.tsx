@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import type { Property } from '../data/properties';
 import { findTown } from '../data/towns';
@@ -15,10 +15,30 @@ interface SavedPropertiesProps {
 // sin esto los favoritos eran un callejón sin salida — se guardaban y no había dónde verlos.
 export default function SavedProperties({ properties, listingUrl }: SavedPropertiesProps) {
   const refs = useStore(savedRefs);
+  // Hasta leer el localStorage no se sabe qué hay guardado: esqueleto, no «no has guardado ninguno».
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     hydrateStore();
+    setReady(true);
   }, []);
+
+  if (!ready) {
+    return (
+      <ul className="property-grid" aria-busy="true" aria-label="Cargando tus pisos guardados">
+        {[0, 1].map((key) => (
+          <li key={key} className="property-grid__item">
+            <div className="skeleton-card" aria-hidden="true">
+              <span className="skeleton skeleton-card__media" />
+              <span className="skeleton skeleton-line" style={{ width: '45%', height: '1.75rem' }} />
+              <span className="skeleton skeleton-line" style={{ width: '70%' }} />
+              <span className="skeleton skeleton-line" style={{ width: '55%' }} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   const saved = properties.filter((property) => refs.includes(property.ref));
 
