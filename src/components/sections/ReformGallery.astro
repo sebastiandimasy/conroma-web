@@ -9,11 +9,22 @@ interface Props {
 const { title = 'Obras que hemos hecho', lead = 'Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.' } = Astro.props;
 
 // Obras reales de Conroma en Obras (public/img/reformas). La 10 vive en src/assets: no se lista aquí.
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
-const photos = numbers.map((n, i) => ({
-  src: `/img/reformas/reforma-${String(n).padStart(2, '0')}.jpg`,
-  alt: `Piso reformado por Conroma en Obras en el Maresme (obra ${i + 1})`,
-}));
+// Cada alt describe lo que se ve en la foto (SEO de imágenes y lectores de pantalla).
+const alts: [number, string][] = [
+  [1, 'Baño reformado con plato de ducha, mampara de cristal y espejo redondo iluminado'],
+  [2, 'Baño reformado con ducha de obra, mueble de lavabo blanco y espejo con luz'],
+  [3, 'Cocina reformada con muebles verde salvia, encimera clara y suelo de madera'],
+  [4, 'Cocina reformada en verde salvia con horno y microondas en columna'],
+  [5, 'Cocina reformada con columna de horno, nevera integrada y suelo laminado'],
+  [6, 'Baño reformado con revestimiento de mármol, suelo efecto madera y lavabo sobre encimera'],
+  [7, 'Baño reformado con mueble de lavabo blanco, espejo y paredes lisas'],
+  [8, 'Pasillo reformado con puertas blancas nuevas, suelo laminado y luz de techo'],
+  [9, 'Ducha reformada con mampara de perfil negro y revestimiento efecto mármol'],
+  [11, 'Cocina reformada con muebles blancos, encimera negra y suelo hidráulico'],
+  [12, 'Salón reformado con suelo de madera clara, salida a la terraza y comedor'],
+  [13, 'Baño reformado con ducha de obra, lavabo sobre encimera de madera y espejo iluminado'],
+];
+const photos = alts.map(([n, alt]) => ({ src: `/img/reformas/reforma-${String(n).padStart(2, '0')}.jpg`, alt }));
 ---
 
 {/* Galería de obras: título, carrusel coverflow y salida a Instagram. Sin tarjetas ni etiquetas. */}
