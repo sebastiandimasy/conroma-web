@@ -276,14 +276,14 @@ export function listingSchema(property: Property) {
   };
 }
 
-export function articleSchema(post: { title: string; description: string; date: string; slug: string }) {
+export function articleSchema(post: { title: string; description: string; date: string; updated?: string; slug: string }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date, // el blog no guarda fecha de edición: hasta tenerla, igual a la de publicación
+    dateModified: post.updated ?? post.date,
     image: absoluteUrl('/img/og-conroma.jpg'),
     inLanguage: 'es',
     mainEntityOfPage: absoluteUrl(`/es/blog/${post.slug}/`),

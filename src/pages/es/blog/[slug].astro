@@ -22,7 +22,9 @@ const crumbs = [
   { name: 'Blog', path: '/es/blog/' },
   { name: post.title, path },
 ];
-const dateLabel = new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const formatDate = (date: string) =>
+  new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const dateLabel = formatDate(post.date);
 const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
 ---
 
@@ -41,6 +43,11 @@ const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
         <p class="page-head__lead">{post.intro}</p>
         <p class="article__byline">
           {post.category} · Por <a href={post.author.href}>{post.author.name}</a>, {post.author.role} · <time datetime={post.date}>{dateLabel}</time>
+          {post.updated && post.updated !== post.date && (
+            <>
+              {' '}· Actualizado el <time datetime={post.updated}>{formatDate(post.updated)}</time>
+            </>
+          )}
         </p>
         {post.draft && <p class="article__draft">Borrador pendiente de revisión por Conroma.</p>}
       </div>
