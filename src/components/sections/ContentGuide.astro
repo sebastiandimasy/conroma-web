@@ -36,5 +36,7 @@ const { title, lead, items, id, tone = 'canvas' } = Astro.props;
         ))
       }
     </div>
+    {/* Hueco opcional para un enlace de salida (p. ej. a la página del servicio). */}
+    <slot />
   </div>
 </section>

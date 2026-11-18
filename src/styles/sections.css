@@ -3377,6 +3377,10 @@
     color: var(--color-accent);
   }
 
+  .content-guide__more {
+    margin-top: var(--space-8);
+  }
+
   .content-guide__text {
     margin-top: var(--space-3);
     color: var(--color-ink-2);

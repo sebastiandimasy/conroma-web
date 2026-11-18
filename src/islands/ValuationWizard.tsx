@@ -200,7 +200,6 @@ export default function ValuationWizard() {
     const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers))}`;
     return (
       <section className="wizard wizard--done" aria-live="polite">
-        <span className="tag">Listo</span>
         <h1 className="visually-hidden">¿Cuánto vale mi piso?</h1>
         <h2 className="wizard__title">
           {callMe
@@ -255,7 +254,7 @@ export default function ValuationWizard() {
             o llámanos al {site.phoneDisplay}.
           </p>
         )}
-        <a className="button button--ghost" href="/es/venta/malgrat-de-mar/">
+        <a className="link-cta" href="/es/venta/malgrat-de-mar/">
           Ver pisos en venta mientras tanto
         </a>
       </section>
