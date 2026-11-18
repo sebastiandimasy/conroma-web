@@ -10,6 +10,17 @@ Google la encuentre, las dos cosas:
 
 La web actual sigue intacta: no se toca nada de producción.
 
+> **Publicada el 18-nov-2026 en `https://magenta-mule-200826.hostingersite.com/`**, el dominio
+> temporal del sitio de hosting (`public_html` de ese sitio). Se usó ese dominio en vez de crear
+> el subdominio `demo` porque `conromaasesores.com` aún no está conectado al hosting y no conviene
+> tocar sus DNS antes del swipe. En los dominios temporales Hostinger sirve su propio
+> `robots.txt`, que bloquea a Googlebot. Las etiquetas `noindex` y la cabecera `X-Robots-Tag`
+> están en todas las páginas.
+>
+> Para actualizarla: regenerar el paquete y subirlo de nuevo a ese `public_html`. Desde Chrome
+> solo se pueden subir 10 MB por envío, así que el paquete se parte en zips de menos de 10 MB y
+> se extrae cada uno en la misma carpeta con «reemplazando los archivos existentes».
+
 El paquete ya está hecho:
 
 ```

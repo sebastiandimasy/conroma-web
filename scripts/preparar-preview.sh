@@ -107,7 +107,7 @@ cat > "$DESTINO/index.html" <<'EOF'
 
   <a class="card" href="/es/">
     <h2>La web nueva &rarr;</h2>
-    <span>124 inmuebles, buscador con filtros y solicitud de valoración.</span>
+    <span>__PISOS__ inmuebles, buscador con filtros y solicitud de valoración.</span>
   </a>
 
   <a class="card" href="/crm/">
@@ -120,6 +120,9 @@ cat > "$DESTINO/index.html" <<'EOF'
 </body>
 </html>
 EOF
+# El número de pisos sale del build, no se escribe a mano.
+PISOS=$(find "$ORIGEN/es/inmueble" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+sed -i '' "s/__PISOS__/$PISOS/" "$DESTINO/index.html"
 
 (cd "$(dirname "$DESTINO")" && rm -f "$(basename "$DESTINO").zip" && zip -rq "$(basename "$DESTINO").zip" "$(basename "$DESTINO")" -x "*.DS_Store")
 
