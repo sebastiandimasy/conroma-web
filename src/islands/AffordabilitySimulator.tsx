@@ -14,7 +14,7 @@ function waLink(message: string): string {
 }
 
 // Check que se dibuja al aparecer (éxito). Estático con prefers-reduced-motion.
-function AnimatedCheck({ size = 76 }: { size?: number }) {
+function AnimatedCheck({ size = 60 }: { size?: number }) {
   const reduced = useReducedMotion();
   const line = reduced
     ? { initial: { pathLength: 1, opacity: 1 }, animate: { pathLength: 1, opacity: 1 } }
@@ -26,7 +26,7 @@ function AnimatedCheck({ size = 76 }: { size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={2.25}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -41,7 +41,7 @@ function AnimatedCheck({ size = 76 }: { size?: number }) {
 }
 
 // Alerta que se dibuja al aparecer. Estática con prefers-reduced-motion.
-function AnimatedAlert({ size = 76 }: { size?: number }) {
+function AnimatedAlert({ size = 60 }: { size?: number }) {
   const reduced = useReducedMotion();
   const draw = (delay: number) =>
     reduced
@@ -54,7 +54,7 @@ function AnimatedAlert({ size = 76 }: { size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={2.25}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

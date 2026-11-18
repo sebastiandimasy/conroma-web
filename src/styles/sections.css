@@ -3096,14 +3096,60 @@
     max-width: 560px;
   }
 
+  /* Resultado centrado (petición del dueño, 2026-11-18): es el momento clave de la calculadora. */
   .afford__result {
-    @apply flex flex-col items-start gap-4;
+    @apply flex flex-col items-center gap-4 text-center;
     max-width: 560px;
     padding-block: clamp(8px, 3vw, 24px);
   }
 
+  /* Icono en disco tintado: entra con un pop de muelle y suelta dos ondas una sola vez.
+     Con reduced-motion aparece quieto. */
   .afford__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: color-mix(in oklab, currentColor 14%, transparent);
     line-height: 0;
+  }
+
+  .afford__icon::before,
+  .afford__icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .afford__icon {
+      animation: afford-pop 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .afford__icon::before {
+      animation: afford-wave 1100ms cubic-bezier(0.22, 1, 0.36, 1) 380ms both;
+    }
+
+    .afford__icon::after {
+      animation: afford-wave 1100ms cubic-bezier(0.22, 1, 0.36, 1) 620ms both;
+    }
+  }
+
+  @keyframes afford-pop {
+    from { transform: scale(0.3); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes afford-wave {
+    from { transform: scale(1); opacity: 0.55; }
+    to { transform: scale(1.75); opacity: 0; }
   }
 
   .afford__icon--ok {
