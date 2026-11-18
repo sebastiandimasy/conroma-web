@@ -4,7 +4,7 @@ Objetivo: **una sola URL** que pasarle al stakeholder para que vea, antes del sw
 Google la encuentre, las dos cosas:
 
 - **`/`** — un portal con dos accesos.
-- **`/es/`** — la web nueva entera, 184 páginas.
+- **`/es/`** — la web nueva entera, 152 páginas.
 - **`/crm/`** — el prototipo del CRM, navegable y con datos de ejemplo: puede trastear sin
   romper nada (el onboarding de 6 pasos le explica dónde está cada cosa).
 
@@ -14,7 +14,7 @@ El paquete ya está hecho:
 
 ```
 ~/Desktop/conroma-preview-hostinger/      ← carpeta lista para subir
-~/Desktop/conroma-preview-hostinger.zip   ← la misma, comprimida (78 MB)
+~/Desktop/conroma-preview-hostinger.zip   ← la misma, comprimida (63 MB)
 ```
 
 ## Qué lleva dentro (y por qué no se puede indexar)
@@ -23,7 +23,7 @@ Son **tres barreras independientes**. Con una bastaría; las tres juntas hacen q
 prácticamente imposible que aparezca en Google:
 
 1. **`<meta name="robots" content="noindex, nofollow">` en las 184 páginas** (verificado una a
-   una: 184 de 184; lo genera `PUBLIC_PREVIEW=true`) **y en el CRM y el portal**.
+   una: 152 de 152; lo genera `PUBLIC_PREVIEW=true`) **y en el CRM y el portal**.
 2. **`robots.txt` con `Disallow: /`** para todo el subdominio.
 3. **Cabecera `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet`** en el `.htaccess`. Esta
    cubre también lo que no puede llevar etiqueta: PDF, imágenes, vídeos.
@@ -92,10 +92,9 @@ accesos, y `/crm/` tiene que cargar el panel. **Míralo en el móvil**, que es e
 
 ## Qué NO funciona en la demo (y está bien que no funcione)
 
-- **El formulario no guarda el lead en Supabase.** La ruta `/api/leads` necesita un servidor que
-  ejecute JavaScript, y el hosting compartido de Hostinger ejecuta PHP. Los formularios **no dan
-  error**: siguen abriendo WhatsApp con el mensaje escrito, que es lo que el stakeholder va a
-  probar. Ver `docs/HOSTINGER.md` para cómo se resuelve de cara a producción.
+- **Los formularios sí guardan, y en la base real.** Contacto y valoración insertan directo en la
+  tabla `lead` de Supabase (con las claves del `.env` local al compilar). Lo que envíe el
+  stakeholder para probar aparece en el CRM como lead de verdad: avisarle y borrarlos después.
 - **El panel `/es/admin/`** no entra: necesita las claves de Supabase compiladas. Para enseñar
   la gestión está `/crm/`, que es el prototipo y no necesita claves.
 - **El CRM de `/crm/` usa datos de ejemplo**, no los reales. Lo avisa en pantalla con un
