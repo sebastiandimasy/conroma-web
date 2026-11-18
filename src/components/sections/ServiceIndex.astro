@@ -5,28 +5,93 @@ import { services } from '../../data/services';
 interface Props {
   title: string;
   exclude?: string;
+  /** Inicio: acordeón con la foto del servicio abierto (al lado en escritorio, dentro en móvil). */
+  photos?: boolean;
 }
 
-const { title, exclude } = Astro.props;
+const { title, exclude, photos = false } = Astro.props;
 const list = services.filter((service) => service.slug !== exclude);
+
+// Una foto por servicio (las que ya tenía la home antigua).
+const photoOf: Record<string, { src: string; alt: string }> = {
+  comprar: { src: '/img/servicios/compra-venta.jpg', alt: 'Entrega de llaves de una vivienda comprada con Conroma' },
+  vender: { src: '/img/equipo/herman-trabajando.jpg', alt: 'Herman, de Conroma, preparando la tasación de un piso' },
+  alquilar: { src: '/img/servicios/alquiler.jpg', alt: 'Piso en alquiler gestionado por Conroma' },
+  'gestion-de-patrimonio': { src: '/img/servicios/gestion-patrimonio.jpg', alt: 'Gestión de patrimonio inmobiliario con Conroma' },
+  reformas: { src: '/img/reformas/reforma-07.jpg', alt: 'Reforma e interiorismo de Conroma en Obras' },
+};
 ---
 
-{/* Índice de servicios: una fila por servicio, toda la fila enlaza. Sin tarjetas ni iconos. */}
-<section class="section service-index">
-  <div class="wrap">
-    <h2 class="section__title" data-reveal>{title}</h2>
-    <ul class="service-index__list">
-      {
-        list.map((service) => (
-          <li data-reveal>
-            <a class="service-index__row" href={service.href}>
-              <h3 class="service-index__name">{service.name}</h3>
-              <p class="service-index__text">{service.summary}</p>
-              <Icon name="arrow" class="service-index__icon" />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
-</section>
+{
+  photos ? (
+    <section class="section service-index service-index--photos">
+      <div class="wrap service-index__grid">
+        <div>
+          <h2 class="section__title" data-reveal>{title}</h2>
+          <div class="service-index__accordion" data-reveal>
+            {list.map((service, index) => (
+              <details class="service-index__item" name="servicios" open={index === 0}>
+                <summary class="service-index__summary">
+                  <h3 class="service-index__name">{service.name}</h3>
+                  <Icon name="plus" class="service-index__toggle" />
+                </summary>
+                <div class="service-index__body">
+                  {photoOf[service.slug] && (
+                    <img
+                      class="service-index__inline-photo"
+                      src={photoOf[service.slug].src}
+                      alt={photoOf[service.slug].alt}
+                      width="720"
+                      height="900"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  <p class="service-index__text">{service.summary}</p>
+                  <a class="arrow-link" href={service.href}>
+                    <span class="arrow-link__icon" aria-hidden="true">
+                      <Icon name="arrow" />
+                    </span>
+                    <span class="arrow-link__label">Más sobre {service.name.toLowerCase()}</span>
+                  </a>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+        <figure class="service-index__figure" aria-hidden="true">
+          {list.map((service) =>
+            photoOf[service.slug] ? (
+              <img
+                class="service-index__photo"
+                src={photoOf[service.slug].src}
+                alt=""
+                width="720"
+                height="900"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : null,
+          )}
+        </figure>
+      </div>
+    </section>
+  ) : (
+    <section class="section service-index">
+      <div class="wrap">
+        <h2 class="section__title" data-reveal>{title}</h2>
+        <ul class="service-index__list">
+          {list.map((service) => (
+            <li data-reveal>
+              <a class="service-index__row" href={service.href}>
+                <h3 class="service-index__name">{service.name}</h3>
+                <p class="service-index__text">{service.summary}</p>
+                <Icon name="arrow" class="service-index__icon" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

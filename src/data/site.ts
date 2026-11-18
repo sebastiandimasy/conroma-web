@@ -97,8 +97,8 @@ export const site: SiteData = {
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2981.2608408826322!2d2.7415753763525395!3d41.650105971267614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12bb3df627060cef%3A0xfa227f184b35bd19!2sCONROMA%20ASESORES%20INMOBILIARIOS%20%7C%20MALGRAT%20DE%20MAR!5e0!3m2!1ses!2ses!4v1792931494414!5m2!1ses!2ses',
   googleRating: {
     value: 4.7,
-    count: 107,
-    checkedOn: '2026-10-12',
+    count: 122,
+    checkedOn: '2026-11-18',
     url: 'https://www.google.com/maps?cid=18024108401007901977',
   },
   yearsActive: 7,

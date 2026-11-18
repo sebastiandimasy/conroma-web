@@ -107,7 +107,7 @@ export function agentSchema() {
     schema.employee = { '@id': `${site.url}/#fundador` };
   }
   // Nota: NO emitimos aggregateRating. Son reseñas propias de Google (self-serving),
-  // que Google no muestra como rich result y puede ignorar/penalizar. El 4,7/107 vive
+  // que Google no muestra como rich result y puede ignorar/penalizar. El 4,7/122 vive
   // en el texto visible, no en el schema.
   if (site.geo) {
     schema.geo = { '@type': 'GeoCoordinates', latitude: site.geo.latitude, longitude: site.geo.longitude };

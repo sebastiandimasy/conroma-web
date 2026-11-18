@@ -832,18 +832,140 @@
     }
   }
 
-  /* Statement: la respuesta corta en grande y fina, como apertura editorial. */
+  /* HeroCenter (Inicio): foto a sangre con velo y bloque centrado. Tokens fijos sobre la foto. */
+  .hero-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: max(min(calc(100svh - var(--header-height)), 920px), 560px);
+    color: var(--color-on-fixed-ink);
+    background: var(--color-fixed-backdrop);
+    isolation: isolate;
+    overflow: hidden;
+    text-align: center;
+    --color-focus: var(--color-accent);
+    --color-button-line: var(--color-button);
+  }
+
+  .hero-center__photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* Velo más denso en el centro, donde va el texto blanco. */
+  .hero-center::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, rgb(0 0 0 / 0.45), transparent 75%),
+      rgb(0 0 0 / 0.4);
+  }
+
+  .hero-center__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block: var(--space-12) calc(var(--space-12) + 76px + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 60rem) {
+    .hero-center__content {
+      padding-block: var(--space-12);
+    }
+  }
+
+  .hero-center__title {
+    max-width: 16ch;
+    font-size: var(--text-h1);
+    font-weight: var(--weight-display);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+
+  .hero-center__lead {
+    max-width: 40ch;
+    margin-top: var(--space-6);
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .hero-center__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-10);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-center__title,
+    .hero-center__lead,
+    .hero-center__actions {
+      animation: hero-center-in 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+    }
+
+    .hero-center__lead {
+      animation-delay: 0.15s;
+    }
+
+    .hero-center__actions {
+      animation-delay: 0.3s;
+    }
+  }
+
+  @keyframes hero-center-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  /* Statement: la respuesta corta, fina, que se va encendiendo palabra a palabra al hacer scroll. */
   .statement {
     background: var(--color-surface-2);
     color: var(--color-on-surface-2);
   }
 
   .statement__text {
-    max-width: 30ch;
-    font-size: clamp(1.625rem, 1.1rem + 2.2vw, 3rem);
+    max-width: 32ch;
+    font-size: clamp(1.375rem, 1rem + 1.6vw, 2.375rem);
     font-weight: var(--weight-display);
-    line-height: 1.15;
-    letter-spacing: -0.035em;
+    line-height: 1.22;
+    letter-spacing: -0.03em;
+  }
+
+  /* Cada palabra lleva su tramo (--a → --b) del recorrido del párrafo por el centro de la pantalla.
+     Sin soporte o con reduced-motion, el texto se ve entero. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .statement__text {
+        view-timeline: --statement block;
+      }
+
+      .statement__word {
+        animation: statement-word linear both;
+        animation-timeline: --statement;
+        animation-range: cover var(--a) cover var(--b);
+      }
+    }
+  }
+
+  @keyframes statement-word {
+    from {
+      opacity: 0.18;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* ClosingCTA: centrado. Estado de la oficina → titular en dos tiempos → círculo que abre el
@@ -904,29 +1026,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .closing-cta__status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-ink-2);
-  }
-
-  .closing-cta__pulse {
-    position: relative;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-ink-3);
-  }
-
-  .closing-cta__status[data-open='true'] .closing-cta__pulse {
-    background: var(--color-positive);
   }
 
   .closing-cta__title {
@@ -1279,6 +1378,133 @@
       grid-column: 3;
       grid-row: 1;
     }
+  }
+
+  /* Variante de Inicio: acordeón (uno abierto a la vez) y la foto del servicio abierto.
+     Móvil: la foto va dentro del servicio abierto. Escritorio: columna de foto fija al lado (CSS :has). */
+  .service-index__accordion {
+    margin-top: var(--space-10);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .service-index__item {
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .service-index__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 44px;
+    padding-block: var(--space-5);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .service-index__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .service-index__toggle {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    color: var(--color-ink-2);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .service-index__item[open] .service-index__toggle {
+    transform: rotate(45deg);
+    color: var(--color-ink);
+  }
+
+  .service-index__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+    padding-bottom: var(--space-8);
+  }
+
+  .service-index__inline-photo {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .service-index__figure {
+    display: none;
+  }
+
+  @media (min-width: 60rem) {
+    .service-index__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: var(--space-12);
+      align-items: start;
+    }
+
+    .service-index__inline-photo {
+      display: none;
+    }
+
+    .service-index__figure {
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-8));
+      display: grid;
+      margin: 0;
+    }
+
+    .service-index__photo {
+      grid-area: 1 / 1;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity var(--duration-base, 0.3s) var(--ease-out);
+    }
+
+    .service-index__grid:not(:has(.service-index__item[open])) .service-index__photo:nth-child(1),
+    .service-index__grid:has(.service-index__item:nth-child(1)[open]) .service-index__photo:nth-child(1),
+    .service-index__grid:has(.service-index__item:nth-child(2)[open]) .service-index__photo:nth-child(2),
+    .service-index__grid:has(.service-index__item:nth-child(3)[open]) .service-index__photo:nth-child(3),
+    .service-index__grid:has(.service-index__item:nth-child(4)[open]) .service-index__photo:nth-child(4),
+    .service-index__grid:has(.service-index__item:nth-child(5)[open]) .service-index__photo:nth-child(5) {
+      opacity: 1;
+    }
+  }
+
+  /* Pueblos plegados (Inicio): una fila que se abre, para no alargar el scroll. */
+  .town-list--fold .town-list__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 56px;
+    padding-block: var(--space-4);
+    border-block: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .town-list--fold .town-list__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .town-list--fold[open] .town-list__summary {
+    border-bottom-color: transparent;
+  }
+
+  .town-list--fold .town-list__items {
+    margin-top: 0;
+  }
+
+  .town-list--fold[open] .service-index__toggle {
+    transform: rotate(45deg);
+    color: var(--color-ink);
   }
 
   /* Foto y texto a dos columnas. La banda (canvas/surface) la elige la página para alternar. */

@@ -4,11 +4,24 @@ interface Props {
 }
 
 const { text } = Astro.props;
+// Tramos del scroll: el párrafo se enciende mientras cruza del 30 % al 60 % de su recorrido.
+const words = text.split(' ');
+const span = 30 / words.length;
 ---
 
-{/* Respuesta corta en grande, justo bajo el hero: la primera frase que leen Google y las IA. */}
+{/* Respuesta corta justo bajo el hero: la primera frase que leen Google y las IA (el texto va entero en el HTML). */}
 <section class="section statement">
   <div class="wrap">
-    <p class="statement__text" data-reveal>{text}</p>
+    <p class="statement__text">
+      {
+        words.map((word, i) => (
+          <>
+            <span class="statement__word" style={`--a: ${(30 + i * span).toFixed(2)}%; --b: ${(30 + (i + 1) * span).toFixed(2)}%`}>
+              {word}
+            </span>{' '}
+          </>
+        ))
+      }
+    </p>
   </div>
 </section>

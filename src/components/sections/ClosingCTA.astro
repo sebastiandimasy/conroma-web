@@ -19,19 +19,13 @@ interface Props {
 
 const { title, titleMuted, text, origin, reason, image } = Astro.props;
 const panelId = `cierre-${origin}`;
-const hours = site.openingHours;
-// Sin JS se ve el horario fijo; el script lo cambia por «Abierto ahora…» / «Abrimos…».
-const schedule = hours
-  ? `Lunes a viernes, ${hours.map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ')}`
-  : null;
 ---
 
-{/* Cierre: estado de la oficina, titular en dos tiempos y un círculo que abre el contacto.
+{/* Cierre: titular en dos tiempos y un círculo que abre el contacto.
     Sin JS (o con reduced-motion) todo se ve a la vez: el paso intermedio es solo mejora. */}
 <section
   class:list={['section closing-cta', image && 'closing-cta--photo']}
   data-closing
-  data-hours={JSON.stringify(hours)}
 >
   {
     image && (
@@ -41,14 +35,6 @@ const schedule = hours
   <div class="wrap closing-cta__inner">
     <div class="closing-cta__stage">
       <div class="closing-cta__intro" data-intro>
-        {
-          schedule && (
-            <p class="closing-cta__status" data-office>
-              <span class="closing-cta__pulse" aria-hidden="true" />
-              <span data-office-label>{schedule}</span>
-            </p>
-          )
-        }
         <h2 class="closing-cta__title">
           <span class="closing-cta__line">{title}</span>
           {titleMuted && <span class="closing-cta__line closing-cta__line--muted">{titleMuted}</span>}
@@ -80,17 +66,7 @@ const schedule = hours
 </section>
 
 <script>
-  import { officeStatus } from '../../lib/hours';
-
   for (const root of document.querySelectorAll<HTMLElement>('[data-closing]')) {
-    const status = root.querySelector<HTMLElement>('[data-office]');
-    const label = root.querySelector('[data-office-label]');
-    const result = officeStatus(new Date(), JSON.parse(root.dataset.hours ?? 'null'));
-    if (result && status && label) {
-      label.textContent = result.label;
-      status.dataset.open = String(result.open);
-    }
-
     // Con reduced-motion no hay paso intermedio: el contacto queda a la vista.
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) continue;
 

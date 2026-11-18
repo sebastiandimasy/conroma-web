@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import HeroStory from '../../components/sections/HeroStory.astro';
+import HeroCenter from '../../components/sections/HeroCenter.astro';
 import Statement from '../../components/sections/Statement.astro';
 import ProofBand from '../../components/sections/ProofBand.astro';
 import ServiceIndex from '../../components/sections/ServiceIndex.astro';
@@ -18,6 +18,7 @@ import { homeFaq } from '../../data/faq';
 import { site } from '../../data/site';
 import { getListings, homesIn } from '../../data/properties';
 import { faqSchema } from '../../lib/seo';
+import { whatsappUrl } from '../../lib/links';
 
 // Foto de portada del equipo (site.ts): la agencia es la gente que te atiende.
 const hero = site.heroImage!;
@@ -27,29 +28,38 @@ const featuredHomes = homesIn('malgrat-de-mar', 'venta').slice(0, 3);
 const ventaTotal = getListings({ operation: 'venta' }).length;
 
 const answer =
-  'Conroma Asesores es una inmobiliaria familiar con oficina en Malgrat de Mar. Trabajamos en el Alt Maresme y La Selva, ' +
-  'y la misma persona te atiende del primer contacto a la firma, en catalán, castellano, inglés y francés.';
+  'Conroma Asesores es una inmobiliaria de Malgrat de Mar especializada en gestión inmobiliaria y de patrimonios. ' +
+  'Acompañamos a propietarios, compradores e inversores del Alt Maresme y La Selva con un asesoramiento a medida: ' +
+  'una misma persona lleva tu operación de principio a fin y busca que todas las partes salgan ganando.';
+
+// Trayectoria que da el dueño (2026-11-18). Van escritas en el HTML, sin contador.
+const trackRecord = [
+  { value: '+300', label: 'inmuebles gestionados' },
+  { value: '+100', label: 'clientes satisfechos' },
+  { value: '+200', label: 'pisos vendidos' },
+];
 ---
 
 <BaseLayout
   title="Inmobiliaria en Malgrat de Mar | Conroma"
-  description="Inmobiliaria en Malgrat de Mar: compra, venta, alquiler, patrimonio y reformas en el Alt Maresme. Te atendemos en catalán, castellano, inglés y francés."
+  description="Expertos en gestión inmobiliaria en Malgrat de Mar: compra, venta, alquiler, gestión de patrimonio y reformas en el Alt Maresme y La Selva."
   path="/es/"
   schemas={[faqSchema(homeFaq)]}
   overlay
 >
-  <HeroStory
-    title="Inmobiliaria en Malgrat de Mar"
-    lead="Compramos, vendemos y alquilamos contigo. Y nos quedamos para lo que venga después."
+  <HeroCenter
+    title="Expertos en gestión inmobiliaria en Malgrat de Mar"
+    lead="Somos un equipo preparado para ayudarte a gestionar tu capital inmobiliario. Te acompañamos en la compra, la venta o el alquiler de tu inmueble."
     image={hero.src}
     alt={hero.alt}
-    cta={{ label: `Ver los ${ventaTotal} inmuebles en venta`, href: '/es/venta/' }}
+    primary={{ label: 'Trabajemos juntos', href: '/es/contacto/' }}
+    secondary={{ label: 'Contáctanos', href: whatsappUrl(), contact: 'whatsapp', origin: 'home-hero' }}
     position="40% center"
   />
 
   <Statement text={answer} />
 
-  <ProofBand />
+  <ProofBand figures={trackRecord} />
 
   <section class="section home-featured">
     <div class="wrap">
@@ -63,7 +73,7 @@ const answer =
           </>
         )
       }
-      <TownList title="Busca en tu pueblo" />
+      <TownList title="Busca en tu pueblo" fold />
       <a class="arrow-link home-featured__more" href="/es/venta/">
         <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
         <span class="arrow-link__label">Ver los {ventaTotal} inmuebles en venta</span>
@@ -71,7 +81,7 @@ const answer =
     </div>
   </section>
 
-  <ServiceIndex title="Qué hacemos por ti" />
+  <ServiceIndex title="Qué hacemos por ti" photos />
 
   <SplitFeature
     title="Especialistas en gestión inmobiliaria"
@@ -82,8 +92,8 @@ const answer =
   />
 
   <SplitFeature
-    title="Le damos una segunda vida al piso"
-    text="Conroma en Obras reforma y viste la vivienda antes de venderla o de que entres a vivir. De la cocina al último detalle, lo dejamos listo."
+    title="Le damos una segunda vida a tu inmueble"
+    text="Conroma crea sueños y también reforma. Con Conroma en Obras renovamos tu casa, de la cocina al último detalle, para darle una nueva cara antes de venderla o de entrar a vivir."
     image={reformPhoto}
     alt="Salón reformado por Conroma en Obras"
     link={{ label: 'Ver reformas e interiorismo', href: '/es/reformas/' }}
@@ -93,7 +103,7 @@ const answer =
 
   <FaqSection title="Dudas al comprar o vender en el Maresme" items={homeFaq} origin="home-faq" />
 
-  <Testimonials tone="canvas" />
+  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
 
   <ClosingCTA title="Hablemos" titleMuted="de tu casa" image={closingPhoto} origin="home-cierre" />
 </BaseLayout>
