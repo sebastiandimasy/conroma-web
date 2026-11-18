@@ -9,12 +9,15 @@ interface Props {
   title?: string;
   lead?: string;
   limit?: number;
+  /** Banda: surface-2 por defecto; canvas si la sección de al lado ya es surface-2. */
+  tone?: 'surface' | 'canvas';
 }
 
 const {
   title = 'Lo que dicen nuestros clientes',
   lead = 'Vecinos del Maresme que compraron, vendieron o alquilaron con nosotros.',
   limit = testimonials.length,
+  tone = 'surface',
 } = Astro.props;
 const items = testimonials.slice(0, limit);
 const rating = site.googleRating;
@@ -22,7 +25,7 @@ const rating = site.googleRating;
 
 {/* Dos columnas en escritorio: título, nota de Google y puntos a la izquierda; la reseña a la derecha.
     En móvil: título, reseña y puntos debajo. */}
-<section class="section testimonials">
+<section class:list={['section testimonials', tone === 'canvas' && 'testimonials--canvas']}>
   <div class="wrap testimonials__grid" data-reveal>
     <div class="testimonials__head">
       <h2 class="section__title">{title}</h2>

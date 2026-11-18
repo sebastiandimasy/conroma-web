@@ -7,6 +7,7 @@ import ProofBand from '../../components/sections/ProofBand.astro';
 import ServiceIndex from '../../components/sections/ServiceIndex.astro';
 import TownList from '../../components/sections/TownList.astro';
 import SplitFeature from '../../components/sections/SplitFeature.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
 import PropertyGrid from '../../islands/PropertyGrid';
@@ -16,10 +17,8 @@ import closingPhoto from '../../assets/equipo/conroma-102.jpg';
 import { homeFaq } from '../../data/faq';
 import { site } from '../../data/site';
 import { getListings, homesIn } from '../../data/properties';
-import { formatRating } from '../../lib/format';
 import { faqSchema } from '../../lib/seo';
 
-const rating = site.googleRating;
 // Foto de portada del equipo (site.ts): la agencia es la gente que te atiende.
 const hero = site.heroImage!;
 
@@ -94,68 +93,7 @@ const answer =
 
   <FaqSection title="Dudas al comprar o vender en el Maresme" items={homeFaq} origin="home-faq" />
 
-  <section class="section reviews" aria-label="Reseñas de clientes en Google" data-reviews>
-    <div class="wrap">
-      {
-        rating && (
-          <a class="reviews__fallback" href={rating.url} rel="noopener" target="_blank" data-reviews-fallback>
-            <span class="reviews__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
-              <Icon name="star" class="reviews__star" />
-              <Icon name="star" class="reviews__star" />
-              <Icon name="star" class="reviews__star" />
-              <Icon name="star" class="reviews__star" />
-              <Icon name="star" class="reviews__star" />
-            </span>
-            <span class="reviews__text">
-              <strong>{formatRating(rating.value)} en Google</strong> · {rating.count} reseñas de clientes · Verlas todas
-            </span>
-          </a>
-        )
-      }
-      {/* Widget Trustindex: reseñas de Google en vivo. Es un tercero que deja cookies,
-          así que solo se carga si el visitante ha aceptado. Mientras tanto se queda el
-          resumen propio de arriba, que lleva la cifra con fecha de comprobación. */}
-      <div data-reviews-widget></div>
-    </div>
-    <script is:inline>
-      (function () {
-        var sec = document.currentScript.closest('[data-reviews]');
-        if (!sec) return;
-        var fb = sec.querySelector('[data-reviews-fallback]');
-        var slot = sec.querySelector('[data-reviews-widget]');
-        if (!slot) return;
-        var loaded = false;
-
-        function load() {
-          if (loaded) return;
-          loaded = true;
-          var s = document.createElement('script');
-          s.defer = true;
-          s.async = true;
-          s.src = 'https://cdn.trustindex.io/loader.js?d045063849cb67522f863d5cb82';
-          slot.appendChild(s);
-          // El resumen propio solo se retira cuando el widget pinta algo de verdad:
-          // si no llega a cargar, el visitante sigue viendo la nota y las reseñas.
-          if (!fb) return;
-          var obs = new MutationObserver(function () {
-            if (slot.querySelector('div, iframe')) {
-              fb.style.display = 'none';
-              obs.disconnect();
-            }
-          });
-          obs.observe(slot, { childList: true, subtree: true });
-          setTimeout(function () { obs.disconnect(); }, 15000);
-        }
-
-        try {
-          if (localStorage.getItem('conroma:cookies') === 'aceptado') load();
-        } catch (e) {}
-        window.addEventListener('conroma:consent', function (event) {
-          if (event.detail === 'aceptado') load();
-        });
-      })();
-    </script>
-  </section>
+  <Testimonials tone="canvas" />
 
   <ClosingCTA title="Hablemos" titleMuted="de tu casa" image={closingPhoto} origin="home-cierre" />
 </BaseLayout>

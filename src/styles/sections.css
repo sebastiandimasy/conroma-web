@@ -2627,6 +2627,13 @@
     overflow: hidden;
   }
 
+  /* Variante en canvas cuando la sección de al lado ya es surface-2; la tarjeta pasa a surface-2. */
+  .testimonials--canvas {
+    --tcar-card: var(--color-surface-2);
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
   .testimonials__grid {
     display: grid;
     gap: var(--space-10);
@@ -3031,44 +3038,6 @@
     @apply flex flex-wrap justify-center;
     gap: 14px;
     margin-top: 32px;
-  }
-
-  /* Reseñas · resumen de reserva si el widget de Trustindex no llega a cargar (sin dejar hueco). */
-  .reviews {
-    background: var(--color-canvas);
-    color: var(--color-on-canvas);
-  }
-
-  .reviews__fallback {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: fit-content;
-    max-width: 100%;
-    min-height: 44px;
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .reviews__stars {
-    display: inline-flex;
-    gap: 4px;
-    color: var(--color-accent);
-  }
-
-  .reviews__star {
-    width: 22px;
-    height: 22px;
-  }
-
-  .reviews__text {
-    font-size: var(--text-small);
-    color: var(--color-ink-2);
-  }
-
-  .reviews__text strong {
-    color: var(--color-ink);
   }
 
   /* Reformas · galería de obras reales: retícula de fotos a sangre dentro de card. */

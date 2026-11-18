@@ -117,7 +117,8 @@ Ese es su valor real y el que más cuesta replicar.
 - **Solo servidor / ops** (nunca en git): `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
   (script de altas; antes también el Worker de leads, que desaparece con la opción A).
 - **Medición** (públicas, en el código): GA4 `G-C9WV5S78LX`, GTM `GTM-KWJHKHR2`,
-  Trustindex `d045063849cb67522f863d5cb82`.
+  Trustindex `d045063849cb67522f863d5cb82` (retirado de Inicio el 2026-11-18: las reseñas
+  van ahora en texto propio con la isla `TestimonialCarousel`).
 - **Futuras** (ver tabla de §3 de la versión anterior): WhatsApp/IG webhooks, Turnstile, IA de
   descripciones — cuando se aborden esas conexiones.
 
