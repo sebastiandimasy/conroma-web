@@ -146,7 +146,14 @@ export function faltanDatosDeAlquilerTensionado(property: Property): boolean {
  * vuelve a `'json'` y la web sigue sirviendo fichas: el catálogo público no
  * depende de que el CRM funcione.
  */
-const source: Property[] = withPhotos.filter((property) => !faltanDatosDeAlquilerTensionado(property));
+// El Excel de inventario está desfasado: lo que Habitatsoft ya no publica en la web antigua
+// (vendido, retirado o reservado) tampoco sale aquí. Los que no tienen id antiguo se quedan.
+const retirada = (property: Property): boolean => legacy[normRef(property.ref)]?.published === false;
+
+/** Fuera porque Habitatsoft ya no las publica (ver scripts/scrape-web-antigua.mjs). */
+export const retiradasEnHabitatsoft: Property[] = withPhotos.filter(retirada);
+
+const source: Property[] = withPhotos.filter((property) => !faltanDatosDeAlquilerTensionado(property) && !retirada(property));
 
 /** Las que se quedan fuera por el filtro de arriba, para poder avisar en el panel. */
 export const retenidasPorLey: Property[] = withPhotos.filter(faltanDatosDeAlquilerTensionado);

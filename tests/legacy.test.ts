@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { getListings, propertySlug } from '../src/data/properties';
+import { getListings, propertySlug, retiradasEnHabitatsoft } from '../src/data/properties';
 import { injectLegacyRules, legacyRedirectRules, LEGACY_MARKER } from '../src/lib/legacy-redirects';
 
 describe('datos de la web antigua', () => {
@@ -10,6 +10,15 @@ describe('datos de la web antigua', () => {
     expect(chalet?.energyEmissions).toBe(46);
     expect(chalet?.energyConsumptionRating).toBe('D');
     expect(chalet?.legacyId).toBe('49263636613.527526');
+  });
+});
+
+describe('inventario desfasado', () => {
+  it('no publica lo que Habitatsoft ya no publica', () => {
+    const refs = getListings().map((p) => p.ref);
+    expect(refs).not.toContain('T-2020-H'); // da 404 en la web antigua
+    expect(refs).toContain('C-1198-H');
+    expect(retiradasEnHabitatsoft.length).toBe(22);
   });
 });
 

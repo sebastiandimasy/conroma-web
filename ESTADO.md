@@ -69,8 +69,8 @@ paquete preparado en `~/Desktop/Claude-migracion/`.
   raíz → `/es/`, y las 43 URLs del sitemap antiguo llegan a una página que existe.
 - **Legales con datos reales** (18-nov): Conroma La Selva S.L., NIF B65585408, domicilio social
   en Blanes y registro mercantil, sacados del aviso legal de la web antigua. Ya son indexables.
-- **SEO técnico** (auditoría del build, 18-nov): 174 páginas, 163 indexables y las 163 en el
-  sitemap (117 fichas). Sin enlaces rotos, títulos duplicados ni JSON-LD inválido.
+- **SEO técnico** (auditoría del build, 18-nov): 152 páginas, 141 indexables y las 141 en el
+  sitemap (103 fichas, tras ocultar las 22 que Habitatsoft ya no publica). Sin enlaces rotos, títulos duplicados ni JSON-LD inválido.
 - **Analítica** en GTM `GTM-KWJHKHR2` con consent mode por defecto denegado.
 - **Catálogo indexable** (`catalogIndexable: true`). Los 8 pisos sin fotos quedan fuera solos.
 - **Imagen al compartir** propia, 1200x630 y 100 KB (`public/img/og-conroma.jpg`).
@@ -87,8 +87,8 @@ En este repo:
 2. **Puente con la web antigua** (18-nov, sin acceso al panel de Habitatsoft):
    `scripts/scrape-web-antigua.mjs` lee las fichas públicas de `www.conromaasesores.com` y
    escribe `src/data/property-legacy.json` (id antiguo + certificado energético por ref).
-   Resultado: 55 fichas con letra, 36 exentas, 9 «en trámite». El build genera 117 redirecciones
-   1:1 de `/detalle/.../<id>` a la ficha nueva (`src/lib/legacy-redirects.ts`).
+   Resultado: 55 fichas con letra, 36 exentas, 9 «en trámite». El build genera una redirección
+   1:1 por ficha publicada de `/detalle/.../<id>` a la ficha nueva (95) (`src/lib/legacy-redirects.ts`).
    **Vuelve a lanzarlo justo antes del swipe**: cuando se apague la web antigua, ya no se puede.
 3. **El inventario del Excel está desfasado.** Contra la web antigua: 22 de nuestros
    inmuebles ya no están publicados (19 dan 404) y hay 6 publicados allí que no tenemos. Se
