@@ -127,7 +127,6 @@ export default function AffordabilitySimulator() {
         {result.status === 'apto' && (
           <>
             <span className="afford__icon afford__icon--ok"><AnimatedCheck /></span>
-            <p className="afford__eyebrow">Buenas noticias</p>
             <h2 className="afford__headline">Crédito preaprobado</h2>
             <p className="afford__sub">
               Podrías llegar hasta <strong>{formatPrice(Math.round(result.maxBudget))}</strong>
@@ -145,7 +144,6 @@ export default function AffordabilitySimulator() {
         {result.status === 'revisar' && (
           <>
             <span className="afford__icon afford__icon--ok"><AnimatedCheck /></span>
-            <p className="afford__eyebrow">Casi lo tienes</p>
             <h2 className="afford__headline">Por números, sí</h2>
             <p className="afford__sub">
               Tu endeudamiento cabe en el 40%, pero con poca antigüedad en el trabajo el banco pide verlo con calma. No te preocupes, se mira.
@@ -162,7 +160,6 @@ export default function AffordabilitySimulator() {
         {result.status === 'no-apto' && (
           <>
             <span className="afford__icon afford__icon--warn"><AnimatedAlert /></span>
-            <p className="afford__eyebrow">Aún no es hora</p>
             <h2 className="afford__headline">Todavía no te daría</h2>
             <p className="afford__sub">
               Con estos números tu capacidad de endeudamiento aún no llega: el banco mira que entre la cuota y tus deudas no pases del 40% de tu sueldo, y hoy te pasas. No lo dejes correr: baja un poco las deudas o ahorra algo más para la entrada y vuelve a probar. Cada mes cuentas.
@@ -178,7 +175,7 @@ export default function AffordabilitySimulator() {
 
         {!hasSavings && result.status !== 'apto' && (
           <p className="afford__financing">
-            ¿Sin ahorros para la entrada? <strong>PERO OJO</strong> —{' '}
+            ¿Sin ahorros para la entrada? <strong>Pero ojo:</strong>{' '}
             <a href={waLink(financingMessage)} data-contact="whatsapp" data-origin="financiacion-100">
               pulsa aquí para conocer nuestra financiación 100%
             </a>

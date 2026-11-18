@@ -1,15 +1,70 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PageHero from '../../../components/sections/PageHero.astro';
-import ContactSection from '../../../components/sections/ContactSection.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import ContentGuide from '../../../components/sections/ContentGuide.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
 import ReformSimulator from '../../../islands/ReformSimulator';
-import { breadcrumbSchema } from '../../../lib/seo';
+import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
+import { reformReference } from '../../../lib/finance';
+import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 
+/* Keyword (docs/KEYWORDS.md): «cuánto cuesta reformar un piso», «precio reforma integral m2».
+   Calculadora arriba; debajo, qué mueve el precio y dudas habituales (normativa general, sin
+   cifras propias: las de la calculadora son medias de España con su fuente). */
 const path = '/es/reformas/simulador/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Reformas', path: '/es/reformas/' },
   { name: 'Simulador de reformas', path },
+];
+const guide = [
+  {
+    title: 'Metros',
+    text: 'Es la base del cálculo: casi todas las partidas (suelo, pintura, instalaciones) crecen con la superficie del piso.',
+  },
+  {
+    title: 'Estado de partida',
+    text: 'Un piso con la instalación eléctrica y la fontanería antiguas necesita cambiarlas enteras. Si ya están al día, la reforma sale más ligera.',
+  },
+  {
+    title: 'Calidad de los acabados',
+    text: 'Suelos, sanitarios, grifería, muebles de cocina y carpintería. Entre una calidad básica y una alta, el mismo piso puede costar bastante más.',
+  },
+  {
+    title: 'Cambios de distribución',
+    text: 'Tirar o mover tabiques, abrir la cocina o sumar un baño añade obra, y a veces un técnico y un permiso más exigente.',
+  },
+  {
+    title: 'Permisos y tasas',
+    text: 'El ayuntamiento cobra el impuesto de construcciones (ICIO) y la tasa del permiso, según el presupuesto de la obra. Cada municipio fija su porcentaje.',
+  },
+  {
+    title: 'IVA reducido',
+    text: 'En obras de renovación de una vivienda particular, el IVA puede ser del 10% en lugar del 21% si se cumplen las condiciones de la ley; por ejemplo, que los materiales que aporta la empresa no pasen del 40% del total.',
+  },
+];
+const faq = [
+  {
+    question: '¿De dónde salen estas cifras?',
+    answer: `Son medias de España: ${reformReference.value} (${reformReference.source}, ${reformReference.date}). No son nuestros precios; sirven para hacerte una idea.`,
+  },
+  {
+    question: '¿El presupuesto final será el que sale aquí?',
+    answer:
+      'No tiene por qué. El presupuesto real lo damos después de ver el piso, por escrito y partida a partida, antes de empezar la obra.',
+  },
+  {
+    question: '¿Qué entra en una reforma integral?',
+    answer:
+      'Normalmente cocina, baños, instalación eléctrica y fontanería, suelos, carpintería y pintura. Lo vemos contigo según si vas a vender o a entrar a vivir.',
+  },
+  {
+    question: '¿Necesito permiso del ayuntamiento?',
+    answer:
+      'Depende de la obra. Para obras menores suele bastar una comunicación previa; si se toca la estructura, la fachada o la distribución de forma importante, hace falta licencia de obra mayor.',
+  },
 ];
 ---
 
@@ -17,25 +72,36 @@ const crumbs = [
   title="Simulador de reformas: cuánto cuesta reformar un piso"
   description="Calcula cuánto puede costar la reforma integral de tu piso según los metros y la calidad de los acabados. Orientativo y sin dejar tus datos."
   path={path}
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
 >
-  <PageHero
-    crumbs={crumbs}
-    eyebrow="Conroma en Obras"
-    title="¿Cuánto cuesta "
-    highlight="reformar mi piso?"
-    lead="Pon los metros y la calidad que buscas, y te sale una idea de por dónde van los tiros."
-  >
-    <a class="button button--ghost button--large" href="/es/reformas/">Cómo hacemos las reformas</a>
-  </PageHero>
-
-  <section class="section simulator-section">
+  <section class="page-head page-head--editorial">
     <div class="wrap">
-      <div class="simulator-card glass" data-reveal>
-        <ReformSimulator client:load />
-      </div>
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>¿Cuánto cuesta reformar un piso?</h1>
+      <p class="page-head__lead">
+        Pon los metros y la calidad que buscas, y te sale una idea de por dónde van los tiros. Sin dejar tus datos.
+      </p>
     </div>
   </section>
 
-  <ContactSection />
+  <section class="section simulator-section">
+    <div class="wrap" data-reveal>
+      <ReformSimulator client:load />
+    </div>
+  </section>
+
+  <ContentGuide
+    title="Qué sube o baja el precio de una reforma"
+    lead="La calculadora parte de los metros y la calidad. En la obra real cuentan también estas cosas."
+    items={guide}
+  >
+    <a class="arrow-link content-guide__more" href="/es/reformas/">
+      <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+      <span class="arrow-link__label">Cómo hacemos las reformas</span>
+    </a>
+  </ContentGuide>
+
+  <FaqSection title="Lo que preguntan antes de reformar" items={faq} origin="simulador-faq" />
+
+  <ClosingCTA title="Hablemos" titleMuted="de tu reforma" image={closingPhoto} origin="simulador-cierre" />
 </BaseLayout>

@@ -2988,13 +2988,9 @@
     margin-top: 12px;
   }
 
-  .simulator-section {
+  .simulator-section,
+  .calc-section {
     padding-top: 16px;
-  }
-
-  .simulator-card {
-    padding: clamp(18px, 3vw, 32px);
-    border-radius: var(--radius-lg);
   }
 
   .simulator {
@@ -3018,28 +3014,22 @@
     color: var(--color-ink-3);
   }
 
+  /* Resultado editorial (2026-11-18): sin tarjeta oscura ni rótulo en mayúsculas; cifra grande
+     en la fuente de titulares y desglose con línea suave. */
   .simulator__result {
     @apply flex flex-col gap-3;
-    padding: clamp(20px, 3vw, 30px);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-fixed-line);
-    background: var(--color-fixed-ink);
-    color: var(--color-on-fixed-ink);
+    padding-top: var(--space-6);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
   }
 
   .simulator__label {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
   }
 
   .simulator__value {
-    font-family: var(--font-mono);
-    font-size: clamp(2.5rem, 2rem + 2.4vw, 3.75rem);
-    font-weight: 700;
+    font-size: clamp(2.75rem, 2.2rem + 2.6vw, 4rem);
+    font-weight: 400;
     line-height: 1;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
@@ -3047,41 +3037,46 @@
 
   .simulator__sub {
     font-size: var(--text-small);
-    color: var(--color-on-fixed-ink-muted);
+    color: var(--color-ink-3);
   }
 
   .simulator__breakdown {
     margin-block: 8px;
-    border-top: 1px solid var(--color-fixed-line);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
   }
 
   .simulator__breakdown > div {
     @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1;
     padding-block: 12px;
-    border-bottom: 1px solid var(--color-fixed-line);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
     font-size: var(--text-small);
   }
 
   .simulator__breakdown dt {
     flex: 1 1 8rem;
-    color: var(--color-on-fixed-ink-muted);
+    color: var(--color-ink-2);
   }
 
   .simulator__breakdown dd {
     margin-left: auto;
-    font-family: var(--font-mono);
-    font-weight: 700;
+    font-weight: 500;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
-  .simulator__total dt,
-  .simulator__total dd {
-    color: var(--color-accent);
+  @media (min-width: 64rem) {
+    .simulator {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .simulator__result {
+      padding-top: 0;
+      border-top: 0;
+    }
   }
 
-  .simulator__result .simulator__note {
-    color: var(--color-on-fixed-ink-faint);
-  }
 
   .simulator__result .button {
     padding: 12px 16px;
@@ -3096,61 +3091,14 @@
     gap: 16px;
   }
 
-  /* Página "¿puedo comprar?": texto a un lado, form al otro, ancho acotado. */
-  .calc-layout {
-    @apply grid gap-8;
-  }
-
-  .calc-layout__title {
-    font-size: var(--text-h1);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-
-  .calc-layout__lead {
-    margin-top: 12px;
-    max-width: 44ch;
-    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
-    color: var(--color-ink-2);
-  }
-
-  .calc-layout__points {
-    @apply flex flex-col gap-2;
-    margin-top: 20px;
-    color: var(--color-ink-2);
-  }
-
-  .calc-layout__points li {
-    @apply flex items-center gap-2;
-  }
-
-  .calc-layout__check {
-    width: 18px;
-    height: 18px;
-    flex: none;
-    color: var(--color-positive);
-  }
-
-  @media (min-width: 60rem) {
-    .calc-layout {
-      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
-      gap: 56px;
-      align-items: start;
-      max-width: 980px;
-      margin-inline: auto;
-    }
-
-    .calc-layout__intro {
-      position: sticky;
-      top: calc(var(--header-height) + 32px);
-      padding-top: 8px;
-    }
+  /* «¿Puedo comprar?»: el formulario va en una columna acotada bajo el page-head. */
+  .calc-section__form {
+    max-width: 560px;
   }
 
   .afford__result {
-    @apply flex flex-col items-center gap-4 text-center;
-    max-width: 520px;
-    margin-inline: auto;
+    @apply flex flex-col items-start gap-4;
+    max-width: 560px;
     padding-block: clamp(8px, 3vw, 24px);
   }
 
@@ -3166,17 +3114,9 @@
     color: var(--color-accent-deep);
   }
 
-  .afford__eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-caption);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-ink-3);
-  }
-
   .afford__headline {
     font-size: var(--text-h2);
+    font-weight: 400;
     line-height: 1.05;
     letter-spacing: -0.02em;
     color: var(--color-ink);
@@ -3196,9 +3136,6 @@
 
   .afford__financing {
     max-width: 46ch;
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-line);
     font-size: var(--text-small);
     color: var(--color-ink-2);
   }
