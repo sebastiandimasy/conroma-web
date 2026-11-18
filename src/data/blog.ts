@@ -18,8 +18,8 @@ export interface BlogPost {
   intro: string;
   sections: BlogSection[];
   cta: { label: string; href: string };
-  /** Reel de @conromaasesores en el que se basa el artículo: se embebe en vivo y su portada está en src/assets/blog/reels/{instagram}.jpg. */
-  video?: { instagram: string; title: string; uploaded: string; seconds: number };
+  /** Reel de @conromaasesores en el que se basa el artículo: MP4 propio en public/video/{file}.mp4 y portada en src/assets/blog/reels/{instagram}.jpg. */
+  video?: { instagram: string; file: string; title: string; uploaded: string; seconds: number };
 }
 
 const founder = { name: 'Boris Conde Jr.', role: 'CEO y fundador de Conroma Asesores', href: '/es/equipo/' };
@@ -36,7 +36,7 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Notaría, registro, plusvalía, ITP… Es una de las dudas que más nos llegan. En el vídeo lo jugamos a ver si aciertas; aquí lo tienes por escrito, gasto a gasto.',
-    video: { instagram: 'DfzYVvHxPCp', title: '¿Quién paga cuando compras o vendes una vivienda?', uploaded: '2026-11-16', seconds: 46 },
+    video: { instagram: 'DfzYVvHxPCp', file: 'reel-quien-paga', title: '¿Quién paga cuando compras o vendes una vivienda?', uploaded: '2026-11-16', seconds: 46 },
     sections: [
       {
         heading: 'Lo que paga el comprador',
@@ -84,7 +84,7 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Es la nueva ley que más preguntas nos ha traído este otoño. Te contamos qué pide, a quién afecta y qué pasa si en tu edificio hay amianto.',
-    video: { instagram: 'DebtL2ftE-X', title: 'La nueva ley que ha afectado a la compraventa y el alquiler', uploaded: '2026-10-13', seconds: 36 },
+    video: { instagram: 'DebtL2ftE-X', file: 'reel-amianto', title: 'La nueva ley que ha afectado a la compraventa y el alquiler', uploaded: '2026-10-13', seconds: 36 },
     sections: [
       {
         heading: 'Qué ha cambiado',
@@ -134,7 +134,7 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Muchas familias van justas cada mes con el alquiler y no saben que la Generalitat tiene ayudas pensadas para eso. El problema es que se piden en plazos cortos y se pasan.',
-    video: { instagram: 'Dac63hXIAw7', title: 'Ayuda al alquiler de la Generalitat para jóvenes', uploaded: '2026-07-06', seconds: 28 },
+    video: { instagram: 'Dac63hXIAw7', file: 'reel-ayudas-alquiler', title: 'Ayuda al alquiler de la Generalitat para jóvenes', uploaded: '2026-07-06', seconds: 28 },
     sections: [
       {
         heading: 'Qué son',

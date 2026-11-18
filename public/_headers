@@ -20,5 +20,5 @@
 #   font-src:    'self' fonts.gstatic.com data:
 #   img-src:     'self' data: blob: fotoshs.imghs.net www.googletagmanager.com www.google-analytics.com
 #   worker-src:  'self' blob:   (maplibre-gl crea su worker desde blob:)
-#   frame-src:   'self' www.googletagmanager.com www.instagram.com (reels del blog, al pulsar)
+#   frame-src:   'self' www.googletagmanager.com
 # Revisar en móvil con DevTools (Report-Only primero) antes de forzarla.

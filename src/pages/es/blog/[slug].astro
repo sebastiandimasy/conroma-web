@@ -60,7 +60,7 @@ if (post.video && poster) schemas.push(videoSchema(post, post.video, poster.src)
       </div>
     </header>
     <div class="wrap article__wrap article__body">
-      {post.video && <InstagramReel id={post.video.instagram} title={post.video.title} poster={poster} />}
+      {post.video && <InstagramReel file={post.video.file} title={post.video.title} poster={poster} />}
       {
         post.sections.map((section) => (
           <section class="article__section">

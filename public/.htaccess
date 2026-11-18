@@ -102,5 +102,5 @@
   # CSP en modo PRUEBA (Report-Only): NO bloquea, solo informa de violaciones en la consola.
   # Fuentes auto-alojadas (no hay Google Fonts). Revisar y, cuando esté limpia, cambiar la
   # cabecera a "Content-Security-Policy" (enforcing).
-  Header set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.supabase.co https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://fotoshs.imghs.net; worker-src 'self' blob:; frame-src https://www.googletagmanager.com https://www.instagram.com; base-uri 'self'; form-action 'self'"
+  Header set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://*.supabase.co https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://fotoshs.imghs.net; worker-src 'self' blob:; frame-src https://www.googletagmanager.com; base-uri 'self'; form-action 'self'"
 </IfModule>

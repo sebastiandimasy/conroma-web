@@ -276,10 +276,10 @@ export function listingSchema(property: Property) {
   };
 }
 
-/** VideoObject del reel de Instagram en el que se basa un artículo del blog. */
+/** VideoObject del vídeo propio (reel de Instagram alojado en la web) de un artículo del blog. */
 export function videoSchema(
   post: { description: string; slug: string },
-  video: { instagram: string; title: string; uploaded: string; seconds: number },
+  video: { file: string; title: string; uploaded: string; seconds: number },
   thumbnailPath: string,
 ) {
   return {
@@ -290,7 +290,7 @@ export function videoSchema(
     thumbnailUrl: absoluteUrl(thumbnailPath),
     uploadDate: video.uploaded,
     duration: `PT${video.seconds}S`,
-    embedUrl: `https://www.instagram.com/reel/${video.instagram}/embed/`,
+    contentUrl: absoluteUrl(`/video/${video.file}.mp4`),
     url: absoluteUrl(`/es/blog/${post.slug}/`),
     inLanguage: 'es',
     publisher: { '@id': `${site.url}/#agencia` },

@@ -1,31 +1,39 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 
 interface Props {
-  id: string;
+  /** Archivo en public/video/, sin extensión. */
+  file: string;
   title: string;
   poster?: ImageMetadata;
 }
 
-const { id, title, poster } = Astro.props;
-const url = `https://www.instagram.com/reel/${id}/`;
+const { file, title, poster } = Astro.props;
+const posterSrc = poster ? (await getImage({ src: poster, width: 360, format: 'jpg' })).src : undefined;
 ---
 
-{/* Reel de Instagram en vivo dentro del artículo. El iframe carga en diferido (al acercarse al
-    viewport); mientras, se ve la portada del vídeo, guardada en la web. */}
-<figure class="reel-embed">
+{/* Vídeo propio (MP4 en public/video/) dentro de un marco con margen y esquinas redondeadas,
+    sin la interfaz de Instagram. No se descarga hasta pulsar play (preload="none"). */}
+<figure class="reel-embed" data-reel>
   <div class="reel-embed__stage">
-    {poster && <Image class="reel-embed__poster" src={poster} alt="" widths={[360]} sizes="360px" loading="lazy" />}
-    <iframe
-      class="reel-embed__frame"
-      src={`${url}embed/`}
-      title={`Vídeo de Instagram: ${title}`}
-      loading="lazy"
-      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-      allowfullscreen></iframe>
+    <video class="reel-embed__video" src={`/video/${file}.mp4`} poster={posterSrc} preload="none" playsinline aria-label={title}></video>
+    <button type="button" class="reel-embed__play" aria-label={`Reproducir el vídeo «${title}»`}>
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
+    </button>
   </div>
-  <figcaption class="reel-embed__caption">
-    «{title}», en nuestro Instagram. <a href={url} target="_blank" rel="noopener">Abrir en Instagram</a>
-  </figcaption>
+  <figcaption class="reel-embed__caption">{title}</figcaption>
 </figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-reel]').forEach((figure) => {
+    const video = figure.querySelector('video');
+    const button = figure.querySelector('button');
+    if (!video || !button) return;
+    button.addEventListener('click', () => {
+      video.controls = true;
+      button.hidden = true;
+      void video.play().catch(() => {});
+    });
+  });
+</script>
