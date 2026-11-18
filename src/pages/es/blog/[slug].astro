@@ -4,7 +4,7 @@ import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
 import InstagramReel from '../../../components/sections/InstagramReel.astro';
 import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
-import { posts, type BlogPost } from '../../../data/blog';
+import { posts, relatedPosts, splitLinks, type BlogPost } from '../../../data/blog';
 import { site } from '../../../data/site';
 import { articleSchema, breadcrumbSchema, videoSchema } from '../../../lib/seo';
 import type { ImageMetadata } from 'astro';
@@ -27,7 +27,7 @@ const crumbs = [
 const formatDate = (date: string) =>
   new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const dateLabel = formatDate(post.date);
-const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
+const others = relatedPosts(post);
 // Portada del reel (src/assets/blog/reels/{id}.jpg): fondo mientras carga el iframe y miniatura del VideoObject.
 const reelPosters = import.meta.glob<{ default: ImageMetadata }>('../../../assets/blog/reels/*.jpg', { eager: true });
 const poster = post.video ? reelPosters[`../../../assets/blog/reels/${post.video.instagram}.jpg`]?.default : undefined;
@@ -60,13 +60,22 @@ if (post.video && poster) schemas.push(videoSchema(post, post.video, poster.src)
       </div>
     </header>
     <div class="wrap article__wrap article__body">
+      <p class="article__summary"><strong>En resumen.</strong> {post.summary}</p>
       {post.video && <InstagramReel file={post.video.file} title={post.video.title} poster={poster} />}
       {
         post.sections.map((section) => (
           <section class="article__section">
             <h2 class="article__heading">{section.heading}</h2>
-            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-            {section.list && <ul class="article__list">{section.list.map((item) => <li>{item}</li>)}</ul>}
+            {section.paragraphs.map((paragraph) => (
+              <p>{splitLinks(paragraph).map((part) => (typeof part === 'string' ? part : <a href={part.href}>{part.text}</a>))}</p>
+            ))}
+            {section.list && (
+              <ul class="article__list">
+                {section.list.map((item) => (
+                  <li>{splitLinks(item).map((part) => (typeof part === 'string' ? part : <a href={part.href}>{part.text}</a>))}</li>
+                ))}
+              </ul>
+            )}
           </section>
         ))
       }

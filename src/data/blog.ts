@@ -16,6 +16,9 @@ export interface BlogPost {
   author: { name: string; role: string; href: string };
   draft: boolean;
   intro: string;
+  /** Respuesta directa en 1-2 frases, arriba del artículo (fragmentos destacados y buscadores con IA). */
+  summary: string;
+  /** Párrafos y elementos de lista admiten enlaces internos con la forma [texto](/es/ruta/). */
   sections: BlogSection[];
   cta: { label: string; href: string };
   /** Reel de @conromaasesores en el que se basa el artículo: MP4 propio en public/video/{file}.mp4 y portada en src/assets/blog/reels/{instagram}.jpg. */
@@ -36,6 +39,7 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Notaría, registro, plusvalía, ITP… Es una de las dudas que más nos llegan. En el vídeo lo jugamos a ver si aciertas; aquí lo tienes por escrito, gasto a gasto.',
+    summary: 'El comprador paga el ITP (o el IVA si el piso es nuevo), la notaría, el registro y la tasación si pide hipoteca. El vendedor paga la plusvalía municipal, la cancelación de su hipoteca y los certificados. El IBI del año se suele repartir, y la comisión la paga quien contrata a la agencia.',
     video: { instagram: 'DfzYVvHxPCp', file: 'reel-quien-paga', title: '¿Quién paga cuando compras o vendes una vivienda?', uploaded: '2026-11-16', seconds: 46 },
     sections: [
       {
@@ -54,12 +58,12 @@ export const posts: BlogPost[] = [
         list: [
           'Plusvalía municipal. La cobra el ayuntamiento por la subida de valor del suelo y la paga quien vende. Si vende por menos de lo que compró, no se paga.',
           'IBI. Lo paga quien es propietario el 1 de enero. En el vídeo lo marcamos como «pactable», porque es habitual repartirlo con el comprador según los meses que cada uno tiene el piso ese año.',
-          'Cancelar su hipoteca, si la hay, y los certificados para vender: el energético, la cédula de habitabilidad y, desde octubre de 2026, el de amianto.',
+          'Cancelar su hipoteca, si la hay, y los certificados para vender: el energético, la cédula de habitabilidad y, desde octubre de 2026, [el de amianto](/es/blog/certificado-de-amianto-para-vender-o-alquilar-en-cataluna/).',
           'La ganancia en el IRPF, si vende por más de lo que le costó.',
         ],
       },
       {
-        heading: 'Y la comisión de la agencia',
+        heading: '¿Quién paga la comisión de la inmobiliaria?',
         paragraphs: [
           'En el vídeo la comisión sale a los dos lados, y es a propósito: la paga quien contrata a la agencia. Si la contrata el vendedor para vender, la paga él; si un comprador encarga a una agencia que le busque piso, la paga el comprador.',
           'Lo importante es que esté claro desde el principio, por escrito, cuánto es y quién la paga. Sin sorpresas el día de la firma.',
@@ -69,7 +73,8 @@ export const posts: BlogPost[] = [
         heading: 'Antes de firmar las arras',
         paragraphs: [
           'Las arras son el momento de dejarlo todo atado: precio, fecha de la firma y quién paga cada gasto. Si algo de esta lista no te cuadra con tu caso, pregúntalo antes de firmar, no después.',
-          'Si compras, haz la cuenta completa: precio, más el 10% de ITP, más notaría, registro y tasación. Puedes ver hasta dónde llegas con nuestra calculadora «¿Puedo comprar?».',
+          'Si compras, haz la cuenta completa: precio, más el 10% de ITP, más notaría, registro y tasación. Puedes ver hasta dónde llegas con nuestra [calculadora «¿Puedo comprar?»](/es/comprar/puedo-comprar/).',
+          'Si vendes, ten a mano [los papeles que te van a pedir](/es/blog/papeles-para-vender-un-piso-en-cataluna/) antes de llegar a las arras.',
         ],
       },
     ],
@@ -84,20 +89,21 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Es la nueva ley que más preguntas nos ha traído este otoño. Te contamos qué pide, a quién afecta y qué pasa si en tu edificio hay amianto.',
+    summary: 'Desde el 3 de octubre de 2026, quien vende o alquila en Cataluña un inmueble construido antes de 2002 tiene que entregar un certificado de presencia o ausencia de amianto visible. Lo firma un arquitecto, arquitecto técnico o ingeniero tras una inspección a la vista. No entregarlo no anula la venta, pero es una infracción leve con multas de 100 a 3.000 €.',
     video: { instagram: 'DebtL2ftE-X', file: 'reel-amianto', title: 'La nueva ley que ha afectado a la compraventa y el alquiler', uploaded: '2026-10-13', seconds: 36 },
     sections: [
       {
-        heading: 'Qué ha cambiado',
+        heading: 'Qué pide la Ley 8/2026 del amianto',
         paragraphs: [
           'La Ley 8/2026, de erradicación del amianto en Cataluña, está en vigor desde el 3 de octubre de 2026. Entre otras cosas, pide un certificado de presencia o ausencia de amianto visible cuando se vende o se alquila un inmueble.',
           'En una venta, lo entrega el vendedor al comprador. En un alquiler, el propietario al inquilino.',
         ],
       },
       {
-        heading: 'A qué pisos afecta',
+        heading: 'A qué viviendas afecta',
         paragraphs: [
           'Según el criterio de la Agència de Residus de Catalunya, a los inmuebles construidos antes de 2002, que es cuando se prohibió vender productos con amianto. Y no solo a pisos: también a casas, locales, naves y terrenos.',
-          'En el Maresme, buena parte de los pisos son de esos años, así que si vas a vender o alquilar es muy probable que te toque.',
+          'En el Maresme, buena parte de los pisos son de esos años, así que si vas a [vender](/es/vender/) o alquilar es muy probable que te toque.',
         ],
       },
       {
@@ -109,10 +115,10 @@ export const posts: BlogPost[] = [
         ],
       },
       {
-        heading: '¿Se puede vender sin él?',
+        heading: '¿Se puede vender o alquilar sin el certificado?',
         paragraphs: [
           'Se puede firmar, pero no es buena idea. Vender o alquilar sin entregarlo es una infracción leve, con multas de 100 a 3.000 €, y el Registro de la Propiedad puede pedirlo para inscribir la compra. Si hay prisa, se puede firmar con el compromiso de aportarlo después.',
-          'Lo sensato es pedirlo en cuanto decidas vender, junto con el certificado energético y la cédula. Así llega a tiempo para las arras.',
+          'Lo sensato es pedirlo en cuanto decidas vender, junto con [el certificado energético y la cédula](/es/blog/papeles-para-vender-un-piso-en-cataluna/). Así llega a tiempo para las arras.',
         ],
       },
       {
@@ -134,17 +140,18 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Muchas familias van justas cada mes con el alquiler y no saben que la Generalitat tiene ayudas pensadas para eso. El problema es que se piden en plazos cortos y se pasan.',
+    summary: 'La Agència de l’Habitatge de Catalunya convoca cada año ayudas para pagar el alquiler de la vivienda habitual, por edades. En 2026, la de jóvenes de hasta 35 años daba de 20 a 250 € al mes y se pidió del 29 de junio al 10 de julio. En el Maresme se aceptaba un alquiler de hasta 750 € al mes por un piso entero.',
     video: { instagram: 'Dac63hXIAw7', file: 'reel-ayudas-alquiler', title: 'Ayuda al alquiler de la Generalitat para jóvenes', uploaded: '2026-07-06', seconds: 28 },
     sections: [
       {
-        heading: 'Qué son',
+        heading: 'Qué son las ayudas al alquiler de la Generalitat',
         paragraphs: [
           'Son subvenciones de la Agència de l’Habitatge de Catalunya para ayudarte a pagar el alquiler de tu vivienda habitual. Se convocan cada año por edades: una línea para jóvenes de hasta 35 años, otra de 36 a 64 y otra para mayores de 65.',
           'En 2026 no se daban por orden de llegada: se estudiaba y puntuaba cada caso con los requisitos de la convocatoria.',
         ],
       },
       {
-        heading: 'La de jóvenes, la del vídeo',
+        heading: 'La ayuda para jóvenes de hasta 35 años',
         paragraphs: [
           'En 2026, la ayuda para jóvenes era para quien tuviera 35 años o menos a 31 de enero y fuera titular de un contrato de alquiler, de un piso o de una habitación. Daba entre 20 y 250 € al mes, según la parte del sueldo que se te va en el alquiler.',
           'El plazo fue muy corto: del 29 de junio al 10 de julio de 2026. Por eso subimos el vídeo justo antes de que cerrara.',
@@ -160,17 +167,17 @@ export const posts: BlogPost[] = [
         ],
       },
       {
-        heading: 'Cómo se piden',
+        heading: 'Cómo se pide la ayuda',
         paragraphs: [
           'Por internet, con el formulario de la Agència de l’Habitatge de Catalunya en su web. Necesitas el contrato de alquiler, los recibos pagados y los datos de ingresos de quienes viven en el piso. Las oficinas locales de vivienda suelen ayudar a tramitarla.',
           'Cada convocatoria fija sus propios límites de ingresos y documentos. Léelos antes de empezar: cambian de un año a otro.',
         ],
       },
       {
-        heading: 'Para no quedarte fuera',
+        heading: 'Cuándo se piden: los plazos de 2026',
         paragraphs: [
           'En 2026, las líneas de 36 a 64 años y de mayores de 65 se pidieron en primavera (la de 36 a 64 cerró el 30 de abril) y la de jóvenes, a principios de verano. Si vives de alquiler, apúntate esas fechas y mira la web de la Agència cuando se acerquen.',
-          'Si tienes dudas o quieres que te echemos una mano con los papeles, escríbenos.',
+          'Si tienes dudas o quieres que te echemos una mano con los papeles, [escríbenos](/es/contacto/).',
         ],
       },
     ],
@@ -186,20 +193,21 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Vender un piso impone, sobre todo la primera vez. Te lo contamos fácil, en el orden en que pasa de verdad.',
+    summary: 'Se empieza por saber cuánto vale el piso de verdad, mirando a cuánto se han vendido otros parecidos cerca, no a cuánto se anuncian. Después vienen los papeles, preparar y enseñar el piso, las arras y la firma en notaría, en ese orden.',
     sections: [
       {
         heading: '1. Saber cuánto vale',
         paragraphs: [
           'Todo empieza por el precio. Si sales demasiado alto, el piso se quema en los portales: la gente lo ve semana tras semana y acaba pensando que algo le pasa. Si sales bajo, pierdes dinero.',
-          'Por eso lo primero es una valoración hecha por alguien que conozca tu calle, no solo tu código postal. Lo que cuenta es a cuánto se han vendido pisos parecidos cerca del tuyo, no a cuánto están anunciados. Entre un piso y otro del mismo barrio pesan mucho la planta, si hay ascensor, la luz, el estado y si tiene terraza o parking.',
+          'Por eso lo primero es una [valoración](/es/valoracion/) hecha por alguien que conozca tu calle, no solo tu código postal. Lo que cuenta es a cuánto se han vendido pisos parecidos cerca del tuyo, no a cuánto están anunciados. Entre un piso y otro del mismo barrio pesan mucho la planta, si hay ascensor, la luz, el estado y si tiene terraza o parking.',
           'Si además vas a comprar otro, conviene saber las dos cifras antes de mover ficha: lo que te van a dar por el tuyo y lo que te costará el siguiente.',
         ],
       },
       {
         heading: '2. Tener los papeles a mano',
         paragraphs: [
-          'No hace falta tenerlo todo el primer día, pero cuanto antes lo reúnas, menos sustos al final. Hay uno que necesitas ya para anunciar el piso: el certificado de eficiencia energética, porque la etiqueta tiene que salir en el anuncio.',
-          'La lista completa, con lo que pasa si el piso tiene hipoteca o viene de una herencia, la tienes en nuestra guía de papeles para vender un piso en Cataluña.',
+          'No hace falta tenerlo todo el primer día, pero cuanto antes lo reúnas, menos sustos al final. Hay uno que necesitas ya para anunciar el piso: el certificado de eficiencia energética, porque la etiqueta tiene que salir en el anuncio. Y si el edificio es anterior a 2002, pide también [el certificado de amianto](/es/blog/certificado-de-amianto-para-vender-o-alquilar-en-cataluna/).',
+          'La lista completa, con lo que pasa si el piso tiene hipoteca o viene de una herencia, la tienes en nuestra [guía de papeles para vender un piso en Cataluña](/es/blog/papeles-para-vender-un-piso-en-cataluna/).',
         ],
       },
       {
@@ -213,7 +221,7 @@ export const posts: BlogPost[] = [
         heading: '4. Negociar y firmar las arras',
         paragraphs: [
           'Cuando llega una oferta que te encaja, se firma un contrato de arras: el comprador entrega una señal y los dos os comprometéis a firmar la venta antes de una fecha.',
-          'En el contrato se dice qué tipo de arras son. Las más habituales son las penitenciales: si el comprador se echa atrás, pierde la señal; si te echas atrás tú, le devuelves el doble. Por eso conviene que el contrato lo diga claro, igual que quién paga cada gasto y qué pasa si el banco no le da la hipoteca al comprador.',
+          'En el contrato se dice qué tipo de arras son. Las más habituales son las penitenciales: si el comprador se echa atrás, pierde la señal; si te echas atrás tú, le devuelves el doble. Por eso conviene que el contrato lo diga claro, igual que [quién paga cada gasto](/es/blog/quien-paga-cada-gasto-al-comprar-o-vender-un-piso/) y qué pasa si el banco no le da la hipoteca al comprador.',
         ],
       },
       {
@@ -246,6 +254,7 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'No es la parte divertida, pero es la que más retrasa una venta cuando falta algo. Esta es la lista habitual, y dónde se pide cada cosa.',
+    summary: 'Para vender un piso en Cataluña se suele pedir la escritura y una nota simple, el certificado energético, la cédula de habitabilidad, el último IBI, el certificado de la comunidad y el DNI de los propietarios. Si el edificio es anterior a 2002, también el certificado de amianto. Con hipoteca, inquilino o herencia hay pasos de más.',
     sections: [
       {
         heading: 'Lo que casi siempre hace falta',
@@ -254,6 +263,7 @@ export const posts: BlogPost[] = [
           'Escritura de propiedad. Y una nota simple reciente del Registro, para ver que todo está a tu nombre y qué cargas tiene.',
           'Certificado de eficiencia energética. Hace falta ya para anunciar el piso.',
           'Cédula de habitabilidad en vigor.',
+          'Certificado de amianto, si el edificio es anterior a 2002. Lo pide la Ley 8/2026 desde el 3 de octubre de 2026: te lo contamos en [la guía del certificado de amianto](/es/blog/certificado-de-amianto-para-vender-o-alquilar-en-cataluna/).',
           'Último recibo del IBI.',
           'Certificado de la comunidad de propietarios de que estás al corriente de pago.',
           'DNI o NIE de todos los propietarios.',
@@ -265,6 +275,7 @@ export const posts: BlogPost[] = [
           'La nota simple se pide al Registro de la Propiedad, en persona o por internet, y llega en poco tiempo. Es lo primero que mira cualquier comprador o banco, así que conviene tenerla reciente.',
           'El certificado energético lo hace un técnico habilitado, que visita el piso y lo inscribe en el registro del Institut Català d’Energia (ICAEN). En general vale diez años.',
           'La cédula de habitabilidad la expide la Agència de l’Habitatge de Catalunya. La de un piso de segunda mano vale quince años: mira la fecha, porque si está caducada hay que pedir una nueva y eso necesita también la visita de un técnico.',
+          'El de amianto lo firma un arquitecto, arquitecto técnico o ingeniero después de revisar el piso a la vista. Si encargas el energético, pregunta si te pueden hacer los dos en la misma visita.',
           'El certificado de la comunidad lo firma el secretario o el administrador de la finca. Si debes alguna cuota, se salda antes de firmar.',
         ],
       },
@@ -285,7 +296,7 @@ export const posts: BlogPost[] = [
       {
         heading: 'Si es una herencia',
         paragraphs: [
-          'Antes de vender hay que tener la herencia aceptada ante notario y el piso a nombre de los herederos. Si estás en ese punto, lo vemos contigo con calma.',
+          'Antes de vender hay que tener la herencia aceptada ante notario y el piso a nombre de los herederos. Si estás en ese punto, [lo vemos contigo](/es/contacto/) con calma.',
           'Ojo con los plazos: en Cataluña, el impuesto de sucesiones se presenta en seis meses desde el fallecimiento, y se puede pedir una prórroga. La plusvalía municipal de la herencia tiene también su plazo de seis meses.',
         ],
       },
@@ -309,13 +320,10 @@ export const posts: BlogPost[] = [
     author: founder,
     draft: false,
     intro: 'Mucha gente que compra en la costa no vive aquí. Se puede hacer bien y sin venir diez veces.',
+    summary: 'Se puede comprar sin vivir en España: necesitas un NIE, pagas los mismos impuestos que un residente (un 10% de ITP en un piso de segunda mano) y puedes firmar con un poder notarial sin venir. Después declaras cada año el Impuesto sobre la Renta de No Residentes.',
     sections: [
       {
-        heading: 'Te atendemos en tu idioma',
-        paragraphs: ['Te atendemos en catalán, castellano, inglés y francés, para que entiendas bien lo que firmas.'],
-      },
-      {
-        heading: 'Lo que vas a necesitar',
+        heading: 'Lo que vas a necesitar: NIE y cuenta en España',
         paragraphs: ['Si no tienes nacionalidad española, cuenta con esto:'],
         list: [
           'Un NIE (número de identidad de extranjero). Te lo piden en la notaría y para pagar los impuestos. Se puede pedir en España o en el consulado español de tu país.',
@@ -326,7 +334,7 @@ export const posts: BlogPost[] = [
         heading: 'Los impuestos de la compra',
         paragraphs: [
           'Son los mismos que para alguien que vive aquí. Un piso de segunda mano en Cataluña paga el Impuesto de Transmisiones Patrimoniales: un 10% hasta 600.000 €. Uno de obra nueva paga IVA (10%) y actos jurídicos documentados.',
-          'A eso se suman notaría, registro y, si la usas, gestoría. Haz la cuenta antes de ofertar: el precio del anuncio no es lo único que vas a pagar.',
+          'A eso se suman notaría, registro y, si la usas, gestoría. Haz la cuenta antes de ofertar: el precio del anuncio no es lo único que vas a pagar. Aquí tienes [quién paga cada gasto de la compraventa](/es/blog/quien-paga-cada-gasto-al-comprar-o-vender-un-piso/).',
         ],
       },
       {
@@ -341,6 +349,7 @@ export const posts: BlogPost[] = [
         paragraphs: [
           'Se puede firmar con un poder notarial a favor de una persona de confianza. Si lo haces en tu país, lo normal es que tenga que venir apostillado y traducido. Te explicamos cómo prepararlo.',
           'También puedes firmar ante el cónsul de España, que hace de notario para estos casos.',
+          'Nosotros te atendemos en catalán, castellano, inglés y francés, para que entiendas bien todo lo que firmas.',
         ],
       },
       {
@@ -355,6 +364,7 @@ export const posts: BlogPost[] = [
         heading: 'Por qué Malgrat de Mar',
         paragraphs: [
           'Malgrat está en el Alt Maresme, entre el aeropuerto de Barcelona y el de Girona, con estación de tren de la línea R1 y playa a pie desde el centro. Y es pueblo todo el año, no solo en verano.',
+          'Si quieres hacerte una idea de precios, mira [los pisos en venta en Malgrat de Mar](/es/venta/malgrat-de-mar/).',
         ],
       },
     ],
@@ -368,6 +378,25 @@ export function postsIn(category: string, limit = 3): BlogPost[] {
     .filter((post) => post.category === category && !post.draft)
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit);
+}
+
+/** Otros artículos para «Más guías»: primero los de la misma categoría, luego los más recientes. */
+export function relatedPosts(post: BlogPost, limit = 2): BlogPost[] {
+  return posts
+    .filter((item) => item.slug !== post.slug && !item.draft)
+    .sort((a, b) => Number(b.category === post.category) - Number(a.category === post.category) || b.date.localeCompare(a.date))
+    .slice(0, limit);
+}
+
+/** Parte un texto en trozos de texto y enlaces escritos como [texto](/ruta/). */
+export function splitLinks(text: string): Array<string | { text: string; href: string }> {
+  return text
+    .split(/(\[[^\]]+\]\([^)]+\))/)
+    .filter(Boolean)
+    .map((part) => {
+      const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      return link ? { text: link[1], href: link[2] } : part;
+    });
 }
 
 export function findPost(slug: string): BlogPost | undefined {

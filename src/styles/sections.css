@@ -3301,6 +3301,27 @@
     list-style: disc;
   }
 
+  /* Respuesta directa arriba del artículo: la lee primero la persona y la toma Google como fragmento. */
+  .article__summary {
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+    text-align: justify;
+    text-align-last: start;
+    hyphens: auto;
+  }
+
+  /* Enlaces internos dentro del texto: subrayado fino, mismo color que el texto. */
+  :is(.article__section, .article__summary) a {
+    color: var(--color-ink);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-underline-offset: 3px;
+  }
+
   /* Vídeo del artículo: marco gris con margen y esquinas redondeadas; el vídeo, vertical, dentro. */
   .reel-embed {
     margin: 0;
