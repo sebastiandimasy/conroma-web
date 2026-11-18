@@ -8,7 +8,7 @@ interface Props {
   image: ImageMetadata;
   alt: string;
   primary: { label: string; href: string };
-  /** Acción secundaria (ghost). Si es wa.me / tel:, lleva data-contact para medir por Click URL. */
+  /** Acción secundaria: texto clicable, sin borde. Si es wa.me / tel:, lleva data-contact para medir por Click URL. */
   secondary: { label: string; href: string; contact?: 'whatsapp' | 'llamada'; origin?: string };
   /** Encuadre de la foto (object-position). */
   position?: string;
@@ -36,7 +36,7 @@ const { title, lead, image, alt, primary, secondary, position } = Astro.props;
     <div class="hero-center__actions">
       <a class="button button--primary button--large" href={primary.href}>{primary.label}</a>
       <a
-        class="button button--ghost button--large"
+        class="hero-center__link"
         href={secondary.href}
         data-contact={secondary.contact}
         data-origin={secondary.origin}

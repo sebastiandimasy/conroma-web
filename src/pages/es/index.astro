@@ -18,7 +18,6 @@ import { homeFaq } from '../../data/faq';
 import { site } from '../../data/site';
 import { getListings, homesIn } from '../../data/properties';
 import { faqSchema } from '../../lib/seo';
-import { whatsappUrl } from '../../lib/links';
 
 // Foto de portada del equipo (site.ts): la agencia es la gente que te atiende.
 const hero = site.heroImage!;
@@ -55,7 +54,7 @@ const trackRecord = [
       image={hero.src}
       alt={hero.alt}
       primary={{ label: 'Trabajemos juntos', href: '/es/contacto/' }}
-      secondary={{ label: 'Contáctanos', href: whatsappUrl(), contact: 'whatsapp', origin: 'home-hero' }}
+      secondary={{ label: '¿Buscas un piso?', href: '/es/venta/' }}
       position="40% center"
     />
 

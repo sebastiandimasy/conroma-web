@@ -82,9 +82,10 @@
   color: var(--color-ink-2);
 }
 
+/* Centrados bajo la tarjeta (petición del dueño, 2026-11-18). */
 .tcar__dots {
   display: flex;
-  margin-inline: -14px;
+  justify-content: center;
 }
 
 /* Área táctil de 44px con la barra visual dentro. */

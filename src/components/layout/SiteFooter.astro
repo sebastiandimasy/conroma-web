@@ -29,7 +29,7 @@ const year = 2026;
 
     <nav class="site-footer__col" aria-label="Enlaces rápidos">
       <h2 class="site-footer__title">Web</h2>
-      <ul class="site-footer__links">
+      <ul class="site-footer__links site-footer__links--nav">
         {mainNav.map((link) => (
           <li><a href={link.href}>{link.label}</a></li>
         ))}
@@ -283,10 +283,41 @@ const year = 2026;
     }
   }
 
-  .site-footer__links--cols {
+  /* En móvil, Web y Zonas a dos columnas: el pie medía más de dos pantallas. */
+  .site-footer__links--cols,
+  .site-footer__links--nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 24px;
+  }
+
+  /* En móvil el body reserva 96px para el dock (sections.css): el pie se mete en ese hueco para que
+     el negro llegue hasta abajo, sin franja del color de página, y su texto quede por encima del dock. */
+  @media (max-width: 59.99rem) {
+    .site-footer {
+      margin-bottom: -96px;
+      padding-bottom: calc(32px + 96px);
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .site-footer {
+      padding-top: 48px;
+    }
+
+    .site-footer__grid {
+      gap: 32px;
+    }
+
+    .site-footer__brand {
+      padding-bottom: 32px;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-fixed-paper) 16%, transparent);
+    }
+
+    .site-footer__base {
+      flex-direction: column;
+      margin-top: 32px;
+    }
   }
 
   @media (min-width: 40rem) {
@@ -301,7 +332,8 @@ const year = 2026;
       gap: 40px;
     }
 
-    .site-footer__links--cols {
+    .site-footer__links--cols,
+    .site-footer__links--nav {
       grid-template-columns: 1fr;
     }
   }

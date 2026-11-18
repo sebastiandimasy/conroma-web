@@ -902,8 +902,30 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--space-3);
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
     margin-top: var(--space-10);
+  }
+
+  /* Secundario: texto clicable sobre la foto, sin borde (petición del dueño, 2026-11-18). */
+  .hero-center__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding-inline: var(--space-4);
+    font-weight: 500;
+    color: var(--color-on-fixed-ink);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-on-fixed-ink) 50%, transparent);
+    text-underline-offset: 6px;
+    transition: color var(--duration-fast) var(--ease-out), text-decoration-color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-center__link:hover {
+      color: var(--color-accent);
+      text-decoration-color: var(--color-accent);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -935,11 +957,11 @@
     color: var(--color-on-surface-2);
   }
 
-  /* Al ancho de la rejilla y justificado; la última línea, centrada (petición del dueño, 2026-11-18).
+  /* Al ancho de la rejilla y justificado, última línea a la izquierda (petición del dueño, 2026-11-18).
      Guiones automáticos para que el justificado no abra huecos en móvil. */
   .statement__text {
     text-align: justify;
-    text-align-last: center;
+    text-align-last: start;
     hyphens: auto;
     font-size: clamp(1.375rem, 1rem + 1.6vw, 2.375rem);
     font-weight: var(--weight-display);
@@ -963,27 +985,26 @@
     }
   }
 
-  /* Inicio: títulos de sección centrados y párrafos justificados con la última línea centrada
-     (petición del dueño, 2026-11-18). Las filas de acordeón y las fichas de piso no cambian. */
+  /* Inicio: textos justificados con la última línea a la izquierda y a todo el ancho de su sección,
+     títulos a la izquierda (petición del dueño, 2026-11-18). Héroe y cierre siguen centrados. */
   .page-home {
     display: contents;
   }
 
-  .page-home .section__title {
-    text-align: center;
-    text-wrap: balance;
-  }
-
   .page-home :is(.section__lead, .service-index__text, .testimonials__lead, .accordion__answer, .tcar__quote, .faq-section__contact-text) {
+    max-width: none;
     text-align: justify;
-    text-align-last: center;
+    text-align-last: start;
     hyphens: auto;
   }
 
-  .page-home :is(.split-feature__copy, .testimonials__head, .service-index__body) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .page-home .faq-section__inner {
+    max-width: none;
+  }
+
+  .page-home .faq-section__head {
+    align-items: stretch;
+    text-align: start;
   }
 
   @keyframes statement-word {
@@ -1408,7 +1429,7 @@
   }
 
   /* Variante de Inicio: acordeón (uno abierto a la vez) y la foto del servicio abierto.
-     Móvil: la foto va dentro del servicio abierto. Escritorio: columna de foto fija al lado (CSS :has). */
+     Móvil: la foto va dentro del servicio abierto, debajo del texto y la flecha. Escritorio: columna de foto fija al lado (CSS :has). */
   .service-index__accordion {
     margin-top: var(--space-10);
     border-bottom: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);

@@ -36,6 +36,13 @@ const photoOf: Record<string, { src: string; alt: string }> = {
                   <Icon name="plus" class="service-index__toggle" />
                 </summary>
                 <div class="service-index__body">
+                  <p class="service-index__text">{service.summary}</p>
+                  <a class="arrow-link" href={service.href}>
+                    <span class="arrow-link__icon" aria-hidden="true">
+                      <Icon name="arrow" />
+                    </span>
+                    <span class="arrow-link__label">Más sobre {service.name.toLowerCase()}</span>
+                  </a>
                   {photoOf[service.slug] && (
                     <img
                       class="service-index__inline-photo"
@@ -47,13 +54,6 @@ const photoOf: Record<string, { src: string; alt: string }> = {
                       decoding="async"
                     />
                   )}
-                  <p class="service-index__text">{service.summary}</p>
-                  <a class="arrow-link" href={service.href}>
-                    <span class="arrow-link__icon" aria-hidden="true">
-                      <Icon name="arrow" />
-                    </span>
-                    <span class="arrow-link__label">Más sobre {service.name.toLowerCase()}</span>
-                  </a>
                 </div>
               </details>
             ))}
