@@ -992,6 +992,8 @@
       .guide-teaser__text,
       .content-guide__text,
       .alert-card__lead,
+      .article__section p,
+      .article__author p,
       .member__bio,
       .founder__bio,
       .feature__text,
@@ -1901,6 +1903,12 @@
   .guide-teaser {
     background: var(--color-canvas);
     color: var(--color-on-canvas);
+  }
+
+  /* «Más guías» bajo un artículo: banda gris para separarla del texto. */
+  .guide-teaser--surface {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
   .guide-teaser__title {
@@ -3279,7 +3287,10 @@
   }
 
   .article__heading {
-    font-size: var(--text-h2);
+    font-size: clamp(1.625rem, 1.4rem + 1vw, 2.25rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
     color: var(--color-ink);
   }
 
@@ -3430,6 +3441,7 @@
 /* --- E-E-A-T: autoría del blog, horario y direcciones (añadido en auditoría) --- */
 @layer components {
   .article__byline {
+    margin-top: var(--space-4);
     color: var(--color-ink-2);
     font-size: 0.95rem;
   }
@@ -3437,12 +3449,11 @@
     color: inherit;
   }
 
+  /* Autoría en línea suave, sin caja (sistema editorial). */
   .article__author {
     margin-top: var(--space-4);
-    padding: var(--space-4);
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
+    padding-top: var(--space-6);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
   }
   .article__author p {
     margin: 0;

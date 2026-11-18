@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
-import ContactBand from '../../../components/sections/ContactBand.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
 import { posts, type BlogPost } from '../../../data/blog';
 import { site } from '../../../data/site';
 import { articleSchema, breadcrumbSchema } from '../../../lib/seo';
@@ -33,14 +34,13 @@ const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
   noindex={post.draft}
 >
   <article class="article">
-    <header class="page-head">
+    <header class="page-head page-head--editorial">
       <div class="wrap article__wrap">
         <Breadcrumbs crumbs={crumbs} />
-        <p class="eyebrow page-head__eyebrow">{post.category}</p>
         <h1 class="page-head__title">{post.title}</h1>
         <p class="page-head__lead">{post.intro}</p>
         <p class="article__byline">
-          Por <a href={post.author.href}>{post.author.name}</a>, {post.author.role} · <time datetime={post.date}>{dateLabel}</time>
+          {post.category} · Por <a href={post.author.href}>{post.author.name}</a>, {post.author.role} · <time datetime={post.date}>{dateLabel}</time>
         </p>
         {post.draft && <p class="article__draft">Borrador pendiente de revisión por Conroma.</p>}
       </div>
@@ -60,14 +60,31 @@ const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
       </p>
       <aside class="article__author">
         <p>
-          <strong>{post.author.name}</strong>, {post.author.role}. Conroma es una inmobiliaria familiar de {site.address.locality}.
+          <strong>{post.author.name}</strong>, {post.author.role}. Conroma es una inmobiliaria familiar de {site.address.locality}.{' '}
           <a href="/es/empresa/">Conoce la empresa</a> o <a href="/es/contacto/">escríbenos</a> si tienes dudas sobre tu caso.
         </p>
       </aside>
-      <nav class="link-list" aria-label="Más artículos">
-        {others.map((item) => <a class="link-list__link" href={`/es/blog/${item.slug}/`}>{item.title}</a>)}
-      </nav>
     </div>
   </article>
-  <ContactBand />
+  {
+    others.length > 0 && (
+      <section class="section guide-teaser guide-teaser--surface">
+        <div class="wrap">
+          <h2 class="section__title" data-reveal>Más guías</h2>
+          <ul class="guide-teaser__list">
+            {others.map((item) => (
+              <li data-reveal>
+                <a class="guide-teaser__card" href={`/es/blog/${item.slug}/`}>
+                  <p class="guide-teaser__date">{item.category}</p>
+                  <h3 class="guide-teaser__title">{item.title}</h3>
+                  <p class="guide-teaser__text">{item.description}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+  <ClosingCTA title="Hablemos" titleMuted="de tu caso" image={closingPhoto} origin="blog-articulo-cierre" />
 </BaseLayout>
