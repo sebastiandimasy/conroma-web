@@ -32,7 +32,7 @@ const answer =
   'Acompañamos a propietarios, compradores e inversores del Alt Maresme y La Selva con un asesoramiento a medida: ' +
   'una misma persona lleva tu operación de principio a fin y busca que todas las partes salgan ganando.';
 
-// Trayectoria que da el dueño (2026-11-18). Van escritas en el HTML, sin contador.
+// Trayectoria que da el dueño (2026-11-18). Van escritas en el HTML; el contador es solo visual.
 const trackRecord = [
   { value: '+300', label: 'inmuebles gestionados' },
   { value: '+100', label: 'clientes satisfechos' },
@@ -61,7 +61,7 @@ const trackRecord = [
 
     <Statement text={answer} />
 
-    <ProofBand figures={trackRecord} />
+    <ProofBand figures={trackRecord} count />
 
     <section class="section home-featured">
       <div class="wrap">

@@ -7,9 +7,12 @@ interface Props {
   figures?: ProofFigure[];
   /** Frase que anuncia la sección siguiente. */
   bridge?: string;
+  /** Cuenta de 0 a la cifra al entrar en pantalla. El HTML ya lleva la cifra final (Google y las IA
+      la leen tal cual); el contador solo es mejora visual y no corre con reduced-motion. */
+  count?: boolean;
 }
 
-// Cifras escritas en el HTML (Google y las IA las leen tal cual): nada de contador desde 0.
+// Cifras escritas en el HTML (Google y las IA las leen tal cual).
 const {
   figures = proofFigures({
     rating: site.googleRating,
@@ -18,12 +21,13 @@ const {
     builtOn: new Date(),
   }),
   bridge,
+  count = false,
 } = Astro.props;
 ---
 
 {
   figures.length > 0 && (
-    <section class="proof-band" aria-label="Datos de Conroma">
+    <section class="proof-band" aria-label="Datos de Conroma" data-count={count ? '' : undefined}>
       <div class="wrap">
         <dl class="proof-band__list">
           {figures.map((figure, index) => (
@@ -50,3 +54,46 @@ const {
     </section>
   )
 }
+
+<script>
+  // Contador 0 → cifra al aparecer. Solo toca el número; prefijo y sufijo («+», «,7») se quedan.
+  const bands = document.querySelectorAll<HTMLElement>('.proof-band[data-count]');
+  if (bands.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const parse = (el: HTMLElement) => el.dataset.final?.match(/^(\D*)(\d+)(.*)$/);
+    const run = (el: HTMLElement) => {
+      const match = parse(el);
+      if (!match) return;
+      const [, before, digits, after] = match;
+      const target = Number(digits);
+      const start = performance.now();
+      const duration = 1400;
+      const step = (now: number) => {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = `${before}${Math.round(target * eased)}${after}`;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          observer.unobserve(entry.target);
+          entry.target.querySelectorAll<HTMLElement>('.proof-band__value').forEach(run);
+        }
+      },
+      { threshold: 0.35 },
+    );
+    // Solo cuentan las bandas que aún no se ven: se ponen a 0 antes de que el visitante llegue.
+    bands.forEach((band) => {
+      if (band.getBoundingClientRect().top < innerHeight) return;
+      band.querySelectorAll<HTMLElement>('.proof-band__value').forEach((el) => {
+        el.dataset.final = el.textContent ?? '';
+        const match = parse(el);
+        if (match) el.textContent = `${match[1]}0${match[3]}`;
+      });
+      observer.observe(band);
+    });
+  }
+</script>
