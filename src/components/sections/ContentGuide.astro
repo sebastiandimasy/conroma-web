@@ -1,8 +1,12 @@
 ---
+import Icon from '../Icon.astro';
+import type { IconName } from '../../lib/icons';
+
 interface Props {
   title: string;
   lead?: string;
-  items: { title: string; text: string }[];
+  /** `icon` opcional (petición del dueño en Reformas, 2026-11-18): trazo amarillo junto al título. */
+  items: { title: string; text: string; icon?: IconName }[];
   id?: string;
   /** Banda de la página: alterna con la sección de al lado. */
   tone?: 'canvas' | 'surface';
@@ -23,7 +27,10 @@ const { title, lead, items, id, tone = 'canvas' } = Astro.props;
       {
         items.map((item) => (
           <article class="content-guide__item" data-reveal>
-            <h3 class="content-guide__title">{item.title}</h3>
+            <h3 class="content-guide__title">
+              {item.icon && <Icon name={item.icon} class="content-guide__icon" />}
+              {item.title}
+            </h3>
             <p class="content-guide__text">{item.text}</p>
           </article>
         ))
