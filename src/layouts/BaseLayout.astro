@@ -80,6 +80,18 @@ const languageLinks = alternates(path);
         media.addEventListener('change', pick);
       })();
     </script>
+    {/* Esqueleto de página: hasta el evento load (o 3 s como mucho) no se ve nada real,
+        solo barras y bloques. Sin JavaScript no se activa y la página se ve tal cual. */}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        if (document.readyState === 'complete') return;
+        root.classList.add('is-loading');
+        const done = () => root.classList.remove('is-loading');
+        addEventListener('load', done, { once: true });
+        setTimeout(done, 3000);
+      })();
+    </script>
     {/* Consent Mode v2: por defecto denegado hasta que acepten cookies (RGPD). */}
     <script is:inline>
       window.dataLayer = window.dataLayer || [];

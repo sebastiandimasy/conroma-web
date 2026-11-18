@@ -274,6 +274,13 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 - Lo que depende del navegador (favoritos en `localStorage`) enseña tarjetas esqueleto
   (`.skeleton-card`) hasta saber qué hay. **Nunca** un mensaje de «vacío» que luego cambia.
 - Con movimiento reducido no hay brillo: queda el gris quieto.
+- **Esqueleto de página** (`html.is-loading`, script en `BaseLayout`): hasta el evento `load`
+  (3 s como mucho) no se ve nada real. El texto pasa a barras (una por línea), y fotos, iconos,
+  botones y enlaces pasan a bloques grises. Los fondos de sección y el amarillo quedan neutros, y
+  una franja de brillo recorre la pantalla. Solo cambian color y fondo, no el tamaño, así que al
+  cargar no salta nada. Un componente nuevo con pseudo-elementos, bordes o fondos propios se
+  comprueba con `is-loading` puesto a mano: no puede asomar nada amarillo ni ningún texto. Sin
+  JavaScript no se activa.
 
 ### Escala y espacio (dirección Calvet)
 - **Elementos protagonistas grandes.** Display del hero y cifras del contador son imponentes:
