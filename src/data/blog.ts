@@ -18,6 +18,8 @@ export interface BlogPost {
   intro: string;
   sections: BlogSection[];
   cta: { label: string; href: string };
+  /** Reel de @conromaasesores en el que se basa el artículo. Se embebe con carga al pulsar (sin cookies de Instagram hasta entonces). */
+  video?: { instagram: string; title: string; uploaded: string; seconds: number };
 }
 
 const founder = { name: 'Boris Conde Jr.', role: 'CEO y fundador de Conroma Asesores', href: '/es/equipo/' };
@@ -25,6 +27,155 @@ const founder = { name: 'Boris Conde Jr.', role: 'CEO y fundador de Conroma Ases
 /* Solo normativa general y verificable (Código Civil de Cataluña, LAU, IRPF, plusvalía municipal,
    RD 390/2021, Decret 141/2012, ITP del Decreto ley 5/2025). Nada de plazos o precios propios. */
 export const posts: BlogPost[] = [
+  {
+    slug: 'quien-paga-cada-gasto-al-comprar-o-vender-un-piso',
+    title: '¿Quién paga cada gasto al comprar o vender un piso?',
+    description: 'ITP, plusvalía, notaría, registro, tasación, comisión e IBI: qué paga el comprador, qué paga el vendedor y qué se puede pactar en Cataluña.',
+    category: 'Comprar',
+    date: '2026-11-18',
+    author: founder,
+    draft: false,
+    intro: 'Notaría, registro, plusvalía, ITP… Es una de las dudas que más nos llegan. En el vídeo lo jugamos a ver si aciertas; aquí lo tienes por escrito, gasto a gasto.',
+    video: { instagram: 'DfzYVvHxPCp', title: '¿Quién paga cuando compras o vendes una vivienda?', uploaded: '2026-11-16', seconds: 46 },
+    sections: [
+      {
+        heading: 'Lo que paga el comprador',
+        paragraphs: ['Casi todo lo que tiene que ver con hacer la compra y dejarla a su nombre:'],
+        list: [
+          'ITP. En un piso de segunda mano en Cataluña, el Impuesto de Transmisiones Patrimoniales es un 10% del precio hasta 600.000 €. Si es de obra nueva, en lugar de ITP se paga IVA (10%) y actos jurídicos documentados.',
+          'Tasación. Si compra con hipoteca, el banco pide una tasación oficial y la paga el comprador. Es el único gasto de la hipoteca que le toca: notaría, registro y gestoría del préstamo los paga el banco desde la Ley 5/2019.',
+          'Notaría. Lo habitual es que la escritura de compraventa la pague el comprador. Se puede pactar otro reparto, y por eso conviene dejarlo escrito en las arras.',
+          'Registro. Inscribir la compra en el Registro de la Propiedad es cosa del comprador: es lo que le protege como nuevo dueño.',
+        ],
+      },
+      {
+        heading: 'Lo que paga el vendedor',
+        paragraphs: ['Lo que tiene que ver con haber sido el dueño hasta ahora:'],
+        list: [
+          'Plusvalía municipal. La cobra el ayuntamiento por la subida de valor del suelo y la paga quien vende. Si vende por menos de lo que compró, no se paga.',
+          'IBI. Lo paga quien es propietario el 1 de enero. En el vídeo lo marcamos como «pactable», porque es habitual repartirlo con el comprador según los meses que cada uno tiene el piso ese año.',
+          'Cancelar su hipoteca, si la hay, y los certificados para vender: el energético, la cédula de habitabilidad y, desde octubre de 2026, el de amianto.',
+          'La ganancia en el IRPF, si vende por más de lo que le costó.',
+        ],
+      },
+      {
+        heading: 'Y la comisión de la agencia',
+        paragraphs: [
+          'En el vídeo la comisión sale a los dos lados, y es a propósito: la paga quien contrata a la agencia. Si la contrata el vendedor para vender, la paga él; si un comprador encarga a una agencia que le busque piso, la paga el comprador.',
+          'Lo importante es que esté claro desde el principio, por escrito, cuánto es y quién la paga. Sin sorpresas el día de la firma.',
+        ],
+      },
+      {
+        heading: 'Antes de firmar las arras',
+        paragraphs: [
+          'Las arras son el momento de dejarlo todo atado: precio, fecha de la firma y quién paga cada gasto. Si algo de esta lista no te cuadra con tu caso, pregúntalo antes de firmar, no después.',
+          'Si compras, haz la cuenta completa: precio, más el 10% de ITP, más notaría, registro y tasación. Puedes ver hasta dónde llegas con nuestra calculadora «¿Puedo comprar?».',
+        ],
+      },
+    ],
+    cta: { label: 'Calcular si puedo comprar', href: '/es/comprar/puedo-comprar/' },
+  },
+  {
+    slug: 'certificado-de-amianto-para-vender-o-alquilar-en-cataluna',
+    title: 'Certificado de amianto para vender o alquilar en Cataluña',
+    description: 'Desde el 3 de octubre de 2026, la Ley 8/2026 pide un certificado de amianto para vender o alquilar en Cataluña. Qué es, a quién afecta y quién lo hace.',
+    category: 'Vender',
+    date: '2026-11-18',
+    author: founder,
+    draft: false,
+    intro: 'Es la nueva ley que más preguntas nos ha traído este otoño. Te contamos qué pide, a quién afecta y qué pasa si en tu edificio hay amianto.',
+    video: { instagram: 'DebtL2ftE-X', title: 'La nueva ley que ha afectado a la compraventa y el alquiler', uploaded: '2026-10-13', seconds: 36 },
+    sections: [
+      {
+        heading: 'Qué ha cambiado',
+        paragraphs: [
+          'La Ley 8/2026, de erradicación del amianto en Cataluña, está en vigor desde el 3 de octubre de 2026. Entre otras cosas, pide un certificado de presencia o ausencia de amianto visible cuando se vende o se alquila un inmueble.',
+          'En una venta, lo entrega el vendedor al comprador. En un alquiler, el propietario al inquilino.',
+        ],
+      },
+      {
+        heading: 'A qué pisos afecta',
+        paragraphs: [
+          'Según el criterio de la Agència de Residus de Catalunya, a los inmuebles construidos antes de 2002, que es cuando se prohibió vender productos con amianto. Y no solo a pisos: también a casas, locales, naves y terrenos.',
+          'En el Maresme, buena parte de los pisos son de esos años, así que si vas a vender o alquilar es muy probable que te toque.',
+        ],
+      },
+      {
+        heading: 'Qué revisa el técnico',
+        paragraphs: [
+          'Es una inspección a la vista: el técnico mira los elementos donde suele haber amianto, como cubiertas de uralita, bajantes o depósitos, y anota su estado. No toma muestras ni hace análisis de laboratorio.',
+          'Para un piso, el certificado se limita a la vivienda. La ley todavía no aclara si hará falta además uno de las zonas comunes del edificio, así que cuando lo hacemos pedimos acceso también a terrazas, balcones y terrados comunitarios.',
+          'Hoy lo pueden firmar arquitectos, arquitectos técnicos e ingenieros. La Generalitat tiene un año para aprobar el reglamento que concrete el modelo, así que algunos detalles todavía pueden cambiar.',
+        ],
+      },
+      {
+        heading: '¿Se puede vender sin él?',
+        paragraphs: [
+          'Se puede firmar, pero no es buena idea. Vender o alquilar sin entregarlo es una infracción leve, con multas de 100 a 3.000 €, y el Registro de la Propiedad puede pedirlo para inscribir la compra. Si hay prisa, se puede firmar con el compromiso de aportarlo después.',
+          'Lo sensato es pedirlo en cuanto decidas vender, junto con el certificado energético y la cédula. Así llega a tiempo para las arras.',
+        ],
+      },
+      {
+        heading: 'Si sale que hay amianto',
+        paragraphs: [
+          'Que haya amianto no impide vender ni alquilar. El certificado sirve para informar: dice dónde está, en qué estado y si supone un riesgo, y se anota en el Registro de la Propiedad.',
+          'Si hay que retirarlo, lo tiene que hacer una empresa autorizada. El comprador lo sabrá antes de firmar, y eso es justo lo que busca la ley.',
+        ],
+      },
+    ],
+    cta: { label: 'Pedir el certificado de amianto', href: '/es/contacto/' },
+  },
+  {
+    slug: 'ayudas-al-alquiler-de-la-generalitat',
+    title: 'Ayudas al alquiler de la Generalitat: quién puede pedirlas',
+    description: 'Las ayudas de la Generalitat para pagar el alquiler: quién puede pedirlas, cuánto dan, qué alquiler máximo se acepta en el Maresme y cuándo se piden.',
+    category: 'Alquilar',
+    date: '2026-11-18',
+    author: founder,
+    draft: false,
+    intro: 'Muchas familias van justas cada mes con el alquiler y no saben que la Generalitat tiene ayudas pensadas para eso. El problema es que se piden en plazos cortos y se pasan.',
+    video: { instagram: 'Dac63hXIAw7', title: 'Ayuda al alquiler de la Generalitat para jóvenes', uploaded: '2026-07-06', seconds: 28 },
+    sections: [
+      {
+        heading: 'Qué son',
+        paragraphs: [
+          'Son subvenciones de la Agència de l’Habitatge de Catalunya para ayudarte a pagar el alquiler de tu vivienda habitual. Se convocan cada año por edades: una línea para jóvenes de hasta 35 años, otra de 36 a 64 y otra para mayores de 65.',
+          'En 2026 no se daban por orden de llegada: se estudiaba y puntuaba cada caso con los requisitos de la convocatoria.',
+        ],
+      },
+      {
+        heading: 'La de jóvenes, la del vídeo',
+        paragraphs: [
+          'En 2026, la ayuda para jóvenes era para quien tuviera 35 años o menos a 31 de enero y fuera titular de un contrato de alquiler, de un piso o de una habitación. Daba entre 20 y 250 € al mes, según la parte del sueldo que se te va en el alquiler.',
+          'El plazo fue muy corto: del 29 de junio al 10 de julio de 2026. Por eso subimos el vídeo justo antes de que cerrara.',
+        ],
+      },
+      {
+        heading: 'Cuánto alquiler se acepta en el Maresme',
+        paragraphs: ['La convocatoria pone un tope al alquiler que se puede subvencionar. En 2026, para Malgrat de Mar y el resto del Maresme (demarcación de Barcelona, fuera del área metropolitana):'],
+        list: [
+          'Un piso entero: hasta 750 € al mes.',
+          'Una habitación, en la línea de jóvenes: hasta 350 € al mes.',
+          'En la línea de jóvenes, si eres familia numerosa, monoparental o con una persona con discapacidad reconocida: hasta 900 € al mes.',
+        ],
+      },
+      {
+        heading: 'Cómo se piden',
+        paragraphs: [
+          'Por internet, con el formulario de la Agència de l’Habitatge de Catalunya en su web. Necesitas el contrato de alquiler, los recibos pagados y los datos de ingresos de quienes viven en el piso. Las oficinas locales de vivienda suelen ayudar a tramitarla.',
+          'Cada convocatoria fija sus propios límites de ingresos y documentos. Léelos antes de empezar: cambian de un año a otro.',
+        ],
+      },
+      {
+        heading: 'Para no quedarte fuera',
+        paragraphs: [
+          'En 2026, las líneas de 36 a 64 años y de mayores de 65 se pidieron en primavera (la de 36 a 64 cerró el 30 de abril) y la de jóvenes, a principios de verano. Si vives de alquiler, apúntate esas fechas y mira la web de la Agència cuando se acerquen.',
+          'Si tienes dudas o quieres que te echemos una mano con los papeles, escríbenos.',
+        ],
+      },
+    ],
+    cta: { label: 'Ver pisos en alquiler', href: '/es/alquilar/' },
+  },
   {
     slug: 'quiero-vender-mi-piso-por-donde-empiezo',
     title: 'Quiero vender mi piso: ¿por dónde empiezo?',

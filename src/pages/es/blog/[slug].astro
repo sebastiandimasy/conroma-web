@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import InstagramReel from '../../../components/sections/InstagramReel.astro';
 import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
 import { posts, type BlogPost } from '../../../data/blog';
 import { site } from '../../../data/site';
@@ -53,6 +54,7 @@ const others = posts.filter((item) => item.slug !== post.slug).slice(0, 2);
       </div>
     </header>
     <div class="wrap article__wrap article__body">
+      {post.video && <InstagramReel id={post.video.instagram} title={post.video.title} seconds={post.video.seconds} />}
       {
         post.sections.map((section) => (
           <section class="article__section">
