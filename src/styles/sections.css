@@ -907,24 +907,14 @@
     margin-top: var(--space-10);
   }
 
-  /* Secundario: texto clicable sobre la foto, sin borde (petición del dueño, 2026-11-18). */
-  .hero-center__link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 48px;
-    padding-inline: var(--space-4);
-    font-weight: 500;
-    color: var(--color-on-fixed-ink);
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--color-on-fixed-ink) 50%, transparent);
-    text-underline-offset: 6px;
-    transition: color var(--duration-fast) var(--ease-out), text-decoration-color var(--duration-fast) var(--ease-out);
+  /* El secundario es el .link-cta general, con la tinta fija de la foto. */
+  .hero-center .link-cta {
+    --link-cta: var(--color-on-fixed-ink);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .hero-center__link:hover {
+    .hero-center .link-cta:hover {
       color: var(--color-accent);
-      text-decoration-color: var(--color-accent);
     }
   }
 
@@ -987,24 +977,34 @@
 
   /* Inicio: textos justificados con la última línea a la izquierda y a todo el ancho de su sección,
      títulos a la izquierda (petición del dueño, 2026-11-18). Héroe y cierre siguen centrados. */
-  .page-home {
-    display: contents;
-  }
-
-  .page-home :is(.section__lead, .service-index__text, .testimonials__lead, .accordion__answer, .tcar__quote, .faq-section__contact-text) {
+  /* Regla general de textos (fijada en Inicio, 2026-11-18): los párrafos de sección llegan al
+     límite de su columna, justificados con la última línea a la izquierda y guiones automáticos.
+     Quedan fuera los héroes, las tarjetas, los formularios y el cierre centrado. */
+  :is(
+      .section__lead,
+      .page-head__lead,
+      .service-index__text,
+      .testimonials__lead,
+      .tcar__quote,
+      .accordion__answer,
+      .faq-section__contact-text,
+      .story-scroll__text,
+      .guide-teaser__text,
+      .member__bio,
+      .founder__bio,
+      .feature__text,
+      .split-feature__copy p,
+      .founder__copy p,
+      .about__copy p
+    ) {
     max-width: none;
     text-align: justify;
     text-align-last: start;
     hyphens: auto;
   }
 
-  .page-home .faq-section__inner {
+  .faq-section__inner {
     max-width: none;
-  }
-
-  .page-home .faq-section__head {
-    align-items: stretch;
-    text-align: start;
   }
 
   @keyframes statement-word {
@@ -1741,8 +1741,6 @@
   .compare__head {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 
   .compare__head .section__lead {
@@ -2082,10 +2080,9 @@
     }
   }
 
-  /* Cabecera centrada, igual que el hero del home y las cabeceras de sección. */
+  /* Cabecera a la izquierda, como el resto de títulos (regla de Inicio, 2026-11-18). */
   .page-head {
     padding-block: clamp(20px, 3vw, 44px) 24px;
-    text-align: center;
   }
 
   /* Las migas son navegación, no cabecera: se quedan a la izquierda. */
@@ -2096,7 +2093,6 @@
   .page-head__title {
     max-width: 20ch;
     margin-top: 16px;
-    margin-inline: auto;
     font-size: var(--text-h1);
     font-weight: 800;
     letter-spacing: -0.035em;
@@ -2105,7 +2101,6 @@
   .page-head__lead {
     max-width: 52ch;
     margin-top: 20px;
-    margin-inline: auto;
     font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
     color: var(--color-ink-2);
   }
@@ -2133,7 +2128,7 @@
   }
 
   .page-head__actions {
-    @apply flex flex-wrap justify-center gap-3;
+    @apply flex flex-wrap items-center gap-3;
     margin-top: 28px;
   }
 
@@ -2280,18 +2275,13 @@
     margin-bottom: 28px;
   }
 
-  /* Mapa de la oficina: mapa a sangre con tarjeta de datos flotando encima (patrón 21st.dev,
-     adaptado a Conroma: tarjeta SÓLIDA, no cristal, por ESTANDAR). iframe tras consentimiento. */
-  .office-map__card {
-    @apply relative;
-  }
-
+  /* Mapa de la oficina (editorial): mapa sin caja ni sombra y datos debajo, sin tarjeta.
+     El mapa interactivo carga tras el consentimiento. */
   .office-map__frame {
     @apply relative overflow-hidden;
+    margin-top: var(--space-8);
     aspect-ratio: 4 / 3;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
+    border-radius: var(--radius-sm);
     background: var(--color-surface-2);
   }
 
@@ -2299,58 +2289,56 @@
     @apply absolute inset-0 h-full w-full;
   }
 
-  /* Marcador de marca: círculo amarillo con borde blanco (patrón 21st.dev). */
+  /* Marcador de marca: círculo amarillo con borde blanco. */
   .office-map__marker {
     width: 20px;
     height: 20px;
     border-radius: var(--radius-pill);
     background: var(--color-accent);
     border: 3px solid var(--color-fixed-paper);
-    box-shadow: var(--shadow-2);
     cursor: pointer;
   }
 
-  /* La tarjeta de datos solapa el borde inferior del mapa (efecto flotante). */
   .office-map__panel {
-    @apply relative z-10 flex flex-col items-start gap-1;
-    margin: -56px 16px 0;
-    padding: 20px 22px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-3);
-    background: var(--color-surface);
-  }
-
-  .office-map__rating {
-    @apply inline-flex items-center gap-1;
-    margin-bottom: 4px;
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
-    background: var(--color-accent-wash);
-    color: var(--color-on-accent-wash);
-    font-size: var(--text-small);
-    font-weight: 600;
-  }
-
-  .office-map__star {
-    width: 15px;
-    height: 15px;
-    color: var(--color-ink-2);
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
   }
 
   .office-map__title {
     font-size: var(--text-h3);
+    font-weight: 400;
     letter-spacing: -0.02em;
   }
 
-  .office-map__place,
-  .office-map__hours {
-    font-size: var(--text-small);
+  .office-map__place {
+    margin-top: var(--space-1);
     color: var(--color-ink-2);
   }
 
+  .office-map__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    margin-top: var(--space-2);
+    color: var(--color-ink-2);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 4px;
+  }
+
+  .office-map__star {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent);
+  }
+
   .office-map__actions {
-    @apply mt-4 flex flex-wrap gap-2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
   }
 
   @media (min-width: 48rem) {
@@ -2358,19 +2346,12 @@
       aspect-ratio: 21 / 9;
     }
 
-    /* En escritorio la tarjeta flota sobre la esquina inferior izquierda del mapa. */
     .office-map__panel {
-      position: absolute;
-      left: 28px;
-      bottom: 28px;
-      width: 340px;
-      margin: 0;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
     }
   }
 
-  .social-links {
-    @apply mt-7 flex flex-nowrap justify-center gap-2;
-  }
 
   .social-links__item {
     @apply flex flex-col items-center gap-2;
@@ -2628,23 +2609,28 @@
     object-fit: cover;
   }
 
-  .town-links__grid,
   .town-text__grid,
   .contact__grid {
     @apply grid gap-7;
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .town-links__card {
-    padding: 8px 22px 22px;
+  /* Zonas (Contacto): filas como «Busca en tu pueblo», sobre la banda gris. */
+  .town-links {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
-  .town-links__card .link-list {
-    border-top: 0;
+  .town-links__arrow {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--color-ink-2);
   }
 
-  .town-links__chips {
-    margin-top: 18px;
+  .town-links__more {
+    margin-top: var(--space-8);
+    color: var(--color-ink-2);
   }
 
   .town-text__grid .section__lead {
@@ -2687,8 +2673,6 @@
   .faq-section__head {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 
   .faq-section__head .section__lead {
@@ -2718,34 +2702,50 @@
     color: var(--color-ink-2);
   }
 
-  .contact__intro {
-    @apply flex flex-col gap-4;
+  /* Contacto editorial: banda gris, canales en filas con línea suave, formulario sin tarjeta. */
+  .contact {
+    background: var(--color-surface-2);
+    color: var(--color-on-surface-2);
   }
 
-  .contact__channels {
-    @apply grid gap-3;
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 12px;
+  .contact__intro .section__lead {
+    margin-top: var(--space-4);
   }
 
-  .contact__icon {
+  .contact__primary {
+    margin-top: var(--space-8);
+  }
+
+  .contact__list {
+    display: grid;
+    margin-top: var(--space-8);
+    font-style: normal;
+  }
+
+  .contact__row {
+    display: grid;
+    gap: var(--space-1);
+    min-height: 56px;
+    padding-block: var(--space-4);
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .contact__label {
+    font-size: var(--text-small);
     color: var(--color-ink-2);
   }
 
-  .contact__address {
-    @apply justify-start;
-    min-height: 48px;
-    gap: 12px;
-    padding: 10px 22px;
-    font-size: var(--text-small);
-    line-height: 1.3;
-    white-space: normal;
-    cursor: default;
+  .contact__value {
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    overflow-wrap: anywhere;
   }
 
-  .contact__card {
-    padding: clamp(22px, 3vw, 32px);
-    border-radius: var(--radius-lg);
+  @media (hover: hover) and (pointer: fine) {
+    a.contact__row:hover .contact__value {
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-underline-offset: 4px;
+    }
   }
 
   .contact-form {
@@ -2762,7 +2762,6 @@
   }
 
   @media (min-width: 60rem) {
-    .town-links__grid,
     .town-text__grid,
     .contact__grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -2771,7 +2770,8 @@
     }
 
     .contact__grid {
-      align-items: stretch;
+      align-items: start;
+      gap: 64px;
     }
   }
 

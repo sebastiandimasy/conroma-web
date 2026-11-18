@@ -64,9 +64,9 @@ const faq = town.buyerIntro
         <a class="button button--primary button--large" href="/es/valoracion/">Saber cuánto vale mi piso</a>
         {
           town.buyerIntro ? (
-            <a class="button button--ghost button--large" href="#comprar">{`Busco piso en ${town.name}`}</a>
+            <a class="link-cta" href="#comprar">{`Busco piso en ${town.name}`}</a>
           ) : (
-            <a class="button button--ghost button--large" href="/es/comprar/">Ver pisos en venta</a>
+            <a class="link-cta" href="/es/comprar/">Ver pisos en venta</a>
           )
         }
       </div>
@@ -106,7 +106,7 @@ const faq = town.buyerIntro
               <Icon name="whatsapp" class="button__icon" />
               {`Decidnos qué buscáis en ${town.name}`}
             </a>
-            <a class="button button--ghost button--large" href={catalogPath ?? '/es/venta/'}>
+            <a class="link-cta" href={catalogPath ?? '/es/venta/'}>
               {catalogPath ? `Ver pisos en venta en ${town.name}` : 'Ver lo que sí tenemos publicado'}
             </a>
           </div>

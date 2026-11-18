@@ -19,10 +19,10 @@
     @apply desk:flex-row desk:items-end desk:justify-between;
   }
 
+  /* Desde 2026-11-18 los títulos van a la izquierda en todas las secciones (regla de Inicio):
+     la variante «center» se conserva por compatibilidad, pero ya no centra. */
   .section__head--center {
-    @apply items-center text-center;
-    max-width: 60ch;
-    margin-inline: auto;
+    max-width: none;
     margin-bottom: 44px;
   }
 
@@ -378,6 +378,30 @@
 
   /* ESTÁNDAR (todo botón que no es el CTA principal): contorno y texto en --color-button-line
      (amarillo en oscuro y sobre foto, tinta en claro). Al pasar, se rellena de amarillo con texto negro. */
+  /* SECUNDARIO junto a un primario (regla de Inicio, 2026-11-18): texto clicable subrayado, sin
+     borde ni relleno. 48px de alto táctil. Sobre foto, --link-cta pasa a la tinta fija. */
+  .link-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    font-weight: 500;
+    color: var(--link-cta, var(--color-ink));
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-underline-offset: 6px;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      text-decoration-color var(--duration-fast) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .link-cta:hover {
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 2px;
+    }
+  }
+
   .button--ghost {
     background: transparent;
     color: var(--color-button-line);

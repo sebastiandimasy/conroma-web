@@ -6,42 +6,46 @@ import { formatRating } from '../../lib/format';
 
 const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${site.geo?.latitude},${site.geo?.longitude}`;
 const rating = site.googleRating;
-// Horario compacto para la tarjeta (los dos turnos de L-V).
+// Horario compacto (los dos turnos de L-V).
 const hours = site.openingHours?.map((s) => `${s.opens}–${s.closes}`).join(' · ');
 ---
 
+{/* Mapa editorial: mapa sin caja ni sombra (radio 4px) y los datos debajo, sin tarjeta.
+    Primario «Cómo llegar» y secundario como texto clicable. */}
 {
   site.geo && (
     <section class="section office-map">
       <div class="wrap">
-        <div class="office-map__card" data-reveal>
-          <div class="office-map__frame">
-            <OfficeMapLibre
-              client:only="react"
-              latitude={site.geo.latitude}
-              longitude={site.geo.longitude}
-              label={`${site.legalName} · ${site.address.street}`}
-            />
-          </div>
-
-          <div class="office-map__panel">
+        <h2 class="section__title" data-reveal>Pásate por la oficina</h2>
+        <div class="office-map__frame" data-reveal>
+          <OfficeMapLibre
+            client:only="react"
+            latitude={site.geo.latitude}
+            longitude={site.geo.longitude}
+            label={`${site.legalName} · ${site.address.street}`}
+          />
+        </div>
+        <div class="office-map__panel" data-reveal>
+          <div class="office-map__data">
+            <p class="office-map__title">{site.address.street}</p>
+            <p class="office-map__place">
+              {site.address.postalCode} {site.address.locality} · {site.address.region}
+            </p>
+            {hours && <p class="office-map__place">Lunes a viernes · {hours}</p>}
             {rating && (
               <a class="office-map__rating" href={rating.url} rel="noopener" target="_blank">
                 <Icon name="star" class="office-map__star" />
-                <strong>{formatRating(rating.value)}</strong>
-                <span>· {rating.count} reseñas</span>
+                {formatRating(rating.value)} en Google · {rating.count} reseñas
               </a>
             )}
-            <h2 class="office-map__title">{site.address.street}</h2>
-            <p class="office-map__place">{site.address.postalCode} {site.address.locality} · {site.address.region}</p>
-            {hours && <p class="office-map__hours">Lunes a viernes · {hours}</p>}
-            <div class="office-map__actions">
-              <a class="button button--primary button--small" href={directionsUrl} rel="noopener" target="_blank">
-                <Icon name="pin" class="button__icon" />
-                Cómo llegar
-              </a>
-              <a class="button button--ghost button--small" href={site.mapsUrl} rel="noopener" target="_blank">Ver en Maps</a>
-            </div>
+          </div>
+          <div class="office-map__actions">
+            <a class="button button--primary button--large" href={directionsUrl} rel="noopener" target="_blank">
+              Cómo llegar
+            </a>
+            <a class="link-cta" href={site.mapsUrl} rel="noopener" target="_blank">
+              Ver en Google Maps
+            </a>
           </div>
         </div>
       </div>

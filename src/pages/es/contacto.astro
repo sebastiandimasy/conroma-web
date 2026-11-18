@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHero from '../../components/sections/PageHero.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import ContactSection from '../../components/sections/ContactSection.astro';
 import OfficeMap from '../../components/sections/OfficeMap.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
@@ -9,40 +9,37 @@ import { site } from '../../data/site';
 import { homeFaq } from '../../data/faq';
 import { breadcrumbSchema } from '../../lib/seo';
 
-const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ');
 const path = '/es/contacto/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
   { name: 'Contacto', path },
 ];
+const contactPage = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contacto de Conroma Asesores',
+  url: `${site.url}${path}`,
+  about: { '@id': `${site.url}/#agencia` },
+};
 ---
 
 <BaseLayout
   title="Contacto: habla con Conroma en Malgrat de Mar"
   description="Escríbenos por WhatsApp, llámanos o pásate por la oficina de la Av. Mediterránea 16, en Malgrat de Mar."
   path={path}
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs), contactPage]}
 >
-  <PageHero
-    crumbs={crumbs}
-    eyebrow="Estamos a un mensaje"
-    title="Resolvemos tus dudas "
-    highlight="en un segundo."
-    lead="Escríbenos por WhatsApp, llámanos o pásate por la oficina. Si tienes cualquier duda adicional, aquí estamos."
-  />
-  <ContactSection />
-  <section class="section">
+  <section class="page-head page-head--editorial">
     <div class="wrap">
-      <address>
-        <strong>{site.legalName}</strong><br />
-        {site.address.street}, {site.address.postalCode} {site.address.locality} ({site.address.region})<br />
-        Horario: lunes a viernes, {hours}<br />
-        WhatsApp y móvil: <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> · Fijo: <a href={`tel:${site.landline}`}>{site.landlineDisplay}</a><br />
-        Email: <a href={`mailto:${site.email}`}>{site.email}</a>
-      </address>
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Contacta con Conroma en Malgrat de Mar</h1>
+      <p class="page-head__lead">
+        Escríbenos por WhatsApp, llámanos o pásate por la oficina. Si tienes cualquier duda, aquí estamos.
+      </p>
     </div>
   </section>
+  <ContactSection />
   <OfficeMap />
   <TownLinks />
-  <FaqSection items={homeFaq} />
+  <FaqSection title="Lo que nos preguntan antes de llamar" items={homeFaq} origin="contacto-faq" />
 </BaseLayout>

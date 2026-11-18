@@ -338,6 +338,21 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
   anuncia la sección siguiente cuando el paso no es obvio.
 - **Un solo acento:** amarillo. Checks y cursor en `--color-accent`; botones en `--color-button` (§0).
 
+### Reglas de la home para toda la web (dueño, 2026-11-18)
+Se fijaron en Inicio y valen para **todas** las páginas y secciones (CSS global, no por página):
+- **Títulos a la izquierda** en todas las secciones, cabeceras de página y FAQ. `section__head--center`
+  ya no centra. Excepciones: el héroe de Inicio (`HeroCenter`) y el cierre (`ClosingCTA`).
+- **Párrafos de sección al ancho de su columna**, justificados con la última línea a la izquierda y
+  guiones automáticos (`text-align: justify; text-align-last: start; hyphens: auto`). La lista de
+  clases está en `sections.css` («Regla general de textos»). Fuera: héroes, tarjetas, formularios y notas.
+- **Tamaños:** títulos con `--text-h2`/`.section__title` (Hanken 300), lead con `.section__lead`,
+  frase de respuesta con `Statement`. No se inventan tamaños por página.
+- **Botones:** un solo primario por bloque (píldora yellow-300 con flip). El **secundario junto a un
+  primario es texto clicable** subrayado, sin borde (`.link-cta`, 48px de alto; sobre foto usa la
+  tinta fija). La flecha (`arrow-link`) sigue siendo la salida de un escaparate o sección.
+- **Sin tarjetas ni cristal** en bloques de contenido: filas con línea suave (`--color-line` al 40%).
+- Bandas alternas canvas / gris (`--color-surface-2`).
+
 ### Secciones (anatomía y reglas)
 | Sección | Componente | Regla |
 |---|---|---|
@@ -356,6 +371,9 @@ sigue estas reglas.** Si una sección nueva no encaja, se añade aquí antes de 
 | Foto + texto | `SplitFeature` | Foto 4:5 (radio 4px) y bloque título → lead → flecha. En móvil, foto arriba; en escritorio, dos columnas y `reverse` alterna el lado. `tone` elige la banda (canvas/surface) para alternar con la sección de al lado. |
 | Héroe de Inicio | `HeroCenter` | Elegido por el dueño (2026-11-18). Foto del equipo a sangre con velo, titular, apoyo y dos acciones centrados: «Trabajemos juntos» (primario → contacto) y «¿Buscas un piso?» (texto clicable sin borde → /es/venta/). Entrada escalonada solo en CSS; con reduced-motion llega quieto. El resto de páginas siguen con `HeroStory`. |
 | Respuesta | `Statement` | Al ancho de la rejilla, justificado con la última línea a la izquierda y guiones automáticos (2026-11-18). Texto más contenido (máx. ~2,4rem) que se enciende palabra a palabra al cruzar la pantalla (`animation-timeline: view()`). Sin soporte o con reduced-motion se ve entero. El texto va completo en el HTML. |
+| Contacto | `ContactSection` | Banda gris. Título → lead → WhatsApp (primario) → canales en filas con línea suave (móvil y WhatsApp, fijo, email, oficina, horario) dentro de `<address>`; formulario al lado en escritorio, sin tarjeta. Teléfonos con `data-contact`/`data-origin` (Click URL). |
+| Mapa | `OfficeMap` | Título «Pásate por la oficina», mapa sin caja ni sombra (radio 4px, 4:3 móvil, 21:9 escritorio) y datos debajo sin tarjeta: dirección, horario, nota de Google enlazada; «Cómo llegar» primario y «Ver en Google Maps» como texto clicable. |
+| Zonas | `TownLinks` | Banda gris. Enlaces a cada pueblo publicado en filas (patrón `town-list`); los pueblos sin página van en una frase, sin chapas. |
 | Equipo | `TeamMembers` | Una ficha por persona sin caja: foto 4:5, nombre (h3), cargo en ink-2 y bio. Sin tarjeta, sin foto «en acción», sin redes por persona. Acepta un `slot` para la flecha de salida. |
 | Fundador | `CeoSection` | Foto, nombre como título de sección, cargo y bio en párrafos; cierre en cuerpo grande sin borde lateral y firma `aria-hidden`. Sin lista de datos ni cifras sueltas. |
 | Reseñas | `Testimonials` + isla `TestimonialCarousel` | Diseño elegido por el dueño (2026-11-17). Izquierda: título, frase y nota real de Google (estrellas + «4,7 en Google · N reseñas», enlaza a Google). Derecha: tarjeta en canvas sobre banda surface-2 (excepción a «sin tarjetas»), comilla amarilla, cita, línea fina, inicial en círculo amarillo, nombre y contexto. Todas las reseñas van en el HTML apiladas en la misma celda; entra desde la derecha. Rota cada 6 s solo en pantalla, se para con hover/foco y deja de rotar al elegir un punto; con reduced-motion no rota. Sin estrellas por reseña (no tenemos la nota de cada una). |

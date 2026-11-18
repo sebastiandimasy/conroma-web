@@ -70,7 +70,6 @@ export default function ContactForm() {
   if (sent) {
     return (
       <div className="contact-form contact-form--done" aria-live="polite">
-        <span className="tag">Listo</span>
         <h3 className="contact-form__title">Recibido. Falta un paso si quieres hablar ya.</h3>
         <p className="feature__text">
           Pulsa el botón y se abre WhatsApp con tu mensaje ya escrito. Dale a enviar y te contestamos nosotros, en persona.

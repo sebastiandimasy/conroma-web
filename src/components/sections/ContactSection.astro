@@ -1,40 +1,53 @@
 ---
-import Icon from '../Icon.astro';
 import ContactForm from '../../islands/ContactForm';
 import { site } from '../../data/site';
 import { whatsappUrl } from '../../lib/links';
+
+// Horario compacto: «9:30 a 13:30 y 16:30 a 19:30».
+const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ');
 ---
 
+{/* Contacto editorial: título → lead → WhatsApp (primario) → canales en filas con línea suave,
+    y el formulario al lado en escritorio. Sin tarjeta, sin cristal, sin chapas. Teléfonos medidos
+    por Click URL (tel: / wa.me) con data-origin. */}
 <section class="section contact" id="contacto">
   <div class="wrap contact__grid">
     <div class="contact__intro" data-reveal>
-      <p class="eyebrow">Hablemos</p>
-      <h2 class="section__title">Cuéntanos qué necesitas.</h2>
+      <h2 class="section__title">Cuéntanos qué necesitas</h2>
       <p class="section__lead">Déjanos un mensaje. Y si lo prefieres, escríbenos por WhatsApp o llámanos.</p>
-      <div class="contact__channels">
-        <a class="button button--primary button--large button--start" href={whatsappUrl()} data-contact="whatsapp" data-origin="contacto">
-          <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
-          WhatsApp · {site.phoneDisplay}
+      <div class="contact__primary">
+        <a class="button button--primary button--large" href={whatsappUrl()} data-contact="whatsapp" data-origin="contacto">
+          Escríbenos por WhatsApp
         </a>
-        <a class="button button--ghost button--start" href={`tel:${site.phone}`} data-contact="llamada" data-origin="contacto">
-          <Icon name="phone" class="button__icon contact__icon" />
-          Llamar · {site.phoneDisplay}
-        </a>
-        <a class="button button--ghost button--start" href={`tel:${site.landline}`} data-contact="llamada" data-origin="contacto-fijo">
-          <Icon name="phone" class="button__icon contact__icon" />
-          Fijo · {site.landlineDisplay}
-        </a>
-        <a class="button button--ghost button--start" href={`mailto:${site.email}`}>
-          <Icon name="mail" class="button__icon contact__icon" />
-          {site.email}
-        </a>
-        <address class="chip contact__address">
-          <Icon name="pin" class="button__icon contact__icon" />
-          {site.address.street}, {site.address.locality}
-        </address>
       </div>
+      <address class="contact__list">
+        <a class="contact__row" href={`tel:${site.phone}`} data-contact="llamada" data-origin="contacto">
+          <span class="contact__label">Móvil y WhatsApp</span>
+          <span class="contact__value">{site.phoneDisplay}</span>
+        </a>
+        <a class="contact__row" href={`tel:${site.landline}`} data-contact="llamada" data-origin="contacto-fijo">
+          <span class="contact__label">Fijo</span>
+          <span class="contact__value">{site.landlineDisplay}</span>
+        </a>
+        <a class="contact__row" href={`mailto:${site.email}`}>
+          <span class="contact__label">Email</span>
+          <span class="contact__value">{site.email}</span>
+        </a>
+        <a class="contact__row" href={site.mapsUrl} rel="noopener" target="_blank">
+          <span class="contact__label">Oficina</span>
+          <span class="contact__value">{site.address.street}, {site.address.postalCode} {site.address.locality}</span>
+        </a>
+        {
+          hours && (
+            <p class="contact__row">
+              <span class="contact__label">Horario</span>
+              <span class="contact__value">Lunes a viernes, {hours}</span>
+            </p>
+          )
+        }
+      </address>
     </div>
-    <div class="contact__card glass" data-reveal>
+    <div class="contact__form" data-reveal>
       <ContactForm client:visible />
     </div>
   </div>
