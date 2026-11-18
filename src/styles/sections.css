@@ -3326,24 +3326,22 @@
     object-fit: cover;
   }
 
+  /* Play: solo el triángulo blanco; ocupa todo el vídeo para que se pueda pulsar en cualquier parte. */
   .reel-embed__play {
-    @apply absolute grid place-items-center rounded-full;
-    inset: 50% auto auto 50%;
-    width: 72px;
-    height: 72px;
-    translate: -50% -50%;
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+    @apply absolute inset-0 grid place-items-center;
+    color: #fff;
     cursor: pointer;
-    transition: scale 160ms ease-out;
-  }
-
-  .reel-embed__play:active {
-    scale: 0.96;
   }
 
   .reel-embed__play svg {
-    margin-left: 3px;
+    width: 56px;
+    height: 56px;
+    filter: drop-shadow(0 1px 6px rgb(0 0 0 / 0.45));
+    transition: scale 160ms ease-out;
+  }
+
+  .reel-embed__play:active svg {
+    scale: 0.94;
   }
 
   .reel-embed__caption {
