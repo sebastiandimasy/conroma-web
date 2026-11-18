@@ -8,24 +8,26 @@ interface Props {
   text: string;
   image: ImageMetadata;
   alt: string;
-  link: { label: string; href: string };
+  /** Una sola acción. Si es wa.me / tel:, `contact` + `origin` para medir por Click URL. */
+  link: { label: string; href: string; contact?: 'whatsapp' | 'llamada'; origin?: string };
+  id?: string;
   /** Foto a la derecha en escritorio. */
   reverse?: boolean;
   /** Banda de la página: alterna con la sección de al lado. */
   tone?: 'canvas' | 'surface';
 }
 
-const { title, text, image, alt, link, reverse = false, tone = 'surface' } = Astro.props;
+const { title, text, image, alt, link, id, reverse = false, tone = 'surface' } = Astro.props;
 ---
 
 {/* Foto y texto a dos columnas (en móvil, foto arriba). Una sola acción: la flecha. */}
-<section class:list={['section split-feature', `split-feature--${tone}`, { 'split-feature--reverse': reverse }]}>
+<section id={id} class:list={['section split-feature', `split-feature--${tone}`, { 'split-feature--reverse': reverse }]}>
   <div class="wrap split-feature__grid">
     <Image class="split-feature__photo" src={image} alt={alt} widths={[390, 780, 1200]} sizes="(min-width: 60rem) 50vw, 100vw" data-reveal />
     <div class="split-feature__copy" data-reveal>
       <h2 class="section__title">{title}</h2>
       <p class="section__lead">{text}</p>
-      <a class="arrow-link split-feature__link" href={link.href}>
+      <a class="arrow-link split-feature__link" href={link.href} data-contact={link.contact} data-origin={link.origin}>
         <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
         <span class="arrow-link__label">{link.label}</span>
       </a>

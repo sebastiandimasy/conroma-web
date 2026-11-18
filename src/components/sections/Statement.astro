@@ -18,7 +18,9 @@ const span = 30 / words.length;
           <>
             <span class="statement__word" style={`--a: ${(30 + i * span).toFixed(2)}%; --b: ${(30 + (i + 1) * span).toFixed(2)}%`}>
               {word}
-            </span>{' '}
+            </span>
+            {/* Sin espacio tras la última palabra: en Chrome ese espacio estira el último renglón justificado. */}
+            {i < words.length - 1 && ' '}
           </>
         ))
       }
