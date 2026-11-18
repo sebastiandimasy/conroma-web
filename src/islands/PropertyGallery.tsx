@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon';
+import { photoSources } from '../lib/photos';
 
 interface PropertyGalleryProps {
   propertyRef: string;
@@ -9,16 +10,21 @@ interface PropertyGalleryProps {
   images?: string[];
 }
 
+/* Visor con miniaturas: foto principal 4:3 que se desliza con el dedo (scroll-snap), tira de
+   miniaturas debajo y visor a pantalla completa. Las fotos vienen de Habitatsoft en varios tamaños
+   (lib/photos): 800 px por defecto con srcset y miniaturas de 170 px. */
 export default function PropertyGallery({ propertyRef, title, photos, tone, images }: PropertyGalleryProps) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const thumbsRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [current, setCurrent] = useState(1);
   // Fotos reales si las hay; si no, los SVG de muestra con rotación por tono.
   const hasPhotos = (images?.length ?? 0) > 0 || photos > 0;
-  const srcs = hasPhotos
+  const urls = hasPhotos
     ? (images ?? Array.from({ length: photos }, (_, i) => `/img/muestra-${((tone + i - 1) % 4) + 1}.svg`))
     : [];
-  const count = srcs.length;
+  const sources = urls.map(photoSources);
+  const count = sources.length;
 
   useEffect(() => {
     const track = trackRef.current;
@@ -35,10 +41,23 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
     return () => observer.disconnect();
   }, []);
 
-  function step(delta: number) {
+  // La miniatura activa se queda a la vista sin mover la página (scrollTo de la tira, no scrollIntoView).
+  useEffect(() => {
+    const strip = thumbsRef.current;
+    const thumb = strip?.children[current - 1] as HTMLElement | undefined;
+    if (!strip || !thumb) return;
+    strip.scrollTo({ left: thumb.offsetLeft - (strip.clientWidth - thumb.offsetWidth) / 2, behavior: motion() });
+  }, [current]);
+
+  function motion(): ScrollBehavior {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
+
+  function goTo(index: number) {
     const track = trackRef.current;
     if (!track) return;
-    track.scrollBy({ left: delta * track.clientWidth, behavior: 'smooth' });
+    const target = (index + count) % count;
+    track.scrollTo({ left: target * track.clientWidth, behavior: motion() });
   }
 
   function openViewer(index = current - 1) {
@@ -49,7 +68,7 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
     dialog.querySelectorAll('.gallery__viewer-list img')[index]?.scrollIntoView({ block: 'start' });
   }
 
-  // Sin fotos reales todavía: marcador elegante, sin SVG de muestra ni lightbox/contador.
+  // Sin fotos reales todavía: marcador sobrio, sin miniaturas ni visor.
   if (!hasPhotos) {
     return (
       <div className="gallery">
@@ -63,40 +82,64 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
 
   return (
     <div className="gallery">
-      <div className="gallery__track" ref={trackRef} tabIndex={0} aria-label={`Fotos de ${title}`}>
-        {srcs.map((src, index) => (
-          <figure key={index} className="gallery__slide" data-index={index + 1}>
-            <button type="button" className="gallery__zoom" onClick={() => openViewer(index)} aria-label={`Ampliar foto ${index + 1} de ${count}`}>
-              <img
-                className="gallery__photo"
-                src={src}
-                alt={`${title}, foto ${index + 1} de ${count}`}
-                width="1200"
-                height="900"
-                loading={index === 0 ? 'eager' : 'lazy'}
-                fetchPriority={index === 0 ? 'high' : 'auto'}
-                decoding="async"
-                style={index === 0 ? { viewTransitionName: `foto-${propertyRef.toLowerCase()}` } : undefined}
-              />
+      <div className="gallery__stage">
+        <div className="gallery__track" ref={trackRef} tabIndex={0} aria-label={`Fotos de ${title}`}>
+          {sources.map((photo, index) => (
+            <figure key={index} className="gallery__slide" data-index={index + 1}>
+              <button type="button" className="gallery__zoom" onClick={() => openViewer(index)} aria-label={`Ampliar foto ${index + 1} de ${count}`}>
+                <img
+                  className="gallery__photo"
+                  src={photo.src}
+                  srcSet={photo.srcset}
+                  sizes="(min-width: 60rem) 58vw, 100vw"
+                  alt={`${title}, foto ${index + 1} de ${count}`}
+                  width="1280"
+                  height="960"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                  style={index === 0 ? { viewTransitionName: `foto-${propertyRef.toLowerCase()}` } : undefined}
+                />
+              </button>
+            </figure>
+          ))}
+        </div>
+
+        {count > 1 && (
+          <>
+            <button type="button" className="gallery__nav gallery__nav--prev" onClick={() => goTo(current - 2)} aria-label="Foto anterior">
+              <Icon name="arrow" />
             </button>
-          </figure>
-        ))}
+            <button type="button" className="gallery__nav gallery__nav--next" onClick={() => goTo(current)} aria-label="Foto siguiente">
+              <Icon name="arrow" />
+            </button>
+          </>
+        )}
       </div>
 
       {count > 1 && (
-        <>
-          <button type="button" className="gallery__nav gallery__nav--prev" onClick={() => step(-1)} aria-label="Foto anterior">
-            <Icon name="arrow" />
-          </button>
-          <button type="button" className="gallery__nav gallery__nav--next" onClick={() => step(1)} aria-label="Foto siguiente">
-            <Icon name="arrow" />
-          </button>
-        </>
+        <div className="gallery__thumbs" ref={thumbsRef} role="group" aria-label="Miniaturas">
+          {sources.map((photo, index) => (
+            <button
+              key={index}
+              type="button"
+              className="gallery__thumb"
+              onClick={() => goTo(index)}
+              aria-label={`Ver foto ${index + 1} de ${count}`}
+              aria-current={current === index + 1 ? 'true' : undefined}
+            >
+              <img src={photo.thumb} alt="" width="170" height="128" loading="lazy" decoding="async" />
+            </button>
+          ))}
+        </div>
       )}
 
-      <button type="button" className="chip chip--on-photo gallery__counter" onClick={() => openViewer()}>
-        {`${current} / ${count} · Ver todas`}
-      </button>
+      <div className="gallery__meta">
+        <span className="gallery__count" aria-live="polite">{`Foto ${current} de ${count}`}</span>
+        <button type="button" className="link-cta" onClick={() => openViewer()}>
+          Ver todas las fotos
+        </button>
+      </div>
 
       <dialog ref={dialogRef} className="gallery__viewer" aria-label={`Todas las fotos de ${title}`}>
         <form method="dialog" className="gallery__viewer-bar">
@@ -106,13 +149,15 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
           </button>
         </form>
         <div className="gallery__viewer-list">
-          {srcs.map((src, index) => (
+          {sources.map((photo, index) => (
             <img
               key={index}
-              src={src}
+              src={photo.src}
+              srcSet={photo.srcset}
+              sizes="(min-width: 1100px) 1100px, 100vw"
               alt={`${title}, foto ${index + 1} de ${count}`}
-              width="1200"
-              height="900"
+              width="1280"
+              height="960"
               loading="lazy"
               decoding="async"
             />
