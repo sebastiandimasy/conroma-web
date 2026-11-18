@@ -3,14 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/privacidad/';
-const updated = '27 de octubre de 2026';
+const updated = '18 de noviembre de 2026';
+const { company } = site;
 ---
 
 <BaseLayout
-  title="Política de privacidad"
-  description={`Cómo trata ${site.legalName} tus datos personales, conforme al RGPD y la LOPDGDD.`}
+  title="Política de privacidad y tus datos"
+  description={`Cómo trata ${site.legalName} los datos que nos das por la web, WhatsApp o teléfono, quién los ve y cómo ejercer tus derechos (RGPD y LOPDGDD).`}
   path={path}
-  noindex
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
@@ -24,15 +24,12 @@ const updated = '27 de octubre de 2026';
       <div class="legal">
         <p class="legal__meta">Última actualización: {updated}</p>
 
-        <p class="legal__note">
-          Borrador pendiente de revisión jurídica. Completa los datos entre corchetes ([…]) antes de publicar.
-        </p>
-
         <h2>1. Responsable del tratamiento</h2>
         <ul>
-          <li><strong>Responsable:</strong> {site.legalName}</li>
-          <li><strong>NIF/CIF:</strong> [NIF/CIF pendiente]</li>
-          <li><strong>Domicilio:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
+          <li><strong>Responsable:</strong> {company.name} (nombre comercial: {site.legalName})</li>
+          <li><strong>NIF:</strong> {company.nif}</li>
+          <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>
+          <li><strong>Oficina:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
           <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></li>
           <li><strong>Teléfono:</strong> {site.phoneDisplay}</li>
         </ul>
@@ -62,9 +59,17 @@ const updated = '27 de octubre de 2026';
         <h2>5. Destinatarios</h2>
         <p>
           No cedemos tus datos a terceros salvo obligación legal. Algunos proveedores tratan datos por cuenta
-          nuestra como encargados del tratamiento (alojamiento web, mensajería): entre ellos, el proveedor de
-          alojamiento (Cloudflare, Inc.) y, si escribes por esa vía, WhatsApp/Meta. Estos proveedores pueden
-          implicar transferencias internacionales amparadas en las garantías previstas por el RGPD.
+          nuestra como encargados del tratamiento:
+        </p>
+        <ul>
+          <li><strong>Hostinger</strong>, que aloja la web.</li>
+          <li><strong>Supabase</strong>, la base de datos donde se guardan los mensajes del formulario de contacto.</li>
+          <li><strong>WhatsApp (Meta)</strong>, si nos escribes por esa vía.</li>
+          <li><strong>Google</strong> (Analytics, a través de Tag Manager), solo si aceptas las cookies de medición.</li>
+        </ul>
+        <p>
+          Algunos de estos proveedores pueden implicar transferencias internacionales de datos, amparadas en las
+          garantías previstas por el RGPD.
         </p>
 
         <h2>6. Conservación</h2>

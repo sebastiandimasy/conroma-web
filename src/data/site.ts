@@ -9,6 +9,8 @@ import deskPhoto from '../assets/equipo/conroma-91.jpg';
 export interface SiteData {
   name: string;
   legalName: string;
+  /** Sociedad titular (aviso legal y privacidad). legalName es el nombre comercial. */
+  company: { name: string; nif: string; registeredAddress: string; registry: string };
   url: string;
   phone: string;
   phoneDisplay: string;
@@ -75,6 +77,13 @@ export interface SiteData {
 export const site: SiteData = {
   name: 'Conroma',
   legalName: 'Conroma Asesores Inmobiliarios',
+  // Datos del aviso legal de la web antigua (conromaasesores.com/texto_legal). Falta el nº AICAT.
+  company: {
+    name: 'Conroma La Selva S.L.',
+    nif: 'B65585408',
+    registeredAddress: 'C/ Anselm Clavé, 17, Local, 17300 Blanes (Girona)',
+    registry: 'Registro Mercantil de Barcelona, tomo 42664, folio 29, sección 8, hoja número 413500, inscripción 1',
+  },
   url: 'https://conromaasesores.com',
   phone: '+34626378687',
   phoneDisplay: '626 378 687',

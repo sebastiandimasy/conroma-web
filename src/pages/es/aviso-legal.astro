@@ -3,15 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/aviso-legal/';
-const updated = '27 de octubre de 2026';
+const updated = '18 de noviembre de 2026';
 const domain = site.url.replace(/^https?:\/\//, '');
+const { company } = site;
 ---
 
 <BaseLayout
-  title="Aviso legal"
-  description={`Aviso legal e información del titular de ${site.legalName}, conforme a la LSSI-CE.`}
+  title="Aviso legal y datos de la empresa"
+  description={`Aviso legal de ${site.legalName}: ${company.name}, NIF ${company.nif}, domicilio, registro mercantil y condiciones de uso de la web.`}
   path={path}
-  noindex
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
@@ -25,27 +25,23 @@ const domain = site.url.replace(/^https?:\/\//, '');
       <div class="legal">
         <p class="legal__meta">Última actualización: {updated}</p>
 
-        <p class="legal__note">
-          Borrador pendiente de revisión jurídica. Los datos entre corchetes ([…]) deben completarse con la
-          información registral real de la empresa antes de publicar.
-        </p>
-
         <h2>1. Titular del sitio web</h2>
         <p>En cumplimiento del artículo 10 de la LSSI-CE, se informa de los datos del titular:</p>
         <ul>
-          <li><strong>Titular:</strong> {site.legalName}</li>
-          <li><strong>NIF/CIF:</strong> [NIF/CIF pendiente]</li>
-          <li><strong>Domicilio:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
+          <li><strong>Titular:</strong> {company.name} (nombre comercial: {site.legalName})</li>
+          <li><strong>NIF:</strong> {company.nif}</li>
+          <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>
+          <li><strong>Oficina:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
+          <li><strong>Datos registrales:</strong> inscrita en el {company.registry}.</li>
           <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></li>
           <li><strong>Teléfono:</strong> {site.phoneDisplay}</li>
           <li><strong>Sitio web:</strong> <a href={site.url}>{domain}</a></li>
           <li><strong>Actividad:</strong> intermediación inmobiliaria (compraventa, alquiler y gestión de inmuebles).</li>
-          <li><strong>Inscripción registral / nº de agente:</strong> [datos registrales y, en su caso, nº AICAT pendientes]</li>
         </ul>
 
         <h2>2. Objeto</h2>
         <p>
-          El presente aviso legal regula el uso del sitio web {domain}, titularidad de {site.legalName}. La
+          El presente aviso legal regula el uso del sitio web {domain}, titularidad de {company.name}. La
           navegación por el sitio atribuye la condición de usuario e implica la aceptación de estas condiciones.
         </p>
 

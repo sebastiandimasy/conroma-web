@@ -20,10 +20,7 @@ const photolessPaths = site.catalogIndexable
       .filter((property) => !property.images || property.images.length === 0)
       .map((property) => `/es/inmueble/${propertySlug(property)}/`)
   : [];
-// shortcut: las legales llevan noindex mientras falten NIF/AICAT; al publicarlas con datos reales,
-// quitarlas también de aquí (bandera doble, ver ESTADO.md §6).
-const legalDraftPaths = ['/aviso-legal/', '/privacidad/', '/cookies/'];
-const hiddenPaths = ['/estilo/', '/guardados/', ...legalDraftPaths, ...draftPaths, ...samplePaths, ...photolessPaths];
+const hiddenPaths = ['/estilo/', '/guardados/', ...draftPaths, ...samplePaths, ...photolessPaths];
 
 export default defineConfig({
   site: 'https://conromaasesores.com',

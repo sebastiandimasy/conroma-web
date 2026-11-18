@@ -3,14 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/cookies/';
-const updated = '27 de octubre de 2026';
+const updated = '18 de noviembre de 2026';
 ---
 
 <BaseLayout
-  title="Política de cookies"
-  description={`Qué cookies usa ${site.legalName} y cómo gestionarlas.`}
+  title="Política de cookies de la web"
+  description={`Qué cookies y datos del navegador usa la web de ${site.legalName}, para qué sirven y cómo aceptarlas, rechazarlas o borrarlas.`}
   path={path}
-  noindex
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
@@ -23,11 +22,6 @@ const updated = '27 de octubre de 2026';
     <div class="wrap">
       <div class="legal">
         <p class="legal__meta">Última actualización: {updated}</p>
-
-        <p class="legal__note">
-          Borrador pendiente de revisión jurídica. Revisa el inventario de cookies real antes de publicar; hoy
-          el sitio solo guarda preferencias en tu navegador y no instala cookies de medición sin tu consentimiento.
-        </p>
 
         <h2>1. Qué es una cookie</h2>
         <p>
@@ -51,9 +45,14 @@ const updated = '27 de octubre de 2026';
 
         <h3>De medición (analíticas)</h3>
         <p>
-          Nos ayudarían a entender de forma estadística cómo se usa la web para mejorarla. <strong>Solo se
-          activan si las aceptas</strong> en el aviso de cookies. Mientras no las aceptes, no se instalan.
+          Usamos Google Analytics, cargado a través de Google Tag Manager, para saber de forma estadística qué
+          páginas se visitan y cómo se llega a ellas. <strong>Solo se activan si las aceptas</strong> en el aviso
+          de cookies; mientras no las aceptes, no se instalan.
         </p>
+        <ul>
+          <li><strong>_ga</strong> (Google): distingue visitantes de forma anónima. Dura 2 años.</li>
+          <li><strong>_ga_*</strong> (Google): mantiene el estado de la sesión. Dura 2 años.</li>
+        </ul>
 
         <h2>3. Cómo gestionar las cookies</h2>
         <p>
