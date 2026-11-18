@@ -352,6 +352,19 @@ Se fijaron en Inicio y valen para **todas** las páginas y secciones (CSS global
   tinta fija). La flecha (`arrow-link`) sigue siendo la salida de un escaparate o sección.
 - **Sin tarjetas ni cristal** en bloques de contenido: filas con línea suave (`--color-line` al 40%).
 - Bandas alternas canvas / gris (`--color-surface-2`).
+- **Sin mezclar alineaciones en un mismo bloque** (dueño, 2026-11-18): si el título va a la
+  izquierda, su texto, sus enlaces y sus bloques de contacto también (FAQ «¿Te queda alguna duda?»,
+  «¿No ves el tuyo?», comparativa). Única pieza centrada fuera de héroe y cierre: el resultado de
+  «¿Puedo comprar?», con icono, titular y párrafos justificados con la última línea centrada.
+- **Herramientas (Valoración, Simulador, ¿Puedo comprar?)**: H1 editorial fijo, opciones en filas
+  (no tarjetas), resultado sin tarjeta oscura ni rótulos en mayúsculas, y debajo una guía de
+  contenido de valor + FAQ con FAQPage. El icono del resultado de ¿Puedo comprar? entra con pop y
+  dos ondas (quieto con reduced-motion).
+- **Pueblos (`/es/inmobiliaria/{pueblo}`)**: plantilla única con foto del pueblo y crédito,
+  respuesta, compra o venta, proceso, otras zonas (`TownLinks current`), valoración, reseñas, FAQ y
+  cierre. El índice de zonas usa filas con foto; los listados por pueblo, filas de enlaces + FAQ.
+- **Blog y legales**: page-head editorial, sin rótulo (la categoría va en la línea de autor),
+  subtítulos Hanken 400, párrafos justificados y texto legal alineado con el título.
 
 ### Secciones (anatomía y reglas)
 | Sección | Componente | Regla |
