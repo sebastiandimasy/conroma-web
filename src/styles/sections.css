@@ -1349,6 +1349,16 @@
     }
   }
 
+  /* Alquilar: pueblos de la zona sobre canvas (entre el bloque gris del propietario y las reseñas grises). */
+  .rent-towns {
+    background: var(--color-canvas);
+    color: var(--color-on-canvas);
+  }
+
+  .rent-towns__link {
+    margin-top: var(--space-10);
+  }
+
   .empresa-towns {
     background: var(--color-canvas);
     color: var(--color-on-canvas);

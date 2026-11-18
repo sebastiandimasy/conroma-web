@@ -17,7 +17,7 @@ Conroma Asesores Inmobiliarios (marca: "Conroma Asesores") es una agencia inmobi
 - [Inmuebles en venta](https://conromaasesores.com/es/venta/): catálogo completo de pisos, casas, terrenos y locales en el Maresme y La Selva, con el precio a la vista.
 - [¿Cuánto puedo comprar?](https://conromaasesores.com/es/comprar/puedo-comprar/): calculadora de presupuesto de compra, sin dejar datos.
 - [Vender y valoración gratuita](https://conromaasesores.com/es/vender/): valoración del inmueble y acompañamiento en la venta.
-- [Alquiler](https://conromaasesores.com/es/alquilar/): pisos y viviendas en alquiler.
+- [Alquiler](https://conromaasesores.com/es/alquilar/): pisos en alquiler en Malgrat de Mar y el Alt Maresme; búsqueda de inquilino y contrato para propietarios.
 - [Gestión de patrimonio](https://conromaasesores.com/es/gestion-de-patrimonio/): administración y rentabilidad de inmuebles.
 - [Reformas e interiorismo](https://conromaasesores.com/es/reformas/): Conroma en Obras reforma la vivienda antes de venderla o de entrar a vivir.
 

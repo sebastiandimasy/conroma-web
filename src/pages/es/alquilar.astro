@@ -6,16 +6,20 @@ import SplitFeature from '../../components/sections/SplitFeature.astro';
 import Testimonials from '../../components/sections/Testimonials.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import Icon from '../../components/Icon.astro';
 import heroPhoto from '../../assets/lugares/malgrat-de-mar/parc-del-castell.jpg';
 import searchPhoto from '../../assets/servicios/alquiler.jpg';
 import ownerPhoto from '../../assets/equipo/conroma-102.jpg';
 import closingPhoto from '../../assets/equipo/conroma-91.jpg';
 import { placePhotos } from '../../data/creditos-fotos';
+import { publishedSellerTowns } from '../../data/towns';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 import { whatsappUrl } from '../../lib/links';
 
 /* Dos caminos en una página: quien busca piso de alquiler y quien tiene uno para alquilar.
-   Cada uno con su bloque y su WhatsApp medido por Click URL (data-origin propio). */
+   Cada uno con su bloque y su WhatsApp medido por Click URL (data-origin propio).
+   Keyword principal (docs/KEYWORDS.md): «pisos en alquiler Malgrat de Mar»; secundarias: alquiler
+   en los pueblos de la zona, «alquilar piso Maresme», «buscar inquilino». Volúmenes pendientes de NotFair. */
 const path = '/es/alquilar/';
 const crumbs = [
   { name: 'Inicio', path: '/es/' },
@@ -24,7 +28,11 @@ const crumbs = [
 // Foto CC BY-SA: el crédito va visible en el propio hero.
 const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'parc-del-castell')!;
 const description =
-  'Alquiler en Malgrat de Mar con Conroma: te ayudamos a encontrar piso de alquiler o a encontrar inquilino para el tuyo.';
+  'Pisos en alquiler en Malgrat de Mar y el Maresme: te decimos qué hay hoy y te avisamos. ¿Tienes piso? Buscamos inquilino y preparamos el contrato.';
+// Pueblos con página propia: enlaces internos con su nombre (la zona de servicio real).
+const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(
+  publishedSellerTowns.filter((town) => town.slug !== 'malgrat-de-mar').map((town) => town.name),
+);
 const answer =
   'Conroma te ayuda con el alquiler en Malgrat de Mar y el Alt Maresme, tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad. ' +
   'A quien busca, le decimos qué hay hoy y le avisamos cuando entra algo. Al propietario, le buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar.';
@@ -34,8 +42,13 @@ const faq = [
     answer: 'Cambia cada semana y todavía no los publicamos en la web. Escríbenos y te decimos qué hay hoy.',
   },
   {
-    question: 'Tengo un piso vacío, ¿me buscáis inquilino?',
-    answer: 'Sí. Buscamos el inquilino, enseñamos el piso y preparamos el contrato. Tú decides a quién se lo alquilas.',
+    question: '¿En qué pueblos os encargáis del alquiler?',
+    answer: `En Malgrat de Mar y en los pueblos de alrededor: ${townNames}.`,
+  },
+  {
+    question: '¿Cómo encuentro inquilino para mi piso en el Maresme?',
+    answer:
+      'Escríbenos y vemos tu piso. Lo enseñamos a los interesados, preparamos el contrato y tú decides a quién se lo alquilas.',
   },
   {
     question: 'Y después de firmar, ¿os podéis encargar del piso?',
@@ -46,14 +59,14 @@ const faq = [
 ---
 
 <BaseLayout
-  title="Alquilar piso en Malgrat de Mar"
+  title="Pisos en alquiler en Malgrat de Mar"
   description={description}
   path={path}
   schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Alquiler de viviendas', description, path)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Alquilar piso en Malgrat de Mar"
+    title="Pisos en alquiler en Malgrat de Mar"
     lead="Tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad."
     image={heroPhoto}
     alt={heroCredit.alt}
@@ -77,16 +90,48 @@ const faq = [
     id="tengo-piso"
     tone="surface"
     reverse
-    title="Tengo un piso para alquilar"
+    title="Tengo un piso y busco inquilino"
     text="Buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar. Tú decides a quién se lo alquilas."
     image={ownerPhoto}
     alt="El equipo de Conroma revisando un contrato en la oficina"
     link={{ label: 'Quiero alquilar mi piso', href: whatsappUrl({ reason: 'alquiler' }), contact: 'whatsapp', origin: 'alquilar-propietario' }}
   />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  {/* Pueblos de la zona: enlaces internos a cada pueblo (filas, sin tarjetas) y salida a Gestión
+      de patrimonio para quien quiere que llevemos el piso ya alquilado. */}
+  <section class="section rent-towns">
+    <div class="wrap">
+      <div class="section__head" data-reveal>
+        <h2 class="section__title">Alquiler en Malgrat de Mar y el Alt Maresme</h2>
+        <p class="section__lead">
+          Te ayudamos a encontrar piso o inquilino en Malgrat de Mar y en los pueblos de alrededor. En cada uno tienes
+          lo que hacemos allí.
+        </p>
+      </div>
+      <nav class="town-list" aria-label="Pueblos donde trabajamos" data-reveal>
+        <ul class="town-list__items">
+          {
+            publishedSellerTowns.map((town) => (
+              <li>
+                <a class="town-list__link" href={`/es/inmobiliaria/${town.slug}/`}>
+                  <span>Inmobiliaria en {town.name}</span>
+                  <Icon name="arrow" class="town-links__arrow" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <a class="arrow-link rent-towns__link" href="/es/gestion-de-patrimonio/">
+        <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+        <span class="arrow-link__label">Que nos encarguemos de tu piso alquilado</span>
+      </a>
+    </div>
+  </section>
 
   <FaqSection title="Lo que más preguntan del alquiler" items={faq} origin="alquilar-faq" reason="alquiler" />
+
+  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
 
   <ClosingCTA title="Hablemos" titleMuted="de tu alquiler" image={closingPhoto} origin="alquilar-cierre" reason="alquiler" />
 </BaseLayout>
