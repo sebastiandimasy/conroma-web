@@ -3301,51 +3301,34 @@
     list-style: disc;
   }
 
-  /* Reel embebido en el artículo: fila entre líneas suaves; al pulsar, el iframe de Instagram. */
+  /* Reel de Instagram en vivo en el artículo; la portada queda debajo mientras carga el iframe. */
   .reel-embed {
     margin: 0;
-    padding-block: 20px;
-    border-block: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
   }
 
-  .reel-embed__play {
-    @apply flex w-full items-center text-left;
-    gap: 16px;
-    color: var(--color-ink);
-    cursor: pointer;
+  .reel-embed__stage {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    /* El embed de Instagram tiene alto fijo: cabecera + vídeo + barra de «me gusta». */
+    aspect-ratio: 348 / 690;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
   }
 
-  .reel-embed__icon {
-    @apply grid shrink-0 place-items-center rounded-full;
-    width: 56px;
-    height: 56px;
-    background: var(--color-accent);
-    color: var(--color-on-accent);
-    transition: transform 160ms ease-out;
-  }
-
-  .reel-embed__play:active .reel-embed__icon {
-    transform: scale(0.96);
-  }
-
-  .reel-embed__text {
-    @apply flex flex-col;
-    gap: 2px;
-  }
-
-  .reel-embed__title {
-    font-size: 1.125rem;
-    font-weight: 500;
-  }
-
-  .reel-embed__meta,
-  .reel-embed__caption {
-    color: var(--color-ink-2);
-    font-size: var(--text-caption);
+  .reel-embed__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .reel-embed__caption {
     margin-top: 12px;
+    color: var(--color-ink-2);
+    font-size: var(--text-caption);
   }
 
   .reel-embed__caption a {
@@ -3355,13 +3338,11 @@
   }
 
   .reel-embed__frame {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-width: 400px;
-    height: min(720px, 160vw);
+    height: 100%;
     border: 0;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
   }
 
 }

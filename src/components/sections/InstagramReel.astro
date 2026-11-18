@@ -1,42 +1,31 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
 interface Props {
   id: string;
   title: string;
-  seconds: number;
+  poster?: ImageMetadata;
 }
 
-const { id, title, seconds } = Astro.props;
+const { id, title, poster } = Astro.props;
 const url = `https://www.instagram.com/reel/${id}/`;
-const length = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 ---
 
-{/* Reel embebido con carga al pulsar: hasta entonces no se pide nada a Instagram (ni scripts ni cookies). */}
-<figure class="reel-embed" data-reel={id}>
-  <button type="button" class="reel-embed__play" aria-label={`Reproducir el vídeo «${title}»`}>
-    <span class="reel-embed__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
-    </span>
-    <span class="reel-embed__text">
-      <span class="reel-embed__title">Míralo en vídeo</span>
-      <span class="reel-embed__meta">{length} · Al pulsar se carga Instagram</span>
-    </span>
-  </button>
+{/* Reel de Instagram en vivo dentro del artículo. El iframe carga en diferido (al acercarse al
+    viewport); mientras, se ve la portada del vídeo, guardada en la web. */}
+<figure class="reel-embed">
+  <div class="reel-embed__stage">
+    {poster && <Image class="reel-embed__poster" src={poster} alt="" widths={[360]} sizes="360px" loading="lazy" />}
+    <iframe
+      class="reel-embed__frame"
+      src={`${url}embed/`}
+      title={`Vídeo de Instagram: ${title}`}
+      loading="lazy"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen></iframe>
+  </div>
   <figcaption class="reel-embed__caption">
     «{title}», en nuestro Instagram. <a href={url} target="_blank" rel="noopener">Abrir en Instagram</a>
   </figcaption>
 </figure>
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-reel]').forEach((figure) => {
-    const button = figure.querySelector('button');
-    button?.addEventListener('click', () => {
-      const frame = document.createElement('iframe');
-      frame.className = 'reel-embed__frame';
-      frame.src = `https://www.instagram.com/reel/${figure.dataset.reel}/embed/`;
-      frame.title = button.getAttribute('aria-label') ?? 'Vídeo de Instagram';
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      button.replaceWith(frame);
-      frame.focus();
-    });
-  });
-</script>

@@ -18,7 +18,7 @@ export interface BlogPost {
   intro: string;
   sections: BlogSection[];
   cta: { label: string; href: string };
-  /** Reel de @conromaasesores en el que se basa el artículo. Se embebe con carga al pulsar (sin cookies de Instagram hasta entonces). */
+  /** Reel de @conromaasesores en el que se basa el artículo: se embebe en vivo y su portada está en src/assets/blog/reels/{instagram}.jpg. */
   video?: { instagram: string; title: string; uploaded: string; seconds: number };
 }
 

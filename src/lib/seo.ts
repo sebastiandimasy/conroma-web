@@ -276,6 +276,27 @@ export function listingSchema(property: Property) {
   };
 }
 
+/** VideoObject del reel de Instagram en el que se basa un artículo del blog. */
+export function videoSchema(
+  post: { description: string; slug: string },
+  video: { instagram: string; title: string; uploaded: string; seconds: number },
+  thumbnailPath: string,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: video.title,
+    description: post.description,
+    thumbnailUrl: absoluteUrl(thumbnailPath),
+    uploadDate: video.uploaded,
+    duration: `PT${video.seconds}S`,
+    embedUrl: `https://www.instagram.com/reel/${video.instagram}/embed/`,
+    url: absoluteUrl(`/es/blog/${post.slug}/`),
+    inLanguage: 'es',
+    publisher: { '@id': `${site.url}/#agencia` },
+  };
+}
+
 export function articleSchema(post: { title: string; description: string; date: string; updated?: string; slug: string }) {
   return {
     '@context': 'https://schema.org',
