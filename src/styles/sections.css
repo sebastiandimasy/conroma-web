@@ -641,7 +641,7 @@
   .proof-band__value {
     order: -1;
     font-size: clamp(3.75rem, 1.6rem + 6vw, 7.5rem);
-    font-weight: var(--weight-display);
+    font-weight: var(--weight-display-text);
     line-height: 0.9;
     letter-spacing: var(--tracking-display);
     font-variant-numeric: tabular-nums;
@@ -905,7 +905,7 @@
     text-align-last: start;
     hyphens: auto;
     font-size: clamp(1.375rem, 1rem + 1.6vw, 2.375rem);
-    font-weight: var(--weight-display);
+    font-weight: var(--weight-display-text);
     line-height: 1.22;
     letter-spacing: -0.03em;
   }
@@ -1266,7 +1266,7 @@
 
   .town-list__title {
     font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
 
@@ -1597,7 +1597,7 @@
   .story-scroll__count {
     grid-area: num;
     font-size: clamp(4rem, 2rem + 6vw, 8rem);
-    font-weight: var(--weight-display);
+    font-weight: var(--weight-display-text);
     line-height: 0.8;
     letter-spacing: var(--tracking-display);
     font-variant-numeric: tabular-nums;
@@ -1621,7 +1621,7 @@
   .story-scroll__title {
     grid-area: title;
     font-size: clamp(1.375rem, 1.1rem + 1vw, 2rem);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.03em;
   }
@@ -1749,7 +1749,7 @@
   .compare__group-title {
     margin-bottom: var(--space-3);
     font-size: var(--text-title);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
 
@@ -1867,7 +1867,7 @@
 
   .guide-teaser__title {
     font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.02em;
   }
@@ -2431,7 +2431,7 @@
     max-width: 26ch;
     margin-top: var(--space-6);
     font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
-    font-weight: var(--weight-display);
+    font-weight: var(--weight-display-text);
     line-height: 1.15;
     letter-spacing: -0.03em;
     color: var(--color-ink);
@@ -3397,7 +3397,7 @@
     align-items: center;
     gap: var(--space-3);
     font-size: clamp(1.25rem, 1.1rem + 0.8vw, 1.625rem);
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
 

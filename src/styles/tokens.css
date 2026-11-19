@@ -73,9 +73,11 @@
 }
 
 :root {
-  /* Estilo editorial (referencia concretemanagement.ch): titulares enormes, finos y apretados. */
+  /* Estilo editorial: titulares grandes y apretados, en bold (decisión del dueño, 19-nov). */
   --text-display: clamp(3rem, 0.6rem + 10.5vw, 8.5rem);
-  --weight-display: 300;
+  --weight-display: 700;
+  /* Texto grande que NO es título (frase bajo el héroe, cifras, precios, citas): fino, como antes. */
+  --weight-display-text: 300;
   --tracking-display: -0.06em;
   --text-h1: clamp(2.5rem, 1.6rem + 3.2vw, 4.75rem);
   --text-h2: clamp(2.25rem, 1.3rem + 3.8vw, 4.5rem);
