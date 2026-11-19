@@ -125,8 +125,12 @@ En `conroma-crm-ui`:
   de Habitatsoft pone **8809**, pero el mismo número está en «nº colegiado» y «ref.
   homologación» y el NIF de ese perfil es de relleno (99999999Z). Confirmarlo con el dueño antes
   de publicarlo.
-- **Supabase**: el proyecto del `.env` no existe (NXDOMAIN), así que los formularios no guardan.
-  Hay que crear el proyecto nuevo (fase 0 de `docs/superpowers/specs/2026-11-18-migracion-habitatsoft-crm-design.md`).
+- **Supabase (resuelto el 19-nov)**: el proyecto del `.env` (`mcorvtqoenrndlpslmuy`, org CONROMA
+  ASESORES INMOBILIARIOS, plan Free) existía pero estaba **pausado** por inactividad; de ahí el
+  NXDOMAIN. Reactivado. Tenía 0001 aplicada y 0002 a medias (faltaba `reformar` en `intent`); se
+  aplicaron 0002 y 0003. Probado: contacto y valoración guardan, la anon key no puede leer leads.
+  **Decidir:** en plan Free se vuelve a pausar tras 7 días sin actividad (y los formularios dejan de
+  guardar). Para producción, plan Pro (25 $/mes) o al menos vigilarlo.
 - **Publicar**: seguir `docs/SWIPE.md` (Hostinger, `www` y apex al mismo alojamiento, SSL de los dos).
 - **Push a GitHub** de la rama `feat/crm-leads`.
 - **Fotos de 8 inmuebles**: Habitatsoft no ha entregado el archivo.
