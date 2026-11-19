@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/privacidad/';
-const updated = '18 de noviembre de 2026';
+const updated = '19 de noviembre de 2026';
 const { company } = site;
 ---
 
@@ -27,8 +27,8 @@ const { company } = site;
         <h2>1. Responsable del tratamiento</h2>
         <ul>
           <li><strong>Responsable:</strong> {company.name} (nombre comercial: {site.legalName})</li>
-          <li><strong>NIF:</strong> {company.nif}</li>
-          <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>
+          {company.nif && <li><strong>NIF:</strong> {company.nif}</li>}
+          {company.registeredAddress && <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>}
           <li><strong>Oficina:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
           <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></li>
           <li><strong>Teléfono:</strong> {site.phoneDisplay}</li>

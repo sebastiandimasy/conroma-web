@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { absoluteUrl, agentSchema, alternates, breadcrumbSchema, collectionPageSchema, listingSchema, pageTitle } from '../src/lib/seo';
-import { properties, propertySlug, propertyTitle } from '../src/data/properties';
+import { properties, propertyDocTitle, propertySlug, propertyTitle } from '../src/data/properties';
 
 describe('seo', () => {
   it('builds absolute urls on the site domain', () => {
@@ -95,5 +95,32 @@ describe('URLs de inmueble', () => {
     const slug = propertySlug({ ...properties[0], type: 'Bungalow', zone: 'Malgrat de Mar', town: 'malgrat-de-mar', ref: 'B-0045-A PLA' });
     expect(slug).toMatch(/^[a-z0-9-]+$/);
     expect(slug.endsWith('b-0045-a-pla')).toBe(true);
+  });
+
+  it('el <title> de la ficha no pasa de 65 caracteres: si la zona es larga, se queda el pueblo', () => {
+    const base = { ...properties[0], type: 'Chalet unifamiliar', operation: 'venta' as const, town: 'tordera', price: 260000, ref: 'X-1' };
+    const larga = { ...base, zone: 'Urbanitzacions Niàgara Parc-Àgora Parc-Roca-Rossa' };
+    expect(propertyDocTitle(larga, [larga])).toBe('Chalet unifamiliar en venta en Tordera — 260.000 €');
+    const corta = { ...base, zone: 'Centre' };
+    expect(propertyDocTitle(corta, [corta])).toBe('Chalet unifamiliar en venta en Centre, Tordera — 260.000 €');
+  });
+
+  it('dos fichas con el mismo <title> se distinguen por la referencia', () => {
+    const a = { ...properties[0], type: 'Terreno', operation: 'venta' as const, town: 'tordera', zone: 'Urbanitzacions El Mas Móra-Sant Daniel-Blanes Mar', price: 58000, ref: 'T-1' };
+    const b = { ...a, ref: 'T-2' };
+    expect(propertyDocTitle(a, [a, b])).toBe('Terreno en venta en Tordera — 58.000 € · Ref. T-1');
+  });
+
+  it('el título con la referencia tampoco pasa de 65 caracteres', () => {
+    const a = { ...properties[0], type: 'Local', operation: 'venta' as const, town: 'lloret-de-mar', zone: 'Fenals-Santa Clotilde', price: 0, ref: 'L-1095' };
+    const b = { ...a, ref: 'L-1094' };
+    const t = propertyDocTitle(a, [a, b]);
+    expect(t.length).toBeLessThanOrEqual(65);
+    expect(t).toContain('Ref. L-1095');
+  });
+
+  it('no repite el pueblo si zona y pueblo solo difieren en el apóstrofo', () => {
+    const base = { ...properties[0], type: 'Terreno', operation: 'venta' as const, town: "Vilobí d'Onyar", zone: 'Vilobí d’Onyar' };
+    expect(propertyTitle(base)).toBe("Terreno en venta en Vilobí d'Onyar");
   });
 });

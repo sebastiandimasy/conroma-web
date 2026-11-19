@@ -3,6 +3,7 @@ import photoMap from './property-photos.json';
 import legacyMap from './property-legacy.json';
 import { mergeInventoryItem, normRef } from '../lib/inventory';
 import { findTown } from './towns';
+import { formatPrice } from '../lib/format';
 
 export interface Property {
   ref: string;
@@ -200,8 +201,26 @@ export function propertySlug(property: Property): string {
 export function propertyTitle(property: Property): string {
   const town = findTown(property.town)?.name ?? property.town;
   // Zona igual al pueblo (o vacía) salía repetida: «…en Maçanet de la Selva, Maçanet de la Selva».
-  const place = property.zone && property.zone.trim().toLowerCase() !== town.toLowerCase() ? `${property.zone}, ${town}` : town;
+  // Y «Vilobí d’Onyar, Vilobí d'Onyar»: el apóstrofo tipográfico no cuenta como diferencia.
+  const norm = (value: string) => value.trim().toLowerCase().replace(/[’‘`´]/g, "'");
+  const place = property.zone && norm(property.zone) !== norm(town) ? `${property.zone}, ${town}` : town;
   return `${property.type} en ${property.operation} en ${place}`;
+}
+
+const DOC_TITLE_MAX = 65;
+
+/** <title> de la ficha. Google corta hacia los 65 caracteres: si la zona es larga, se queda el pueblo.
+ *  Si otra ficha acaba con el mismo título, se añade la referencia para distinguirlas. */
+export function propertyDocTitle(property: Property, listings: Property[]): string {
+  const price = (item: Property) => (hasPublicPrice(item) ? ` — ${formatPrice(item.price)}` : '');
+  const full = (item: Property) => `${propertyTitle(item)}${price(item)}`;
+  const short = (item: Property) => `${item.type} en ${item.operation} en ${findTown(item.town)?.name ?? item.town}${price(item)}`;
+  const base = (item: Property) => (full(item).length <= DOC_TITLE_MAX ? full(item) : short(item));
+  const own = base(property);
+  const hasTwin = listings.some((item) => item.ref !== property.ref && base(item) === own);
+  if (!hasTwin) return own;
+  const suffix = ` · Ref. ${property.ref}`;
+  return `${own}${suffix}`.length <= DOC_TITLE_MAX ? `${own}${suffix}` : `${short(property)}${suffix}`;
 }
 
 export function propertyUrl(property: Property): string {

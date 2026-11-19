@@ -6,7 +6,7 @@ import PropertyGallery from '../../../islands/PropertyGallery';
 import FavoriteToggle from '../../../islands/FavoriteToggle';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
-import { cardFacts, getListings, hasPublicPrice, isHome, propertySlug, propertyTitle, type Property } from '../../../data/properties';
+import { cardFacts, getListings, hasPublicPrice, isHome, propertyDocTitle, propertySlug, propertyTitle, type Property } from '../../../data/properties';
 import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
@@ -28,10 +28,7 @@ const townName = town?.name ?? property.town;
 // Coords reales del piso (feed) si las hay; si no, el centro del pueblo.
 const mapGeo = property.geo ?? town?.geo ?? null;
 const title = propertyTitle(property);
-const titleWithPrice = (item: Property) => (hasPublicPrice(item) ? `${propertyTitle(item)} — ${formatPrice(item.price)}` : propertyTitle(item));
-// Fichas gemelas (mismo tipo, zona y precio) compartían <title>: la referencia las distingue.
-const hasTwin = getListings().some((item) => item.ref !== property.ref && titleWithPrice(item) === titleWithPrice(property));
-const docTitle = hasTwin ? `${titleWithPrice(property)} · Ref. ${property.ref}` : titleWithPrice(property);
+const docTitle = propertyDocTitle(property, getListings());
 // Terrenos, locales y parkings no tienen habitaciones: fuera el «0 habitaciones, 0 baños».
 const summary = isHome(property)
   ? `${property.rooms} ${property.rooms === 1 ? 'habitación' : 'habitaciones'}, ${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}, ${property.area} m²`

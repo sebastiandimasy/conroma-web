@@ -103,9 +103,9 @@ accesos, y `/crm/` tiene que cargar el panel. **Míralo en el móvil**, que es e
 
 ## Qué NO funciona en la demo (y está bien que no funcione)
 
-- **Los formularios sí guardan, y en la base real.** Contacto y valoración insertan directo en la
-  tabla `lead` de Supabase (con las claves del `.env` local al compilar). Lo que envíe el
-  stakeholder para probar aparece en el CRM como lead de verdad: avisarle y borrarlos después.
+- **Los formularios no guardan.** El proyecto de Supabase del `.env` no existe (comprobado el
+  18-nov: el dominio da NXDOMAIN), así que el envío de contacto y valoración falla. El botón de
+  WhatsApp se abre igual. Se arregla en la fase 0 de la migración, al crear el proyecto nuevo.
 - **El panel `/es/admin/`** no entra: necesita las claves de Supabase compiladas. Para enseñar
   la gestión está `/crm/`, que es el prototipo y no necesita claves.
 - **El CRM de `/crm/` usa datos de ejemplo**, no los reales. Lo avisa en pantalla con un

@@ -3,14 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/aviso-legal/';
-const updated = '18 de noviembre de 2026';
+const updated = '19 de noviembre de 2026';
 const domain = site.url.replace(/^https?:\/\//, '');
 const { company } = site;
 ---
 
 <BaseLayout
   title="Aviso legal y datos de la empresa"
-  description={`Aviso legal de ${site.legalName}: ${company.name}, NIF ${company.nif}, domicilio, registro mercantil y condiciones de uso de la web.`}
+  description={`Aviso legal de ${site.legalName}: ${company.name}${company.nif ? `, NIF ${company.nif}` : ''}, datos del titular y condiciones de uso de la web.`}
   path={path}
 >
   <section class="page-head page-head--editorial">
@@ -29,10 +29,10 @@ const { company } = site;
         <p>En cumplimiento del artículo 10 de la LSSI-CE, se informa de los datos del titular:</p>
         <ul>
           <li><strong>Titular:</strong> {company.name} (nombre comercial: {site.legalName})</li>
-          <li><strong>NIF:</strong> {company.nif}</li>
-          <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>
+          {company.nif && <li><strong>NIF:</strong> {company.nif}</li>}
+          {company.registeredAddress && <li><strong>Domicilio social:</strong> {company.registeredAddress}</li>}
           <li><strong>Oficina:</strong> {site.address.street}, {site.address.postalCode} {site.address.locality}, {site.address.region}</li>
-          <li><strong>Datos registrales:</strong> inscrita en el {company.registry}.</li>
+          {company.registry && <li><strong>Datos registrales:</strong> inscrita en el {company.registry}.</li>}
           <li><strong>Correo electrónico:</strong> <a href={`mailto:${site.email}`}>{site.email}</a></li>
           <li><strong>Teléfono:</strong> {site.phoneDisplay}</li>
           <li><strong>Sitio web:</strong> <a href={site.url}>{domain}</a></li>

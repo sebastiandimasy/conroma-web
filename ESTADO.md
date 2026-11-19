@@ -1,4 +1,4 @@
-# Estado del proyecto — 18 de noviembre de 2026
+# Estado del proyecto — 19 de noviembre de 2026
 
 Este archivo existe para que **cualquier sesión nueva de Claude Code** (en cualquier ordenador o
 cuenta) pueda retomar el trabajo sin que haya que volver a explicarlo. Si lo lees por primera vez:
@@ -67,8 +67,10 @@ paquete preparado en `~/Desktop/Claude-migracion/`.
 - **Esquema de Supabase versionado**: `0001_crm_init`, `0002_lead_taxonomy`, `0003_web_lead_insert`.
 - **Redirecciones 301 en `public/.htaccess`** (Hostinger ignora `_redirects`): `www` → apex,
   raíz → `/es/`, y las 43 URLs del sitemap antiguo llegan a una página que existe.
-- **Legales con datos reales** (18-nov): Conroma La Selva S.L., NIF B65585408, domicilio social
-  en Blanes y registro mercantil, sacados del aviso legal de la web antigua. Ya son indexables.
+- **Legales** (19-nov): el titular es **Conroma Asesores S.L.**, confirmado por el dueño. El aviso
+  legal de la web antigua decía Conroma La Selva S.L., que es otra sociedad, y sus datos se han
+  quitado. Faltan NIF, domicilio social y registro mercantil (ver §5): mientras estén vacíos en
+  `src/data/site.ts`, los legales omiten esas líneas.
 - **SEO técnico** (auditoría del build, 18-nov): 152 páginas, 141 indexables y las 141 en el
   sitemap (103 fichas, tras ocultar las 22 que Habitatsoft ya no publica). Sin enlaces rotos, títulos duplicados ni JSON-LD inválido.
 - **Analítica** en GTM `GTM-KWJHKHR2` con consent mode por defecto denegado.
@@ -83,7 +85,9 @@ En este repo:
 1. **Feed de Habitatsoft.** El inventario sale de un Excel exportado
    (`src/data/properties.real.json`, 125 inmuebles). `scripts/fetch-inventory.mjs` y el parser
    `src/lib/habitatsoft.ts` están listos, pero falta la URL del feed («Enlace Web 2.0») en
-   `HABITATSOFT_FEED_URL`. Hay que sacarla del panel de Habitatsoft con el dueño logueado.
+   `HABITATSOFT_FEED_URL`. **Auditado el 19-nov:** el panel no la muestra. Habitatsoft empuja el
+   feed cada noche a Vitrinemedia (el proveedor de la web antigua). Hay que pedirla a soporte de
+   Habitatsoft o a Vitrinemedia.
 2. **Puente con la web antigua** (18-nov, sin acceso al panel de Habitatsoft):
    `scripts/scrape-web-antigua.mjs` lee las fichas públicas de `www.conromaasesores.com` y
    escribe `src/data/property-legacy.json` (id antiguo + certificado energético por ref).
@@ -96,7 +100,7 @@ En este repo:
    (`published: false` en `property-legacy.json`; lista en `retiradasEnHabitatsoft`).
    **Siguiente paso (19-nov):** el dueño recibe el código de Habitatsoft; con el enlace del
    feed en `HABITATSOFT_FEED_URL`, el inventario se actualiza en cada build y entran los 6 nuevos.
-4. **Títulos largos** en ~30 fichas con nombres de zona largos (más de 65 caracteres). Menor.
+4. ~~Títulos largos~~ Hecho el 19-nov: `propertyDocTitle()` deja el `<title>` en 65 caracteres como máximo (si la zona es larga, va solo el pueblo).
 
 En `conroma-crm-ui`:
 
@@ -107,8 +111,14 @@ En `conroma-crm-ui`:
 
 ## 5. Falta (decisiones o datos del dueño)
 
-- **Número AICAT** (obligatorio para agentes inmobiliarios en Cataluña). Va en `company` de
-  `src/data/site.ts`; se añadirá cuando la web esté publicada.
+- **Datos de Conroma Asesores S.L.**: NIF, domicilio social y registro mercantil. Sin ellos el
+  aviso legal no cumple el art. 10 de la LSSI-CE. **Bloquea el swipe.**
+- **Número AICAT** (obligatorio para agentes inmobiliarios en Cataluña). En el perfil de empresa
+  de Habitatsoft pone **8809**, pero el mismo número está en «nº colegiado» y «ref.
+  homologación» y el NIF de ese perfil es de relleno (99999999Z). Confirmarlo con el dueño antes
+  de publicarlo.
+- **Supabase**: el proyecto del `.env` no existe (NXDOMAIN), así que los formularios no guardan.
+  Hay que crear el proyecto nuevo (fase 0 de `docs/superpowers/specs/2026-11-18-migracion-habitatsoft-crm-design.md`).
 - **Publicar**: seguir `docs/SWIPE.md` (Hostinger, `www` y apex al mismo alojamiento, SSL de los dos).
 - **Push a GitHub** de la rama `feat/crm-leads`.
 - **Fotos de 8 inmuebles**: Habitatsoft no ha entregado el archivo.
