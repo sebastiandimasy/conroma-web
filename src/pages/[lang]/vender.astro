@@ -1,0 +1,103 @@
+---
+import { getLang, langPaths } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
+import ProofBand from '../../components/sections/ProofBand.astro';
+import StoryScroll from '../../components/sections/StoryScroll.astro';
+import Compare from '../../components/sections/Compare.astro';
+import ValuationBlock from '../../components/sections/ValuationBlock.astro';
+import GuideTeaser from '../../components/sections/GuideTeaser.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import heroPhoto from '../../assets/lugares/malgrat-de-mar/vista.jpg';
+import closingPhoto from '../../assets/equipo/conroma-82.jpg';
+import { venderAnswer, venderCompare, venderFaq, venderSteps } from '../../data/vender';
+import { publishedSellerTowns } from '../../data/towns';
+import { placePhotos } from '../../data/creditos-fotos';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
+
+/* Dueña de la búsqueda regional y de proceso («vender piso en el Maresme», «cómo vender mi
+   piso»). «Vender piso en {pueblo}» es de cada hub: aquí solo se enlaza (spec §7.0). */
+const path = '/es/vender/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Vender', path },
+];
+// Foto CC BY-SA: el crédito va visible en el propio hero.
+const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'vista')!;
+const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría.';
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="Vender piso o casa en el Maresme"
+  description={description}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(venderFaq), serviceSchema('Venta de viviendas', description, path)]}
+>
+  <HeroStory
+    crumbs={crumbs}
+    title="Vender tu piso en el Maresme"
+    lead="Valoración gratis, fotos, visitas y acompañamiento hasta notaría."
+    image={heroPhoto}
+    alt={heroCredit.alt}
+    cta={{ label: '¿Cuánto vale mi piso?', href: '#valoracion' }}
+    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+  />
+
+  <Statement text={venderAnswer} />
+
+  <ProofBand bridge="Esto es lo que hacemos con tu piso desde el primer día." />
+
+  <StoryScroll
+   
+    title="Cómo vendemos tu piso"
+    steps={venderSteps}
+    bridge="¿Y si prefieres venderlo por tu cuenta? Aquí ves cuándo encaja cada opción."
+  />
+
+  <Compare
+   
+    title="Con Conroma o por tu cuenta"
+    lead="Las dos opciones funcionan. Elige la que encaje con tu tiempo y con lo que ya tienes."
+    options={venderCompare}
+    bridge="Todo empieza por saber cuánto vale tu piso."
+  />
+
+  <ValuationBlock />
+
+  <GuideTeaser title="Para leer antes de vender" category="Vender" />
+
+  <FaqSection
+   
+    title="Dudas al vender tu piso"
+    lead="Lo que más nos preguntan antes de poner un piso a la venta."
+    items={venderFaq}
+    origin="vender-faq"
+    reason="valoracion"
+  />
+
+  <ClosingCTA
+    title="Hablemos"
+    titleMuted="de tu piso"
+    image={closingPhoto}
+    text="Cuéntanos qué piso quieres vender y te decimos cómo lo haríamos."
+    origin="vender-cierre"
+    reason="valoracion"
+  >
+    <nav class="closing-cta__towns" aria-label="Vender en tu pueblo">
+      <ul>
+        {
+          publishedSellerTowns.map((town) => (
+            <li>
+              <a href={`/es/inmobiliaria/${town.slug}/`}>Vender piso en {town.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </ClosingCTA>
+</BaseLayout>

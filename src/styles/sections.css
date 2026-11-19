@@ -141,6 +141,61 @@
     background: var(--color-surface-2);
   }
 
+  /* Selector de idioma: botón de 44px con el código (ES/EN/CA) y menú desplegable. Lo
+     seleccionado va en tinta, nunca en amarillo (el amarillo es solo acento). */
+  .lang-switch {
+    position: relative;
+  }
+
+  .lang-switch__toggle {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .lang-switch__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .lang-switch__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 60;
+    min-width: 148px;
+    padding: 6px;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-on-surface);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.14);
+  }
+
+  .lang-switch__link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+  }
+
+  .lang-switch__link.is-active {
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  @media (hover: hover) {
+    .lang-switch__link:not(.is-active):hover {
+      background: var(--color-surface-2);
+    }
+  }
+
   .icon-button {
     width: 44px;
     min-height: 44px;

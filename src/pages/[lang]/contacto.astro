@@ -1,0 +1,49 @@
+---
+import { getLang, langPaths } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import ContactSection from '../../components/sections/ContactSection.astro';
+import OfficeMap from '../../components/sections/OfficeMap.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import TownLinks from '../../components/sections/TownLinks.astro';
+import { site } from '../../data/site';
+import { homeFaq } from '../../data/faq';
+import { breadcrumbSchema } from '../../lib/seo';
+
+const path = '/es/contacto/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Contacto', path },
+];
+const contactPage = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contacto de Conroma Asesores',
+  url: `${site.url}${path}`,
+  about: { '@id': `${site.url}/#agencia` },
+};
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="Contacto: habla con Conroma en Malgrat de Mar"
+  description="Escríbenos por WhatsApp, llámanos o ven a la Av. Mediterránea 16, en Malgrat de Mar. De lunes a viernes, de 9 a 14 h y de 16:30 a 19:30 h."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), contactPage]}
+>
+  <section class="page-head page-head--editorial">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Contacta con Conroma en Malgrat de Mar</h1>
+      <p class="page-head__lead">
+        Escríbenos por WhatsApp, llámanos o pásate por la oficina. Si tienes cualquier duda, aquí estamos.
+      </p>
+    </div>
+  </section>
+  <ContactSection />
+  <OfficeMap />
+  <TownLinks />
+  <FaqSection title="Lo que nos preguntan antes de llamar" items={homeFaq} origin="contacto-faq" />
+</BaseLayout>

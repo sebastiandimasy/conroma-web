@@ -3,6 +3,7 @@ import Icon from '../Icon.astro';
 import Logo from '../Logo.astro';
 import { site } from '../../data/site';
 import { mainNav } from '../../data/nav';
+import { getLang, localizePath } from '../../i18n';
 import { publishedSellerTowns } from '../../data/towns';
 import { whatsappUrl } from '../../lib/links';
 
@@ -30,8 +31,8 @@ const year = 2026;
     <nav class="site-footer__col" aria-label="Enlaces rápidos">
       <h2 class="site-footer__title">Web</h2>
       <ul class="site-footer__links site-footer__links--nav">
-        {mainNav.map((link) => (
-          <li><a href={link.href}>{link.label}</a></li>
+        {mainNav[getLang(Astro.url)].map((link) => (
+          <li><a href={localizePath(link.href, getLang(Astro.url))}>{link.label}</a></li>
         ))}
         <li><a href="/es/servicios/">Servicios</a></li>
         <li><a href="/es/contacto/">Contacto</a></li>

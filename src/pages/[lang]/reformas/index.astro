@@ -1,0 +1,166 @@
+---
+import { getLang, langPaths } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HeroStory from '../../../components/sections/HeroStory.astro';
+import Statement from '../../../components/sections/Statement.astro';
+import SplitFeature from '../../../components/sections/SplitFeature.astro';
+import StoryScroll from '../../../components/sections/StoryScroll.astro';
+import ContentGuide from '../../../components/sections/ContentGuide.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ReformGallery from '../../../components/sections/ReformGallery.astro';
+import Testimonials from '../../../components/sections/Testimonials.astro';
+import ServiceIndex from '../../../components/sections/ServiceIndex.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import heroPhoto from '../../../assets/reformas/reforma-17.jpg';
+import livingPhoto from '../../../assets/reformas/reforma-12.jpg';
+import kitchenPhoto from '../../../assets/reformas/reforma-03.jpg';
+import bathPhoto from '../../../assets/reformas/reforma-10.jpg';
+import bath2Photo from '../../../assets/reformas/reforma-07.jpg';
+import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
+import type { StoryStep } from '../../../data/vender';
+import type { IconName } from '../../../lib/icons';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../../lib/seo';
+
+/* Keyword (docs/KEYWORDS.md): «reforma integral piso Maresme»; secundarias: Conroma en Obras,
+   reformar piso antes de vender, reforma cocina/baño Maresme. La guía y la FAQ responden lo que
+   se busca antes de pedir presupuesto (contenido general, sin precios ni plazos inventados). */
+const path = '/es/reformas/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Reformas', path },
+];
+const description =
+  'Conroma en Obras reforma pisos en Malgrat de Mar y el Maresme: cocinas, baños y reformas integrales, con presupuesto por escrito.';
+const answer =
+  'Conroma en Obras es el área de reformas de Conroma Asesores en Malgrat de Mar. Renovamos tu casa, de la cocina al último detalle, para darle una nueva cara antes de venderla o de entrar a vivir. ' +
+  'Vemos el piso, te damos un presupuesto claro por escrito y partida a partida, y vas viendo cómo avanza la obra.';
+const steps: StoryStep[] = [
+  {
+    title: 'Vemos el piso',
+    text: 'Pasamos a verlo contigo y te decimos qué merece la pena tocar y qué no, según si vas a vender o a entrar a vivir.',
+    image: livingPhoto,
+    alt: 'Salón reformado por Conroma en Obras con suelo de madera clara',
+  },
+  {
+    title: 'Presupuesto claro',
+    text: 'Por escrito y partida a partida, antes de empezar. Sabes qué se hace en cada estancia y cuánto cuesta.',
+    image: kitchenPhoto,
+    alt: 'Cocina reformada con muebles claros y encimera de madera',
+  },
+  {
+    title: 'Te enseñamos la obra',
+    text: 'Vas viendo cómo avanza. El antes y el después lo contamos en Instagram, en @conromaenobras.',
+    image: bathPhoto,
+    alt: 'Baño reformado con mampara de cristal y espejo iluminado',
+  },
+];
+const guide: { title: string; text: string; icon: IconName }[] = [
+  {
+    title: 'Cocina',
+    icon: 'kitchen',
+    text: 'Muebles, encimera, electrodomésticos y, casi siempre, la instalación de agua y luz que hay detrás. Es la parte que más se nota en las fotos, en las visitas y en el día a día.',
+  },
+  {
+    title: 'Baños',
+    icon: 'bath',
+    text: 'Plato de ducha en lugar de bañera, sanitarios, revestimientos y fontanería nueva. Aprovechar la obra para cambiar las tuberías antiguas evita averías después.',
+  },
+  {
+    title: 'Instalación eléctrica',
+    icon: 'zap',
+    text: 'En los pisos antiguos suele hacer falta un cuadro y circuitos nuevos, adaptados a la potencia que se usa hoy y al Reglamento Electrotécnico de Baja Tensión.',
+  },
+  {
+    title: 'Suelos, puertas y ventanas',
+    icon: 'window',
+    text: 'Suelo nuevo y carpintería interior cambian el aspecto del piso. Si las ventanas son antiguas, cambiarlas mejora el aislamiento y la eficiencia energética.',
+  },
+  {
+    title: 'Distribución',
+    icon: 'layout',
+    text: 'Mover o tirar tabiques para ganar luz, abrir la cocina al salón o sumar una habitación. Antes hay que comprobar qué paredes se pueden tocar.',
+  },
+  {
+    title: 'Permisos',
+    icon: 'permit',
+    text: 'Según la obra, el ayuntamiento pide una comunicación previa (obra menor) o una licencia (obra mayor, por ejemplo si se toca la estructura o la fachada). Conviene saberlo antes de empezar.',
+  },
+];
+const faq = [
+  {
+    question: '¿Hacéis reformas integrales?',
+    answer: 'Sí. Renovamos tu casa, de la cocina al último detalle, o solo la parte que necesites: una cocina, un baño o pintura y suelos.',
+  },
+  {
+    question: '¿Cuánto cuesta reformar un piso?',
+    answer:
+      'Depende de los metros, del estado del piso y de la calidad de los acabados. Con el simulador te sale una idea aproximada; el presupuesto real te lo damos por escrito después de ver el piso.',
+  },
+  {
+    question: '¿Me dais el presupuesto antes de empezar?',
+    answer: 'Sí, por escrito y partida a partida, antes de empezar la obra.',
+  },
+  {
+    question: '¿Vale la pena reformar un piso antes de venderlo?',
+    answer:
+      'Depende del piso. A veces basta con pintar y arreglar detalles; otras, una cocina o un baño nuevos cambian cómo se ve en las fotos y en las visitas. Lo vemos contigo y, si decides vender, nos encargamos también de la venta.',
+  },
+  {
+    question: '¿Necesito permiso del ayuntamiento para reformar?',
+    answer:
+      'Depende de la obra. Para obras menores suele bastar una comunicación previa; si se toca la estructura, la fachada o la distribución de forma importante, hace falta licencia de obra mayor. Cada ayuntamiento tiene su procedimiento.',
+  },
+  {
+    question: '¿Puedo ver cómo avanza la obra?',
+    answer: 'Sí. Vas viendo cómo avanza, y el antes y el después lo contamos en Instagram, en @conromaenobras.',
+  },
+];
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="Reforma integral de pisos en el Maresme: Conroma en Obras"
+  description={description}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Reformas e interiorismo', description, path)]}
+>
+  <HeroStory
+    crumbs={crumbs}
+    title="Reformas de pisos en el Maresme"
+    lead="Le damos una segunda vida a tu inmueble, para venderlo mejor o para entrar a vivir."
+    image={heroPhoto}
+    alt="Salón y cocina abiertos en un piso reformado por Conroma en Obras"
+    cta={{ label: '¿Cuánto cuesta reformar?', href: '/es/reformas/simulador/' }}
+  />
+
+  <Statement text={answer} />
+
+  <SplitFeature
+    tone="canvas"
+    title="¿Cuánto cuesta reformar tu piso?"
+    text="Pon los metros y la calidad que buscas, y te sale una idea de por dónde van los tiros. Después vemos el piso y te damos el presupuesto real por escrito."
+    image={bath2Photo}
+    alt="Baño reformado con mueble de lavabo blanco y espejo"
+    link={{ label: 'Calcular cuánto cuesta', href: '/es/reformas/simulador/' }}
+  />
+
+  <StoryScroll title="Una reforma sin sustos" steps={steps} />
+
+  <ContentGuide
+    title="Qué incluye una reforma integral"
+    lead="Una reforma integral renueva el piso entero. Estas son las partes que suelen entrar y lo que conviene saber de cada una."
+    items={guide}
+  />
+
+  <FaqSection title="Reformas: lo que nos preguntan" items={faq} origin="reformas-faq" />
+
+  <ReformGallery />
+
+  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+
+  <ServiceIndex title="Otros servicios de Conroma" exclude="reformas" />
+
+  <ClosingCTA title="Hablemos" titleMuted="de tu reforma" image={closingPhoto} origin="reformas-cierre" />
+</BaseLayout>

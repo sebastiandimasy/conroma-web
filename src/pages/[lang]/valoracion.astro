@@ -1,0 +1,102 @@
+---
+import { getLang, langPaths } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ValuationWizard from '../../islands/ValuationWizard';
+import ContentGuide from '../../components/sections/ContentGuide.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import Icon from '../../components/Icon.astro';
+import { publishedSellerTowns } from '../../data/towns';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
+
+/* Keyword (docs/KEYWORDS.md): «cuánto vale mi piso», «valoración piso Malgrat de Mar».
+   Arriba, el asistente de cuatro pasos (embudo, sin cabecera ni pie). Debajo, texto real para
+   Google y las IA: cómo se calcula el valor y las dudas habituales. Sin precios ni plazos inventados. */
+const path = '/es/valoracion/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Valoración', path },
+];
+const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(publishedSellerTowns.map((town) => town.name));
+const guide = [
+  {
+    title: 'Ubicación',
+    text: 'La calle y la zona pesan más que nada: la cercanía a la playa, al centro, a la estación y a los servicios. Dos pisos iguales en dos calles distintas pueden valer muy diferente.',
+  },
+  {
+    title: 'Metros y distribución',
+    text: 'Los metros útiles, las habitaciones y los baños, y cómo están repartidos. Un piso bien aprovechado se vende mejor que otro más grande pero mal distribuido.',
+  },
+  {
+    title: 'Estado del piso',
+    text: 'Si está para entrar a vivir o necesita obra. La cocina, los baños y las instalaciones son lo que más mueve el precio.',
+  },
+  {
+    title: 'Edificio y planta',
+    text: 'La planta, el ascensor, la orientación y la luz, si es exterior y si tiene terraza, parking o trastero.',
+  },
+  {
+    title: 'Ventas reales en la zona',
+    text: 'Comparamos con pisos parecidos que se han vendido cerca. Los precios de los anuncios son lo que se pide, no lo que se acaba pagando.',
+  },
+  {
+    title: 'Papeles al día',
+    text: 'Nota simple, certificado energético y cédula de habitabilidad. Tenerlos listos no cambia el valor, pero evita que la venta se frene.',
+  },
+];
+const faq = [
+  {
+    question: '¿La valoración es gratis?',
+    answer: 'Sí. Es gratis y sin compromiso: pasamos a ver tu piso y te damos un precio realista. Decidir si vendes es cosa tuya.',
+  },
+  {
+    question: '¿Qué diferencia hay entre una valoración y una tasación?',
+    answer:
+      'La valoración la hacemos nosotros para fijar a qué precio vender, según el mercado de la zona. La tasación oficial la hace una sociedad de tasación homologada por el Banco de España y normalmente la pide el banco del comprador para concederle la hipoteca.',
+  },
+  {
+    question: '¿Hace falta que veáis el piso?',
+    answer:
+      'Para darte un precio fiable, sí. Con las cuatro preguntas tenemos una primera idea, y después pasamos a verlo contigo para afinar.',
+  },
+  {
+    question: '¿En qué zonas valoráis pisos?',
+    answer: `Tenemos la oficina en Malgrat de Mar y valoramos en toda la zona: ${townNames}.`,
+  },
+];
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="¿Cuánto vale mi piso? Valoración gratis en Malgrat de Mar"
+  description="Dinos dónde está tu piso y en qué estado, y te decimos cuánto vale. Gratis y sin compromiso, en Malgrat de Mar y el Alt Maresme."
+  path={path}
+  schemas={[
+    breadcrumbSchema(crumbs),
+    faqSchema(faq),
+    serviceSchema('Valoración de inmuebles', 'Valoración gratis de tu piso en Malgrat de Mar y el Alt Maresme, sin compromiso.', path),
+  ]}
+  bare
+>
+  <ValuationWizard client:load />
+  <noscript>
+    <div class="wrap wizard-fallback">
+      <h2>¿Cuánto vale mi piso?</h2>
+      <p>Para la valoración paso a paso hace falta JavaScript. Escríbenos por WhatsApp o llámanos y te lo decimos igual.</p>
+    </div>
+  </noscript>
+
+  <ContentGuide
+    title="Cómo se calcula lo que vale un piso"
+    lead="Una valoración seria parte de lo que se ha vendido de verdad cerca de tu piso. Estos son los puntos que miramos cuando pasamos a verlo."
+    items={guide}
+  >
+    <a class="arrow-link content-guide__more" href="/es/vender/">
+      <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+      <span class="arrow-link__label">Cómo vendemos tu piso</span>
+    </a>
+  </ContentGuide>
+
+  <FaqSection title="Valoración: lo que nos preguntan" items={faq} origin="valoracion-faq" />
+</BaseLayout>

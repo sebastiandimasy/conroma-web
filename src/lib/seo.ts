@@ -5,9 +5,7 @@ import type { FaqItem } from '../data/faq';
 import { findTown } from '../data/towns';
 import { team } from '../data/team';
 
-export const locales = ['es', 'ca', 'en', 'fr'] as const;
-export type Locale = (typeof locales)[number];
-export const publishedLocales: Locale[] = ['es'];
+import { defaultLang, languages, localizePath, type Lang } from '../i18n';
 
 export interface Crumb {
   name: string;
@@ -25,13 +23,11 @@ export function pageTitle(title: string): string {
   return branded.length <= 60 ? branded : title;
 }
 
-export function alternates(path: string, translations: Partial<Record<Locale, string>> = {}) {
-  const available = { es: path, ...translations } as Partial<Record<Locale, string>>;
-  const links = publishedLocales
-    .filter((locale) => available[locale])
-    .map((locale) => ({ hreflang: locale as string, href: absoluteUrl(available[locale] as string) }));
-  if (links.length < 2) return [];
-  return [...links, { hreflang: 'x-default', href: absoluteUrl(path) }];
+/** hreflang recíprocos: la misma página en cada idioma, y x-default a la versión en español. */
+export function alternates(path: string) {
+  if (localizePath(path, defaultLang) === path && !path.startsWith(`/${defaultLang}/`)) return [];
+  const links = languages.map((lang: Lang) => ({ hreflang: lang as string, href: absoluteUrl(localizePath(path, lang)) }));
+  return [...links, { hreflang: 'x-default', href: absoluteUrl(localizePath(path, defaultLang)) }];
 }
 
 export function founderSchema() {

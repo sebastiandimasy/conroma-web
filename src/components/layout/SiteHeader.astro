@@ -4,45 +4,28 @@ import Logo from '../Logo.astro';
 import ThemeSwitch from '../../islands/ThemeSwitch';
 import SavedLink from '../../islands/SavedLink';
 import { site } from '../../data/site';
-import { mainNav } from '../../data/nav';
+import { dockNav, mainNav } from '../../data/nav';
 import { whatsappUrl } from '../../lib/links';
-import type { IconName } from '../../lib/icons';
+import { getLang, languageNames, languages, localizePath } from '../../i18n';
+import { ui } from '../../i18n/ui';
 
-const links = mainNav;
+const lang = getLang(Astro.url);
+const t = ui[lang].header;
+const links = mainNav[lang].map((link) => ({ ...link, href: localizePath(link.href, lang) }));
+const dockLinks = dockNav[lang].map((link) => ({ ...link, href: localizePath(link.href, lang) }));
 const current = Astro.url.pathname;
-const isActive = (href: string) => current === href || (href !== '/es/' && current.startsWith(href));
-
-// Dock móvil: Inicio + el nav sin Blog (lista propia; no altera el nav de escritorio).
-// El dock no es el menú: son las cinco cosas que alguien viene a hacer. Con siete
-// entradas a 390 px las etiquetas se tocaban y los objetivos bajaban de 44 px.
-// "Empresa" y "Equipo" siguen en la cabecera y en el pie.
-const dockLinks: { label: string; href: string }[] = [
-  { label: 'Inicio', href: '/es/' },
-  { label: 'Pisos', href: '/es/venta/' },
-  { label: 'Vender', href: '/es/vender/' },
-  { label: 'Alquilar', href: '/es/alquilar/' },
-  { label: 'Contacto', href: '/es/contacto/' },
-];
-
-const dockIcons: Record<string, IconName> = {
-  Inicio: 'home',
-  Pisos: 'search',
-  Comprar: 'search',
-  Vender: 'tag',
-  Alquilar: 'key',
-  Contacto: 'phone',
-  Empresa: 'building',
-  Equipo: 'users',
-};
-
+const home = `/${lang}/`;
+const isActive = (href: string) => current === href || (href !== home && current.startsWith(href));
+// Misma página en los otros idiomas. La 404 (sin idioma en la ruta) lleva a cada portada.
+const switchTo = (to: (typeof languages)[number]) => (current.startsWith(`/${lang}/`) ? localizePath(current, to) : `/${to}/`);
 ---
 
 <header class="site-header" data-site-header>
   <div class="wrap site-header__bar">
-    <a class="brand-lock" href="/es/" aria-label={`${site.legalName}, inicio`}>
+    <a class="brand-lock" href={home} aria-label={`${site.legalName}, ${t.home}`}>
       <Logo class="brand-lock__mark" size={32} />
     </a>
-    <nav class="site-header__nav" aria-label="Principal">
+    <nav class="site-header__nav" aria-label={t.mainNav}>
       {
         links.map((link) => (
           <a
@@ -56,8 +39,30 @@ const dockIcons: Record<string, IconName> = {
       }
     </nav>
     <div class="site-header__group">
+      {/* Selector de idioma sin JavaScript: <details> abre y cierra solo, y cada enlace lleva
+          hreflang para que el buscador entienda que es la misma página en otro idioma. */}
+      <details class="lang-switch">
+        <summary class="button button--ghost lang-switch__toggle" aria-label={`${t.language}: ${languageNames[lang]}`}>
+          {lang.toUpperCase()}
+        </summary>
+        <ul class="lang-switch__menu">
+          {languages.map((code) => (
+            <li>
+              <a
+                class:list={['lang-switch__link', { 'is-active': code === lang }]}
+                href={switchTo(code)}
+                hreflang={code}
+                lang={code}
+                aria-current={code === lang ? 'true' : undefined}
+              >
+                {languageNames[code]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
       <SavedLink client:idle className="button button--ghost icon-button saved-link" />
-      <ThemeSwitch client:load />
+      <ThemeSwitch client:load label={t.themeDark} />
       {/* WhatsApp, no "Valorar mi piso": la valoración ya tiene su sitio en el nav
           ("Vender") y en el dock móvil, así que el CTA la duplicaba desde la esquina
           menos alcanzable. WhatsApp, en cambio, no estaba en ninguna otra parte de la
@@ -68,16 +73,16 @@ const dockIcons: Record<string, IconName> = {
         href={whatsappUrl({ reason: 'general' })}
         data-contact="whatsapp"
         data-origin="cabecera"
-        aria-label="Escríbenos por WhatsApp"
+        aria-label={t.whatsappLabel}
       >
         <Icon name="whatsapp" class="button__icon" />
-        <span class="site-header__cta-text">Escríbenos</span>
+        <span class="site-header__cta-text">{t.whatsappText}</span>
       </a>
     </div>
   </div>
 </header>
 
-<nav class="mobile-dock glass glass--thick" aria-label="Accesos rápidos">
+<nav class="mobile-dock glass glass--thick" aria-label={t.quickNav}>
   {
     dockLinks.map((link) => (
       <a
@@ -85,7 +90,7 @@ const dockIcons: Record<string, IconName> = {
         href={link.href}
         aria-current={isActive(link.href) ? 'page' : undefined}
       >
-        <Icon name={dockIcons[link.label]} />
+        <Icon name={link.icon} />
         <span>{link.label}</span>
       </a>
     ))

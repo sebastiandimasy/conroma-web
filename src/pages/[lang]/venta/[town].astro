@@ -1,0 +1,119 @@
+---
+import { getLang, languages } from '../../../i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ListingExplorer from '../../../islands/ListingExplorer';
+import { cheapestPrice, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
+import { publishedCatalogTowns, publishedSellerTowns, type Town } from '../../../data/towns';
+import { formatPrice } from '../../../lib/format';
+import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../../lib/seo';
+import { whatsappUrl } from '../../../lib/links';
+import { site } from '../../../data/site';
+
+export function getStaticPaths() {
+  return languages.flatMap((lang) => publishedCatalogTowns.map((town) => ({ params: { lang, town: town.slug }, props: { town } })));
+}
+
+interface Props {
+  town: Town;
+}
+
+const { town } = Astro.props;
+const path = `/es/venta/${town.slug}/`;
+// Cada catálogo enlaza a SU hub (antes todos apuntaban a mano al de Blanes).
+const hubPath = publishedSellerTowns.some((t) => t.slug === town.slug) ? `/es/inmobiliaria/${town.slug}/` : null;
+const catalog = propertiesIn(town.slug, 'venta');
+const homes = homesIn(town.slug, 'venta');
+const cheapest = cheapestPrice(catalog);
+const breakdown = typeBreakdown(catalog);
+// En algunos pueblos la cartera es casi toda local, terreno o parking. El titular
+// no puede prometer "pisos" cuando solo hay uno: se nombra lo que de verdad hay.
+const mostlyHomes = homes.length >= Math.max(3, catalog.length / 2);
+const heading = mostlyHomes ? `Pisos y casas en venta en ${town.name}` : `Inmuebles en venta en ${town.name}`;
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: heading, path },
+];
+const faq = [
+  {
+    question: `¿Cuántos pisos tenéis en venta en ${town.name}?`,
+    answer:
+      homes.length > 0
+        ? `Ahora mismo, ${homes.length} ${homes.length === 1 ? 'vivienda' : 'viviendas'} de un total de ${catalog.length} inmuebles (${breakdown}). La lista cambia cada semana, así que si no ves el tuyo, dinos qué buscas y te avisamos.`
+        : `Ahora mismo no tenemos vivienda en ${town.name}: los ${catalog.length} inmuebles publicados son ${breakdown}. Dinos qué buscas y te avisamos en cuanto entre algo.`,
+  },
+  {
+    question: `¿Cómo visito un piso en ${town.name}?`,
+    answer: 'Escríbenos por WhatsApp desde la ficha del piso, o llámanos. Cuadramos día y hora y te lo enseñamos.',
+  },
+];
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title={heading}
+  description={`${catalog.length} inmuebles en venta en ${town.name}${cheapest ? ` desde ${formatPrice(cheapest)}` : ''}: ${breakdown}. Precio a la vista y WhatsApp directo.`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(heading, path), faqSchema(faq)]}
+  noindex={!site.catalogIndexable}
+>
+  <section class="page-head page-head--editorial">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>{heading}</h1>
+      <p class="page-head__lead">{catalog.length} inmuebles publicados: {breakdown}.</p>
+    </div>
+  </section>
+
+  <section class="listing-section">
+    <div class="wrap">
+      <ListingExplorer client:load properties={catalog} townName={town.name} />
+      <aside class="alert-card">
+        <div class="alert-card__text">
+          <h2 class="alert-card__title">¿No ves el tuyo?</h2>
+          <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
+        </div>
+        <a class="button button--primary button--large alert-card__cta" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
+          <Icon name="whatsapp" class="button__icon" />
+          Avisadme por WhatsApp
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  {/* Texto del pueblo y enlaces en filas editoriales (patrón de Alquilar), FAQ en su banda gris. */}
+  <section class="section rent-towns">
+    <div class="wrap">
+      <div class="section__head" data-reveal>
+        <h2 class="section__title">Comprar piso en {town.name}</h2>
+        <p class="section__lead">{town.intro}</p>
+      </div>
+      <nav class="town-list" aria-label="Relacionados" data-reveal>
+        <ul class="town-list__items">
+          <li>
+            <a class="town-list__link" href={hubPath ?? '/es/inmobiliaria/'}>
+              <span>{hubPath ? `Inmobiliaria en ${town.name}` : 'Todas las zonas donde trabajamos'}</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+          <li>
+            <a class="town-list__link" href="/es/comprar/puedo-comprar/">
+              <span>¿Puedo comprar? Calcula tu presupuesto</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+          <li>
+            <a class="town-list__link" href="/es/valoracion/">
+              <span>{`¿Vendes en ${town.name}? Mira cuánto vale`}</span>
+              <Icon name="arrow" class="town-links__arrow" />
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <FaqSection title={`Comprar en ${town.name}: lo que nos preguntan`} items={faq} origin={`venta-${town.slug}-faq`} />
+</BaseLayout>

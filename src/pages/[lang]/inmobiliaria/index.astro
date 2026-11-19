@@ -1,0 +1,177 @@
+---
+import { getLang, langPaths } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Statement from '../../../components/sections/Statement.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import Icon from '../../../components/Icon.astro';
+import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
+import { placePhotos } from '../../../data/creditos-fotos';
+import { publishedCatalogTowns, publishedSellerTowns } from '../../../data/towns';
+import { propertiesIn } from '../../../data/properties';
+import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
+
+// Índice de zonas: la puerta a las páginas de pueblo. Filas editoriales con foto del pueblo, sin tarjetas.
+const path = '/es/inmobiliaria/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Zonas', path },
+];
+const files = import.meta.glob<{ default: ImageMetadata }>('../../../assets/lugares/*/*.jpg', { eager: true });
+const photoFor = (slug: string) => {
+  const photo = placePhotos.find((p) => p.town === slug && files[`../../../${p.file}`]);
+  return photo ? { image: files[`../../../${photo.file}`].default, alt: photo.alt } : null;
+};
+const catalogSlugs = new Set(publishedCatalogTowns.map((town) => town.slug));
+const sellerSlugs = new Set(publishedSellerTowns.map((town) => town.slug));
+const forSaleIn = (slug: string) => (catalogSlugs.has(slug) ? propertiesIn(slug, 'venta').length : 0);
+const zones = publishedSellerTowns.map((town) => ({ ...town, forSale: forSaleIn(town.slug), photo: photoFor(town.slug) }));
+// Pueblos con cartera publicada pero sin página de agencia: solo su listado.
+const moreTowns = publishedCatalogTowns
+  .filter((town) => !sellerSlugs.has(town.slug))
+  .map((town) => ({ ...town, forSale: forSaleIn(town.slug) }))
+  .filter((town) => town.forSale > 0);
+const plural = (n: number) => `${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`;
+const title = 'Inmobiliaria en el Alt Maresme y la Costa Brava';
+const names = new Intl.ListFormat('es', { type: 'conjunction' }).format(zones.map((zone) => zone.name));
+const answer = `Conroma Asesores trabaja en ${names}, desde la oficina de Malgrat de Mar. En cada pueblo te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`;
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title={title}
+  description={`Inmobiliaria en ${zones.length} pueblos del Alt Maresme y la Costa Brava, de Malgrat a Lloret. Elige el tuyo: lo que hay en venta y cómo vendemos allí.`}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(title, path)]}
+>
+  <section class="page-head page-head--editorial">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>{title}</h1>
+      <p class="page-head__lead">
+        La oficina está en Malgrat de Mar y nos movemos por la costa y el interior. Elige tu pueblo y mira lo que tenemos
+        en venta, o cómo vendemos allí.
+      </p>
+    </div>
+  </section>
+
+  <section class="section zones">
+    <div class="wrap">
+      <ul class="zones__list">
+        {
+          zones.map((zone) => (
+            <li class="zones__row" data-reveal>
+              {zone.photo && (
+                <Image class="zones__photo" src={zone.photo.image} alt={zone.photo.alt} widths={[176, 320]} sizes="(min-width: 48rem) 160px, 88px" loading="lazy" />
+              )}
+              <div class="zones__body">
+                <h2 class="zones__name">
+                  <a href={`/es/inmobiliaria/${zone.slug}/`}>{zone.name}</a>
+                </h2>
+                <p class="zones__intro">{zone.intro || zone.sellerIntro}</p>
+                <div class="zones__links">
+                  <a class="link-cta" href={`/es/inmobiliaria/${zone.slug}/`}>{`Inmobiliaria en ${zone.name}`}</a>
+                  {zone.forSale > 0 && <a class="link-cta" href={`/es/venta/${zone.slug}/`}>{`${plural(zone.forSale)} en venta`}</a>}
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Statement text={answer} />
+
+  {
+    moreTowns.length > 0 && (
+      <section class="section zones">
+        <div class="wrap">
+          <div class="section__head" data-reveal>
+            <h2 class="section__title">Más pueblos con inmuebles en venta</h2>
+          </div>
+          <nav class="town-list" aria-label="Más pueblos" data-reveal>
+            <ul class="town-list__items">
+              {moreTowns.map((town) => (
+                <li>
+                  <a class="town-list__link" href={`/es/venta/${town.slug}/`}>
+                    <span>{`${town.name} · ${plural(town.forSale)}`}</span>
+                    <Icon name="arrow" class="town-links__arrow" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </section>
+    )
+  }
+
+  <ClosingCTA title="Hablemos" titleMuted="de tu piso" image={closingPhoto} origin="zonas-cierre" />
+</BaseLayout>
+
+<style>
+  .zones__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .zones__row {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    padding-block: 24px;
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 40%, transparent);
+  }
+
+  .zones__row:not(:has(.zones__photo)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .zones__photo {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+
+  .zones__name {
+    font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .zones__intro {
+    margin-top: 8px;
+    color: var(--color-ink-2);
+    text-align: justify;
+    text-align-last: start;
+    hyphens: auto;
+  }
+
+  .zones__links {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 24px;
+  }
+
+  @media (min-width: 48rem) {
+    .zones__row {
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .zones__photo {
+      width: 160px;
+      height: 120px;
+    }
+  }
+</style>

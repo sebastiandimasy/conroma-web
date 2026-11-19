@@ -5,7 +5,7 @@ import { Icon } from './Icon';
 // Interruptor claro/oscuro (componente Switch del dueño, con los tokens de la casa).
 // Antes de hidratar, la bola se coloca por CSS según :root[data-theme] (sin salto al cargar);
 // después manda el estado de React, que es lo que permite animar con `layout`.
-export default function ThemeSwitch() {
+export default function ThemeSwitch({ label }: { label: string }) {
   const [dark, setDark] = useState<boolean | null>(null);
   const [animate, setAnimate] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -37,7 +37,7 @@ export default function ThemeSwitch() {
       className={`theme-switch${state}`}
       role="switch"
       aria-checked={dark ?? undefined}
-      aria-label="Tema oscuro"
+      aria-label={label}
       onClick={toggle}
     >
       <span className="theme-switch__track">

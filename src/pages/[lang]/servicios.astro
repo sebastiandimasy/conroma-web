@@ -1,0 +1,143 @@
+---
+import { getLang, langPaths } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroStory from '../../components/sections/HeroStory.astro';
+import Statement from '../../components/sections/Statement.astro';
+import ServiceIndex from '../../components/sections/ServiceIndex.astro';
+import SplitFeature from '../../components/sections/SplitFeature.astro';
+import ProofBand from '../../components/sections/ProofBand.astro';
+import ContentGuide from '../../components/sections/ContentGuide.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import ClosingCTA from '../../components/sections/ClosingCTA.astro';
+import heroPhoto from '../../assets/equipo/equipo.jpg';
+import valuationPhoto from '../../assets/equipo/conroma-91.jpg';
+import closingPhoto from '../../assets/equipo/conroma-82.jpg';
+import { services } from '../../data/services';
+import { site } from '../../data/site';
+import { breadcrumbSchema, faqSchema } from '../../lib/seo';
+
+/* Keyword (docs/KEYWORDS.md): «servicios inmobiliaria Malgrat»; secundarias: qué hace una
+   inmobiliaria, servicios de compraventa. Cada servicio enlaza a su página, que es la que compite. */
+const path = '/es/servicios/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Servicios', path },
+];
+const answer =
+  'Conroma Asesores ofrece en Malgrat de Mar y el Alt Maresme cinco servicios inmobiliarios: compra, venta, alquiler, gestión de patrimonio y reformas con Conroma en Obras. ' +
+  'Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.';
+const trackRecord = [
+  { value: '+300', label: 'inmuebles gestionados' },
+  { value: '+100', label: 'clientes satisfechos' },
+  { value: '+200', label: 'pisos vendidos' },
+];
+// Qué hace una inmobiliaria (keyword secundaria): las tareas de una compraventa o un alquiler.
+const guide = [
+  {
+    title: 'Valoración',
+    text: 'Fijar un precio realista según lo que se vende en la zona. Un precio bien puesto desde el principio acorta la venta.',
+  },
+  {
+    title: 'Documentación',
+    text: 'Nota simple, certificado energético, cédula de habitabilidad, último IBI y certificado de la comunidad. Se reúne antes de anunciar para que nada frene la operación.',
+  },
+  {
+    title: 'Difusión',
+    text: 'Fotos, vídeo, portales y redes para que el piso llegue a quien lo busca.',
+  },
+  {
+    title: 'Visitas',
+    text: 'Enseñar el piso a compradores o inquilinos con interés real y resolver sus dudas sobre la casa y la zona.',
+  },
+  {
+    title: 'Negociación y contrato',
+    text: 'Acercar posturas en el precio y preparar el contrato de arras o el de alquiler, con todo explicado antes de firmar.',
+  },
+  {
+    title: 'Hasta notaría',
+    text: 'Acompañarte hasta la firma y la entrega de llaves, con una misma persona durante toda la operación.',
+  },
+];
+const faq = [
+  {
+    question: '¿Qué servicios ofrece Conroma?',
+    answer:
+      'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes uno o varios inmuebles y reformamos pisos con Conroma en Obras.',
+  },
+  {
+    question: '¿Una misma persona lleva toda mi operación?',
+    answer: 'Sí. Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.',
+  },
+  {
+    question: '¿Tengo que pagar por una valoración o una primera visita?',
+    answer: 'No. Pasamos a ver tu piso y te damos un precio realista gratis y sin compromiso.',
+  },
+  {
+    question: '¿En qué zonas trabajáis?',
+    answer:
+      'Tenemos oficina en Malgrat de Mar y trabajamos toda la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella y Lloret de Mar.',
+  },
+];
+// Lista de servicios para buscadores e IA: cada uno con su página.
+const serviceList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Servicios de Conroma Asesores',
+  itemListElement: services.map((service, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: service.name,
+    url: `${site.url}${service.href}`,
+  })),
+};
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="Servicios inmobiliarios en Malgrat de Mar"
+  description="Servicios inmobiliarios de Conroma en Malgrat de Mar y el Alt Maresme: comprar, vender, alquilar, gestión de patrimonio y reformas."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceList]}
+>
+  <HeroStory
+    crumbs={crumbs}
+    title="Servicios inmobiliarios en Malgrat de Mar"
+    lead="Todo lo que pasa alrededor de una casa, con una misma persona de principio a fin."
+    image={heroPhoto}
+    alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
+    cta={{ label: 'Ver qué hacemos', href: '#servicios' }}
+    position="center 30%"
+  />
+
+  <Statement text={answer} />
+
+  <ServiceIndex id="servicios" title="Qué hacemos por ti" photos />
+
+  <ContentGuide
+    tone="surface"
+    title="Qué hace una inmobiliaria por ti"
+    lead="Estas son las tareas que llevamos en una compraventa o un alquiler, para que sepas qué esperar."
+    items={guide}
+  />
+
+  <SplitFeature
+    tone="canvas"
+    reverse
+    title="¿Cuánto vale tu piso?"
+    text="Pasamos a ver tu piso y te damos un precio realista, gratis y sin compromiso. Si decides vender, empezamos por ahí."
+    image={valuationPhoto}
+    alt="Una asesora de Conroma preparando una valoración en la oficina"
+    link={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
+  />
+
+  <FaqSection title="Servicios: lo que nos preguntan" items={faq} origin="servicios-faq" />
+
+  <ProofBand figures={trackRecord} count />
+
+  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+
+  <ClosingCTA title="Hablemos" titleMuted="de lo que necesitas" image={closingPhoto} origin="servicios-cierre" />
+</BaseLayout>

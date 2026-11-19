@@ -1,0 +1,111 @@
+---
+import { getLang, langPaths } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import ContentGuide from '../../../components/sections/ContentGuide.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import AffordabilitySimulator from '../../../islands/AffordabilitySimulator';
+import closingPhoto from '../../../assets/equipo/conroma-91.jpg';
+import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
+
+/* Keyword (docs/KEYWORDS.md): «puedo comprar un piso», «cuánto me dan de hipoteca».
+   Calculadora arriba; debajo, qué mira el banco y qué gastos tiene la compra en Cataluña
+   (normativa general: ITP según Decreto ley 5/2025, Ley 5/2019 de crédito inmobiliario). */
+const path = '/es/comprar/puedo-comprar/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Comprar', path: '/es/comprar/' },
+  { name: '¿Puedo comprar?', path },
+];
+const guide = [
+  {
+    title: 'Endeudamiento',
+    text: 'Entre la cuota de la hipoteca y el resto de tus pagos al mes no deberías pasar del 40% de lo que ingresas. Es el primer número que mira el banco.',
+  },
+  {
+    title: 'Entrada',
+    text: 'Para vivienda habitual, los bancos suelen financiar hasta el 80% del valor de tasación. El resto, la entrada, lo pone el comprador.',
+  },
+  {
+    title: 'Estabilidad en el trabajo',
+    text: 'El banco mira la antigüedad y el tipo de contrato. Con poco tiempo en la empresa o con un contrato temporal, lo estudia con más calma.',
+  },
+  {
+    title: 'Impuestos de la compra',
+    text: 'En Cataluña, un piso de segunda mano paga el Impuesto de Transmisiones Patrimoniales: un 10% hasta 600.000 €, con tipos reducidos en algunos casos. Uno de obra nueva paga IVA (10%) y actos jurídicos documentados.',
+  },
+  {
+    title: 'Notaría, registro y gestoría',
+    text: 'La escritura de compraventa suma notaría, registro y, si la usas, gestoría. Los gastos de notaría, registro y gestoría de la hipoteca los paga el banco desde la Ley 5/2019.',
+  },
+  {
+    title: 'Tasación',
+    text: 'Antes de conceder la hipoteca, el banco pide una tasación oficial del piso, hecha por una sociedad homologada. Normalmente la paga el comprador.',
+  },
+];
+const faq = [
+  {
+    question: '¿Por qué el 40%?',
+    answer: 'Es el límite de endeudamiento que mira la banca: entre la cuota de la hipoteca y el resto de tus pagos mensuales no deberías pasar del 40% de tu sueldo. Por encima, cuesta que aprueben el préstamo.',
+  },
+  {
+    question: '¿Cuánto tengo que tener ahorrado para comprar?',
+    answer:
+      'Como referencia, la entrada (el 20% si el banco financia el 80%) más los impuestos y gastos de la compra. En un piso de segunda mano en Cataluña, solo el impuesto es el 10% del precio en la mayoría de casos.',
+  },
+  {
+    question: '¿Esto es una aprobación de verdad?',
+    answer: 'No. Es un cálculo orientativo, un simulacro. La aprobación de verdad la da el banco con tus papeles. Lo que sí hacemos es acompañarte para conseguirla.',
+  },
+  {
+    question: 'No tengo ahorros, ¿puedo comprar igual?',
+    answer: 'A veces sí. Hay opciones de financiación 100% según el caso. Escríbenos y lo miramos contigo, sin compromiso.',
+  },
+];
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="¿Puedo comprar un piso? Calcula tu presupuesto"
+  description="Calcula hasta qué presupuesto puedes comprar con el límite del 40% de endeudamiento, y si tu préstamo saldría pre-aprobado. Sin dejar tus datos."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+>
+  <section class="page-head page-head--editorial">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>¿Puedo comprar un piso?</h1>
+      <p class="page-head__lead">
+        Con el límite del 40% de endeudamiento te decimos hasta qué presupuesto llegas y si tu préstamo saldría
+        pre-aprobado. Sin dejar tus datos; es un cálculo orientativo, como lo mira el banco.
+      </p>
+    </div>
+  </section>
+
+  <section class="section calc-section">
+    <div class="wrap">
+      <div class="calc-section__form" data-reveal>
+        <AffordabilitySimulator client:load />
+      </div>
+    </div>
+  </section>
+
+  <ContentGuide
+    title="Qué mira el banco y qué cuesta comprar"
+    lead="Antes de buscar piso conviene saber esto: lo que el banco pide para darte la hipoteca y los gastos que vienen con la compra."
+    items={guide}
+  >
+    <a class="arrow-link content-guide__more" href="/es/venta/">
+      <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+      <span class="arrow-link__label">Ver pisos en venta</span>
+    </a>
+  </ContentGuide>
+
+  <FaqSection title="Comprar: dudas sobre la financiación" items={faq} origin="puedo-comprar-faq" />
+
+  <ClosingCTA title="Hablemos" titleMuted="de tu compra" image={closingPhoto} origin="puedo-comprar-cierre" />
+</BaseLayout>

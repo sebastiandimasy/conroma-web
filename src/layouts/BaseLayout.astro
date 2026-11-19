@@ -7,6 +7,8 @@ import ChatDemo from '../islands/ChatDemo';
 import { site } from '../data/site';
 import { absoluteUrl, alternates, pageTitle, siteGraph } from '../lib/seo';
 import type { ContactContext } from '../lib/links';
+import { getLang, localizePath, ogLocale } from '../i18n';
+import { ui } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -21,15 +23,19 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description, path, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction, ogImage = '/img/og-conroma.jpg' } = Astro.props;
+const { title, description, path: givenPath, schemas = [], noindex = false, bare = false, overlay = false, contact, primaryAction, ogImage = '/img/og-conroma.jpg' } = Astro.props;
 // Preview para el stakeholder: todo el sitio noindex (build con PUBLIC_PREVIEW=true). En producción no se activa.
 const previewNoindex = import.meta.env.PUBLIC_PREVIEW === 'true';
+// Las páginas pasan su ruta en español; aquí se lleva al idioma de la URL que se está generando.
+const lang = getLang(Astro.url);
+const t = ui[lang];
+const path = localizePath(givenPath, lang);
 const canonical = absoluteUrl(path);
 const languageLinks = alternates(path);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -43,7 +49,7 @@ const languageLinks = alternates(path);
     <meta property="og:title" content={pageTitle(title)} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content={ogLocale[lang]} />
     {/* Cabecera social. ogImage se puede sobreescribir por página; por defecto, el equipo
         recortado a 1200x630 (la proporción que esperan WhatsApp, Facebook y X). */}
     <meta property="og:image" content={absoluteUrl(ogImage)} />
@@ -51,7 +57,7 @@ const languageLinks = alternates(path);
       <>
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="El equipo de Conroma Asesores en su oficina de Malgrat de Mar" />
+        <meta property="og:image:alt" content={t.ogImageAlt} />
       </>
     )}
     <meta name="twitter:card" content="summary_large_image" />
@@ -149,8 +155,8 @@ const languageLinks = alternates(path);
         });
       }, true);
     </script>
-    <a class="skip-link" href="#contenido">Saltar al contenido</a>
-    {site.sampleData && <p class="sample-notice">Web en construcción: los pisos son reales; estamos añadiendo sus fotos.</p>}
+    <a class="skip-link" href="#contenido">{t.skipLink}</a>
+    {site.sampleData && <p class="sample-notice">{t.sampleNotice}</p>}
     {!bare && <SiteHeader />}
     <main id="contenido">
       <slot />
@@ -160,17 +166,16 @@ const languageLinks = alternates(path);
     {/* Banner de cookies servido como HTML (no isla React), para que pinte al instante.
         El script del <head> le pone la clase has-cookie-notice si el consentimiento está pendiente;
         este cablea los botones al mismo localStorage + evento conroma:consent + Consent Mode. */}
-    <aside id="cookie-notice" class="cookie-notice" role="dialog" aria-label="Aviso de cookies">
+    <aside id="cookie-notice" class="cookie-notice" role="dialog" aria-label={t.cookies.label}>
       <div class="cookie-notice__body">
-        <p class="cookie-notice__title">Usamos cookies</p>
+        <p class="cookie-notice__title">{t.cookies.title}</p>
         <p class="cookie-notice__text">
-          Usamos cookies propias y de terceros para medir las visitas con Google Analytics y mejorar
-          la web. Las de medición solo se activan si las aceptas. Más información en nuestra <a href="/es/cookies/">política de cookies</a>.
+          {t.cookies.text} <a href={localizePath('/es/cookies/', lang)}>{t.cookies.link}</a>.
         </p>
       </div>
       <div class="cookie-notice__actions">
-        <button type="button" class="button button--ghost" data-consent="rechazado">Solo las necesarias</button>
-        <button type="button" class="button button--primary" data-consent="aceptado">Aceptar todas</button>
+        <button type="button" class="button button--ghost" data-consent="rechazado">{t.cookies.reject}</button>
+        <button type="button" class="button button--primary" data-consent="aceptado">{t.cookies.accept}</button>
       </div>
     </aside>
     <script is:inline>

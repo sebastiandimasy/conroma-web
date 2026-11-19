@@ -1,0 +1,58 @@
+---
+import { getLang, langPaths } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
+import { posts } from '../../../data/blog';
+import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
+
+// Índice del blog: lista editorial (categoría y fecha, título, entradilla) con el patrón de GuideTeaser. Sin tarjetas ni chapas.
+const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
+const path = '/es/blog/';
+const title = 'Blog: comprar, vender y alquilar en Malgrat de Mar';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Blog', path },
+];
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title={title}
+  description="Guías cortas y claras de Conroma para comprar, vender o alquilar una vivienda en Malgrat de Mar y alrededores."
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(title, path)]}
+>
+  <section class="page-head page-head--editorial">
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1 class="page-head__title" data-split>Guías para comprar, vender y alquilar en el Maresme</h1>
+      <p class="page-head__lead">Te lo contamos fácil: guías cortas para comprar, vender o alquilar sin perderte en los papeles.</p>
+    </div>
+  </section>
+
+  <section class="section guide-teaser">
+    <div class="wrap">
+      <ul class="guide-teaser__list">
+        {
+          posts.map((post) => (
+            <li data-reveal>
+              <a class="guide-teaser__card" href={`/es/blog/${post.slug}/`}>
+                <p class="guide-teaser__date">
+                  {post.category} · <time datetime={post.date}>{longDate.format(new Date(`${post.date}T12:00:00Z`))}</time>
+                </p>
+                <h2 class="guide-teaser__title">{post.title}</h2>
+                <p class="guide-teaser__text">{post.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <ClosingCTA title="Hablemos" titleMuted="de tu caso" image={closingPhoto} origin="blog-cierre" />
+</BaseLayout>

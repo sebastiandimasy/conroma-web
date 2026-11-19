@@ -1,0 +1,98 @@
+---
+import { getLang, langPaths } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HeroStory from '../../../components/sections/HeroStory.astro';
+import Statement from '../../../components/sections/Statement.astro';
+import ProofBand from '../../../components/sections/ProofBand.astro';
+import StoryScroll from '../../../components/sections/StoryScroll.astro';
+import FaqSection from '../../../components/sections/FaqSection.astro';
+import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
+import Icon from '../../../components/Icon.astro';
+import PropertyGrid from '../../../islands/PropertyGrid';
+import heroPhoto from '../../../assets/lugares/malgrat-de-mar/panoramica.jpg';
+import closingPhoto from '../../../assets/equipo/conroma-74.jpg';
+import { site } from '../../../data/site';
+import { buyAnswer, buyFaq, buySteps } from '../../../data/comprar';
+import { getListings, homesIn, propertiesIn } from '../../../data/properties';
+import { publishedCatalogTowns } from '../../../data/towns';
+import { placePhotos } from '../../../data/creditos-fotos';
+import { proofFigures } from '../../../lib/proof';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../../../lib/seo';
+
+const path = '/es/comprar/';
+const crumbs = [
+  { name: 'Inicio', path: '/es/' },
+  { name: 'Comprar', path },
+];
+const catalog = getListings({ operation: 'venta' });
+const localHomes = homesIn('malgrat-de-mar', 'venta');
+const townCount = publishedCatalogTowns.filter((town) => propertiesIn(town.slug, 'venta').length > 0).length;
+const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'panoramica')!;
+
+// Cifras reales de la cartera y de Google; lo que falte no se pinta (proofFigures).
+const [listingFigure] = proofFigures({ rating: null, yearsActive: null, listings: catalog.length, builtOn: new Date() });
+const figures = [
+  ...(listingFigure ? [{ ...listingFigure, label: 'inmuebles en venta' }] : []),
+  ...(townCount > 0 ? [{ value: String(townCount), label: 'pueblos del Maresme y La Selva' }] : []),
+  ...proofFigures({ rating: site.googleRating, yearsActive: null, listings: 0, builtOn: new Date() }),
+];
+const seeAll = `Ver los ${catalog.length} inmuebles en venta`;
+const description =
+  'Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves.';
+const lang = getLang(Astro.url);
+---
+
+<BaseLayout
+  title="Comprar piso en Malgrat de Mar"
+  description={description}
+  path={path}
+  schemas={[breadcrumbSchema(crumbs), faqSchema(buyFaq), serviceSchema('Compra de viviendas', description, path)]}
+>
+  <HeroStory
+    crumbs={crumbs}
+    title="Comprar piso o casa en Malgrat de Mar"
+    lead="Precio a la vista y visitas sin compromiso, en cuatro idiomas."
+    image={heroPhoto}
+    alt={heroCredit.alt}
+    cta={{ label: seeAll, href: '/es/venta/' }}
+    position="center 75%"
+    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+  />
+
+  <Statement text={buyAnswer} />
+
+  <ProofBand figures={figures} />
+
+  <StoryScroll title="Cómo compras con nosotros" steps={buySteps} />
+
+  {
+    localHomes.length > 0 && (
+      <section class="section buy-featured">
+        <div class="wrap">
+          <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
+          <div class="buy-featured__grid">
+            <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
+          </div>
+          <a class="arrow-link buy-featured__more" href="/es/venta/">
+            <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
+            <span class="arrow-link__label">{seeAll}</span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <FaqSection title="Dudas al comprar" items={buyFaq} origin="comprar-faq" reason="visita" />
+
+  <section class="section buy-budget">
+    <div class="wrap">
+      <h2 class="section__title" data-reveal>¿Hasta dónde llegas?</h2>
+      <p class="section__lead">Calcula hasta qué presupuesto puedes comprar, sin dejar tus datos.</p>
+      <a class="button button--ghost buy-budget__cta" href="/es/comprar/puedo-comprar/">Calcular mi presupuesto</a>
+    </div>
+  </section>
+
+  <ClosingCTA title="Hablemos" titleMuted="de lo que buscas" image={closingPhoto} origin="comprar-cierre" reason="visita" />
+</BaseLayout>

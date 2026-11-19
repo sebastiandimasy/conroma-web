@@ -1,36 +1,66 @@
+import { strings } from '../i18n';
+
 export interface NavLink {
   label: string;
+  /** Ruta en español; quien la pinta la lleva al idioma de la página con localizePath. */
   href: string;
 }
 
-export const mainNav: NavLink[] = [
-  // "Pisos" entra la primera: el visitante que llega a comprar quiere ver la
-  // cartera, no una página de servicio. Antes solo se llegaba con un clic extra.
-  { label: 'Pisos', href: '/es/venta/' },
-  { label: 'Comprar', href: '/es/comprar/' },
-  { label: 'Vender', href: '/es/vender/' },
-  { label: 'Alquilar', href: '/es/alquilar/' },
-  { label: 'Empresa', href: '/es/empresa/' },
-  { label: 'Equipo', href: '/es/equipo/' },
-  { label: 'Blog', href: '/es/blog/' },
-];
+// "Pisos" entra la primera: el visitante que llega a comprar quiere ver la
+// cartera, no una página de servicio. Antes solo se llegaba con un clic extra.
+export const mainNav = strings<NavLink[]>({
+  es: [
+    { label: 'Pisos', href: '/es/venta/' },
+    { label: 'Comprar', href: '/es/comprar/' },
+    { label: 'Vender', href: '/es/vender/' },
+    { label: 'Alquilar', href: '/es/alquilar/' },
+    { label: 'Empresa', href: '/es/empresa/' },
+    { label: 'Equipo', href: '/es/equipo/' },
+    { label: 'Blog', href: '/es/blog/' },
+  ],
+  en: [
+    { label: 'Homes', href: '/es/venta/' },
+    { label: 'Buy', href: '/es/comprar/' },
+    { label: 'Sell', href: '/es/vender/' },
+    { label: 'Rent', href: '/es/alquilar/' },
+    { label: 'About us', href: '/es/empresa/' },
+    { label: 'Team', href: '/es/equipo/' },
+    { label: 'Blog', href: '/es/blog/' },
+  ],
+  ca: [
+    { label: 'Pisos', href: '/es/venta/' },
+    { label: 'Comprar', href: '/es/comprar/' },
+    { label: 'Vendre', href: '/es/vender/' },
+    { label: 'Llogar', href: '/es/alquilar/' },
+    { label: 'Empresa', href: '/es/empresa/' },
+    { label: 'Equip', href: '/es/equipo/' },
+    { label: 'Blog', href: '/es/blog/' },
+  ],
+});
 
-export const serviceNav: NavLink[] = [
-  { label: 'Inmuebles en venta', href: '/es/venta/' },
-  { label: 'Comprar vivienda', href: '/es/comprar/' },
-  { label: 'Vender vivienda', href: '/es/vender/' },
-  { label: 'Alquilar', href: '/es/alquilar/' },
-  { label: 'Gestión de patrimonio', href: '/es/gestion-de-patrimonio/' },
-  { label: 'Reformas', href: '/es/reformas/' },
-  { label: '¿Cuánto vale mi piso?', href: '/es/valoracion/' },
-  { label: '¿Puedo comprar un piso?', href: '/es/comprar/puedo-comprar/' },
-  { label: 'Simulador de reformas', href: '/es/reformas/simulador/' },
-];
-
-export const companyNav: NavLink[] = [
-  { label: 'Nuestra empresa', href: '/es/empresa/' },
-  { label: 'Nuestro equipo', href: '/es/equipo/' },
-  { label: 'Blog', href: '/es/blog/' },
-  { label: 'Contacto', href: '/es/contacto/' },
-  { label: 'Privacidad y cookies', href: '/es/privacidad/' },
-];
+// Dock móvil: las cinco cosas que alguien viene a hacer. Con siete entradas a 390 px las
+// etiquetas se tocaban y los objetivos bajaban de 44 px. "Empresa" y "Equipo" siguen en la
+// cabecera y en el pie.
+export const dockNav = strings<(NavLink & { icon: 'home' | 'search' | 'tag' | 'key' | 'phone' })[]>({
+  es: [
+    { label: 'Inicio', href: '/es/', icon: 'home' },
+    { label: 'Pisos', href: '/es/venta/', icon: 'search' },
+    { label: 'Vender', href: '/es/vender/', icon: 'tag' },
+    { label: 'Alquilar', href: '/es/alquilar/', icon: 'key' },
+    { label: 'Contacto', href: '/es/contacto/', icon: 'phone' },
+  ],
+  en: [
+    { label: 'Home', href: '/es/', icon: 'home' },
+    { label: 'Homes', href: '/es/venta/', icon: 'search' },
+    { label: 'Sell', href: '/es/vender/', icon: 'tag' },
+    { label: 'Rent', href: '/es/alquilar/', icon: 'key' },
+    { label: 'Contact', href: '/es/contacto/', icon: 'phone' },
+  ],
+  ca: [
+    { label: 'Inici', href: '/es/', icon: 'home' },
+    { label: 'Pisos', href: '/es/venta/', icon: 'search' },
+    { label: 'Vendre', href: '/es/vender/', icon: 'tag' },
+    { label: 'Llogar', href: '/es/alquilar/', icon: 'key' },
+    { label: 'Contacte', href: '/es/contacto/', icon: 'phone' },
+  ],
+});

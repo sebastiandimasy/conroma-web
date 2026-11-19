@@ -6,6 +6,7 @@ import { posts } from './src/data/blog.ts';
 import { site } from './src/data/site.ts';
 import { getListings, propertySlug } from './src/data/properties.ts';
 import { injectLegacyRules, legacyRedirectRules } from './src/lib/legacy-redirects.ts';
+import { languages, localizePath } from './src/i18n/index.ts';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
@@ -34,7 +35,8 @@ const legacyRedirects = {
     },
   },
 };
-const hiddenPaths = ['/estilo/', '/guardados/', ...draftPaths, ...samplePaths, ...photolessPaths];
+// Las rutas se escriben en español y se ocultan en los tres idiomas.
+const hiddenPaths = ['/estilo/', '/guardados/', ...[...draftPaths, ...samplePaths, ...photolessPaths].flatMap((path) => languages.map((lang) => localizePath(path, lang)))];
 
 export default defineConfig({
   site: 'https://conromaasesores.com',
@@ -46,7 +48,11 @@ export default defineConfig({
   },
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
   build: { inlineStylesheets: 'auto' },
-  integrations: [react(), legacyRedirects, sitemap({ filter: (page) => !hiddenPaths.some((path) => page.includes(path)) })],
+  integrations: [react(), legacyRedirects, sitemap({
+      filter: (page) => !hiddenPaths.some((path) => page.includes(path)),
+      // Cada URL del sitemap lista sus versiones en los tres idiomas (xhtml:link hreflang).
+      i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en', ca: 'ca' } },
+    })],
   // worker.format 'es' para que Vite emita bien el web worker de maplibre-gl.
   // ssr.noExternal: evita el error intermitente del optimizador SSR de Vite en `astro dev`.
   vite: {

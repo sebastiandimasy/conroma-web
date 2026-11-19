@@ -14,8 +14,16 @@ describe('seo', () => {
     expect(pageTitle(long)).toBe(long);
   });
 
-  it('does not declare alternates for unpublished languages', () => {
-    expect(alternates('/es/', { ca: '/ca/' })).toEqual([]);
+  it('declara hreflang recíprocos es/en/ca y x-default en español', () => {
+    const expected = [
+      { hreflang: 'es', href: 'https://conromaasesores.com/es/venta/' },
+      { hreflang: 'en', href: 'https://conromaasesores.com/en/venta/' },
+      { hreflang: 'ca', href: 'https://conromaasesores.com/ca/venta/' },
+      { hreflang: 'x-default', href: 'https://conromaasesores.com/es/venta/' },
+    ];
+    expect(alternates('/es/venta/')).toEqual(expected);
+    expect(alternates('/ca/venta/')).toEqual(expected);
+    expect(alternates('/404/')).toEqual([]);
   });
 
   it('numbers breadcrumbs from one', () => {
