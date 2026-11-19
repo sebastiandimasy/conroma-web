@@ -3161,7 +3161,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .afford__icon {
-      animation: afford-pop 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation: afford-pop 620ms var(--ease-out) both;
     }
 
     .afford__icon::before {
