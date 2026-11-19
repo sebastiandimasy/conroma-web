@@ -34,7 +34,7 @@ por esas reglas y se perdería el SEO heredado.
       | NS | — | `nova.dns-parking.com`, `cosmos.dns-parking.com` (Hostinger) |
 - [ ] Bajar el TTL de esos dos registros a 300 s **24-48 h antes** del cambio.
 - [ ] Avisar a Habitatsoft de que no apaguen su servidor hasta pasadas 2 semanas.
-- [ ] El backup de la web antigua sigue en `~/Desktop/backup-conromaasesores-antigua.tar.gz`.
+- [ ] El backup de la web antigua sigue en `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/backup-conromaasesores-antigua.tar.gz` (iCloud Drive → Descargas).
 - [ ] **No tocar los registros `MX` ni los `TXT` (SPF, DKIM, DMARC).** Son el correo.
 
 ## Paso 1 — Build de producción

@@ -22,7 +22,7 @@ La web antigua la genera la plantilla de **Habitatsoft** (el portal de gestión 
 usando) y tenía el SEO roto de fábrica: 0 de 253 páginas con canonical, ningún hreflang pese a
 tener 4 idiomas, la mitad de los títulos duplicados, 1.945 imágenes sin ALT. De ahí el rediseño.
 
-**Hay un backup completo de la web antigua** en `~/Desktop/backup-conromaasesores-antigua.tar.gz`
+**Hay un backup completo de la web antigua** en `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/backup-conromaasesores-antigua.tar.gz` (iCloud Drive → Descargas)
 (285 páginas, 908 recursos, 18 MB). No lo borres hasta que el swipe lleve meses asentado.
 
 ## 2. Cómo trabajamos entre dos cuentas
