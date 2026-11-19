@@ -1,0 +1,50 @@
+name: Sync Habitatsoft y desplegar (Hostinger)
+
+# Reconstruye la web con el inventario fresco y la sube a Hostinger por FTP.
+# No hace nada hasta que la variable DEPLOY_ENABLED valga 'true' (Settings > Secrets and variables > Actions).
+# Guía completa: docs/DEPLOY-ACTIONS.md
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # ~03:00 UTC cada día (04:00/05:00 Madrid)
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [deploy]
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # La web vive en esta rama hasta el swipe; cámbiala con la variable DEPLOY_REF.
+          ref: ${{ vars.DEPLOY_REF || 'feat/crm-leads' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24' # el prebuild importa TypeScript (Node >= 22.18)
+          cache: 'npm'
+      - run: npm ci
+      - name: Build (inventario fresco del feed de Habitatsoft)
+        run: npm run build
+        env:
+          HABITATSOFT_FEED_URL: ${{ secrets.HABITATSOFT_FEED_URL }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      - name: Tests
+        run: npx vitest run
+      - name: Desplegar dist/client a Hostinger por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/client/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+      - name: Prueba de humo de la web publicada
+        if: ${{ vars.SITE_URL != '' }}
+        run: node scripts/smoke.mjs "${{ vars.SITE_URL }}"
