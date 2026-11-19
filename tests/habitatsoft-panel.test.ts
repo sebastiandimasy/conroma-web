@@ -139,6 +139,7 @@ describe('cleanDescription', () => {
   it('quita los párrafos fijos de la agencia y deja el texto del inmueble', () => {
     expect(cleanDescription('Casa con vistas.\n\nCONROMA es una empresa innovadora.')).toBe('Casa con vistas.');
     expect(cleanDescription('  ')).toBe('');
+    expect(cleanDescription('Vivienda ideal.\r\nCONROMA es una empresa innovadora.\r\nCon una inversión permanente.')).toBe('Vivienda ideal.');
   });
 });
 

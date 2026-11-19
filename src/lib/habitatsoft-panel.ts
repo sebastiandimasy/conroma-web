@@ -41,11 +41,14 @@ const EN_TRAMITE = '548';
 const BOILERPLATE = [/^CONROMA es una empresa/i, /^Con una inversi[oó]n permanente/i, /^En cumplimiento de la ley/i];
 
 export function cleanDescription(text: string): string {
+  // Por líneas: a veces el párrafo fijo va tras un solo salto (\r\n), sin línea en blanco.
   return text
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter((p) => p && !BOILERPLATE.some((re) => re.test(p)))
-    .join('\n\n');
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => !BOILERPLATE.some((re) => re.test(line)))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 const num = (value: string | undefined): number => {
