@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Button } from '@heroui/react';
 import { site } from '../data/site';
 import { createBrowserClient } from '../lib/supabase';
+import { saveLead } from '../lib/leads';
 import { FlipLabel } from './FlipLabel';
 
 const needs = ['Comprar', 'Vender', 'Alquilar', 'Reformar', 'Otra cosa'];
@@ -23,6 +24,7 @@ export default function ContactForm() {
   const [company, setCompany] = useState(''); // honeypot (oculto); los humanos lo dejan vacío
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,27 +41,26 @@ export default function ContactForm() {
 
     // Guardamos el lead directo en Supabase (web estática: sin Worker). Insert con anon key y
     // policy RLS solo-INSERT (migrations/0003). El honeypot filtra bots: si está relleno, no se
-    // guarda. Nunca bloquea la pantalla de WhatsApp si algo falla: el contacto no se pierde.
-    if (!company.trim()) {
-      try {
-        await createBrowserClient()
-          .from('lead')
-          .insert({
-            name: name.trim(),
-            phone: phone.trim(),
-            message: message.trim() || null,
-            intent: intentByNeed[need] ?? 'otro',
-            source: 'web',
-            status: 'nuevo',
-            consent_marketing: false, // aceptar privacidad ≠ consentimiento de marketing
-            consent_at: new Date().toISOString(),
-            consent_source: 'web',
-          });
-      } catch {
-        /* si no guarda, seguimos: el contacto por WhatsApp no se pierde */
-      }
-    }
-
+    // guarda. Si no se guarda, la pantalla final NO dice «Recibido»: manda a WhatsApp.
+    // Bots (honeypot relleno): no se guarda, pero ven la pantalla normal.
+    const stored = company.trim()
+      ? true
+      : await saveLead(() =>
+          createBrowserClient()
+            .from('lead')
+            .insert({
+              name: name.trim(),
+              phone: phone.trim(),
+              message: message.trim() || null,
+              intent: intentByNeed[need] ?? 'otro',
+              source: 'web',
+              status: 'nuevo',
+              consent_marketing: false, // aceptar privacidad ≠ consentimiento de marketing
+              consent_at: new Date().toISOString(),
+              consent_source: 'web',
+            }),
+        );
+    setSaved(stored);
     setSent(true);
   }
 
@@ -70,17 +71,33 @@ export default function ContactForm() {
   if (sent) {
     return (
       <div className="contact-form contact-form--done" aria-live="polite">
-        <h3 className="contact-form__title">Recibido. Falta un paso si quieres hablar ya.</h3>
-        <p className="feature__text">
-          Pulsa el botón y se abre WhatsApp con tu mensaje ya escrito. Dale a enviar y te contestamos nosotros, en persona.
-        </p>
+        {saved ? (
+          <>
+            <h3 className="contact-form__title">Recibido. Falta un paso si quieres hablar ya.</h3>
+            <p className="feature__text">
+              Pulsa el botón y se abre WhatsApp con tu mensaje ya escrito. Dale a enviar y te contestamos nosotros, en persona.
+            </p>
+          </>
+        ) : (
+          <>
+            <h3 className="contact-form__title">Tu mensaje aún no nos ha llegado.</h3>
+            <p className="feature__text">
+              No hemos podido guardarlo. Envíanoslo por WhatsApp, ya está escrito: solo tienes que darle a enviar. O llámanos
+              al{' '}
+              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="formulario-contacto-fallo">
+                {site.phoneDisplay}
+              </a>
+              .
+            </p>
+          </>
+        )}
         <a
           className="button button--primary button--large button--block"
           href={waHref}
           target="_blank"
           rel="noopener"
           data-contact="whatsapp"
-          data-origin="formulario-contacto"
+          data-origin={saved ? 'formulario-contacto' : 'formulario-contacto-fallo'}
         >
           <FlipLabel>Continuar por WhatsApp</FlipLabel>
         </a>

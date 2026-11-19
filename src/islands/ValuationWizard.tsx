@@ -5,6 +5,7 @@ import { Button } from '@heroui/react';
 import { site } from '../data/site';
 import { formatRating } from '../lib/format';
 import { createBrowserClient } from '../lib/supabase';
+import { saveLead } from '../lib/leads';
 import { Icon } from './Icon';
 import { FlipLabel } from './FlipLabel';
 
@@ -161,9 +162,8 @@ export default function ValuationWizard() {
     // El lead se guarda SIEMPRE, antes de ofrecer WhatsApp: si el visitante no llega a enviar
     // el WhatsApp, la solicitud no se pierde.
     // Insert directo en Supabase (web estática, sin Worker): anon key + policy RLS solo-INSERT.
-    let stored = false;
-    try {
-      const { error } = await createBrowserClient()
+    const stored = await saveLead(() =>
+      createBrowserClient()
         .from('lead')
         .insert({
           name: answers.name.trim(),
@@ -176,11 +176,8 @@ export default function ValuationWizard() {
           consent_marketing: answers.news, // la casilla de novedades sí es consentimiento de marketing
           consent_at: new Date().toISOString(),
           consent_source: 'valoracion',
-        });
-      stored = !error;
-    } catch {
-      stored = false;
-    }
+        }),
+    );
 
     setSaved(stored);
     setSending(false);
@@ -202,12 +199,23 @@ export default function ValuationWizard() {
       <section className="wizard wizard--done" aria-live="polite">
         <h1 className="visually-hidden">¿Cuánto vale mi piso?</h1>
         <h2 className="wizard__title">
-          {callMe
-            ? `Recibido, ${answers.name.trim().split(' ')[0]}. Te llamamos nosotros.`
-            : 'Recibido. Pulsa para continuar por WhatsApp.'}
+          {!saved
+            ? 'Tu solicitud aún no nos ha llegado. Envíala por WhatsApp.'
+            : callMe
+              ? `Recibido, ${answers.name.trim().split(' ')[0]}. Te llamamos nosotros.`
+              : 'Recibido. Pulsa para continuar por WhatsApp.'}
         </h2>
         <p className="wizard__text">
-          {callMe ? (
+          {!saved ? (
+            <>
+              No hemos podido guardarla. Pulsa el botón: se abre WhatsApp con la solicitud ya escrita y solo tienes que
+              darle a enviar. O llámanos al{' '}
+              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fallo">
+                {site.phoneDisplay}
+              </a>
+              .
+            </>
+          ) : callMe ? (
             <>
               Tenemos tu teléfono y la dirección del piso. Te llamamos en horario de oficina, normalmente el mismo
               día. Si prefieres adelantarlo, llámanos tú al{' '}
@@ -227,32 +235,17 @@ export default function ValuationWizard() {
             </>
           )}
         </p>
-        {!callMe && (
+        {(!callMe || !saved) && (
           <a
             className="button button--primary button--large button--block"
             href={waHref}
             target="_blank"
             rel="noopener"
             data-contact="whatsapp"
-            data-origin="valoracion-whatsapp"
+            data-origin={saved ? 'valoracion-whatsapp' : 'valoracion-fallo'}
           >
             <FlipLabel>Continuar por WhatsApp</FlipLabel>
           </a>
-        )}
-        {callMe && !saved && (
-          <p className="wizard__text">
-            No hemos podido guardar la solicitud automáticamente. Para que no se pierda, escríbenos por{' '}
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener"
-              data-contact="whatsapp"
-              data-origin="valoracion-fin-fallback"
-            >
-              WhatsApp
-            </a>{' '}
-            o llámanos al {site.phoneDisplay}.
-          </p>
         )}
         <a className="link-cta" href="/es/venta/malgrat-de-mar/">
           Ver pisos en venta mientras tanto
