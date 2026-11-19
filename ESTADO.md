@@ -108,6 +108,9 @@ En este repo:
    (`published: false` en `property-legacy.json`; lista en `retiradasEnHabitatsoft`).
    **Siguiente paso (19-nov):** el dueño recibe el código de Habitatsoft; con el enlace del
    feed en `HABITATSOFT_FEED_URL`, el inventario se actualiza en cada build y entran los 6 nuevos.
+   **Puente provisional (19-nov):** mientras no llega el feed, una tarea diaria en el Mac lee el
+   panel con la sesión guardada y actualiza el inventario (altas, bajas, precios, fotos, energía).
+   Ver `docs/PUENTE-HABITATSOFT.md`. Falta: que el dueño haga el `--login` una vez y programarla.
 5. ~~Títulos largos~~ Hecho el 19-nov: `propertyDocTitle()` deja el `<title>` en 65 caracteres como máximo (si la zona es larga, va solo el pueblo).
 
 En `conroma-crm-ui`:
