@@ -1,12 +1,13 @@
 # Despliegue automático a Hostinger (GitHub Actions)
 
-> Este YAML no se pudo commitear directamente (subir archivos de `.github/workflows/` requiere un
-> token con permiso `workflow`, que la sesión de Claude no tiene). **Créalo tú desde la web de
-> GitHub**, que sí lo permite:
+> **Creado el 19-nov-2026** desde la web de GitHub en la rama por defecto del repo
+> (`feat/design-system-fase0-4`): `.github/workflows/sync-deploy.yml`. Los cron y los
+> `repository_dispatch` solo corren desde la rama por defecto; por eso vive ahí y hace checkout de
+> la rama donde está la web (`DEPLOY_REF`, por defecto `feat/crm-leads`). Tras el swipe, cuando la
+> web pase a `main` y `main` sea la rama por defecto, mover el archivo allí y quitar `DEPLOY_REF`.
 >
-> GitHub → pestaña **Actions** → **New workflow** → **set up a workflow yourself** → pega el YAML de
-> abajo → nómbralo `sync-deploy.yml` → Commit. (O crea el archivo `.github/workflows/sync-deploy.yml`
-> con el editor de archivos de GitHub.)
+> Desde la sesión de Claude no se puede hacer push de `.github/workflows/` (el token no tiene
+> permiso `workflow`): cualquier cambio del YAML se hace en el editor web de GitHub.
 
 ## Qué hace
 Reconstruye la web con el **inventario fresco del feed de Habitatsoft** (si hay `HABITATSOFT_FEED_URL`;
@@ -34,6 +35,8 @@ Habitatsoft y no Supabase, dejar la tabla `property` de Supabase **vacía** (no 
 ## Activarlo (cuando la web esté lista para publicar)
 En GitHub → Settings → Secrets and variables → Actions:
 - **Variable** `DEPLOY_ENABLED = true` (mientras no sea `true`, NO despliega nada).
+- **Variable** `DEPLOY_REF` (opcional): rama a publicar; por defecto `feat/crm-leads`.
+- **Variable** `SITE_URL` (opcional, p. ej. `https://conromaasesores.com`): si existe, tras subir pasa `scripts/smoke.mjs` y el job falla si algo no carga.
 - **Secrets:** `HABITATSOFT_FEED_URL` (opcional), `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`,
   `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_SERVER_DIR` (carpeta destino terminada en `/`,
   p. ej. `/public_html/`).
@@ -45,6 +48,10 @@ AICAT/NIF, fotos pendientes, `sampleData=false`): este workflow publica la web d
 
 ```yaml
 name: Sync Habitatsoft y desplegar (Hostinger)
+
+# Reconstruye la web con el inventario fresco y la sube a Hostinger por FTP.
+# No hace nada hasta que la variable DEPLOY_ENABLED valga 'true' (Settings > Secrets and variables > Actions).
+# Guía completa: docs/DEPLOY-ACTIONS.md
 
 on:
   schedule:
@@ -63,9 +70,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # La web vive en esta rama hasta el swipe; cámbiala con la variable DEPLOY_REF.
+          ref: ${{ vars.DEPLOY_REF || 'feat/crm-leads' }}
       - uses: actions/setup-node@v4
         with:
-          node-version: '24' # el prebuild importa TypeScript (Node ≥ 22.18)
+          node-version: '24' # el prebuild importa TypeScript (Node >= 22.18)
           cache: 'npm'
       - run: npm ci
       - name: Build (inventario fresco del feed de Habitatsoft)
@@ -74,6 +84,8 @@ jobs:
           HABITATSOFT_FEED_URL: ${{ secrets.HABITATSOFT_FEED_URL }}
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      - name: Tests
+        run: npx vitest run
       - name: Desplegar dist/client a Hostinger por FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -82,6 +94,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/client/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
+      - name: Prueba de humo de la web publicada
+        if: ${{ vars.SITE_URL != '' }}
+        run: node scripts/smoke.mjs "${{ vars.SITE_URL }}"
 ```
 
 ## Disparar el deploy desde fuera (webhook)
