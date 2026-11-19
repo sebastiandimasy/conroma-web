@@ -3,7 +3,6 @@ import '../styles/fonts.css';
 import '../styles/global.css';
 import SiteHeader from '../components/layout/SiteHeader.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
-import IntentWelcome from '../islands/IntentWelcome';
 import ChatDemo from '../islands/ChatDemo';
 import { site } from '../data/site';
 import { absoluteUrl, alternates, pageTitle, siteGraph } from '../lib/seo';
@@ -158,7 +157,6 @@ const languageLinks = alternates(path);
     </main>
     {!bare && <SiteFooter />}
     {!bare && <ChatDemo client:idle />}
-    {!bare && <IntentWelcome client:idle />}
     {/* Banner de cookies servido como HTML (no isla React), para que pinte al instante.
         El script del <head> le pone la clase has-cookie-notice si el consentimiento está pendiente;
         este cablea los botones al mismo localStorage + evento conroma:consent + Consent Mode. */}

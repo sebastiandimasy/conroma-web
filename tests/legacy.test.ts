@@ -18,7 +18,13 @@ describe('inventario desfasado', () => {
     const refs = getListings().map((p) => p.ref);
     expect(refs).not.toContain('T-2020-H'); // da 404 en la web antigua
     expect(refs).toContain('C-1198-H');
-    expect(retiradasEnHabitatsoft.length).toBe(22);
+    expect(retiradasEnHabitatsoft.length).toBe(21);
+  });
+
+  it('sigue al panel de Habitatsoft (cotejado el 19-nov): activos dentro, retirados fuera', () => {
+    const refs = getListings().map((p) => p.ref.replace(/\s/g, ''));
+    for (const activo of ['L-1081-D', 'L-1089-M', 'L-1096-H', 'T-2079-D']) expect(refs).toContain(activo);
+    for (const retirado of ['C-1236', 'L-1045-H', 'T-2034-H']) expect(refs).not.toContain(retirado);
   });
 });
 

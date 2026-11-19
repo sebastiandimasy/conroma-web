@@ -38,7 +38,7 @@
  },
  "l1045h": {
   "legacyId": "40051768974.527526",
-  "published": true,
+  "published": false,
   "energyRating": "F",
   "energyEmissions": 80,
   "energyConsumptionRating": "F",
@@ -79,7 +79,7 @@
  },
  "l1089m": {
   "legacyId": "60076448201.527526",
-  "published": false,
+  "published": true,
   "energyRating": "C",
   "energyEmissions": 150,
   "energyConsumptionRating": "C",
@@ -170,7 +170,7 @@
  },
  "l1081d": {
   "legacyId": "52525719268.527526",
-  "published": false,
+  "published": true,
   "energyRating": "C",
   "energyEmissions": 40,
   "energyConsumptionRating": "C",
@@ -187,7 +187,7 @@
  },
  "l1096h": {
   "legacyId": "65048501689.527526",
-  "published": false,
+  "published": true,
   "energyRating": "C",
   "energyEmissions": 60,
   "energyConsumptionRating": "C",
@@ -603,7 +603,7 @@
  },
  "t2079d": {
   "legacyId": "54227929884.527526",
-  "published": false
+  "published": true
  },
  "t2077d": {
   "legacyId": "54207565805.527526",
@@ -709,7 +709,7 @@
  },
  "t2034h": {
   "legacyId": "40010487468.527526",
-  "published": true,
+  "published": false,
   "energyExempt": true
  },
  "l1080": {
@@ -739,5 +739,8 @@
   "energyEmissions": 147,
   "energyConsumptionRating": "E",
   "energyConsumption": 123
+ },
+ "c1236": {
+  "published": false
  }
 }

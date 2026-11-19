@@ -3,9 +3,7 @@ import { atom } from 'nanostores';
 const SAVED_KEY = 'conroma:guardados';
 const HIDDEN_KEY = 'conroma:descartados';
 const CONSENT_KEY = 'conroma:cookies';
-const INTENT_KEY = 'conroma:intencion';
 
-export type Intent = 'pendiente' | 'vender' | 'comprar' | 'mirando';
 
 function read(key: string): string[] {
   try {
@@ -27,7 +25,6 @@ function write(key: string, value: unknown): void {
 export const savedRefs = atom<string[]>([]);
 export const hiddenRefs = atom<string[]>([]);
 export const cookieConsent = atom<'pendiente' | 'aceptado' | 'rechazado'>('pendiente');
-export const intent = atom<Intent>('pendiente');
 
 let hydrated = false;
 
@@ -39,8 +36,6 @@ export function hydrateStore(): void {
   try {
     const consent = localStorage.getItem(CONSENT_KEY);
     if (consent === 'aceptado' || consent === 'rechazado') cookieConsent.set(consent);
-    const saved = localStorage.getItem(INTENT_KEY);
-    if (saved === 'vender' || saved === 'comprar' || saved === 'mirando') intent.set(saved);
   } catch {
     return;
   }
@@ -94,14 +89,5 @@ export function setConsent(value: 'aceptado' | 'rechazado'): void {
     }
   } catch {
     // sin GTM cargado, no pasa nada
-  }
-}
-
-export function setIntent(value: Exclude<Intent, 'pendiente'>): void {
-  intent.set(value);
-  try {
-    localStorage.setItem(INTENT_KEY, value);
-  } catch {
-    return;
   }
 }

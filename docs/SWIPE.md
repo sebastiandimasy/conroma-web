@@ -23,7 +23,15 @@ por esas reglas y se perdería el SEO heredado.
 
 ## Paso 0 — Antes de tocar nada
 
-- [ ] Apuntar los registros DNS **actuales** de `@` y `www` (tipo y valor). Son la vuelta atrás.
+- [x] Apuntar los registros DNS **actuales** de `@` y `www`. Son la vuelta atrás. Consultados el
+      19-nov-2026 (volver a mirarlos el día del swipe por si han cambiado):
+
+      | Registro | Tipo | Valor |
+      |---|---|---|
+      | `@` | `A` | `185.79.147.30` (servidor IIS de Habitatsoft, la web antigua) |
+      | `www` | `CNAME` | `conromaasesores.com.` |
+      | `MX` | `MX` | `0 mail.conromaasesores.com.` (no tocar) |
+      | NS | — | `nova.dns-parking.com`, `cosmos.dns-parking.com` (Hostinger) |
 - [ ] Bajar el TTL de esos dos registros a 300 s **24-48 h antes** del cambio.
 - [ ] Avisar a Habitatsoft de que no apaguen su servidor hasta pasadas 2 semanas.
 - [ ] El backup de la web antigua sigue en `~/Desktop/backup-conromaasesores-antigua.tar.gz`.
@@ -54,8 +62,11 @@ de la mitad de los pisos, usa el inventario anterior y lo avisa.
 `PUBLIC_PREVIEW` tiene que quedar **sin poner**: si vale `true`, toda la web sale con `noindex`.
 
 ```bash
-npm run build
+npm run build && bash scripts/guardar-version.sh
 ```
+
+`guardar-version.sh` deja una copia del build en `~/conroma-versiones/<fecha>-<commit>.zip` (guarda
+las 10 últimas). Es lo que se vuelve a subir si una versión nueva sale mal.
 
 El resultado está en **`dist/client/`**. Comprueba que dentro hay un `.htaccess` (es un archivo
 oculto) y un `sitemap-index.xml`.
@@ -96,6 +107,14 @@ done
 
 Cada una tiene que acabar en **200** tras uno o dos **301**. Nunca 302, 404 ni bucle.
 
+Y la prueba de humo (home, catálogo, una ficha con su foto de Habitatsoft, legales, indexación):
+
+```bash
+node scripts/smoke.mjs https://conromaasesores.com
+```
+
+Si sale algún `✗`, ir a «Cómo volver atrás».
+
 Y a mano, en el móvil:
 - [ ] La portada carga y se ve bien.
 - [ ] Enviar el formulario de contacto: el lead aparece en la tabla `lead` de Supabase.
@@ -121,10 +140,32 @@ Y a mano, en el móvil:
 
 ---
 
-## Cómo volver atrás
+## Cómo volver atrás (el seguro de vida)
 
-Devolver `@` y `www` a los valores apuntados en el paso 0. Con el TTL a 300 s se nota en minutos.
-Por eso el paso 0 no es opcional.
+Tres niveles, del más leve al más grave. En todos, primero se confirma el fallo con
+`node scripts/smoke.mjs https://conromaasesores.com`.
+
+**1. Una actualización de la web sale mal** (la web nueva ya estaba funcionando). Unos 5 minutos:
+1. Coger el zip anterior de `~/conroma-versiones/` (el segundo más reciente; el nombre lleva el
+   commit).
+2. hPanel → *Administrador de archivos* → `public_html/` → subirlo → botón derecho → *Extraer* →
+   *Aquí, reemplazando los archivos existentes*.
+3. Pasar otra vez la prueba de humo.
+4. En el repo, `git revert` del commit que lo rompió, para que el siguiente build no lo repita.
+
+**2. La web nueva no funciona en absoluto** (el día del swipe o después). Unos minutos con el TTL
+a 300 s:
+- hPanel → *Dominios* → *DNS* → `@` (`A`) otra vez a **`185.79.147.30`**. `www` es un `CNAME` a
+  `@`, así que vuelve solo. La web antigua de Habitatsoft sigue encendida (paso 0: no la apagan
+  hasta pasadas 2 semanas).
+- `MX` y `TXT` no se tocan: el correo no se entera de nada.
+
+**3. El feed de Habitatsoft falla o viene incompleto.** No hace falta hacer nada:
+`scripts/fetch-inventory.mjs` lo detecta (menos de la mitad de pisos o error) y el build usa el
+inventario anterior. Lo avisa en la salida del build.
+
+Por eso el paso 0 no es opcional: sin el TTL bajo y sin los valores apuntados, el nivel 2 tarda
+horas.
 
 ## Actualizar la web después del swipe
 

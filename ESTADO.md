@@ -94,20 +94,28 @@ En este repo:
    Resultado: 55 fichas con letra, 36 exentas, 9 «en trámite». El build genera una redirección
    1:1 por ficha publicada de `/detalle/.../<id>` a la ficha nueva (95) (`src/lib/legacy-redirects.ts`).
    **Vuelve a lanzarlo justo antes del swipe**: cuando se apague la web antigua, ya no se puede.
-3. **El inventario del Excel está desfasado.** Contra la web antigua: 22 de nuestros
+3. **Cotejo con el panel de Habitatsoft (19-nov).** Leídas las 111 referencias activas del panel
+   (de 113): la web publicaba 3 que ya no están activas (C-1236, L-1045-H, T-2034-H) y ocultaba 4
+   activas (L-1081-D, L-1089-M, L-1096-H, T-2079-D). Corregido en `property-legacy.json` y fijado
+   en `tests/legacy.test.ts`. Quedan **6 activas que no tenemos** (C-1301, P-987-H, P-988, P-989,
+   P-990-H, PK-049): entran con el feed. Fotos: 96 de 97 fichas cargaban; C-1233 tenía las 15
+   rotas porque Habitatsoft las renombró, sustituidas por las 23 actuales del panel.
+   C-1280-A sigue fuera a propósito (alquiler en zona tensionada sin los datos que exige la ley).
+   La web antigua (`scrape-web-antigua.mjs`) corta la conexión a mitad: no se pudo releer.
+4. **El inventario del Excel está desfasado.** Contra la web antigua: 22 de nuestros
    inmuebles ya no están publicados (19 dan 404) y hay 6 publicados allí que no tenemos. Se
    arregla con el feed o con un Excel nuevo. Mientras, esos 22 se ocultan solos
    (`published: false` en `property-legacy.json`; lista en `retiradasEnHabitatsoft`).
    **Siguiente paso (19-nov):** el dueño recibe el código de Habitatsoft; con el enlace del
    feed en `HABITATSOFT_FEED_URL`, el inventario se actualiza en cada build y entran los 6 nuevos.
-4. ~~Títulos largos~~ Hecho el 19-nov: `propertyDocTitle()` deja el `<title>` en 65 caracteres como máximo (si la zona es larga, va solo el pueblo).
+5. ~~Títulos largos~~ Hecho el 19-nov: `propertyDocTitle()` deja el `<title>` en 65 caracteres como máximo (si la zona es larga, va solo el pueblo).
 
 En `conroma-crm-ui`:
 
-5. Enchufar a Supabase las pantallas que quedan (ficha de piso, valoraciones, contactos,
+6. Enchufar a Supabase las pantallas que quedan (ficha de piso, valoraciones, contactos,
    difusión, asesores, movimientos y operaciones). Lo que se escribe en las demás vive en
    memoria y no sobrevive a recargar.
-6. Endpoint de descripción con IA para la ficha de piso (el botón existe, simulado).
+7. Endpoint de descripción con IA para la ficha de piso (el botón existe, simulado).
 
 ## 5. Falta (decisiones o datos del dueño)
 
@@ -142,6 +150,9 @@ En `conroma-crm-ui`:
 - **La `service_role` key salta todas las reglas RLS.** Solo en el script local de altas. Nunca en
   el navegador, en el chat ni en un commit.
 - **En el CRM, Vite necesita `base: './'`**. Con rutas absolutas el artefacto publicado sale en blanco.
+- **Seguro de vida para publicar:** `npm run build && bash scripts/guardar-version.sh` guarda cada
+  versión en `~/conroma-versiones/`; `node scripts/smoke.mjs <url>` dice si la web publicada
+  funciona. La vuelta atrás, en tres niveles, está en `docs/SWIPE.md`.
 - **Mide el móvil, no lo mires de reojo.** En `/es/venta/` el índice de pueblos iba antes del
   buscador y había que bajar 3 pantallas para ver el primer piso. Un `<details>` cerrado sigue
   siendo rastreable por Google.
