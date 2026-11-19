@@ -10,7 +10,7 @@ Google la encuentre, las dos cosas:
 
 La web actual sigue intacta: no se toca nada de producción.
 
-> **Publicada el 18-nov-2026 en `https://magenta-mule-200826.hostingersite.com/`**, el dominio
+> **Publicada el 18-nov-2026 y actualizada el 19-nov (commit 8444358) en `https://magenta-mule-200826.hostingersite.com/`**, el dominio
 > temporal del sitio de hosting (`public_html` de ese sitio). Se usó ese dominio en vez de crear
 > el subdominio `demo` porque `conromaasesores.com` aún no está conectado al hosting y no conviene
 > tocar sus DNS antes del swipe. En los dominios temporales Hostinger sirve su propio
