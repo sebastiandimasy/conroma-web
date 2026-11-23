@@ -27,5 +27,7 @@ if [ "$codigo" -eq 3 ]; then
 fi
 
 echo
-grep -E "^\[(panel|diario)\]|Subidos|Fichas retiradas|✓|✗|Todo bien" "$LOG" | tail -12
+# Solo la última ejecución (el registro es de todo el día).
+awk '/^=== /{buf=""} {buf=buf $0 "\n"} END{printf "%s", buf}' "$LOG" |
+  grep -E "^\[(panel|diario)\]|Subidos|Fichas retiradas|✓|✗|Todo bien" | tail -12
 exit "$codigo"
