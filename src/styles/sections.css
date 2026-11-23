@@ -664,7 +664,7 @@
      Con scroll-driven la cifra se enciende al cruzar el centro (base.css); sin soporte, en tinta. */
   .proof-band {
     padding-block: calc(var(--space-section) / 2);
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
     text-align: center;
   }
@@ -949,7 +949,7 @@
 
   /* Statement: la respuesta corta, fina, que se va encendiendo palabra a palabra al hacer scroll. */
   .statement {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -1285,7 +1285,7 @@
   /* Comprar: escaparate de pisos y salida a la calculadora, sobre crema (bandas alternas). */
   .buy-featured,
   .buy-budget {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1307,7 +1307,7 @@
 
   /* Inicio · escaparate: tres pisos de Malgrat + un enlace por pueblo con su recuento. */
   .home-featured {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -1364,7 +1364,7 @@
 
   /* Alquilar: pueblos de la zona sobre canvas (entre el bloque gris del propietario y las reseñas grises). */
   .rent-towns {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1373,7 +1373,7 @@
   }
 
   .empresa-towns {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1388,7 +1388,7 @@
 
   /* Índice de servicios: filas con borde suave; nombre, frase y flecha. */
   .service-index {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1580,12 +1580,12 @@
 
   /* Foto y texto a dos columnas. La banda (canvas/surface) la elige la página para alternar. */
   .split-feature--surface {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
   .split-feature--canvas {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1625,7 +1625,7 @@
   /* StoryScroll: pasos numerados. Base estática completa; el escenario fijo solo existe en
      escritorio con scroll-driven y sin reduced-motion. */
   .story-scroll {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -1757,7 +1757,7 @@
   /* Compare: dos mitades a sangre sin bordes; la segunda sobre gris. Marca con ✓ amarillo. */
   .compare {
     padding-bottom: 0;
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -1910,13 +1910,13 @@
   }
 
   .guide-teaser {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
   /* «Más guías» bajo un artículo: banda gris para separarla del texto. */
   .guide-teaser--surface {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -2169,7 +2169,7 @@
   /* Fondos alternos blanco / gris, planos, como bandas editoriales. */
   .valuation,
   .faq-section {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -2438,7 +2438,7 @@
   /* Fundador (Empresa): foto 4:5 fija en escritorio y bio larga al lado. Sin tarjeta ni sombra;
      la frase de cierre va grande y fina, sin raya lateral. */
   .founder {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -2514,7 +2514,7 @@
 
   /* Equipo: una ficha por persona, sin caja. Foto 4:5, nombre grande y fino, cargo y bio. */
   .team-members {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -2563,7 +2563,7 @@
   /* Citas de clientes: texto grande y fino, autor y contexto debajo; separadores suaves. */
   /* Reels: fila de vídeos 9:16 con scroll lateral en móvil y rejilla en escritorio. */
   .reel-row {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -2645,12 +2645,12 @@
 
   /* Zonas (Contacto): filas como «Busca en tu pueblo», sobre la banda gris. */
   .town-links {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
   .town-links--canvas {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -2737,7 +2737,7 @@
 
   /* Contacto editorial: banda gris, canales en filas con línea suave, formulario sin tarjeta. */
   .contact {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
@@ -2929,7 +2929,7 @@
 
   /* Reseñas: banda surface-2; la tarjeta (isla TestimonialCarousel) va en canvas. */
   .testimonials {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
     overflow: hidden;
   }
@@ -2937,7 +2937,7 @@
   /* Variante en canvas cuando la sección de al lado ya es surface-2; la tarjeta pasa a surface-2. */
   .testimonials--canvas {
     --tcar-card: var(--color-surface-2);
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -3415,7 +3415,7 @@
   /* Reformas · galería de obras reales: retícula de fotos a sangre dentro de card. */
   /* Galería de reformas: coverflow a sangre (reform-carousel.css) entre título y salida a Instagram. */
   .reform-gallery {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
@@ -3429,12 +3429,12 @@
 
   /* Guía (ContentGuide): filas con línea suave, dos columnas desde 48rem. */
   .content-guide--canvas {
-    background: var(--color-canvas);
+    background: var(--section-canvas);
     color: var(--color-on-canvas);
   }
 
   .content-guide--surface {
-    background: var(--color-surface-2);
+    background: var(--section-surface);
     color: var(--color-on-surface-2);
   }
 
