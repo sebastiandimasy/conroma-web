@@ -23,23 +23,6 @@
     @apply flex h-full flex-col;
   }
 
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .property-grid__item {
-        animation: card-rise linear both;
-        animation-timeline: view();
-        animation-range: entry 0% entry 55%;
-      }
-    }
-  }
-
-  @keyframes card-rise {
-    from {
-      opacity: 0;
-      translate: 0 32px;
-    }
-  }
-
   .property-card__media {
     @apply relative;
     aspect-ratio: 4 / 3;

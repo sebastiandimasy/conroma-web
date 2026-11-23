@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { initEffects } from './motion/effects';
 import { initReveals } from './motion/reveal';
 
 /** Interruptor de emergencia (spec §5.8): en false, la web queda visible y quieta. */
@@ -50,7 +51,12 @@ export function initMotion(): void {
   Promise.all([waitForSkeleton(), document.fonts.ready]).then(() => {
     gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
       initActionBar();
-      return initReveals();
+      const stopReveals = initReveals();
+      const stopEffects = initEffects();
+      return () => {
+        stopReveals();
+        stopEffects();
+      };
     });
     if (document.readyState !== 'complete') addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   });

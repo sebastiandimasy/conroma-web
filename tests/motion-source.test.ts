@@ -24,3 +24,21 @@ describe('movimiento: un solo sistema (spec 2026-11-23)', () => {
     expect(code).not.toMatch(/\bpin:\s*true|markers:\s*true/);
   });
 });
+
+describe('movimiento: fuera las animaciones de scroll en CSS', () => {
+  const styles = globSync('src/styles/*.css').map(read).join('\n');
+
+  it('no queda animation-timeline', () => {
+    expect(styles).not.toMatch(/animation-timeline/);
+  });
+
+  it('no quedan los keyframes sustituidos por GSAP', () => {
+    expect(styles).not.toMatch(
+      /@keyframes (reveal|figure-focus|hero-drift|hero-lift|photo-settle|statement-word|story-step|story-photo|card-rise|hero-center-in)\b/,
+    );
+  });
+
+  it('ningún [data-reveal] se oculta en CSS', () => {
+    expect(styles).not.toMatch(/\[data-reveal\][^{]*\{[^}]*opacity:\s*0/);
+  });
+});

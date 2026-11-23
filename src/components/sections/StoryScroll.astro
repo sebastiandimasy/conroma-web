@@ -12,19 +12,18 @@ interface Props {
 
 const { title, steps, bridge, id } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, '0');
-const names = steps.map((_, index) => `--paso-${index + 1}`);
 ---
 
 {/* Versión base (sin soporte, reduced-motion o móvil): cada paso con su foto encima, completa.
-    En escritorio con scroll-driven, una foto fija cambia con el paso activo (sections.css). */}
+    En escritorio, una foto fija cambia con el paso activo (sections.css + lib/motion/effects.ts). */}
 <section class="section story-scroll" id={id}>
   <div class="wrap">
     <h2 class="section__title" data-reveal="titulo">{title}</h2>
-    <div class="story-scroll__body" style={`timeline-scope: ${names.join(', ')}`}>
+    <div class="story-scroll__body">
       <ol class="story-scroll__steps">
         {
           steps.map((step, index) => (
-            <li class="story-scroll__step" style={`view-timeline-name: ${names[index]}`}>
+            <li class="story-scroll__step">
               {/* El orden ya lo da la <ol>: el numeral es visual. */}
               <p class="story-scroll__count" aria-hidden="true">
                 {pad(index + 1)}
@@ -48,7 +47,6 @@ const names = steps.map((_, index) => `--paso-${index + 1}`);
               widths={[780, 1200]}
               sizes="50vw"
               loading="lazy"
-              style={`animation-timeline: ${names[index]}`}
             />
           ))
         }

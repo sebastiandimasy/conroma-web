@@ -11,7 +11,7 @@ interface PropertyGridProps {
 
 export default function PropertyGrid({ properties, townName, origin, lang }: PropertyGridProps) {
   return (
-    <ul className="property-grid">
+    <ul className="property-grid" data-reveal="escalonado">
       {properties.map((property) => (
         <li key={property.ref} className="property-grid__item">
           <PropertyCard property={property} townName={townName} origin={origin} lang={lang} />
