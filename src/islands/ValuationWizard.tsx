@@ -9,6 +9,7 @@ import { createBrowserClient } from '../lib/supabase';
 import { notifyLead, saveLead } from '../lib/leads';
 import { Icon } from './Icon';
 import { FlipLabel } from './FlipLabel';
+import { LeadDone } from './LeadDone';
 
 type Moment = 'ya' | 'curiosidad' | 'herencia';
 type Condition = 'vivir' | 'repaso' | 'reforma' | 'nose';
@@ -93,17 +94,20 @@ const text = strings({
     },
     pageTitle: '¿Cuánto vale mi piso?',
     done: {
-      notSavedTitle: 'Tu solicitud aún no nos ha llegado. Envíala por WhatsApp.',
-      callTitle: (name: string) => `Recibido, ${name}. Te llamamos nosotros.`,
-      waTitle: (name: string) => `Recibido, ${name}. Te escribimos por WhatsApp.`,
+      notSavedTitle: 'Uy, tu solicitud no nos ha llegado.',
+      callTitle: (name: string) => `¡Gracias, ${name}! Te llamamos nosotros.`,
+      waTitle: (name: string) => `¡Gracias, ${name}! Te escribimos por WhatsApp.`,
       notSavedText:
-        'No hemos podido guardarla. Pulsa el botón: se abre WhatsApp con la solicitud ya escrita y solo tienes que darle a enviar. O llámanos al',
+        'Algo ha fallado al enviarla. Mándanosla por WhatsApp, que ya está escrita: solo tienes que darle a enviar.',
       callText:
-        'Tenemos tu teléfono y la dirección del piso. Te llamamos en horario de oficina, normalmente el mismo día. Si prefieres adelantarlo, llámanos tú al',
+        'Ya tenemos la dirección del piso. Miramos a qué precio se está vendiendo de verdad en tu zona y te llamamos lo más pronto posible.',
       waText:
-        'Tenemos tu teléfono y la dirección del piso. Te escribimos en horario de oficina, normalmente el mismo día. Si prefieres adelantarlo, llámanos tú al',
-      continueWa: 'Continuar por WhatsApp',
+        'Ya tenemos la dirección del piso. Miramos a qué precio se está vendiendo de verdad en tu zona y te escribimos lo más pronto posible.',
+      phone: '¿Te corre prisa? Llámanos al',
+      failPhone: 'O llámanos al',
+      continueWa: 'Enviar por WhatsApp',
       browse: 'Ver pisos en venta mientras tanto',
+      home: 'Volver al inicio',
     },
     sectionLabel: 'Valoración de tu piso',
     exit: 'Salir y volver al inicio',
@@ -193,17 +197,20 @@ const text = strings({
     },
     pageTitle: 'What’s my home worth?',
     done: {
-      notSavedTitle: 'Your request hasn’t reached us yet. Send it on WhatsApp.',
-      callTitle: (name: string) => `Got it, ${name}. We’ll call you.`,
-      waTitle: (name: string) => `Got it, ${name}. We’ll message you on WhatsApp.`,
+      notSavedTitle: 'Oops, your request didn’t reach us.',
+      callTitle: (name: string) => `Thanks, ${name}! We’ll give you a call.`,
+      waTitle: (name: string) => `Thanks, ${name}! We’ll message you on WhatsApp.`,
       notSavedText:
-        'We couldn’t save it. Tap the button: WhatsApp opens with your request already written and you just hit send. Or call us on',
+        'Something went wrong sending it. Send it on WhatsApp instead; it’s already written, you just need to hit send.',
       callText:
-        'We’ve got your number and the property’s address. We’ll call you during office hours, usually the same day. If you’d rather not wait, call us on',
+        'We’ve got the property’s address. We’ll check what homes are really selling for in your area and call you as soon as we can.',
       waText:
-        'We’ve got your number and the property’s address. We’ll message you during office hours, usually the same day. If you’d rather not wait, call us on',
-      continueWa: 'Continue on WhatsApp',
+        'We’ve got the property’s address. We’ll check what homes are really selling for in your area and message you as soon as we can.',
+      phone: 'In a hurry? Call us on',
+      failPhone: 'Or call us on',
+      continueWa: 'Send on WhatsApp',
       browse: 'Browse homes for sale in the meantime',
+      home: 'Back to the home page',
     },
     sectionLabel: 'Your home valuation',
     exit: 'Leave and go back to the home page',
@@ -293,17 +300,20 @@ const text = strings({
     },
     pageTitle: 'Quant val el meu pis?',
     done: {
-      notSavedTitle: 'La teva sol·licitud encara no ens ha arribat. Envia-la per WhatsApp.',
-      callTitle: (name: string) => `Rebut, ${name}. Et truquem nosaltres.`,
-      waTitle: (name: string) => `Rebut, ${name}. T’escrivim per WhatsApp.`,
+      notSavedTitle: 'Vaja, la teva sol·licitud no ens ha arribat.',
+      callTitle: (name: string) => `Gràcies, ${name}! Et truquem nosaltres.`,
+      waTitle: (name: string) => `Gràcies, ${name}! T’escrivim per WhatsApp.`,
       notSavedText:
-        'No l’hem pogut desar. Prem el botó: s’obre WhatsApp amb la sol·licitud ja escrita i només l’has d’enviar. O truca’ns al',
+        'Alguna cosa ha fallat en enviar-la. Envia’ns-la per WhatsApp, que ja està escrita: només has de prémer enviar.',
       callText:
-        'Tenim el teu telèfon i l’adreça del pis. Et truquem en horari d’oficina, normalment el mateix dia. Si ho vols avançar, truca’ns tu al',
+        'Ja tenim l’adreça del pis. Mirem a quin preu s’està venent de debò a la teva zona i et truquem tan aviat com puguem.',
       waText:
-        'Tenim el teu telèfon i l’adreça del pis. T’escrivim en horari d’oficina, normalment el mateix dia. Si ho vols avançar, truca’ns tu al',
-      continueWa: 'Continua per WhatsApp',
+        'Ja tenim l’adreça del pis. Mirem a quin preu s’està venent de debò a la teva zona i t’escrivim tan aviat com puguem.',
+      phone: 'Tens pressa? Truca’ns al',
+      failPhone: 'O truca’ns al',
+      continueWa: 'Envia per WhatsApp',
       browse: 'Mira pisos en venda mentrestant',
+      home: 'Torna a l’inici',
     },
     sectionLabel: 'Valoració del teu pis',
     exit: 'Surt i torna a l’inici',
@@ -355,6 +365,19 @@ function buildMessage(answers: Answers, t: Text): string {
   return lines.filter(Boolean).join('\n');
 }
 
+// Para el correo a la oficina: siempre en español, aunque la web esté en otro idioma.
+function emailDetails(answers: Answers): Record<string, string> {
+  const es = text.es;
+  const details: Record<string, string> = {};
+  if (answers.moment) details[es.message.moment] = es.momentText[answers.moment];
+  if (answers.moment === 'herencia' && answers.issue)
+    details[es.message.issue] =
+      answers.issue === 'otros' ? answers.issueOther.trim() || es.issueText.otros : es.issueText[answers.issue];
+  if (answers.condition) details[es.message.condition] = es.conditionText[answers.condition];
+  details['Quiere novedades de su zona'] = answers.news ? 'Sí' : 'No';
+  return details;
+}
+
 function isValidPhone(value: string): boolean {
   return /^(\+?\d[\d\s]{7,14})$/.test(value.trim());
 }
@@ -367,6 +390,7 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [doneOpen, setDoneOpen] = useState(true);
   const [answers, setAnswers] = useState<Answers>({
     moment: null,
     address: '',
@@ -446,10 +470,9 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
       form: 'valoracion',
       name: answers.name.trim(),
       phone: answers.phone.trim(),
-      intent: 'valoración',
       address: answers.address.trim(),
       channel: answers.channel === 'llamada' ? 'Llamada' : 'WhatsApp',
-      message: buildMessage(answers, t),
+      details: emailDetails(answers),
       lang,
     })]);
 
@@ -469,59 +492,53 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
 
   if (sent) {
     const callMe = answers.channel === 'llamada';
+    const firstName = answers.name.trim().split(' ')[0];
+    const title = !saved ? t.done.notSavedTitle : callMe ? t.done.callTitle(firstName) : t.done.waTitle(firstName);
     const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(buildMessage(answers, t))}`;
+    const waButton = (
+      <a
+        className="button button--primary button--large button--block"
+        href={waHref}
+        target="_blank"
+        rel="noopener"
+        data-contact="whatsapp"
+        data-origin="valoracion-fallo"
+      >
+        <FlipLabel>{t.done.continueWa}</FlipLabel>
+      </a>
+    );
+    const browse = (
+      <a className="link-cta" href={localizePath('/es/venta/malgrat-de-mar/', lang)}>
+        {t.done.browse}
+      </a>
+    );
     return (
+      // Detrás de la confirmación queda la misma pantalla final, por si se cierra.
       <section className="wizard wizard--done" aria-live="polite">
         <h1 className="visually-hidden">{t.pageTitle}</h1>
-        <h2 className="wizard__title">
-          {!saved
-            ? t.done.notSavedTitle
-            : callMe
-              ? t.done.callTitle(answers.name.trim().split(' ')[0])
-              : t.done.waTitle(answers.name.trim().split(' ')[0])}
-        </h2>
-        <p className="wizard__text">
-          {!saved ? (
-            <>
-              {t.done.notSavedText}{' '}
-              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fallo">
-                {site.phoneDisplay}
-              </a>
-              .
-            </>
-          ) : callMe ? (
-            <>
-              {t.done.callText}{' '}
-              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
-                {site.phoneDisplay}
-              </a>
-              .
-            </>
-          ) : (
-            <>
-              {t.done.waText}{' '}
-              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="valoracion-fin">
-                {site.phoneDisplay}
-              </a>
-              .
-            </>
-          )}
-        </p>
-        {!saved && (
-          <a
-            className="button button--primary button--large button--block"
-            href={waHref}
-            target="_blank"
-            rel="noopener"
-            data-contact="whatsapp"
-            data-origin="valoracion-fallo"
+        {doneOpen && (
+          <LeadDone
+            lang={lang}
+            ok={saved}
+            title={title}
+            text={!saved ? t.done.notSavedText : callMe ? t.done.callText : t.done.waText}
+            phoneLead={saved ? t.done.phone : t.done.failPhone}
+            origin={saved ? 'valoracion-fin' : 'valoracion-fallo'}
+            onClose={() => setDoneOpen(false)}
           >
-            <FlipLabel>{t.done.continueWa}</FlipLabel>
-          </a>
+            {saved ? (
+              <a className="button button--primary button--large button--block" href={localizePath('/es/', lang)}>
+                {t.done.home}
+              </a>
+            ) : (
+              waButton
+            )}
+            {browse}
+          </LeadDone>
         )}
-        <a className="link-cta" href={localizePath('/es/venta/malgrat-de-mar/', lang)}>
-          {t.done.browse}
-        </a>
+        <h2 className="wizard__title">{title}</h2>
+        {!saved && waButton}
+        {browse}
       </section>
     );
   }

@@ -12,6 +12,7 @@ export interface LeadNotice {
   message?: string;
   address?: string;
   channel?: string;
+  details?: Record<string, string>; // etiqueta → valor, ya en español (lo lee la oficina)
   lang: string;
   company?: string; // honeypot
 }

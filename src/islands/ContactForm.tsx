@@ -5,6 +5,7 @@ import { site } from '../data/site';
 import { createBrowserClient } from '../lib/supabase';
 import { notifyLead, saveLead } from '../lib/leads';
 import { FlipLabel } from './FlipLabel';
+import { LeadDone } from './LeadDone';
 import { localizePath, strings, type Lang } from '../i18n';
 
 // `intent` es el valor que se guarda en Supabase: no se traduce. `wa` es la línea del WhatsApp.
@@ -25,12 +26,15 @@ const text = strings({
     errName: 'Dinos cómo te llamas.',
     errPhone: 'Déjanos un teléfono para poder contestarte.',
     errPrivacy: 'Necesitamos que aceptes la política de privacidad para contestarte.',
-    savedTitle: 'Recibido, gracias.',
-    savedText: 'Nos ha llegado tu mensaje. Te contestamos en horario de oficina, normalmente el mismo día. Si tienes prisa, llámanos al',
-    failTitle: 'Tu mensaje aún no nos ha llegado.',
-    failText: 'No hemos podido guardarlo. Envíanoslo por WhatsApp, ya está escrito: solo tienes que darle a enviar. O llámanos al',
-    continueWa: 'Continuar por WhatsApp',
-    another: 'Escribir otro mensaje',
+    savedTitle: (name: string) => `¡Gracias, ${name}! Ya nos ha llegado.`,
+    savedText: 'Te respondemos lo más pronto posible al número que nos has dejado, por llamada o por WhatsApp.',
+    savedPhone: '¿Te corre prisa? Llámanos al',
+    failTitle: 'Uy, tu mensaje no nos ha llegado.',
+    failText: 'Algo ha fallado al enviarlo. Mándanoslo por WhatsApp, que ya está escrito: solo tienes que darle a enviar.',
+    failPhone: 'O llámanos al',
+    continueWa: 'Enviar por WhatsApp',
+    backToSite: 'Volver a la web',
+    backToForm: 'Volver al formulario',
     name: 'Nombre',
     namePlaceholder: 'Ej. Ana',
     phone: 'Teléfono',
@@ -43,7 +47,7 @@ const text = strings({
     privacyBefore: 'He leído la',
     privacyLink: 'política de privacidad',
     submit: 'Enviar',
-    submitHint: 'Nos llega al momento y te contestamos nosotros.',
+    submitHint: 'Nos llega al momento y te respondemos lo más pronto posible.',
   },
   en: {
     needs: { comprar: 'Buy', vender: 'Sell', alquilar: 'Rent', reformar: 'Renovate', otro: 'Something else' },
@@ -58,12 +62,15 @@ const text = strings({
     errName: 'Tell us your name.',
     errPhone: 'Leave us a phone number so we can get back to you.',
     errPrivacy: 'We need you to accept the privacy policy before we can reply.',
-    savedTitle: 'Got it, thanks.',
-    savedText: 'Your message has reached us. We’ll get back to you during office hours, usually the same day. If it’s urgent, call us on',
-    failTitle: 'Your message hasn’t reached us yet.',
-    failText: 'We couldn’t save it. Send it to us on WhatsApp instead; it’s already written, you just need to hit send. Or call us on',
-    continueWa: 'Continue on WhatsApp',
-    another: 'Write another message',
+    savedTitle: (name: string) => `Thanks, ${name}! We’ve got your message.`,
+    savedText: 'We’ll get back to you as soon as we can on the number you gave us, by phone or WhatsApp.',
+    savedPhone: 'In a hurry? Call us on',
+    failTitle: 'Oops, your message didn’t reach us.',
+    failText: 'Something went wrong sending it. Send it on WhatsApp instead; it’s already written, you just need to hit send.',
+    failPhone: 'Or call us on',
+    continueWa: 'Send on WhatsApp',
+    backToSite: 'Back to the site',
+    backToForm: 'Back to the form',
     name: 'Name',
     namePlaceholder: 'e.g. Ana',
     phone: 'Phone',
@@ -76,7 +83,7 @@ const text = strings({
     privacyBefore: 'I’ve read the',
     privacyLink: 'privacy policy',
     submit: 'Send',
-    submitHint: 'It reaches us straight away and one of us will get back to you.',
+    submitHint: 'It reaches us straight away and we’ll get back to you as soon as we can.',
   },
   ca: {
     needs: { comprar: 'Comprar', vender: 'Vendre', alquilar: 'Llogar', reformar: 'Reformar', otro: 'Una altra cosa' },
@@ -91,12 +98,15 @@ const text = strings({
     errName: 'Digues-nos com et dius.',
     errPhone: 'Deixa’ns un telèfon per poder-te respondre.',
     errPrivacy: 'Cal que acceptis la política de privacitat perquè et puguem respondre.',
-    savedTitle: 'Rebut, gràcies.',
-    savedText: 'Ens ha arribat el teu missatge. Et responem en horari d’oficina, normalment el mateix dia. Si tens pressa, truca’ns al',
-    failTitle: 'El teu missatge encara no ens ha arribat.',
-    failText: 'No l’hem pogut desar. Envia’ns-el per WhatsApp, ja està escrit: només has de prémer enviar. O truca’ns al',
-    continueWa: 'Continua per WhatsApp',
-    another: 'Escriu un altre missatge',
+    savedTitle: (name: string) => `Gràcies, ${name}! Ja ens ha arribat.`,
+    savedText: 'Et responem tan aviat com puguem al número que ens has deixat, per trucada o per WhatsApp.',
+    savedPhone: 'Tens pressa? Truca’ns al',
+    failTitle: 'Vaja, el teu missatge no ens ha arribat.',
+    failText: 'Alguna cosa ha fallat en enviar-lo. Envia’ns-el per WhatsApp, que ja està escrit: només has de prémer enviar.',
+    failPhone: 'O truca’ns al',
+    continueWa: 'Envia per WhatsApp',
+    backToSite: 'Torna al web',
+    backToForm: 'Torna al formulari',
     name: 'Nom',
     namePlaceholder: 'Ex. Anna',
     phone: 'Telèfon',
@@ -109,7 +119,7 @@ const text = strings({
     privacyBefore: 'He llegit la',
     privacyLink: 'política de privacitat',
     submit: 'Envia',
-    submitHint: 'Ens arriba a l’instant i et responem nosaltres.',
+    submitHint: 'Ens arriba a l’instant i et responem tan aviat com puguem.',
   },
 });
 
@@ -159,7 +169,7 @@ export default function ContactForm({ lang }: { lang: Lang }) {
               consent_at: new Date().toISOString(),
               consent_source: 'web',
             }),
-        ), notifyLead({ form: 'contacto', ...lead, lang })]);
+        ), notifyLead({ form: 'contacto', ...lead, intent: text.es.needs[need], lang })]);
     // Recibido si llegó por cualquiera de las dos vías: la base de datos o el correo.
     setSaved(stored || mailed);
     setSent(true);
@@ -169,52 +179,53 @@ export default function ContactForm({ lang }: { lang: Lang }) {
   const waLines = [t.hello(name.trim()), t.wa[need], message.trim()];
   const waHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(waLines.filter(Boolean).join('\n'))}`;
 
-  if (sent) {
-    return (
-      <div className="contact-form contact-form--done" aria-live="polite">
-        {saved ? (
-          <>
-            <h3 className="contact-form__title">{t.savedTitle}</h3>
-            <p className="feature__text">
-              {t.savedText}{' '}
-              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="formulario-contacto">
-                {site.phoneDisplay}
-              </a>
-              .
-            </p>
-          </>
-        ) : (
-          <>
-            <h3 className="contact-form__title">{t.failTitle}</h3>
-            <p className="feature__text">
-              {t.failText}{' '}
-              <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="formulario-contacto-fallo">
-                {site.phoneDisplay}
-              </a>
-              .
-            </p>
-          </>
-        )}
-        {!saved && (
-          <a
-            className="button button--primary button--large button--block"
-            href={waHref}
-            target="_blank"
-            rel="noopener"
-            data-contact="whatsapp"
-            data-origin="formulario-contacto-fallo"
-          >
-            <FlipLabel>{t.continueWa}</FlipLabel>
-          </a>
-        )}
-        <Button variant="ghost" onPress={() => setSent(false)}>
-          {t.another}
-        </Button>
-      </div>
-    );
+  function close() {
+    // Si llegó, el formulario vuelve vacío; si no, conserva lo escrito para reintentar.
+    if (saved) {
+      setName('');
+      setPhone('');
+      setNeed(intents[0]);
+      setMessage('');
+      setPrivacy(false);
+    }
+    setSent(false);
   }
 
   return (
+    <>
+    {sent && (
+      <LeadDone
+        lang={lang}
+        ok={saved}
+        title={saved ? t.savedTitle(name.trim().split(' ')[0]) : t.failTitle}
+        text={saved ? t.savedText : t.failText}
+        phoneLead={saved ? t.savedPhone : t.failPhone}
+        origin={saved ? 'formulario-contacto' : 'formulario-contacto-fallo'}
+        onClose={close}
+      >
+        {saved ? (
+          <Button variant="primary" className="button--large button--block" onPress={close}>
+            {t.backToSite}
+          </Button>
+        ) : (
+          <>
+            <a
+              className="button button--primary button--large button--block"
+              href={waHref}
+              target="_blank"
+              rel="noopener"
+              data-contact="whatsapp"
+              data-origin="formulario-contacto-fallo"
+            >
+              <FlipLabel>{t.continueWa}</FlipLabel>
+            </a>
+            <button type="button" className="link-cta" onClick={close}>
+              {t.backToForm}
+            </button>
+          </>
+        )}
+      </LeadDone>
+    )}
     <form className="contact-form" onSubmit={submit} noValidate>
       <label className="field">
         <span className="field__label">{t.name} <span aria-hidden="true">*</span></span>
@@ -308,5 +319,6 @@ export default function ContactForm({ lang }: { lang: Lang }) {
       </Button>
       <p className="field__hint">{t.submitHint}</p>
     </form>
+    </>
   );
 }
