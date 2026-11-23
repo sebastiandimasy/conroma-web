@@ -14,6 +14,7 @@ describe('revealKind', () => {
     expect(revealKind('escalonado')).toBe('escalonado');
     expect(revealKind('titulo')).toBe('titulo');
     expect(revealKind('cifra')).toBe('cifra');
+    expect(revealKind('desenfoque')).toBe('desenfoque');
   });
 });
 
@@ -31,6 +32,11 @@ describe('REVEAL', () => {
 
   it('titulo dura 0,7 s', () => {
     expect(REVEAL.titulo.enter).toMatchObject({ duration: 0.7 });
+  });
+
+  it('desenfoque: cada palabra entra desde borrosa a nítida, escalonada', () => {
+    expect(REVEAL.desenfoque.from).toMatchObject({ opacity: 0, filter: 'blur(10px)' });
+    expect(REVEAL.desenfoque.enter).toMatchObject({ opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.06 });
   });
 
   it('ninguna curva rebota', () => {

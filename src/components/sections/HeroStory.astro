@@ -10,7 +10,7 @@ interface Props {
   /** Sin migas en Inicio. */
   crumbs?: Crumb[];
   title: string;
-  lead: string;
+  lead?: string;
   image: ImageMetadata;
   alt: string;
   cta: { label: string; href: string };
@@ -40,7 +40,7 @@ const { crumbs, title, lead, image, alt, cta, credit, position } = Astro.props;
     <div class="hero-story__copy">
       {crumbs && <Breadcrumbs crumbs={crumbs} />}
       <h1 class="hero-story__title">{title}</h1>
-      <p class="hero-story__lead">{lead}</p>
+      {lead && <p class="hero-story__lead">{lead}</p>}
       <a class="arrow-link hero-story__cta" href={localizePath(cta.href, getLang(Astro.url))}>
         <span class="arrow-link__icon"><Icon name="arrow" /></span>
         <span class="arrow-link__label">{cta.label}</span>

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { LOGO_PATHS, LOGO_VIEWBOX } from '../lib/logo';
 import { Map as MapLibreMap, Marker, Popup, NavigationControl, setWorkerUrl } from 'maplibre-gl';
 // Vite bundla el worker y da su URL; evita el fallo "Worker failed to load" del adaptador Cloudflare.
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
@@ -69,11 +70,14 @@ export default function OfficeMapLibre({ latitude, longitude, label, lang }: Pro
     });
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
 
+    // Chincheta con el logo de Conroma: gota negra con el rombo en hueso, la punta en la oficina.
     const marker = document.createElement('div');
     marker.className = 'office-map__marker';
-    new Marker({ element: marker })
+    // MapLibre coloca el marcador con su `transform`: la gota girada va en un hijo.
+    marker.innerHTML = `<span class="office-map__pin"><svg viewBox="${LOGO_VIEWBOX}" aria-hidden="true">${LOGO_PATHS.map((d) => `<path d="${d}"/>`).join('')}</svg></span>`;
+    new Marker({ element: marker, anchor: 'bottom' })
       .setLngLat([longitude, latitude])
-      .setPopup(new Popup({ offset: 18, closeButton: false }).setText(label))
+      .setPopup(new Popup({ offset: 52, closeButton: false }).setText(label))
       .addTo(map);
 
     // Cambiar el estilo del mapa cuando el usuario cambia el tema de la web.

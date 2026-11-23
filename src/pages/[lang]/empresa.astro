@@ -11,6 +11,7 @@ import CeoSection from '../../components/sections/CeoSection.astro';
 import ServiceIndex from '../../components/sections/ServiceIndex.astro';
 import TownList from '../../components/sections/TownList.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
+import OfficeMap from '../../components/sections/OfficeMap.astro';
 import ClosingCTA from '../../components/sections/ClosingCTA.astro';
 import heroPhoto from '../../assets/equipo/conroma-74.jpg';
 import officePhoto from '../../assets/equipo/conroma-102.jpg';
@@ -61,12 +62,13 @@ const t = strings({
         answer: `En ${street}, ${postalCode} ${locality}.${hoursWith('a', 'y') ? ` Abrimos de lunes a viernes, de ${hoursWith('a', 'y')}.` : ''}`,
       },
     ] as FaqItem[],
-    heroTitle: 'Quién es Conroma Asesores',
-    heroLead: 'Especialistas en gestión inmobiliaria y de patrimonios, con oficina en Malgrat de Mar.',
+    heroTitle: '¿Quiénes somos?',
+    track: ['inmuebles gestionados', 'clientes satisfechos', 'pisos vendidos'],
     heroAlt: 'Una persona del equipo de Conroma explicando una operación en la pizarra',
     teamLink: 'Conoce al equipo',
-    rootsTitle: 'Con los pies en el pueblo',
-    rootsText: `Venimos con ideales de la primera década de este siglo. Con los años hemos renovado la manera de trabajar y las herramientas, pero no la idea: tratarte como a alguien del pueblo. ${site.about.es[2]}`,
+    rootsTitle: 'Construimos sueños',
+    rootsText:
+      'Queremos formar parte de algo grande: el momento en que una familia encuentra su hogar. Te acompañamos en cada paso, de la primera visita a la entrega de llaves, y estamos ahí para lo que haga falta.',
     rootsAlt: 'Dos personas del equipo de Conroma en la oficina',
     rootsLink: 'Pedir una valoración',
     services: 'Qué hacemos',
@@ -107,12 +109,13 @@ const t = strings({
         answer: `At ${street}, ${postalCode} ${locality}.${hoursWith('to', 'and') ? ` We’re open Monday to Friday, ${hoursWith('to', 'and')}.` : ''}`,
       },
     ],
-    heroTitle: 'Meet Conroma Asesores',
-    heroLead: 'Property and portfolio management specialists, with an office in Malgrat de Mar.',
+    heroTitle: 'Who we are',
+    track: ['properties managed', 'happy clients', 'homes sold'],
     heroAlt: 'A member of the Conroma team explaining a sale on the whiteboard',
     teamLink: 'Meet the team',
-    rootsTitle: 'Rooted in the town',
-    rootsText: `We started out with ideals from the first decade of this century. Over the years we’ve updated how we work and the tools we use, but not the idea: treating you like someone from the town. ${site.about.en[2]}`,
+    rootsTitle: 'We build dreams',
+    rootsText:
+      'We want to be part of something big: the moment a family finds its home. We’re with you every step of the way, from the first viewing to handing over the keys, and we’re there for whatever you need.',
     rootsAlt: 'Two members of the Conroma team at the office',
     rootsLink: 'Ask for a valuation',
     services: 'What we do',
@@ -153,12 +156,13 @@ const t = strings({
         answer: `A ${street}, ${postalCode} ${locality}.${hoursWith('a', 'i') ? ` Obrim de dilluns a divendres, de ${hoursWith('a', 'i')}.` : ''}`,
       },
     ],
-    heroTitle: 'Qui és Conroma Asesores',
-    heroLead: 'Especialistes en gestió immobiliària i de patrimonis, amb oficina a Malgrat de Mar.',
+    heroTitle: 'Qui som?',
+    track: ['immobles gestionats', 'clients satisfets', 'pisos venuts'],
     heroAlt: 'Una persona de l’equip de Conroma explicant una operació a la pissarra',
     teamLink: 'Coneix l’equip',
-    rootsTitle: 'Amb els peus al poble',
-    rootsText: `Venim amb ideals de la primera dècada d’aquest segle. Amb els anys hem renovat la manera de treballar i les eines, però no la idea: tractar-te com algú del poble. ${site.about.ca[2]}`,
+    rootsTitle: 'Construïm somnis',
+    rootsText:
+      'Volem formar part d’una cosa gran: el moment en què una família troba la seva llar. T’acompanyem a cada pas, de la primera visita a l’entrega de claus, i hi som per al que calgui.',
     rootsAlt: 'Dues persones de l’equip de Conroma a l’oficina',
     rootsLink: 'Demana una valoració',
     services: 'Què fem',
@@ -174,6 +178,8 @@ const crumbs = [
   { name: t.crumb, path },
 ];
 const faq = t.faq;
+// Las mismas cifras que la portada (no las reseñas de Google).
+const trackRecord = ['+300', '+100', '+200'].map((value, i) => ({ value, label: t.track[i] }));
 ---
 
 <BaseLayout
@@ -185,7 +191,6 @@ const faq = t.faq;
   <HeroStory
     crumbs={crumbs}
     title={t.heroTitle}
-    lead={t.heroLead}
     image={heroPhoto}
     alt={t.heroAlt}
     cta={{ label: t.teamLink, href: '/es/equipo/' }}
@@ -194,7 +199,7 @@ const faq = t.faq;
 
   <Statement text={t.answer} />
 
-  <ProofBand />
+  <ProofBand figures={trackRecord} />
 
   <SplitFeature
     title={t.rootsTitle}
@@ -213,6 +218,8 @@ const faq = t.faq;
       <TownList title={t.towns} as="h2" />
     </div>
   </section>
+
+  <OfficeMap />
 
   <FaqSection title={t.faqTitle} items={faq} origin="empresa-faq" />
 

@@ -48,6 +48,18 @@ function toItem(el: HTMLElement): Item | null {
     });
     return { el, kind, targets: () => lines };
   }
+  if (kind === 'desenfoque') {
+    let words: Element[] = [el];
+    SplitText.create(el, {
+      type: 'words',
+      wordsClass: 'split-word',
+      autoSplit: true,
+      onSplit: (split) => {
+        words = split.words;
+      },
+    });
+    return { el, kind, targets: () => words };
+  }
   return { el, kind, targets: () => el };
 }
 

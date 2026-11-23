@@ -1,9 +1,9 @@
 import type { gsap } from 'gsap';
 
 /** Tipos de entrada que se marcan con `data-reveal="…"` (spec §5.2). */
-export type RevealKind = 'subir' | 'escalonado' | 'foto' | 'titulo' | 'cifra';
+export type RevealKind = 'subir' | 'escalonado' | 'foto' | 'titulo' | 'cifra' | 'desenfoque';
 
-const kinds: readonly RevealKind[] = ['subir', 'escalonado', 'foto', 'titulo', 'cifra'];
+const kinds: readonly RevealKind[] = ['subir', 'escalonado', 'foto', 'titulo', 'cifra', 'desenfoque'];
 
 /** Vacío, `"true"` o desconocido → `subir`, el tipo por defecto. */
 export function revealKind(attr: string | null | undefined): RevealKind {
@@ -35,6 +35,12 @@ export const REVEAL: Record<RevealKind, Motion> = {
     exit: { yPercent: -60, opacity: 0, duration: 0.3, ease: exitEase },
   },
   cifra: subir,
+  // Frases de cierre: palabra a palabra, de borrosa a nítida (patrón «Text Blur In» de 21st.dev).
+  desenfoque: {
+    from: { opacity: 0, filter: 'blur(10px)', y: 8 },
+    enter: { opacity: 1, filter: 'blur(0px)', y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.06 },
+    exit: { opacity: 0, filter: 'blur(8px)', duration: 0.35, ease: exitEase },
+  },
 };
 
 export const TRIGGER = { start: 'top 88%', end: 'bottom 12%', interval: 0.1 } as const;

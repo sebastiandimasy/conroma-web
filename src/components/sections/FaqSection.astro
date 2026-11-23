@@ -1,5 +1,6 @@
 ---
 import Faq from '../Faq.astro';
+import CtaPanel from '../CtaPanel.astro';
 import type { FaqItem } from '../../data/faq';
 import { whatsappUrl, type ContactReason } from '../../lib/links';
 import { getLang, strings } from '../../i18n';
@@ -52,11 +53,16 @@ const { title = t.title, items, lead, origin, reason } = Astro.props;
     {
       origin && (
         <div class="faq-section__contact">
-          <p class="faq-section__contact-title">{t.contactTitle}</p>
-          <p class="faq-section__contact-text">{t.contactText}</p>
-          <a class="button button--ghost" href={whatsappUrl(lang, { reason })} data-contact="whatsapp" data-origin={origin}>
-            {t.contactLink}
-          </a>
+          <CtaPanel
+            as="h3"
+            title={t.contactTitle}
+            text={t.contactText}
+            href={whatsappUrl(lang, { reason })}
+            label={t.contactLink}
+            icon="whatsapp"
+            contact="whatsapp"
+            origin={origin}
+          />
         </div>
       )
     }

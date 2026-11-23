@@ -1,0 +1,31 @@
+---
+// CTA estándar de la web: panel centrado con título, una frase y un botón (base: «Call to
+// Action» cta-01 de 21st.dev, adaptado a la marca). Sustituye a los bloques sueltos que cada
+// página resolvía a su manera (uno sin peso, otro pegado a la izquierda).
+import Icon from './Icon.astro';
+import type { IconName } from '../lib/icons';
+
+interface Props {
+  title: string;
+  text: string;
+  href: string;
+  label: string;
+  icon?: IconName;
+  /** Nivel del título: h2 si el panel es la sección, h3 si va dentro de otra. */
+  as?: 'h2' | 'h3';
+  /** data-contact / data-origin para GTM (medición por Click URL). */
+  contact?: string;
+  origin?: string;
+}
+
+const { title, text, href, label, icon, as: Heading = 'h2', contact, origin } = Astro.props;
+---
+
+<div class="cta-panel" data-reveal>
+  <Heading class="cta-panel__title">{title}</Heading>
+  <p class="cta-panel__text">{text}</p>
+  <a class="button button--primary cta-panel__button" href={href} data-contact={contact} data-origin={origin}>
+    {icon && <Icon name={icon} class="button__icon" />}
+    {label}
+  </a>
+</div>
