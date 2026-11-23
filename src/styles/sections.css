@@ -402,7 +402,7 @@
   }
 
   /* Banner de cookies: hoja a todo el ancho abajo y velo sobre la página hasta que se elige.
-     «Solo las necesarias» y «Aceptar todas» tienen el mismo tamaño y están a un toque: la AEPD
+     «Solo las necesarias» y «Aceptar todo» tienen el mismo tamaño y están a un toque: la AEPD
      exige que rechazar sea tan fácil como aceptar. */
   .cookie-notice {
     @apply fixed;

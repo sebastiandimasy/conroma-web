@@ -9,10 +9,10 @@ export const ui = strings({
     cookies: {
       label: 'Aviso de cookies',
       title: 'Usamos cookies',
-      text: 'Usamos cookies propias y de terceros para medir las visitas con Google Analytics y mejorar la web. Las de medición solo se activan si las aceptas. Más información en nuestra',
+      text: 'Usamos cookies para mejorar su experiencia de navegación, mostrarle anuncios o contenidos personalizados y analizar nuestro tráfico. Al hacer clic en “Aceptar todo” usted da su consentimiento a nuestro uso de las cookies. Más información en nuestra',
       link: 'política de cookies',
       reject: 'Solo las necesarias',
-      accept: 'Aceptar todas',
+      accept: 'Aceptar todo',
     },
     header: {
       home: 'inicio',
@@ -31,7 +31,7 @@ export const ui = strings({
     cookies: {
       label: 'Cookie notice',
       title: 'We use cookies',
-      text: 'We use our own and third-party cookies to measure visits with Google Analytics and improve the site. Analytics cookies only switch on if you accept them. More details in our',
+      text: 'We use cookies to improve your browsing experience, show you personalised ads or content and analyse our traffic. By clicking “Accept all” you consent to our use of cookies. More details in our',
       link: 'cookie policy',
       reject: 'Only the essential ones',
       accept: 'Accept all',
@@ -53,10 +53,10 @@ export const ui = strings({
     cookies: {
       label: 'Avís de galetes',
       title: 'Fem servir galetes',
-      text: 'Fem servir galetes pròpies i de tercers per mesurar les visites amb Google Analytics i millorar el web. Les de mesura només s’activen si les acceptes. Més informació a la nostra',
+      text: 'Fem servir galetes per millorar la seva experiència de navegació, mostrar-li anuncis o continguts personalitzats i analitzar el nostre trànsit. En fer clic a «Accepta-ho tot» vostè dona el seu consentiment al nostre ús de les galetes. Més informació a la nostra',
       link: 'política de galetes',
       reject: 'Només les necessàries',
-      accept: 'Accepta-les totes',
+      accept: 'Accepta-ho tot',
     },
     header: {
       home: 'inici',
