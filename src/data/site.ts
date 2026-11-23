@@ -253,17 +253,17 @@ export const site: SiteData = {
     es: [
       'Somos una pequeña familia encargada de encontrarle sentido a la vivienda que siempre has deseado.',
       'Te acompañamos en todo el proceso y seguimos ahí después: antes, durante y después de la venta.',
-      'Tenemos agentes de calle, gente que conoce el sector y, sobre todo, el pueblo.',
+      'Detrás de cada piso hay una familia que empieza algo nuevo. Nos implicamos para que ese sitio acabe siendo su hogar.',
     ],
     en: [
       "We’re a small family whose job is to help you find a home that truly makes sense for you.",
       "We’re with you through the whole process and we’re still there afterwards: before, during and after the sale.",
-      'We have agents out on the street, people who know the business and, above all, know the town.',
+      'Behind every home there’s a family starting something new. We get involved so that place ends up being their home.',
     ],
     ca: [
       "Som una petita família que s’encarrega de trobar-li el sentit a l’habitatge que sempre has volgut.",
       "T’acompanyem durant tot el procés i hi continuem sent després: abans, durant i després de la venda.",
-      'Tenim agents de carrer, gent que coneix el sector i, sobretot, el poble.',
+      'Darrere de cada pis hi ha una família que comença una cosa nova. Ens hi impliquem perquè aquell lloc acabi sent la seva llar.',
     ],
   },
 };
