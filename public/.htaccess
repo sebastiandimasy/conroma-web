@@ -1,6 +1,9 @@
 # Conroma — config para Hostinger (Apache/LiteSpeed) sirviendo la web estática.
 # En Cloudflare esto se ignora; allí mandaba public/_headers y public/_redirects.
 
+# Sin esto Hostinger sirve su propia página de error en vez de la nuestra.
+ErrorDocument 404 /404.html
+
 # ── Redirecciones 301 de la migración ─────────────────────────────────────────
 # La web antigua vive en www.conromaasesores.com con OTRA estructura de URLs.
 # En Cloudflare las 301 las hacía public/_redirects; en Hostinger (Apache/LiteSpeed)
