@@ -158,15 +158,21 @@ Si la sección necesita contexto, lo da el título o una frase de entrada (`.sec
 
 ### Movimiento
 
-Aquí es donde `no-slop-ui` y `emil-design-eng` se contradicen. Resolución:
+**Web dinámica y fluida (dueño, 2026-11-23).** Cada componente entra al aparecer con el scroll y sale
+al irse por arriba; al volver a subir, entra otra vez. Galerías, carruseles, filas y desplegables
+responden al ratón en ordenador y al dedo en móvil. Sustituye a la regla anterior («sin JS para el
+movimiento», 100–250 ms, cero `transform` en hover). Diseño completo en
+`docs/superpowers/specs/2026-11-23-animaciones-gsap-design.md`.
 
 | Situación | Regla | Por qué |
 |---|---|---|
-| `:hover` | Solo color, fondo o sombra. **Cero transform** salvo el orbe del cierre (§5) | Mover al pasar el ratón es el tic de interfaz generada |
-| `:active` (pulsación) | `transform: scale(0.97)` **sí** | Es respuesta a una acción, no decoración. Sin ella el botón parece muerto |
-| Entradas | Desde `scale(0.95)` + `opacity: 0`. Nunca desde `scale(0)` | Nada aparece de la nada |
-| Duración | 100–250ms. Excepción: el revelado del cierre (0,7s), el único momento firmado de la página | Por encima de 300ms la interfaz se siente lenta |
-| Curva | `var(--ease-out)`. **Nunca `ease-in`** | `ease-in` retrasa el arranque, justo cuando se está mirando |
+| Motor | **GSAP** (`src/lib/motion.ts` + `src/lib/motion/`) para entradas, salidas, cifras y efectos de scroll. CSS (`src/styles/motion.css`) para hovers. `motion` solo dentro de las islas React que ya lo usan | Un sistema para todo, igual en todos los móviles (iOS < 26 no tiene `animation-timeline`) |
+| Entradas y salidas | Se marca el elemento con `data-reveal="subir"` (por defecto), `"escalonado"`, `"foto"`, `"titulo"` o `"cifra"`. Valores en `src/lib/motion/kinds.ts`: subir 32 px en 0,6 s; foto desde `scale(1.12)` en 0,8 s; título por líneas con máscara en 0,7 s; salida más corta (0,3–0,35 s) | Un componente nuevo se anima con solo marcarlo |
+| Contenido | **Nada se oculta en CSS.** El estado inicial lo pone GSAP solo a lo que está por debajo de la pantalla; lo que se ve al cargar entra solo con desplazamiento. La foto del héroe nunca cambia de opacidad | Si el JS falla, todo se ve; no se retrasa el LCP |
+| `:hover` | Foto `scale(1.04)` dentro de su marco, velo de fila al 4 % y flecha 4 px a la derecha, vecinas del carrusel al 70 % | Respuesta clara al ratón, sin saltos de maquetación |
+| `:active` (pulsación) | `transform: scale(0.97)` en fotos y botones; velo en filas | En móvil es el equivalente al hover |
+| Duración | Feedback 100–150 ms; entradas 0,4–0,8 s; salidas más cortas que las entradas | Las entradas acompañan el scroll; la respuesta al dedo es inmediata |
+| Curva | Entradas `power3.out` / `var(--ease-out)`; salidas `power2.in`. Nunca rebote ni elástico en código nuevo | |
 | `transition` | Propiedades concretas. Nunca `transition: all` | |
 | Hover en táctil | Dentro de `@media (hover: hover) and (pointer: fine)` | En móvil el hover se dispara al tocar |
 | Rendimiento | Animar solo `transform` y `opacity` | Lo demás provoca layout y repintado |
@@ -325,16 +331,19 @@ construirlo. Cada componente declara su anatomía (qué elementos lo forman) y s
 - Teclado móvil correcto por `type` (email, tel, number).
 
 ### Contador / Stat
-- En páginas rediseñadas: `ProofBand` (§5), cifras **estáticas** (no cuentan desde 0) que pasan de
-  gris a tinta con el scroll. Resto: `.stats > .stat`, cifra en `--font-display`, `tabular-nums`.
+- En páginas rediseñadas: `ProofBand` (§5). Las cifras **cuentan desde 0** al entrar en pantalla
+  (`data-reveal="cifra"`, 1,2 s), con los decimales del dato (la nota de Google cuenta de 0,0 a 4,9) y
+  prefijo o sufijo fijos («+», «años»); acaban en el texto exacto del HTML. Con reduced-motion no
+  cuentan. Resto: `.stats > .stat`, cifra en `--font-display`, `tabular-nums`.
 - Cifras sin fuente = **provisionales**, marcadas en el dato y editables en un solo sitio.
 
 ### Movimiento (todos)
-- Entradas desde `scale(0.95)` + `opacity:0`, 100–250ms, `--ease-out`. Nunca `transition: all`.
+- Entradas y salidas con `data-reveal` (§1, Movimiento). Nunca `transition: all`.
 - Solo `transform`/`opacity` se animan. `prefers-reduced-motion` conserva opacidad/color, quita movimiento.
+- Interruptor de emergencia: `MOTION_ON = false` en `src/lib/motion.ts` deja la web visible y quieta.
 
 ### Qué revisar en cada componente (checklist)
-Pares fondo/texto ≥4,5:1 en ambos temas · cero `transform` en `:hover` (salvo orbe) · táctil 44px · 390px sin scroll
+Pares fondo/texto ≥4,5:1 en ambos temas · `data-reveal` puesto y nada oculto en CSS · táctil 44px · 390px sin scroll
 horizontal · ningún hex fuera de tokens · un CTA primario por bloque · estados hover/activo/foco/disabled
 distintos y on-brand.
 
@@ -386,8 +395,8 @@ Se fijaron en Inicio y valen para **todas** las páginas y secciones (CSS global
 |---|---|---|
 | Héroe | `HeroStory` | Foto real nítida, bloque de copia **abajo a la izquierda**: migas → H1 → lead → flecha. Ritmo **12 / 20 / 32 px**. H1 máx 12ch, lead máx 36ch y una sola frase. Velo fuerte anclado al bloque, no a toda la foto. Reserva el dock móvil (76px + safe-area). Crédito de foto visible si la licencia lo pide. En Inicio, sin migas y con la foto del equipo (`site.heroImage`): el H1 es el término de búsqueda («Inmobiliaria en Malgrat de Mar»), nunca un eslogan. Si la foto tiene mucho cielo, encuadrar con `position` (p. ej. `center 75%`) para que se vea lo que importa. |
 | Respuesta | `Statement` | Una frase grande (Hanken 300, máx 30ch) sobre gris. Responde la intención de búsqueda; sin botones. |
-| Cifras | `ProofBand` | Cifras grandes y finas en rejilla **2×2 en móvil** y en una fila en escritorio; estáticas, con fuente enlazada (≥44px) citada una sola vez si se repite. Cada página elige cifras de su tema (Vender: Google y años; Comprar: cartera, pueblos y Google). |
-| Proceso | `StoryScroll` | Numeral grande + título + texto; en escritorio la foto queda fija y los pasos pasan (scroll-driven, con fallback). |
+| Cifras | `ProofBand` | Cifras grandes y finas en rejilla **2×2 en móvil** y en una fila en escritorio; cuentan desde 0 al entrar (§4), con fuente enlazada (≥44px) citada una sola vez si se repite. Cada página elige cifras de su tema (Vender: Google y años; Comprar: cartera, pueblos y Google). |
+| Proceso | `StoryScroll` | Numeral grande + título + texto; en escritorio la foto queda fija (`sticky`) y cambia con el paso activo, que marca GSAP; sin JS o con reduced-motion, cada paso con su foto. |
 | Comparativa | `Compare` | **Dos mitades sin bordes** (la segunda sobre gris). Las dos opciones son válidas y en positivo («te encaja si…»); **el check amarillo solo en la opción Conroma**, la otra lleva punto gris. Conroma lista más ventajas. Prohibido el tono de alarma. |
 | Valoración | `ValuationBlock` | Sin tarjeta: formulario + CTA primario sobre la banda; las dos maneras separadas por una línea suave, sin chapas ni etiquetas. |
 | Guías | `GuideTeaser` | Lista editorial con fecha, título y entradilla; separadores finos. |
@@ -398,8 +407,8 @@ Se fijaron en Inicio y valen para **todas** las páginas y secciones (CSS global
 | Escaparate de Inicio | `home-featured` | Como el escaparate, más «Busca en tu pueblo»: un enlace por pueblo con su recuento real, filas con línea suave (2 columnas desde 48rem). Sustituye al buscador de formulario: un toque en móvil y enlaces que Google sigue. |
 | Servicios | `ServiceIndex` (`photos` en Inicio y en Servicios, con `id` para la flecha del héroe: acordeón de uno en uno con la foto del servicio abierto, dentro en móvil y fija al lado en escritorio) | Índice editorial: una fila por servicio (nombre grande y fino, frase en ink-2, flecha discreta en ink-2). Toda la fila enlaza. Sin tarjetas, iconos ni cuadrados amarillos repetidos. En escritorio, tres columnas: nombre · frase · flecha. |
 | Foto + texto | `SplitFeature` | Foto 4:5 (radio 4px) y bloque título → lead → flecha. En móvil, foto arriba; en escritorio, dos columnas y `reverse` alterna el lado. `tone` elige la banda (canvas/surface) para alternar con la sección de al lado. Acepta `id` (ancla) y, si la flecha abre WhatsApp o llama, `link.contact` + `link.origin` para medir por Click URL. En Alquilar, dos seguidos (busco / tengo piso) con `reverse` en el segundo. |
-| Héroe de Inicio | `HeroCenter` | Elegido por el dueño (2026-11-18). Foto del equipo a sangre con velo, titular, apoyo y dos acciones centrados: «Trabajemos juntos» (primario → contacto) y «¿Buscas un piso?» (texto clicable sin borde → /es/venta/). Entrada escalonada solo en CSS; con reduced-motion llega quieto. El resto de páginas siguen con `HeroStory`. |
-| Respuesta | `Statement` | Al ancho de la rejilla, justificado con la última línea a la izquierda y guiones automáticos (2026-11-18). Texto más contenido (máx. ~2,4rem) que se enciende palabra a palabra al cruzar la pantalla (`animation-timeline: view()`). Sin soporte o con reduced-motion se ve entero. El texto va completo en el HTML. |
+| Héroe de Inicio | `HeroCenter` | Elegido por el dueño (2026-11-18). Foto del equipo a sangre con velo, titular, apoyo y dos acciones centrados: «Trabajemos juntos» (primario → contacto) y «¿Buscas un piso?» (texto clicable sin borde → /es/venta/). Entrada escalonada del texto al cargar y salida con el scroll (GSAP); la foto no se funde; con reduced-motion llega quieto. El resto de páginas siguen con `HeroStory`. |
+| Respuesta | `Statement` | Al ancho de la rejilla, justificado con la última línea a la izquierda y guiones automáticos (2026-11-18). Texto más contenido (máx. ~2,4rem) que se enciende palabra a palabra (opacidad 0,18 → 1) al cruzar la pantalla, con GSAP. Sin JS o con reduced-motion se ve entero. El texto va completo en el HTML. |
 | Contacto | `ContactSection` | Banda gris. Título → lead → WhatsApp (primario) → canales en filas con línea suave (móvil y WhatsApp, fijo, email, oficina, horario) dentro de `<address>`; formulario al lado en escritorio, sin tarjeta. Teléfonos con `data-contact`/`data-origin` (Click URL). |
 | Mapa | `OfficeMap` | Título «Pásate por la oficina», mapa sin caja ni sombra (radio 4px, 4:3 móvil, 21:9 escritorio) y datos debajo sin tarjeta: dirección, horario, nota de Google enlazada; «Cómo llegar» primario y «Ver en Google Maps» como texto clicable. |
 | Zonas | `TownLinks` | Banda gris. Enlaces a cada pueblo publicado en filas (patrón `town-list`); los pueblos sin página van en una frase, sin chapas. |
@@ -411,12 +420,12 @@ Se fijaron en Inicio y valen para **todas** las páginas y secciones (CSS global
 | Vídeos | `ReelRow` | Fila de vídeos 9:16 (scroll-snap en móvil, 5 columnas desde 60rem). Solo se reproducen los visibles y nunca con `prefers-reduced-motion`. Cada vídeo enlaza a Instagram. |
 | Pueblos | `TownList` | Lista de pueblos ordenada por inmuebles en venta, con el recuento real a la derecha. `as="h2"` cuando es sección propia, `h3` dentro de otra. `fold` la pliega en una fila que se abre (Inicio), para no alargar el scroll. |
 | Listado | `page-head--editorial` | Cabecera a la izquierda: migas, titular grande y fino, dato real (N inmuebles en X pueblos). Los filtros (chips) sí se quedan: filtran datos reales. Pueblos en una fila desplegable suave, enlaces con línea fina; «¿No ves el tuyo?» plano y centrado, con el CTA principal amarillo. La barra de filtros fija va **pegada a la cabecera** (`top: var(--header-height)`), sin hueco por donde asomen las fichas. Los `<select>` llevan el chevron de la casa (no la flecha nativa) con 20px de relleno a cada lado. |
-| Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Es el único momento animado «firmado» (0,7s); con reduced-motion todo se ve a la vez. |
+| Cierre | `ClosingCTA` | Foto a sangre con velo, estado real de la oficina (hora de Madrid), titular en dos tonos, orbe que revela la píldora amarilla de WhatsApp + enlace de llamada. Revelado de 0,7 s; con reduced-motion todo se ve a la vez. |
 
 ### Bordes
 - Si un borde se nota más que el contenido, sobra. Separadores: 1px `--color-line` al 40% o nada.
 - Nada de tarjetas con borde en bandas editoriales, ni chapas («Recomendada»).
 
 ### Movimiento
-- Scroll-driven en CSS (`animation-timeline: view()`) dentro de `prefers-reduced-motion: no-preference`
-  y `@supports`. Sin JS para el movimiento salvo el revelado del cierre.
+- GSAP para entradas, salidas, cifras y efectos de scroll; CSS para hovers (§1, Movimiento). Todo dentro
+  de `prefers-reduced-motion: no-preference`. Sin `animation-timeline` (no funciona en iOS < 26).
