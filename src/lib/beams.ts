@@ -11,7 +11,6 @@ interface Beam {
   angle: number;
   speed: number;
   opacity: number;
-  hue: number;
   pulse: number;
   pulseSpeed: number;
 }
@@ -20,11 +19,13 @@ const SCALE = 0.1; // resolución del lienzo respecto a la pantalla
 const BEAMS = 14;
 const FRAME_MS = 33;
 
-// Tope de opacidad por tema: medido para que el texto secundario siga por encima de 4,5:1.
+// El lienzo es opaco (color de fondo del tema) y los haces se mezclan con «darken» en claro y
+// «lighten» en oscuro: por mucho que se solapen, ningún punto pasa del color `peak`. Ese tope
+// está calculado para que el texto gris (--color-ink-3) y el rojo de error sigan ≥4,5:1.
 const THEME = {
-  light: { light: 62, sat: 92, alpha: 0.5 },
-  dark: { light: 52, sat: 85, alpha: 0.24 },
-};
+  light: { base: '#ffffff', peak: '255, 236, 165', op: 'darken' }, // ink-3 5,1:1 · error 4,6:1
+  dark: { base: '#0c0a09', peak: '52, 36, 9', op: 'lighten' }, // ink-3 4,7:1 · ink-2 5,7:1
+} as const;
 
 function isDark(): boolean {
   return document.documentElement.dataset.theme === 'dark';
@@ -40,8 +41,7 @@ function newBeam(w: number, h: number, i: number, fromBottom: boolean): Beam {
     length: h * 2.2,
     angle: -35 + Math.random() * 10,
     speed: h * (0.0007 + Math.random() * 0.0007),
-    opacity: 0.18 + Math.random() * 0.14,
-    hue: 38 + (i * 14) / BEAMS, // ámbar (38) → amarillo de marca (52)
+    opacity: 0.55 + Math.random() * 0.35,
     pulse: Math.random() * Math.PI * 2,
     pulseSpeed: 0.02 + Math.random() * 0.02,
   };
@@ -66,10 +66,13 @@ export function initBeams(canvas: HTMLCanvasElement | null): void {
 
   function draw() {
     const t = THEME[isDark() ? 'dark' : 'light'];
-    ctx!.clearRect(0, 0, w, h);
+    ctx!.globalCompositeOperation = 'source-over';
+    ctx!.fillStyle = t.base;
+    ctx!.fillRect(0, 0, w, h);
+    ctx!.globalCompositeOperation = t.op;
     for (const b of beams) {
-      const a = b.opacity * (0.8 + Math.sin(b.pulse) * 0.2) * t.alpha;
-      const color = (k: number) => `hsla(${b.hue}, ${t.sat}%, ${t.light}%, ${a * k})`;
+      const a = b.opacity * (0.8 + Math.sin(b.pulse) * 0.2);
+      const color = (k: number) => `rgba(${t.peak}, ${a * k})`;
       ctx!.save();
       ctx!.translate(b.x, b.y);
       ctx!.rotate((b.angle * Math.PI) / 180);

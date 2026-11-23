@@ -179,7 +179,7 @@
    transparente y el gris a translúcido; tarjetas, campos y menús siguen opacos. */
 :root {
   --section-canvas: transparent;
-  --section-surface: color-mix(in oklch, var(--color-surface-2) 72%, transparent);
+  --section-surface: color-mix(in oklch, var(--color-surface-2) 50%, transparent);
 }
 
 .beams {
