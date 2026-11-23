@@ -155,14 +155,14 @@ const trackRecord = ['+300', '+100', '+200'].map((value, i) => ({ value, label: 
 
   <Statement text={t.answer} />
 
-  <ProofBand figures={trackRecord} count />
+  <ProofBand figures={trackRecord} />
 
   <section class="section home-featured">
     <div class="wrap">
       {
         featuredHomes.length > 0 && (
           <>
-            <h2 class="section__title" data-reveal>{t.featured}</h2>
+            <h2 class="section__title" data-reveal="titulo">{t.featured}</h2>
             <div class="home-featured__grid">
               <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" lang={lang} />
             </div>

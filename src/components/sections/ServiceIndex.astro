@@ -63,7 +63,7 @@ const photoOf: Record<string, { src: string; alt: string }> = {
     <section class="section service-index service-index--photos" id={id}>
       <div class="wrap service-index__grid">
         <div>
-          <h2 class="section__title" data-reveal>{title}</h2>
+          <h2 class="section__title" data-reveal="titulo">{title}</h2>
           <div class="service-index__accordion" data-reveal>
             {list.map((service, index) => (
               <details class="service-index__item" name="servicios" open={index === 0}>
@@ -115,7 +115,7 @@ const photoOf: Record<string, { src: string; alt: string }> = {
   ) : (
     <section class="section service-index">
       <div class="wrap">
-        <h2 class="section__title" data-reveal>{title}</h2>
+        <h2 class="section__title" data-reveal="titulo">{title}</h2>
         <ul class="service-index__list">
           {list.map((service) => (
             <li data-reveal>

@@ -19,7 +19,7 @@ const names = steps.map((_, index) => `--paso-${index + 1}`);
     En escritorio con scroll-driven, una foto fija cambia con el paso activo (sections.css). */}
 <section class="section story-scroll" id={id}>
   <div class="wrap">
-    <h2 class="section__title" data-reveal>{title}</h2>
+    <h2 class="section__title" data-reveal="titulo">{title}</h2>
     <div class="story-scroll__body" style={`timeline-scope: ${names.join(', ')}`}>
       <ol class="story-scroll__steps">
         {
