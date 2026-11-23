@@ -61,7 +61,12 @@ if [ "$DESTINO" = "demo" ]; then
     { avisar "Fallo subiendo la demo."; exit 1; }
   node scripts/smoke.mjs "$DEMO_URL" --preview || { avisar "La demo no pasa la prueba de humo."; exit 1; }
 else
-  # Producción: la sube el workflow o el procedimiento de docs/SWIPE.md; aquí solo comprobamos.
+  # Producción: se sube el build sin wrangler.json (config de Cloudflare con rutas de este Mac)
+  # y se borran del servidor las fichas de pisos que ya no están activos.
+  git add "${DATOS[@]}" public/data/altas.json && git commit -q -m "data(inventario): lectura del panel del $(date +%d-%m-%Y)" || true
+  rm -rf "$PERFIL/produccion" && rsync -a --exclude wrangler.json dist/client/ "$PERFIL/produccion/" &&
+    BORRAR_FICHAS_RETIRADAS=1 PREVIEW_DIR="$PERFIL/produccion" python3 scripts/subir-preview.py ||
+    { avisar "Fallo subiendo la web a producción. Sigue la versión anterior; mira el registro."; exit 1; }
   node scripts/smoke.mjs "${SITE_URL:-https://conromaasesores.com}" || { avisar "La web no pasa la prueba de humo."; exit 1; }
 fi
 avisar "Web actualizada con el inventario de Habitatsoft de hoy."

@@ -1,5 +1,18 @@
 # Puente diario con el panel de Habitatsoft
 
+> **Desde el 23-nov-2026 (web en producción) se usa a demanda, no cada día.** La sesión de
+> Habitatsoft solo dura 3 horas (cookie `hs-auth`; «Recordar» solo guarda el usuario), así que
+> una tarea desatendida no puede leer el panel. La tarea de launchd está quitada. Para actualizar
+> los pisos de conromaasesores.com, desde la copia de producción:
+>
+> ```bash
+> cd ~/conroma-web-swipe && bash scripts/habitatsoft-panel/actualizar-pisos.sh
+> ```
+>
+> Si la sesión ha caducado abre Chrome para iniciarla; luego lee, compila, pasa los tests,
+> guarda la versión, sube a producción (`.hostinger` de esa carpeta), borra del servidor las
+> fichas de pisos retirados y pasa la prueba de humo. Lo definitivo es el feed «Enlace Web 2.0».
+
 > Solución provisional mientras Habitatsoft no nos da la URL del feed «Enlace Web 2.0».
 > Cuando llegue el feed, se pone en `HABITATSOFT_FEED_URL` y este puente se apaga
 > (`bash scripts/habitatsoft-panel/instalar-tarea.sh --quitar`).

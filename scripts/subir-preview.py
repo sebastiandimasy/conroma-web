@@ -86,6 +86,33 @@ def subir(ftp: FTP, local: Path, remoto: str) -> None:
         ftp.storbinary(f'STOR {remoto}', f, blocksize=1024 * 256)
 
 
+def borrar_fichas_retiradas(ftp: FTP, base: str) -> None:
+    """Subir no borra nada: sin esto, la ficha de un piso retirado seguiría en el servidor.
+    Solo toca carpetas de <idioma>/inmueble/ que ya no existen en el build local."""
+    borradas = 0
+    for lang in ('es', 'en', 'ca'):
+        local = LOCAL / lang / 'inmueble'
+        if not local.is_dir():
+            continue  # build raro: mejor no borrar nada de ese idioma
+        remoto = f"{base}/{lang}/inmueble"
+        try:
+            nombres = [n.rsplit('/', 1)[-1] for n in ftp.nlst(remoto)]
+        except error_perm:
+            continue
+        for nombre in nombres:
+            if nombre in ('.', '..') or (local / nombre).exists():
+                continue
+            carpeta = f"{remoto}/{nombre}"
+            for archivo in ftp.nlst(carpeta):
+                archivo = archivo.rsplit('/', 1)[-1]
+                if archivo not in ('.', '..'):
+                    ftp.delete(f"{carpeta}/{archivo}")
+            ftp.rmd(carpeta)
+            borradas += 1
+            print(f"  ficha retirada borrada: {lang}/inmueble/{nombre}")
+    print(f"Fichas retiradas borradas del servidor: {borradas}.")
+
+
 def main() -> None:
     cred = cargar_credenciales()
     solo_zip = '--solo-zip' in sys.argv
@@ -130,6 +157,8 @@ def main() -> None:
             pct = enviados / total_bytes * 100 if total_bytes else 100
             print(f"  {subidos}/{len(archivos)} ({pct:.0f}%)")
 
+    if os.environ.get('BORRAR_FICHAS_RETIRADAS') == '1' and not fallos:
+        borrar_fichas_retiradas(ftp, cred['FTP_DIR'].rstrip('/'))
     ftp.quit()
     print(f"\nSubidos {subidos} archivos. Fallos: {fallos}.")
     if fallos:
