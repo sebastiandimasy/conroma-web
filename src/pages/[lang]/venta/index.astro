@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
@@ -17,8 +17,9 @@ import { site } from '../../../data/site';
 // Hasta ahora el único listado vivía bajo un pueblo (/es/venta/malgrat-de-mar/), así que
 // 100 de los 124 inmuebles no tenían puerta de entrada. Esta es la portada de la cartera.
 const path = '/es/venta/';
+const lang = getLang(Astro.url);
 const catalog = getListings({ operation: 'venta' });
-const breakdown = typeBreakdown(catalog, 4);
+const breakdown = typeBreakdown(catalog, lang, 4);
 const cheapest = cheapestPrice(catalog);
 
 const townRows = publishedCatalogTowns
@@ -30,64 +31,145 @@ const townRows = publishedCatalogTowns
   .filter((row) => row.total > 0)
   .sort((a, b) => b.total - a.total);
 
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Inmuebles en venta', path },
-];
+const n = catalog.length;
+const nTowns = townRows.length;
+const from = cheapest ? formatPrice(cheapest, lang) : null;
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Inmuebles en venta',
+    title: 'Inmuebles en venta en el Maresme y La Selva',
+    description: `${n} inmuebles en venta${from ? ` desde ${from}` : ''} en ${nTowns} pueblos: ${breakdown}. Precio a la vista y contacto directo.`,
+    lead: `${n} inmuebles en ${nTowns} pueblos${from ? `, desde ${from}` : ''}: ${breakdown}.`,
+    area: 'el Maresme y La Selva',
+    jump: 'Ir directo a un pueblo',
+    jumpHint: `${nTowns} pueblos con inmuebles`,
+    total: (count: number) => `${count} ${count === 1 ? 'inmueble' : 'inmuebles'}`,
+    homes: (count: number) => `${count} de vivienda`,
+    alertTitle: '¿No ves el tuyo?',
+    alertLead: 'Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.',
+    alertCta: 'Avisadme por WhatsApp',
+    faqTitle: 'Dudas sobre los inmuebles',
+    faq: [
+      {
+        question: '¿Cuántos inmuebles tenéis en venta?',
+        answer: `Ahora mismo ${n} en ${nTowns} pueblos del Alt Maresme y La Selva: ${breakdown}. La lista cambia cada semana.`,
+      },
+      {
+        question: '¿Puedo ver el precio sin dejar mis datos?',
+        answer: 'Sí. Cada inmueble lleva el precio a la vista. Solo nos escribes si quieres verlo o preguntar algo.',
+      },
+      {
+        question: '¿Y si no veo lo que busco?',
+        answer:
+          'Dinos qué buscas y te avisamos cuando entre algo así. Muchas operaciones se cierran antes de llegar a los portales.',
+      },
+    ],
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Property for sale',
+    title: 'Property for sale in the Maresme and La Selva',
+    description: `${n} properties for sale${from ? ` from ${from}` : ''} across ${nTowns} towns: ${breakdown}. Prices shown upfront and you deal with us directly.`,
+    lead: `${n} properties in ${nTowns} towns${from ? `, from ${from}` : ''}: ${breakdown}.`,
+    area: 'the Maresme and La Selva',
+    jump: 'Go straight to a town',
+    jumpHint: `${nTowns} towns with properties`,
+    total: (count: number) => `${count} ${count === 1 ? 'property' : 'properties'}`,
+    homes: (count: number) => `${count} ${count === 1 ? 'home' : 'homes'}`,
+    alertTitle: "Can't see the right one?",
+    alertLead: "Tell us what you're after and we'll let you know when something like it comes in, or if one drops in price.",
+    alertCta: 'Let me know on WhatsApp',
+    faqTitle: 'Questions about the properties',
+    faq: [
+      {
+        question: 'How many properties do you have for sale?',
+        answer: `Right now, ${n} across ${nTowns} towns in the Alt Maresme and La Selva: ${breakdown}. The list changes every week.`,
+      },
+      {
+        question: 'Can I see the price without giving my details?',
+        answer: 'Yes. Every property shows its price upfront. You only message us if you want to view it or ask something.',
+      },
+      {
+        question: "What if I can't see what I'm looking for?",
+        answer:
+          "Tell us what you're after and we'll let you know when something like it comes in. A lot of sales close before they ever reach the property portals.",
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'Immobles en venda',
+    title: 'Immobles en venda al Maresme i la Selva',
+    description: `${n} immobles en venda${from ? ` des de ${from}` : ''} en ${nTowns} pobles: ${breakdown}. Preu a la vista i contacte directe.`,
+    lead: `${n} immobles en ${nTowns} pobles${from ? `, des de ${from}` : ''}: ${breakdown}.`,
+    area: 'el Maresme i la Selva',
+    jump: 'Ves directe a un poble',
+    jumpHint: `${nTowns} pobles amb immobles`,
+    total: (count: number) => `${count} ${count === 1 ? 'immoble' : 'immobles'}`,
+    homes: (count: number) => `${count} ${count === 1 ? 'habitatge' : 'habitatges'}`,
+    alertTitle: 'No veus el teu?',
+    alertLead: "Digues-nos què busques i t'avisem quan entri alguna cosa així, o si algun baixa de preu.",
+    alertCta: 'Aviseu-me per WhatsApp',
+    faqTitle: 'Dubtes sobre els immobles',
+    faq: [
+      {
+        question: 'Quants immobles teniu en venda?',
+        answer: `Ara mateix, ${n} en ${nTowns} pobles de l'Alt Maresme i la Selva: ${breakdown}. La llista canvia cada setmana.`,
+      },
+      {
+        question: 'Puc veure el preu sense deixar les meves dades?',
+        answer: 'Sí. Cada immoble porta el preu a la vista. Només ens escrius si el vols veure o preguntar alguna cosa.',
+      },
+      {
+        question: 'I si no veig el que busco?',
+        answer:
+          "Digues-nos què busques i t'avisem quan entri alguna cosa així. Moltes operacions es tanquen abans d'arribar als portals.",
+      },
+    ],
+  },
+})[lang];
 
-const faq = [
-  {
-    question: '¿Cuántos inmuebles tenéis en venta?',
-    answer: `Ahora mismo ${catalog.length} en ${townRows.length} pueblos del Alt Maresme y La Selva: ${breakdown}. La lista cambia cada semana.`,
-  },
-  {
-    question: '¿Puedo ver el precio sin dejar mis datos?',
-    answer: 'Sí. Cada inmueble lleva el precio a la vista. Solo nos escribes si quieres verlo o preguntar algo.',
-  },
-  {
-    question: '¿Y si no veo lo que busco?',
-    answer:
-      'Dinos qué buscas y te avisamos cuando entre algo así. Muchas operaciones se cierran antes de llegar a los portales.',
-  },
+const crumbs = [
+  { name: t.home, path: localizePath('/es/', lang) },
+  { name: t.crumb, path: localizePath(path, lang) },
 ];
-const lang = getLang(Astro.url);
+const faq = t.faq;
 ---
 
 <BaseLayout
-  title="Inmuebles en venta en el Maresme y La Selva"
-  description={`${catalog.length} inmuebles en venta${cheapest ? ` desde ${formatPrice(cheapest)}` : ''} en ${townRows.length} pueblos: ${breakdown}. Precio a la vista y contacto directo.`}
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), collectionPageSchema('Inmuebles en venta', path), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), collectionPageSchema(t.crumb, path, lang), faqSchema(faq)]}
   noindex={!site.catalogIndexable}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>Inmuebles en venta en el Maresme y La Selva</h1>
-      <p class="page-head__lead">
-        {catalog.length} inmuebles en {townRows.length} pueblos{cheapest ? `, desde ${formatPrice(cheapest)}` : ''}: {breakdown}.
-      </p>
+      <h1 class="page-head__title" data-split>{t.title}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="listing-section">
     <div class="wrap">
-      <ListingExplorer client:load properties={catalog} townName="el Maresme y La Selva" />
+      <ListingExplorer client:load properties={catalog} townName={t.area} lang={lang} />
       <section class="section town-index">
         <details class="town-index__details">
           <summary class="town-index__summary">
-            <span class="section__title">Ir directo a un pueblo</span>
-            <span class="town-index__hint">{townRows.length} pueblos con inmuebles</span>
+            <span class="section__title">{t.jump}</span>
+            <span class="town-index__hint">{t.jumpHint}</span>
           </summary>
           <ul class="town-index__list">
             {
               townRows.map((row) => (
                 <li class="town-index__item">
-                  <a class="town-index__link" href={`/es/venta/${row.town.slug}/`}>
+                  <a class="town-index__link" href={localizePath(`/es/venta/${row.town.slug}/`, lang)}>
                     <span class="town-index__name">{row.town.name}</span>
                     <span class="town-index__count">
-                      {row.total} {row.total === 1 ? 'inmueble' : 'inmuebles'}
-                      {row.homes > 0 && <> · {row.homes} de vivienda</>}
+                      {t.total(row.total)}
+                      {row.homes > 0 && <> · {t.homes(row.homes)}</>}
                     </span>
                     <Icon name="arrow" class="town-index__arrow" />
                   </a>
@@ -100,21 +182,21 @@ const lang = getLang(Astro.url);
 
       <aside class="alert-card">
         <div class="alert-card__text">
-          <h2 class="alert-card__title">¿No ves el tuyo?</h2>
-          <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
+          <h2 class="alert-card__title">{t.alertTitle}</h2>
+          <p class="alert-card__lead">{t.alertLead}</p>
         </div>
         <a
           class="button button--primary button--large alert-card__cta"
-          href={whatsappUrl({ reason: 'general' })}
+          href={whatsappUrl(lang, { reason: 'general' })}
           data-contact="whatsapp"
           data-origin="listado-general-aviso"
         >
           <Icon name="whatsapp" class="button__icon" />
-          Avisadme por WhatsApp
+          {t.alertCta}
         </a>
       </aside>
     </div>
   </section>
 
-  <FaqSection title="Dudas sobre los inmuebles" items={faq} origin="listado-faq" />
+  <FaqSection title={t.faqTitle} items={faq} origin="listado-faq" />
 </BaseLayout>

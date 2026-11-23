@@ -2,6 +2,7 @@
 import { site } from '../../data/site';
 import { getListings } from '../../data/properties';
 import { proofFigures, type ProofFigure } from '../../lib/proof';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   figures?: ProofFigure[];
@@ -12,6 +13,13 @@ interface Props {
   count?: boolean;
 }
 
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { label: 'Datos de Conroma' },
+  en: { label: 'Conroma in figures' },
+  ca: { label: 'Dades de Conroma' },
+})[lang];
+
 // Cifras escritas en el HTML (Google y las IA las leen tal cual).
 const {
   figures = proofFigures({
@@ -19,6 +27,7 @@ const {
     yearsActive: site.yearsActive,
     listings: getListings().length,
     builtOn: new Date(),
+    lang,
   }),
   bridge,
   count = false,
@@ -27,7 +36,7 @@ const {
 
 {
   figures.length > 0 && (
-    <section class="proof-band" aria-label="Datos de Conroma" data-count={count ? '' : undefined}>
+    <section class="proof-band" aria-label={t.label} data-count={count ? '' : undefined}>
       <div class="wrap">
         <dl class="proof-band__list">
           {figures.map((figure, index) => (

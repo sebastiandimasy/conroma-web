@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
@@ -21,10 +21,79 @@ import { placePhotos } from '../../../data/creditos-fotos';
 import { proofFigures } from '../../../lib/proof';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../../../lib/seo';
 
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    buy: 'Comprar',
+    listings: 'inmuebles en venta',
+    towns: 'pueblos del Maresme y La Selva',
+    seeAll: (n: number) => `Ver los ${n} inmuebles en venta`,
+    description:
+      'Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves.',
+    title: 'Comprar piso en Malgrat de Mar',
+    service: 'Compra de viviendas',
+    heroTitle: 'Comprar piso o casa en Malgrat de Mar',
+    heroLead: 'Precio a la vista y visitas sin compromiso, en cuatro idiomas.',
+    photo: 'Foto',
+    steps: 'Cómo compras con nosotros',
+    featured: 'Pisos en venta en Malgrat de Mar',
+    faq: 'Dudas al comprar',
+    budgetTitle: '¿Hasta dónde llegas?',
+    budgetLead: 'Calcula hasta qué presupuesto puedes comprar, sin dejar tus datos.',
+    budgetCta: 'Calcular mi presupuesto',
+    closing: 'Hablemos',
+    closingMuted: 'de lo que buscas',
+  },
+  en: {
+    home: 'Home',
+    buy: 'Buy',
+    listings: 'properties for sale',
+    towns: 'towns in the Maresme and La Selva',
+    seeAll: (n: number) => `See all ${n} properties for sale`,
+    description:
+      "How to buy an apartment or house in Malgrat de Mar with Conroma: we show you what's available, prices up front, and stay with you until you get the keys.",
+    title: 'Buying property in Malgrat de Mar',
+    service: 'Home buying',
+    heroTitle: 'Buy an apartment or house in Malgrat de Mar',
+    heroLead: 'Prices up front and no-obligation viewings, in four languages.',
+    photo: 'Photo',
+    steps: 'How buying with us works',
+    featured: 'Homes for sale in Malgrat de Mar',
+    faq: 'Questions about buying',
+    budgetTitle: 'How far does your budget go?',
+    budgetLead: 'Work out how much you can spend, without giving us your details.',
+    budgetCta: 'Work out my budget',
+    closing: "Let's talk",
+    closingMuted: "about what you're looking for",
+  },
+  ca: {
+    home: 'Inici',
+    buy: 'Comprar',
+    listings: 'immobles en venda',
+    towns: 'pobles del Maresme i la Selva',
+    seeAll: (n: number) => `Veure els ${n} immobles en venda`,
+    description:
+      "Com comprar un pis o una casa a Malgrat de Mar amb Conroma: t'ensenyem el que hi ha, amb el preu a la vista, i t'acompanyem fins a les claus.",
+    title: 'Comprar pis a Malgrat de Mar',
+    service: "Compra d'habitatges",
+    heroTitle: 'Comprar pis o casa a Malgrat de Mar',
+    heroLead: 'Preu a la vista i visites sense compromís, en quatre idiomes.',
+    photo: 'Foto',
+    steps: 'Com compres amb nosaltres',
+    featured: 'Pisos en venda a Malgrat de Mar',
+    faq: "Dubtes a l'hora de comprar",
+    budgetTitle: 'Fins on arribes?',
+    budgetLead: 'Calcula fins a quin pressupost pots comprar, sense deixar les teves dades.',
+    budgetCta: 'Calcular el meu pressupost',
+    closing: 'Parlem',
+    closingMuted: 'del que busques',
+  },
+})[lang];
 const path = '/es/comprar/';
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Comprar', path },
+  { name: t.home, path: '/es/' },
+  { name: t.buy, path },
 ];
 const catalog = getListings({ operation: 'venta' });
 const localHomes = homesIn('malgrat-de-mar', 'venta');
@@ -32,50 +101,48 @@ const townCount = publishedCatalogTowns.filter((town) => propertiesIn(town.slug,
 const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'panoramica')!;
 
 // Cifras reales de la cartera y de Google; lo que falte no se pinta (proofFigures).
-const [listingFigure] = proofFigures({ rating: null, yearsActive: null, listings: catalog.length, builtOn: new Date() });
+const [listingFigure] = proofFigures({ rating: null, yearsActive: null, listings: catalog.length, builtOn: new Date(), lang });
 const figures = [
-  ...(listingFigure ? [{ ...listingFigure, label: 'inmuebles en venta' }] : []),
-  ...(townCount > 0 ? [{ value: String(townCount), label: 'pueblos del Maresme y La Selva' }] : []),
-  ...proofFigures({ rating: site.googleRating, yearsActive: null, listings: 0, builtOn: new Date() }),
+  ...(listingFigure ? [{ ...listingFigure, label: t.listings }] : []),
+  ...(townCount > 0 ? [{ value: String(townCount), label: t.towns }] : []),
+  ...proofFigures({ rating: site.googleRating, yearsActive: null, listings: 0, builtOn: new Date(), lang }),
 ];
-const seeAll = `Ver los ${catalog.length} inmuebles en venta`;
-const description =
-  'Cómo comprar un piso o una casa en Malgrat de Mar con Conroma: te enseñamos lo que hay, con el precio a la vista, y te acompañamos hasta las llaves.';
-const lang = getLang(Astro.url);
+const seeAll = t.seeAll(catalog.length);
+const description = t.description;
 ---
 
 <BaseLayout
-  title="Comprar piso en Malgrat de Mar"
+  title={t.title}
   description={description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(buyFaq), serviceSchema('Compra de viviendas', description, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(buyFaq[lang]), serviceSchema(t.service, description, path, lang)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Comprar piso o casa en Malgrat de Mar"
-    lead="Precio a la vista y visitas sin compromiso, en cuatro idiomas."
+    title={t.heroTitle}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt={heroCredit.alt}
-    cta={{ label: seeAll, href: '/es/venta/' }}
+    alt={heroCredit.alt[lang]}
+    cta={{ label: seeAll, href: localizePath('/es/venta/', lang) }}
     position="center 75%"
-    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+    credit={{ text: `${t.photo}: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
   />
 
-  <Statement text={buyAnswer} />
+  <Statement text={buyAnswer[lang]} />
 
   <ProofBand figures={figures} />
 
-  <StoryScroll title="Cómo compras con nosotros" steps={buySteps} />
+  <StoryScroll title={t.steps} steps={buySteps[lang]} />
 
   {
     localHomes.length > 0 && (
       <section class="section buy-featured">
         <div class="wrap">
-          <h2 class="section__title" data-reveal>Pisos en venta en Malgrat de Mar</h2>
+          <h2 class="section__title" data-reveal>{t.featured}</h2>
           <div class="buy-featured__grid">
-            <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" />
+            <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" lang={lang} />
           </div>
-          <a class="arrow-link buy-featured__more" href="/es/venta/">
+          <a class="arrow-link buy-featured__more" href={localizePath('/es/venta/', lang)}>
             <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
             <span class="arrow-link__label">{seeAll}</span>
           </a>
@@ -84,15 +151,15 @@ const lang = getLang(Astro.url);
     )
   }
 
-  <FaqSection title="Dudas al comprar" items={buyFaq} origin="comprar-faq" reason="visita" />
+  <FaqSection title={t.faq} items={buyFaq[lang]} origin="comprar-faq" reason="visita" />
 
   <section class="section buy-budget">
     <div class="wrap">
-      <h2 class="section__title" data-reveal>¿Hasta dónde llegas?</h2>
-      <p class="section__lead">Calcula hasta qué presupuesto puedes comprar, sin dejar tus datos.</p>
-      <a class="button button--ghost buy-budget__cta" href="/es/comprar/puedo-comprar/">Calcular mi presupuesto</a>
+      <h2 class="section__title" data-reveal>{t.budgetTitle}</h2>
+      <p class="section__lead">{t.budgetLead}</p>
+      <a class="button button--ghost buy-budget__cta" href={localizePath('/es/comprar/puedo-comprar/', lang)}>{t.budgetCta}</a>
     </div>
   </section>
 
-  <ClosingCTA title="Hablemos" titleMuted="de lo que buscas" image={closingPhoto} origin="comprar-cierre" reason="visita" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="comprar-cierre" reason="visita" />
 </BaseLayout>

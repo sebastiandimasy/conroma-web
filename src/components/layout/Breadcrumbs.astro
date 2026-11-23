@@ -1,19 +1,27 @@
 ---
 import type { Crumb } from '../../lib/seo';
+import { getLang, localizePath, strings } from '../../i18n';
 
 interface Props {
   crumbs: Crumb[];
 }
 
 const { crumbs } = Astro.props;
+// Las páginas pasan las rutas en español (/es/...); aquí se llevan al idioma de la página.
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { label: 'Migas de pan' },
+  en: { label: 'Breadcrumb' },
+  ca: { label: 'Fil d’Ariadna' },
+})[lang];
 ---
 
-<nav class="breadcrumbs" aria-label="Migas de pan">
+<nav class="breadcrumbs" aria-label={t.label}>
   {
     crumbs.map((crumb, index) =>
       index < crumbs.length - 1 ? (
         <>
-          <a class="breadcrumbs__link" href={crumb.path}>{crumb.name}</a>
+          <a class="breadcrumbs__link" href={localizePath(crumb.path, lang)}>{crumb.name}</a>
           <span aria-hidden="true">›</span>
         </>
       ) : (

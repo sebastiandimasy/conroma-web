@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   /** Archivo en public/video/, sin extensión. */
@@ -10,6 +11,12 @@ interface Props {
 }
 
 const { file, title, poster } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { play: (name: string) => `Reproducir el vídeo «${name}»`, note: '' },
+  en: { play: (name: string) => `Play the video “${name}”`, note: 'Video in Spanish' },
+  ca: { play: (name: string) => `Reprodueix el vídeo «${name}»`, note: 'Vídeo en castellà' },
+})[lang];
 const posterSrc = poster ? (await getImage({ src: poster, width: 540, format: 'jpg' })).src : undefined;
 ---
 
@@ -18,11 +25,11 @@ const posterSrc = poster ? (await getImage({ src: poster, width: 540, format: 'j
 <figure class="reel-embed" data-reel>
   <div class="reel-embed__stage">
     <video class="reel-embed__video" src={`/video/${file}.mp4`} poster={posterSrc} preload="none" playsinline aria-label={title}></video>
-    <button type="button" class="reel-embed__play" aria-label={`Reproducir el vídeo «${title}»`}>
+    <button type="button" class="reel-embed__play" aria-label={t.play(title)}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"></path></svg>
     </button>
   </div>
-  <figcaption class="reel-embed__caption">{title}</figcaption>
+  <figcaption class="reel-embed__caption">{title}{t.note && ` · ${t.note}`}</figcaption>
 </figure>
 
 <script>

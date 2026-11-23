@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
+import { getLang, localizePath } from '../../i18n';
 
 interface Props {
   title: string;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const { title, lead, image, alt, primary, secondary, position } = Astro.props;
+const lang = getLang(Astro.url);
 ---
 
 {/* Héroe de Inicio: foto del equipo a sangre, velo y todo centrado (titular → apoyo → dos acciones).
@@ -34,10 +36,10 @@ const { title, lead, image, alt, primary, secondary, position } = Astro.props;
     <h1 class="hero-center__title">{title}</h1>
     <p class="hero-center__lead">{lead}</p>
     <div class="hero-center__actions">
-      <a class="button button--primary button--large" href={primary.href}>{primary.label}</a>
+      <a class="button button--primary button--large" href={localizePath(primary.href, lang)}>{primary.label}</a>
       <a
         class="link-cta"
-        href={secondary.href}
+        href={localizePath(secondary.href, lang)}
         data-contact={secondary.contact}
         data-origin={secondary.origin}
       >

@@ -1,5 +1,13 @@
 ---
 import { services } from '../../data/services';
+import { getLang, localizePath, strings } from '../../i18n';
+
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { eyebrow: 'Lo que hacemos', title: 'Todo lo que pasa alrededor de una casa.', more: 'Ver más' },
+  en: { eyebrow: 'What we do', title: 'Everything to do with a home.', more: 'See more' },
+  ca: { eyebrow: 'El que fem', title: "Tot el que passa al voltant d'una casa.", more: "Veure'n més" },
+})[lang];
 
 // Iconos de línea por servicio (viewBox 0 0 24 24, trazo), con animación al hover.
 const icons: Record<string, string> = {
@@ -24,14 +32,14 @@ const icons: Record<string, string> = {
 <section class="section svcf">
   <div class="wrap">
     <div class="section__head section__head--center" data-reveal>
-      <p class="eyebrow">Lo que hacemos</p>
-      <h2 class="section__title">Todo lo que pasa alrededor de una casa.</h2>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section__title">{t.title}</h2>
     </div>
     <ul class="svcf__grid">
       {
-        services.map((s) => (
+        services[lang].map((s) => (
           <li class="svcf__item" data-reveal>
-            <a class="svcf__card" href={s.href}>
+            <a class="svcf__card" href={localizePath(s.href, lang)}>
               <span class="svcf__deco" aria-hidden="true">
                 <span class="svcf__icon-box">
                   <svg
@@ -49,7 +57,7 @@ const icons: Record<string, string> = {
               </span>
               <h3 class="svcf__title">{s.name}</h3>
               <p class="svcf__text">{s.summary}</p>
-              <span class="svcf__more">Ver más</span>
+              <span class="svcf__more">{t.more}</span>
             </a>
           </li>
         ))

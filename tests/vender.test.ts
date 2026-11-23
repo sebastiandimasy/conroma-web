@@ -1,10 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { venderAnswer, venderCompare, venderFaq, venderSteps } from '../src/data/vender';
+import * as vender from '../src/data/vender';
+import { languages } from '../src/i18n';
 import { site } from '../src/data/site';
 
+// Las reglas de contenido se comprueban sobre el español; en/ca tienen que mantener la misma forma.
+const venderAnswer = vender.venderAnswer.es;
+const venderSteps = vender.venderSteps.es;
+const venderCompare = vender.venderCompare.es;
+const venderFaq = vender.venderFaq.es;
 const words = (s: string) => s.trim().split(/\s+/).length;
-const allText = [venderAnswer, ...venderSteps.flatMap((s) => [s.title, s.text, s.alt]),
-  ...venderCompare.flatMap((o) => [o.title, ...o.groups.flatMap((g) => [g.title, ...g.items])]), ...venderFaq.flatMap((f) => [f.question, f.answer])];
+const textOf = (lang: (typeof languages)[number]) => [vender.venderAnswer[lang],
+  ...vender.venderSteps[lang].flatMap((s) => [s.title, s.text, s.alt]),
+  ...vender.venderCompare[lang].flatMap((o) => [o.title, ...o.groups.flatMap((g) => [g.title, ...g.items])]),
+  ...vender.venderFaq[lang].flatMap((f) => [f.question, f.answer])];
 
 describe('textos de Vender', () => {
   it('abre con una respuesta autocontenida de 2 o 3 frases', () => {
@@ -50,7 +58,24 @@ describe('textos de Vender', () => {
     if (site.feePercent === null) expect(venderFaq.some((f) => /\d+(,\d+)?\s?%/.test(f.answer))).toBe(false);
   });
 
-  it('sin rayas como muletilla', () => {
-    expect(allText.some((t) => t.includes('—'))).toBe(false);
+  it('sin rayas como muletilla, en ningún idioma', () => {
+    for (const lang of languages) expect(textOf(lang).some((t) => t.includes('—'))).toBe(false);
+  });
+
+  it('en y ca mantienen la forma del español: pasos, grupos, frases cortas y FAQ', () => {
+    for (const lang of ['en', 'ca'] as const) {
+      const sentences = vender.venderAnswer[lang].split(/(?<=[.!?])\s+/).filter(Boolean);
+      expect(sentences.length).toBeGreaterThanOrEqual(2);
+      expect(sentences.length).toBeLessThanOrEqual(3);
+      expect(vender.venderSteps[lang].map((s) => s.image)).toEqual(venderSteps.map((s) => s.image));
+      vender.venderCompare[lang].forEach((option, i) => {
+        expect(option.groups).toHaveLength(venderCompare[i].groups.length);
+        expect(option.groups.every((g, j) => g.items.length === venderCompare[i].groups[j].items.length)).toBe(true);
+        expect(option.groups.every((g) => g.items.every((item) => words(item) <= 14))).toBe(true);
+      });
+      expect(vender.venderCompare[lang][1].title.endsWith('…')).toBe(true);
+      expect(vender.venderFaq[lang]).toHaveLength(venderFaq.length);
+      expect(vender.venderFaq[lang].every((f) => words(f.answer) <= 60)).toBe(true);
+    }
   });
 });

@@ -700,6 +700,13 @@
     color: var(--color-ink-2);
   }
 
+  /* «Description in Spanish»: aviso discreto sobre la descripción de Habitatsoft sin traducir. */
+  .property__lang-note {
+    margin-top: 0.5rem;
+    font-size: var(--text-small);
+    color: var(--color-ink-2);
+  }
+
   /* Mapa de zona aproximada de la ficha (ubicación, no dirección exacta). */
   .property__map {
     height: clamp(220px, 40vw, 320px);

@@ -36,6 +36,10 @@ que sustituye a la antigua de `conromaasesores.com`. Responde siempre **en espa�
 - **Secretos:** `.env*` y `.dev.vars*` están en `.gitignore` y no se commitean nunca.
   La `SUPABASE_SERVICE_ROLE_KEY` no se pega en el chat ni se sube a GitHub bajo ningún concepto.
 - Medición de conversiones **por Click URL** (`wa.me` / `tel:`), nunca por el texto del botón.
+- **Tres idiomas (es, en, ca).** Todo texto visible va en `strings({ es, en, ca })` de
+  `src/i18n/` y todo cambio de texto se hace en los tres (traducción natural, mismo tono). Los
+  enlaces internos pasan por `localizePath(ruta, lang)`; el idioma sale de `getLang(Astro.url)`
+  y las islas reciben `lang` como prop.
 
 ## Comandos
 ```bash

@@ -3,6 +3,7 @@ import { Map as MapLibreMap, Marker, Popup, NavigationControl, setWorkerUrl } fr
 // Vite bundla el worker y da su URL; evita el fallo "Worker failed to load" del adaptador Cloudflare.
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { strings, type Lang } from '../i18n';
 
 setWorkerUrl(workerUrl);
 
@@ -16,7 +17,33 @@ interface Props {
   latitude: number;
   longitude: number;
   label: string;
+  lang: Lang;
 }
+
+// Etiquetas accesibles de los controles del mapa (MapLibre las trae solo en inglés).
+const mapLocale = strings<Record<string, string>>({
+  es: {
+    'Map.Title': 'Mapa',
+    'Marker.Title': 'Oficina de Conroma',
+    'NavigationControl.ZoomIn': 'Acercar',
+    'NavigationControl.ZoomOut': 'Alejar',
+    'AttributionControl.ToggleAttribution': 'Mostrar u ocultar créditos',
+  },
+  en: {
+    'Map.Title': 'Map',
+    'Marker.Title': 'Conroma office',
+    'NavigationControl.ZoomIn': 'Zoom in',
+    'NavigationControl.ZoomOut': 'Zoom out',
+    'AttributionControl.ToggleAttribution': 'Show or hide credits',
+  },
+  ca: {
+    'Map.Title': 'Mapa',
+    'Marker.Title': 'Oficina de Conroma',
+    'NavigationControl.ZoomIn': 'Apropa',
+    'NavigationControl.ZoomOut': 'Allunya',
+    'AttributionControl.ToggleAttribution': 'Mostra o amaga els crèdits',
+  },
+});
 
 // El tema de Conroma vive en <html data-theme>; sin él, se sigue el del sistema.
 function resolveTheme(): 'light' | 'dark' {
@@ -25,7 +52,7 @@ function resolveTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-export default function OfficeMapLibre({ latitude, longitude, label }: Props) {
+export default function OfficeMapLibre({ latitude, longitude, label, lang }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +65,7 @@ export default function OfficeMapLibre({ latitude, longitude, label }: Props) {
       attributionControl: { compact: true },
       scrollZoom: false, // no secuestrar el scroll de la página
       dragRotate: false,
+      locale: mapLocale[lang],
     });
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
 
@@ -56,7 +84,7 @@ export default function OfficeMapLibre({ latitude, longitude, label }: Props) {
       observer.disconnect();
       map.remove();
     };
-  }, [latitude, longitude, label]);
+  }, [latitude, longitude, label, lang]);
 
   return <div ref={containerRef} className="office-map__canvas" />;
 }

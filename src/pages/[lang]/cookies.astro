@@ -1,81 +1,218 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site } from '../../data/site';
 
 const path = '/es/cookies/';
-const updated = '18 de noviembre de 2026';
 const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Política de cookies de la web',
+    description: `Qué cookies y datos del navegador usa la web de ${site.legalName}, para qué sirven y cómo aceptarlas, rechazarlas o borrarlas.`,
+    h1: 'Política de cookies',
+    lead: 'Qué cookies usa este sitio, para qué, y cómo decides sobre ellas.',
+    updated: 'Última actualización: 18 de noviembre de 2026',
+  },
+  en: {
+    title: 'Website cookie policy',
+    description: `Which cookies and browser data the ${site.legalName} website uses, what they’re for and how to accept, reject or delete them.`,
+    h1: 'Cookie policy',
+    lead: 'Which cookies this site uses, what for, and how you decide about them.',
+    updated: 'Last updated: 18 November 2026',
+  },
+  ca: {
+    title: 'Política de galetes del web',
+    description: `Quines galetes i dades del navegador fa servir el web de ${site.legalName}, per a què serveixen i com acceptar-les, rebutjar-les o esborrar-les.`,
+    h1: 'Política de galetes',
+    lead: 'Quines galetes fa servir aquest lloc, per a què, i com hi decideixes.',
+    updated: 'Darrera actualització: 18 de novembre de 2026',
+  },
+})[lang];
 ---
 
 <BaseLayout
-  title="Política de cookies de la web"
-  description={`Qué cookies y datos del navegador usa la web de ${site.legalName}, para qué sirven y cómo aceptarlas, rechazarlas o borrarlas.`}
+  title={t.title}
+  description={t.description}
   path={path}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
-      <h1 class="page-head__title">Política de cookies</h1>
-      <p class="page-head__lead">Qué cookies usa este sitio, para qué, y cómo decides sobre ellas.</p>
+      <h1 class="page-head__title">{t.h1}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
-      <div class="legal">
-        <p class="legal__meta">Última actualización: {updated}</p>
+      {
+        lang === 'es' && (
+          <div class="legal">
+            <p class="legal__meta">{t.updated}</p>
 
-        <h2>1. Qué es una cookie</h2>
-        <p>
-          Una cookie es un pequeño archivo que un sitio web guarda en tu dispositivo para recordar información
-          sobre tu visita. También usamos tecnologías equivalentes del navegador, como el almacenamiento local
-          (<em>localStorage</em>).
-        </p>
+            <h2>1. Qué es una cookie</h2>
+            <p>
+              Una cookie es un pequeño archivo que un sitio web guarda en tu dispositivo para recordar información
+              sobre tu visita. También usamos tecnologías equivalentes del navegador, como el almacenamiento local
+              (<em>localStorage</em>).
+            </p>
 
-        <h2>2. Cookies que usamos</h2>
+            <h2>2. Cookies que usamos</h2>
 
-        <h3>Técnicas y de preferencia (necesarias)</h3>
-        <p>
-          Guardan tus elecciones para que la web funcione como esperas. No requieren consentimiento y no sirven
-          para rastrearte. Hoy usamos almacenamiento local del navegador para:
-        </p>
-        <ul>
-          <li>Recordar si has aceptado o rechazado las cookies de medición.</li>
-          <li>Recordar el tema (claro u oscuro) y tu respuesta a la pregunta de bienvenida.</li>
-          <li>Guardar los inmuebles que marcas como favoritos o descartas, solo en tu dispositivo.</li>
-        </ul>
+            <h3>Técnicas y de preferencia (necesarias)</h3>
+            <p>
+              Guardan tus elecciones para que la web funcione como esperas. No requieren consentimiento y no sirven
+              para rastrearte. Hoy usamos almacenamiento local del navegador para:
+            </p>
+            <ul>
+              <li>Recordar si has aceptado o rechazado las cookies de medición.</li>
+              <li>Recordar el tema (claro u oscuro) y tu respuesta a la pregunta de bienvenida.</li>
+              <li>Guardar los inmuebles que marcas como favoritos o descartas, solo en tu dispositivo.</li>
+            </ul>
 
-        <h3>De medición (analíticas)</h3>
-        <p>
-          Usamos Google Analytics, cargado a través de Google Tag Manager, para saber de forma estadística qué
-          páginas se visitan y cómo se llega a ellas. <strong>Solo se activan si las aceptas</strong> en el aviso
-          de cookies; mientras no las aceptes, no se instalan.
-        </p>
-        <ul>
-          <li><strong>_ga</strong> (Google): distingue visitantes de forma anónima. Dura 2 años.</li>
-          <li><strong>_ga_*</strong> (Google): mantiene el estado de la sesión. Dura 2 años.</li>
-        </ul>
+            <h3>De medición (analíticas)</h3>
+            <p>
+              Usamos Google Analytics, cargado a través de Google Tag Manager, para saber de forma estadística qué
+              páginas se visitan y cómo se llega a ellas. <strong>Solo se activan si las aceptas</strong> en el aviso
+              de cookies; mientras no las aceptes, no se instalan.
+            </p>
+            <ul>
+              <li><strong>_ga</strong> (Google): distingue visitantes de forma anónima. Dura 2 años.</li>
+              <li><strong>_ga_*</strong> (Google): mantiene el estado de la sesión. Dura 2 años.</li>
+            </ul>
 
-        <h2>3. Cómo gestionar las cookies</h2>
-        <p>
-          Puedes aceptar o rechazar las cookies de medición desde el aviso que aparece al entrar. Además, puedes
-          borrar o bloquear las cookies y el almacenamiento local desde la configuración de tu navegador (Chrome,
-          Safari, Firefox, Edge…). Si las bloqueas, algunas preferencias no se recordarán.
-        </p>
+            <h2>3. Cómo gestionar las cookies</h2>
+            <p>
+              Puedes aceptar o rechazar las cookies de medición desde el aviso que aparece al entrar. Además, puedes
+              borrar o bloquear las cookies y el almacenamiento local desde la configuración de tu navegador (Chrome,
+              Safari, Firefox, Edge…). Si las bloqueas, algunas preferencias no se recordarán.
+            </p>
 
-        <h2>4. Cambios</h2>
-        <p>
-          Podemos actualizar esta política si cambian las cookies que usamos. La fecha de arriba indica la última
-          revisión. Para cualquier duda, escríbenos a <a href={`mailto:${site.email}`}>{site.email}</a>.
-        </p>
+            <h2>4. Cambios</h2>
+            <p>
+              Podemos actualizar esta política si cambian las cookies que usamos. La fecha de arriba indica la última
+              revisión. Para cualquier duda, escríbenos a <a href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
 
-        <p>
-          Consulta también la <a href="/es/privacidad/">Política de Privacidad</a> y el
-          <a href="/es/aviso-legal/">Aviso Legal</a>.
-        </p>
-      </div>
+            <p>
+              Consulta también la <a href={localizePath('/es/privacidad/', lang)}>Política de Privacidad</a> y el
+              <a href={localizePath('/es/aviso-legal/', lang)}>Aviso Legal</a>.
+            </p>
+          </div>
+        )
+      }
+      {
+        lang === 'en' && (
+          <div class="legal">
+            <p class="legal__meta">{t.updated}</p>
+
+            <h2>1. What a cookie is</h2>
+            <p>
+              A cookie is a small file that a website saves on your device to remember information about your visit.
+              We also use equivalent browser technologies, such as local storage (<em>localStorage</em>).
+            </p>
+
+            <h2>2. Cookies we use</h2>
+
+            <h3>Technical and preference cookies (necessary)</h3>
+            <p>
+              They save your choices so the site works the way you expect. They don’t need your consent and aren’t
+              used to track you. Right now we use the browser’s local storage to:
+            </p>
+            <ul>
+              <li>Remember whether you’ve accepted or rejected analytics cookies.</li>
+              <li>Remember the theme (light or dark) and your answer to the welcome question.</li>
+              <li>Save the properties you mark as favourites or hide, only on your device.</li>
+            </ul>
+
+            <h3>Analytics cookies</h3>
+            <p>
+              We use Google Analytics, loaded through Google Tag Manager, to see in aggregate which pages are visited
+              and how people get to them. <strong>They only switch on if you accept them</strong> in the cookie notice;
+              until you do, they aren’t set.
+            </p>
+            <ul>
+              <li><strong>_ga</strong> (Google): tells visitors apart anonymously. Lasts 2 years.</li>
+              <li><strong>_ga_*</strong> (Google): keeps the session state. Lasts 2 years.</li>
+            </ul>
+
+            <h2>3. How to manage cookies</h2>
+            <p>
+              You can accept or reject analytics cookies from the notice that appears when you arrive. You can also
+              delete or block cookies and local storage in your browser settings (Chrome, Safari, Firefox, Edge…). If
+              you block them, some preferences won’t be remembered.
+            </p>
+
+            <h2>4. Changes</h2>
+            <p>
+              We may update this policy if the cookies we use change. The date at the top shows the latest review. If
+              you have any questions, email us at <a href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
+
+            <p>
+              See also the <a href={localizePath('/es/privacidad/', lang)}>Privacy Policy</a> and the
+              <a href={localizePath('/es/aviso-legal/', lang)}>Legal Notice</a>.
+            </p>
+          </div>
+        )
+      }
+      {
+        lang === 'ca' && (
+          <div class="legal">
+            <p class="legal__meta">{t.updated}</p>
+
+            <h2>1. Què és una galeta</h2>
+            <p>
+              Una galeta (<em>cookie</em>) és un petit fitxer que un lloc web desa al teu dispositiu per recordar
+              informació sobre la teva visita. També fem servir tecnologies equivalents del navegador, com
+              l’emmagatzematge local (<em>localStorage</em>).
+            </p>
+
+            <h2>2. Galetes que fem servir</h2>
+
+            <h3>Tècniques i de preferència (necessàries)</h3>
+            <p>
+              Desen les teves eleccions perquè el web funcioni com esperes. No requereixen consentiment i no serveixen
+              per rastrejar-te. Avui fem servir l’emmagatzematge local del navegador per:
+            </p>
+            <ul>
+              <li>Recordar si has acceptat o rebutjat les galetes de mesura.</li>
+              <li>Recordar el tema (clar o fosc) i la teva resposta a la pregunta de benvinguda.</li>
+              <li>Desar els immobles que marques com a preferits o descartes, només al teu dispositiu.</li>
+            </ul>
+
+            <h3>De mesura (analítiques)</h3>
+            <p>
+              Fem servir Google Analytics, carregat a través de Google Tag Manager, per saber de manera estadística
+              quines pàgines es visiten i com s’hi arriba. <strong>Només s’activen si les acceptes</strong> a l’avís de
+              galetes; mentre no les acceptis, no s’instal·len.
+            </p>
+            <ul>
+              <li><strong>_ga</strong> (Google): distingeix visitants de manera anònima. Dura 2 anys.</li>
+              <li><strong>_ga_*</strong> (Google): manté l’estat de la sessió. Dura 2 anys.</li>
+            </ul>
+
+            <h2>3. Com gestionar les galetes</h2>
+            <p>
+              Pots acceptar o rebutjar les galetes de mesura des de l’avís que apareix en entrar. A més, pots esborrar
+              o bloquejar les galetes i l’emmagatzematge local des de la configuració del teu navegador (Chrome,
+              Safari, Firefox, Edge…). Si les bloqueges, algunes preferències no es recordaran.
+            </p>
+
+            <h2>4. Canvis</h2>
+            <p>
+              Podem actualitzar aquesta política si canvien les galetes que fem servir. La data de dalt indica la
+              darrera revisió. Per a qualsevol dubte, escriu-nos a <a href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
+
+            <p>
+              Consulta també la <a href={localizePath('/es/privacidad/', lang)}>Política de Privacitat</a> i
+              l’<a href={localizePath('/es/aviso-legal/', lang)}>Avís Legal</a>.
+            </p>
+          </div>
+        )
+      }
     </div>
   </section>
 </BaseLayout>

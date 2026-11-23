@@ -1,47 +1,80 @@
 ---
 import Icon from '../Icon.astro';
 import type { IconName } from '../../lib/icons';
+import { getLang, localizePath, strings } from '../../i18n';
 
-const tools: { title: string; text: string; cta: string; href: string; icon: IconName }[] = [
-  {
-    title: '¿Cuánto vale mi piso?',
-    text: 'Cuatro preguntas y nos llega tu caso. Gratis y sin compromiso.',
-    cta: 'Valorar mi piso',
-    href: '/es/valoracion/',
-    icon: 'eye',
+type Tool = { title: string; text: string; cta: string; href: string; icon: IconName };
+const lang = getLang(Astro.url);
+const t = strings<{ eyebrow: string; title: string; titleHighlight: string; lead: string; tools: Tool[] }>({
+  es: {
+    eyebrow: '¿Cuánto me va a costar?',
+    title: 'Haz números',
+    titleHighlight: 'antes de decidir.',
+    lead: 'Dos calculadoras y una valoración para hacerte una idea.',
+    tools: [
+      { title: '¿Cuánto vale mi piso?', text: 'Cuatro preguntas y nos llega tu caso. Gratis y sin compromiso.', cta: 'Valorar mi piso', href: '/es/valoracion/', icon: 'eye' },
+      {
+        title: '¿Puedo comprar un piso?',
+        text: 'Con el límite del 40% de endeudamiento, hasta qué presupuesto llegas y si tu préstamo saldría pre-aprobado.',
+        cta: 'Ver si puedo comprar',
+        href: '/es/comprar/puedo-comprar/',
+        icon: 'key',
+      },
+      { title: 'Simulador de reformas', text: 'Cuánto puede costar reformar tu piso según los metros y los acabados.', cta: 'Calcular la reforma', href: '/es/reformas/simulador/', icon: 'camera' },
+    ],
   },
-  {
-    title: '¿Puedo comprar un piso?',
-    text: 'Con el límite del 40% de endeudamiento, hasta qué presupuesto llegas y si tu préstamo saldría pre-aprobado.',
-    cta: 'Ver si puedo comprar',
-    href: '/es/comprar/puedo-comprar/',
-    icon: 'key',
+  en: {
+    eyebrow: 'How much will it cost me?',
+    title: 'Do the sums',
+    titleHighlight: 'before you decide.',
+    lead: 'Two calculators and a valuation to give you an idea.',
+    tools: [
+      { title: "What's my home worth?", text: 'Four questions and your details reach us. Free, no obligation.', cta: 'Value my home', href: '/es/valoracion/', icon: 'eye' },
+      {
+        title: 'Can I afford to buy?',
+        text: 'Using the 40% debt-to-income limit, see how much you could spend and whether your loan would come out pre-approved.',
+        cta: 'See if I can buy',
+        href: '/es/comprar/puedo-comprar/',
+        icon: 'key',
+      },
+      { title: 'Renovation calculator', text: 'What renovating your home could cost, based on its size and the finishes.', cta: 'Work out the cost', href: '/es/reformas/simulador/', icon: 'camera' },
+    ],
   },
-  {
-    title: 'Simulador de reformas',
-    text: 'Cuánto puede costar reformar tu piso según los metros y los acabados.',
-    cta: 'Calcular la reforma',
-    href: '/es/reformas/simulador/',
-    icon: 'camera',
+  ca: {
+    eyebrow: 'Quant em costarà?',
+    title: 'Fes números',
+    titleHighlight: 'abans de decidir.',
+    lead: "Dues calculadores i una valoració per fer-te'n una idea.",
+    tools: [
+      { title: 'Quant val el meu pis?', text: 'Quatre preguntes i ens arriba el teu cas. Gratis i sense compromís.', cta: 'Valorar el meu pis', href: '/es/valoracion/', icon: 'eye' },
+      {
+        title: 'Puc comprar un pis?',
+        text: "Amb el límit del 40% d'endeutament, fins a quin pressupost arribes i si el teu préstec sortiria preaprovat.",
+        cta: 'Veure si puc comprar',
+        href: '/es/comprar/puedo-comprar/',
+        icon: 'key',
+      },
+      { title: 'Simulador de reformes', text: 'Quant pot costar reformar el teu pis segons els metres i els acabats.', cta: 'Calcular la reforma', href: '/es/reformas/simulador/', icon: 'camera' },
+    ],
   },
-];
+})[lang];
 ---
 
 <section class="section tools">
   <div class="wrap">
     <div class="section__head section__head--center" data-reveal>
-      <p class="eyebrow">¿Cuánto me va a costar?</p>
-      <h2 class="section__title">Haz números <span class="highlight">antes de decidir.</span></h2>
-      <p class="section__lead">Dos calculadoras y una valoración para hacerte una idea.</p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section__title">{t.title} <span class="highlight">{t.titleHighlight}</span></h2>
+      <p class="section__lead">{t.lead}</p>
     </div>
     <ul class="feature-grid">
       {
-        tools.map((tool) => (
+        t.tools.map((tool) => (
           <li class="card feature tools__card" data-reveal>
             <span class="icon-tile"><Icon name={tool.icon} /></span>
             <h3 class="feature__title">{tool.title}</h3>
             <p class="feature__text">{tool.text}</p>
-            <a class="button button--primary tools__cta" href={tool.href}>{tool.cta}</a>
+            <a class="button button--primary tools__cta" href={localizePath(tool.href, lang)}>{tool.cta}</a>
           </li>
         ))
       }

@@ -1,5 +1,5 @@
 ---
-import { getLang, languages } from '../../../i18n';
+import { getLang, languages, localizePath, strings } from '../../../i18n';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
@@ -21,63 +21,141 @@ interface Props {
 }
 
 const { town } = Astro.props;
+const lang = getLang(Astro.url);
 const path = `/es/venta/${town.slug}/`;
 // Cada catálogo enlaza a SU hub (antes todos apuntaban a mano al de Blanes).
 const hubPath = publishedSellerTowns.some((t) => t.slug === town.slug) ? `/es/inmobiliaria/${town.slug}/` : null;
 const catalog = propertiesIn(town.slug, 'venta');
 const homes = homesIn(town.slug, 'venta');
 const cheapest = cheapestPrice(catalog);
-const breakdown = typeBreakdown(catalog);
+const breakdown = typeBreakdown(catalog, lang);
 // En algunos pueblos la cartera es casi toda local, terreno o parking. El titular
 // no puede prometer "pisos" cuando solo hay uno: se nombra lo que de verdad hay.
 const mostlyHomes = homes.length >= Math.max(3, catalog.length / 2);
-const heading = mostlyHomes ? `Pisos y casas en venta en ${town.name}` : `Inmuebles en venta en ${town.name}`;
+const name = town.name;
+const n = catalog.length;
+const h = homes.length;
+const from = cheapest ? formatPrice(cheapest, lang) : null;
+const t = strings({
+  es: {
+    home: 'Inicio',
+    heading: mostlyHomes ? `Pisos y casas en venta en ${name}` : `Inmuebles en venta en ${name}`,
+    description: `${n} inmuebles en venta en ${name}${from ? ` desde ${from}` : ''}: ${breakdown}. Precio a la vista y WhatsApp directo.`,
+    lead: `${n} inmuebles publicados: ${breakdown}.`,
+    alertTitle: '¿No ves el tuyo?',
+    alertLead: 'Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.',
+    alertCta: 'Avisadme por WhatsApp',
+    buyTitle: `Comprar piso en ${name}`,
+    related: 'Relacionados',
+    hub: hubPath ? `Inmobiliaria en ${name}` : 'Todas las zonas donde trabajamos',
+    canBuy: '¿Puedo comprar? Calcula tu presupuesto',
+    selling: `¿Vendes en ${name}? Mira cuánto vale`,
+    faqTitle: `Comprar en ${name}: lo que nos preguntan`,
+    faq: [
+      {
+        question: `¿Cuántos pisos tenéis en venta en ${name}?`,
+        answer:
+          h > 0
+            ? `Ahora mismo, ${h} ${h === 1 ? 'vivienda' : 'viviendas'} de un total de ${n} inmuebles (${breakdown}). La lista cambia cada semana, así que si no ves el tuyo, dinos qué buscas y te avisamos.`
+            : `Ahora mismo no tenemos vivienda en ${name}: los ${n} inmuebles publicados son ${breakdown}. Dinos qué buscas y te avisamos en cuanto entre algo.`,
+      },
+      {
+        question: `¿Cómo visito un piso en ${name}?`,
+        answer: 'Escríbenos por WhatsApp desde la ficha del piso, o llámanos. Cuadramos día y hora y te lo enseñamos.',
+      },
+    ],
+  },
+  en: {
+    home: 'Home',
+    heading: mostlyHomes ? `Apartments and houses for sale in ${name}` : `Property for sale in ${name}`,
+    description: `${n} properties for sale in ${name}${from ? ` from ${from}` : ''}: ${breakdown}. Prices shown upfront and straight to WhatsApp.`,
+    lead: `${n} properties listed: ${breakdown}.`,
+    alertTitle: "Can't see the right one?",
+    alertLead: "Tell us what you're after and we'll let you know when something like it comes in, or if one drops in price.",
+    alertCta: 'Let me know on WhatsApp',
+    buyTitle: `Buying a home in ${name}`,
+    related: 'Related',
+    hub: hubPath ? `Estate agent in ${name}` : 'All the areas we cover',
+    canBuy: 'Can I afford to buy? Work out your budget',
+    selling: `Selling in ${name}? See what it's worth`,
+    faqTitle: `Buying in ${name}: what people ask us`,
+    faq: [
+      {
+        question: `How many homes do you have for sale in ${name}?`,
+        answer:
+          h > 0
+            ? `Right now, ${h} ${h === 1 ? 'home' : 'homes'} out of ${n} properties in total (${breakdown}). The list changes every week, so if you can't see the right one, tell us what you're after and we'll let you know.`
+            : `We don't have any homes in ${name} right now: the ${n} properties listed are ${breakdown}. Tell us what you're after and we'll let you know as soon as something comes in.`,
+      },
+      {
+        question: `How do I view a home in ${name}?`,
+        answer: "Message us on WhatsApp from the listing, or give us a call. We'll agree a day and time and show you round.",
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    heading: mostlyHomes ? `Pisos i cases en venda a ${name}` : `Immobles en venda a ${name}`,
+    description: `${n} immobles en venda a ${name}${from ? ` des de ${from}` : ''}: ${breakdown}. Preu a la vista i WhatsApp directe.`,
+    lead: `${n} immobles publicats: ${breakdown}.`,
+    alertTitle: 'No veus el teu?',
+    alertLead: "Digues-nos què busques i t'avisem quan entri alguna cosa així, o si algun baixa de preu.",
+    alertCta: 'Aviseu-me per WhatsApp',
+    buyTitle: `Comprar pis a ${name}`,
+    related: 'Relacionats',
+    hub: hubPath ? `Immobiliària a ${name}` : 'Totes les zones on treballem',
+    canBuy: 'Puc comprar? Calcula el teu pressupost',
+    selling: `Vens a ${name}? Mira quant val`,
+    faqTitle: `Comprar a ${name}: el que ens pregunten`,
+    faq: [
+      {
+        question: `Quants pisos teniu en venda a ${name}?`,
+        answer:
+          h > 0
+            ? `Ara mateix, ${h} ${h === 1 ? 'habitatge' : 'habitatges'} d'un total de ${n} immobles (${breakdown}). La llista canvia cada setmana, així que si no veus el teu, digues-nos què busques i t'avisem.`
+            : `Ara mateix no tenim cap habitatge a ${name}: els ${n} immobles publicats són ${breakdown}. Digues-nos què busques i t'avisem tan bon punt entri alguna cosa.`,
+      },
+      {
+        question: `Com puc visitar un pis a ${name}?`,
+        answer: "Escriu-nos per WhatsApp des de la fitxa del pis, o truca'ns. Quedem un dia i una hora i te l'ensenyem.",
+      },
+    ],
+  },
+})[lang];
+const heading = t.heading;
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: heading, path },
+  { name: t.home, path: localizePath('/es/', lang) },
+  { name: heading, path: localizePath(path, lang) },
 ];
-const faq = [
-  {
-    question: `¿Cuántos pisos tenéis en venta en ${town.name}?`,
-    answer:
-      homes.length > 0
-        ? `Ahora mismo, ${homes.length} ${homes.length === 1 ? 'vivienda' : 'viviendas'} de un total de ${catalog.length} inmuebles (${breakdown}). La lista cambia cada semana, así que si no ves el tuyo, dinos qué buscas y te avisamos.`
-        : `Ahora mismo no tenemos vivienda en ${town.name}: los ${catalog.length} inmuebles publicados son ${breakdown}. Dinos qué buscas y te avisamos en cuanto entre algo.`,
-  },
-  {
-    question: `¿Cómo visito un piso en ${town.name}?`,
-    answer: 'Escríbenos por WhatsApp desde la ficha del piso, o llámanos. Cuadramos día y hora y te lo enseñamos.',
-  },
-];
-const lang = getLang(Astro.url);
+const faq = t.faq;
 ---
 
 <BaseLayout
   title={heading}
-  description={`${catalog.length} inmuebles en venta en ${town.name}${cheapest ? ` desde ${formatPrice(cheapest)}` : ''}: ${breakdown}. Precio a la vista y WhatsApp directo.`}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(heading, path), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), collectionPageSchema(heading, path, lang), faqSchema(faq)]}
   noindex={!site.catalogIndexable}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
       <h1 class="page-head__title" data-split>{heading}</h1>
-      <p class="page-head__lead">{catalog.length} inmuebles publicados: {breakdown}.</p>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="listing-section">
     <div class="wrap">
-      <ListingExplorer client:load properties={catalog} townName={town.name} />
+      <ListingExplorer client:load properties={catalog} townName={town.name} lang={lang} />
       <aside class="alert-card">
         <div class="alert-card__text">
-          <h2 class="alert-card__title">¿No ves el tuyo?</h2>
-          <p class="alert-card__lead">Dinos qué buscas y te avisamos cuando entre algo así, o si alguno baja de precio.</p>
+          <h2 class="alert-card__title">{t.alertTitle}</h2>
+          <p class="alert-card__lead">{t.alertLead}</p>
         </div>
-        <a class="button button--primary button--large alert-card__cta" href={whatsappUrl({ reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
+        <a class="button button--primary button--large alert-card__cta" href={whatsappUrl(lang, { reason: 'general' })} data-contact="whatsapp" data-origin="listado-aviso">
           <Icon name="whatsapp" class="button__icon" />
-          Avisadme por WhatsApp
+          {t.alertCta}
         </a>
       </aside>
     </div>
@@ -87,26 +165,26 @@ const lang = getLang(Astro.url);
   <section class="section rent-towns">
     <div class="wrap">
       <div class="section__head" data-reveal>
-        <h2 class="section__title">Comprar piso en {town.name}</h2>
-        <p class="section__lead">{town.intro}</p>
+        <h2 class="section__title">{t.buyTitle}</h2>
+        <p class="section__lead">{town.intro?.[lang]}</p>
       </div>
-      <nav class="town-list" aria-label="Relacionados" data-reveal>
+      <nav class="town-list" aria-label={t.related} data-reveal>
         <ul class="town-list__items">
           <li>
-            <a class="town-list__link" href={hubPath ?? '/es/inmobiliaria/'}>
-              <span>{hubPath ? `Inmobiliaria en ${town.name}` : 'Todas las zonas donde trabajamos'}</span>
+            <a class="town-list__link" href={localizePath(hubPath ?? '/es/inmobiliaria/', lang)}>
+              <span>{t.hub}</span>
               <Icon name="arrow" class="town-links__arrow" />
             </a>
           </li>
           <li>
-            <a class="town-list__link" href="/es/comprar/puedo-comprar/">
-              <span>¿Puedo comprar? Calcula tu presupuesto</span>
+            <a class="town-list__link" href={localizePath('/es/comprar/puedo-comprar/', lang)}>
+              <span>{t.canBuy}</span>
               <Icon name="arrow" class="town-links__arrow" />
             </a>
           </li>
           <li>
-            <a class="town-list__link" href="/es/valoracion/">
-              <span>{`¿Vendes en ${town.name}? Mira cuánto vale`}</span>
+            <a class="town-list__link" href={localizePath('/es/valoracion/', lang)}>
+              <span>{t.selling}</span>
               <Icon name="arrow" class="town-links__arrow" />
             </a>
           </li>
@@ -115,5 +193,5 @@ const lang = getLang(Astro.url);
     </div>
   </section>
 
-  <FaqSection title={`Comprar en ${town.name}: lo que nos preguntan`} items={faq} origin={`venta-${town.slug}-faq`} />
+  <FaqSection title={t.faqTitle} items={faq} origin={`venta-${town.slug}-faq`} />
 </BaseLayout>

@@ -30,42 +30,47 @@ describe('seo', () => {
     const schema = breadcrumbSchema([
       { name: 'Inicio', path: '/es/' },
       { name: 'Malgrat de Mar', path: '/es/venta/malgrat-de-mar/' },
-    ]);
+    ], 'es');
     expect(schema.itemListElement.map((item) => item.position)).toEqual([1, 2]);
   });
 
+  it('las migas del schema van a las URL del idioma de la página', () => {
+    const schema = breadcrumbSchema([{ name: 'Home', path: '/es/venta/' }], 'en');
+    expect(schema.itemListElement[0].item).toBe('https://conromaasesores.com/en/venta/');
+  });
+
   it('construye un CollectionPage con url absoluta', () => {
-    const schema = collectionPageSchema('Pisos en venta en Malgrat de Mar', '/es/venta/malgrat-de-mar/');
+    const schema = collectionPageSchema('Pisos en venta en Malgrat de Mar', '/es/venta/malgrat-de-mar/', 'es');
     expect(schema['@type']).toBe('CollectionPage');
     expect(schema.name).toBe('Pisos en venta en Malgrat de Mar');
     expect(schema.url).toBe('https://conromaasesores.com/es/venta/malgrat-de-mar/');
   });
 
   it('does not self-declare a rating in the agency schema', () => {
-    expect(agentSchema().aggregateRating).toBeUndefined();
+    expect(agentSchema('es').aggregateRating).toBeUndefined();
   });
 
   it('describes a listing with its price', () => {
-    const schema = listingSchema(properties[0]);
+    const schema = listingSchema(properties[0], 'es');
     expect(schema.offers?.price).toBe(properties[0].price);
     expect(schema.offers?.priceCurrency).toBe('EUR');
   });
 
   it('omits the offer when the price is the "a consultar" placeholder', () => {
-    const schema = listingSchema({ ...properties[0], price: 10 });
+    const schema = listingSchema({ ...properties[0], price: 10 }, 'es');
     expect(schema.offers).toBeUndefined();
   });
 
   it('does not declare land or commercial units as flats', () => {
-    expect(listingSchema({ ...properties[0], type: 'Terreno' }).mainEntity['@type']).toBe('Place');
-    expect(listingSchema({ ...properties[0], type: 'Local' }).mainEntity['@type']).toBe('Place');
-    expect(listingSchema({ ...properties[0], type: 'Piso' }).mainEntity['@type']).toBe('Apartment');
-    expect(listingSchema({ ...properties[0], type: 'Casa adosada' }).mainEntity['@type']).toBe('House');
+    expect(listingSchema({ ...properties[0], type: 'Terreno' }, 'es').mainEntity['@type']).toBe('Place');
+    expect(listingSchema({ ...properties[0], type: 'Local' }, 'es').mainEntity['@type']).toBe('Place');
+    expect(listingSchema({ ...properties[0], type: 'Piso' }, 'es').mainEntity['@type']).toBe('Apartment');
+    expect(listingSchema({ ...properties[0], type: 'Casa adosada' }, 'es').mainEntity['@type']).toBe('House');
   });
 
   it('drops rooms and baths on land and commercial units', () => {
-    expect(listingSchema({ ...properties[0], type: 'Terreno' }).mainEntity.numberOfRooms).toBeUndefined();
-    expect(listingSchema({ ...properties[0], type: 'Piso' }).mainEntity.numberOfRooms).toBe(properties[0].rooms);
+    expect(listingSchema({ ...properties[0], type: 'Terreno' }, 'es').mainEntity.numberOfRooms).toBeUndefined();
+    expect(listingSchema({ ...properties[0], type: 'Piso' }, 'es').mainEntity.numberOfRooms).toBe(properties[0].rooms);
   });
 
   // Antes esto comprobaba properties[0], así que se rompía cada vez que cambiaba
@@ -81,14 +86,14 @@ describe('seo', () => {
       ref: 'C-1280-A',
     };
     expect(propertySlug(piso)).toBe('chalet-mont-lloret-lloret-de-mar-c-1280-a');
-    expect(propertyTitle(piso)).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
+    expect(propertyTitle(piso, 'es')).toBe('Chalet en alquiler en Mont Lloret, Lloret de Mar');
   });
 
   it('no repite el pueblo cuando la zona es el propio pueblo o viene vacía', () => {
     const base = { ...properties[0], type: 'Parcela', operation: 'venta' as const, town: 'lloret-de-mar' };
-    expect(propertyTitle({ ...base, zone: 'Lloret de Mar' })).toBe('Parcela en venta en Lloret de Mar');
-    expect(propertyTitle({ ...base, zone: 'LLORET DE MAR' })).toBe('Parcela en venta en Lloret de Mar');
-    expect(propertyTitle({ ...base, zone: '' })).toBe('Parcela en venta en Lloret de Mar');
+    expect(propertyTitle({ ...base, zone: 'Lloret de Mar' }, 'es')).toBe('Parcela en venta en Lloret de Mar');
+    expect(propertyTitle({ ...base, zone: 'LLORET DE MAR' }, 'es')).toBe('Parcela en venta en Lloret de Mar');
+    expect(propertyTitle({ ...base, zone: '' }, 'es')).toBe('Parcela en venta en Lloret de Mar');
   });
 });
 
@@ -108,27 +113,40 @@ describe('URLs de inmueble', () => {
   it('el <title> de la ficha no pasa de 65 caracteres: si la zona es larga, se queda el pueblo', () => {
     const base = { ...properties[0], type: 'Chalet unifamiliar', operation: 'venta' as const, town: 'tordera', price: 260000, ref: 'X-1' };
     const larga = { ...base, zone: 'Urbanitzacions Niàgara Parc-Àgora Parc-Roca-Rossa' };
-    expect(propertyDocTitle(larga, [larga])).toBe('Chalet unifamiliar en venta en Tordera — 260.000 €');
+    expect(propertyDocTitle(larga, [larga], 'es')).toBe('Chalet unifamiliar en venta en Tordera — 260.000 €');
     const corta = { ...base, zone: 'Centre' };
-    expect(propertyDocTitle(corta, [corta])).toBe('Chalet unifamiliar en venta en Centre, Tordera — 260.000 €');
+    expect(propertyDocTitle(corta, [corta], 'es')).toBe('Chalet unifamiliar en venta en Centre, Tordera — 260.000 €');
   });
 
   it('dos fichas con el mismo <title> se distinguen por la referencia', () => {
     const a = { ...properties[0], type: 'Terreno', operation: 'venta' as const, town: 'tordera', zone: 'Urbanitzacions El Mas Móra-Sant Daniel-Blanes Mar', price: 58000, ref: 'T-1' };
     const b = { ...a, ref: 'T-2' };
-    expect(propertyDocTitle(a, [a, b])).toBe('Terreno en venta en Tordera — 58.000 € · Ref. T-1');
+    expect(propertyDocTitle(a, [a, b], 'es')).toBe('Terreno en venta en Tordera — 58.000 € · Ref. T-1');
   });
 
   it('el título con la referencia tampoco pasa de 65 caracteres', () => {
     const a = { ...properties[0], type: 'Local', operation: 'venta' as const, town: 'lloret-de-mar', zone: 'Fenals-Santa Clotilde', price: 0, ref: 'L-1095' };
     const b = { ...a, ref: 'L-1094' };
-    const t = propertyDocTitle(a, [a, b]);
+    const t = propertyDocTitle(a, [a, b], 'es');
     expect(t.length).toBeLessThanOrEqual(65);
     expect(t).toContain('Ref. L-1095');
   });
 
   it('no repite el pueblo si zona y pueblo solo difieren en el apóstrofo', () => {
     const base = { ...properties[0], type: 'Terreno', operation: 'venta' as const, town: "Vilobí d'Onyar", zone: 'Vilobí d’Onyar' };
-    expect(propertyTitle(base)).toBe("Terreno en venta en Vilobí d'Onyar");
+    expect(propertyTitle(base, 'es')).toBe("Terreno en venta en Vilobí d'Onyar");
+  });
+
+  it('traduce el título en inglés y catalán (tipo y operación)', () => {
+    const base = { ...properties[0], type: 'Chalet unifamiliar', zone: 'Centre', town: 'tordera', price: 260000, ref: 'X-1' };
+    const venta = { ...base, operation: 'venta' as const };
+    const alquiler = { ...base, operation: 'alquiler' as const, type: 'Piso' };
+    expect(propertyTitle(venta, 'en')).toBe('Detached villa for sale in Centre, Tordera');
+    expect(propertyTitle(alquiler, 'en')).toBe('Apartment to rent in Centre, Tordera');
+    expect(propertyTitle(venta, 'ca')).toBe('Xalet unifamiliar en venda a Centre, Tordera');
+    expect(propertyTitle(alquiler, 'ca')).toBe('Pis de lloguer a Centre, Tordera');
+    expect(propertyDocTitle(venta, [venta], 'en')).toBe('Detached villa for sale in Centre, Tordera — €260,000');
+    // Un tipo sin traducción sale en español en vez de inventarlo.
+    expect(propertyTitle({ ...venta, type: 'Torre' }, 'en')).toBe('Torre for sale in Centre, Tordera');
   });
 });

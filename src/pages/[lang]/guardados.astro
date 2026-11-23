@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -18,35 +18,68 @@ const slim = getListings().map(({ description, likes, watchOut, geo, images, ...
   watchOut: '',
   images: images?.slice(0, 1),
 }));
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Guardados', path },
-];
 const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Guardados',
+    title: 'Tus pisos guardados | Conroma',
+    description:
+      'Los pisos que has guardado en Conroma Asesores, para compararlos con calma o enseñárselos a quien decida contigo.',
+    h1: 'Tus pisos guardados',
+    lead: 'Se guardan en este navegador, sin registrarte. Si cambias de móvil o de ordenador, no viajan contigo.',
+    ctaTitle: 'Hablemos',
+    ctaMuted: 'de los que te gustan',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Saved',
+    title: 'Your saved homes | Conroma',
+    description:
+      "The homes you've saved at Conroma Asesores, so you can compare them calmly or show them to whoever's deciding with you.",
+    h1: 'Your saved homes',
+    lead: "They're kept in this browser, no sign-up needed. If you switch phone or computer, they don't come with you.",
+    ctaTitle: "Let's talk",
+    ctaMuted: 'about the ones you like',
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'Desats',
+    title: 'Els teus pisos desats | Conroma',
+    description:
+      'Els pisos que has desat a Conroma Asesores, per comparar-los amb calma o ensenyar-los a qui decideixi amb tu.',
+    h1: 'Els teus pisos desats',
+    lead: "Es desen en aquest navegador, sense registrar-te. Si canvies de mòbil o d'ordinador, no viatgen amb tu.",
+    ctaTitle: 'Parlem',
+    ctaMuted: "dels que t'agraden",
+  },
+})[lang];
+const crumbs = [
+  { name: t.home, path: localizePath('/es/', lang) },
+  { name: t.crumb, path: localizePath(path, lang) },
+];
 ---
 
 <BaseLayout
-  title="Tus pisos guardados | Conroma"
-  description="Los pisos que has guardado en Conroma Asesores, para compararlos con calma o enseñárselos a quien decida contigo."
+  title={t.title}
+  description={t.description}
   path={path}
   noindex
-  schemas={[breadcrumbSchema(crumbs)]}
+  schemas={[breadcrumbSchema(crumbs, lang)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>Tus pisos guardados</h1>
-      <p class="page-head__lead">
-        Se guardan en este navegador, sin registrarte. Si cambias de móvil o de ordenador, no viajan contigo.
-      </p>
+      <h1 class="page-head__title" data-split>{t.h1}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="section saved-section">
     <div class="wrap">
-      <SavedProperties client:load properties={slim} listingUrl="/es/venta/" />
+      <SavedProperties client:load properties={slim} listingUrl={localizePath('/es/venta/', lang)} lang={lang} />
     </div>
   </section>
 
-  <ClosingCTA title="Hablemos" titleMuted="de los que te gustan" origin="guardados-cierre" reason="visita" />
+  <ClosingCTA title={t.ctaTitle} titleMuted={t.ctaMuted} origin="guardados-cierre" reason="visita" />
 </BaseLayout>

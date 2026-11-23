@@ -1,20 +1,48 @@
 ---
 import { Picture } from 'astro:assets';
 import { site } from '../../data/site';
+import { getLang, localizePath, strings } from '../../i18n';
 
+const lang = getLang(Astro.url);
 const photos = site.teamPhotos;
+const t = strings({
+  es: {
+    titles: ['Somos una pequeña familia', 'Antes, durante y después', 'Conocemos el pueblo'],
+    label: 'Quiénes somos',
+    eyebrow: 'De aquí, como tú',
+    steps: 'Pasos',
+    goTo: 'Ir a:',
+    cta: 'Conoce al equipo',
+  },
+  en: {
+    titles: ['We’re a small family', 'Before, during and after', 'We know the town'],
+    label: 'Who we are',
+    eyebrow: 'Local, like you',
+    steps: 'Steps',
+    goTo: 'Go to:',
+    cta: 'Meet the team',
+  },
+  ca: {
+    titles: ['Som una petita família', 'Abans, durant i després', 'Coneixem el poble'],
+    label: 'Qui som',
+    eyebrow: 'D’aquí, com tu',
+    steps: 'Passos',
+    goTo: 'Ves a:',
+    cta: 'Coneix l’equip',
+  },
+})[lang];
 
-const slides = [
-  { title: 'Somos una pequeña familia', desc: site.about[0] },
-  { title: 'Antes, durante y después', desc: site.about[1] },
-  { title: 'Conocemos el pueblo', desc: site.about[2] },
-].map((slide, index) => ({ ...slide, image: photos[index % photos.length] }));
+const slides = t.titles.map((title, index) => ({
+  title,
+  desc: site.about[lang][index],
+  image: photos[index % photos.length],
+}));
 ---
 
-<section class="family" data-family data-active="0" aria-label="Quiénes somos">
+<section class="family" data-family data-active="0" aria-label={t.label}>
   <div class="family__stage">
     <div class="wrap">
-      <p class="eyebrow family__eyebrow">De aquí, como tú</p>
+      <p class="eyebrow family__eyebrow">{t.eyebrow}</p>
       <div class="family__slides">
         {
           slides.map((slide, index) => (
@@ -27,7 +55,7 @@ const slides = [
                 <Picture
                   class="family__img"
                   src={slide.image.src}
-                  alt={slide.image.alt}
+                  alt={slide.image.alt[lang]}
                   formats={['avif', 'webp']}
                   width={720}
                   widths={[360, 540, 720, 960]}
@@ -41,7 +69,7 @@ const slides = [
         }
       </div>
       <div class="family__controls">
-        <div class="family__dots" role="tablist" aria-label="Pasos">
+        <div class="family__dots" role="tablist" aria-label={t.steps}>
           {
             slides.map((slide, index) => (
               <button
@@ -49,12 +77,12 @@ const slides = [
                 type="button"
                 data-dot={index}
                 aria-current={index === 0 ? 'true' : 'false'}
-                aria-label={`Ir a: ${slide.title}`}
+                aria-label={`${t.goTo} ${slide.title}`}
               />
             ))
           }
         </div>
-        <a class="button button--primary button--large family__cta" href="/es/equipo/">Conoce al equipo</a>
+        <a class="button button--primary button--large family__cta" href={localizePath('/es/equipo/', lang)}>{t.cta}</a>
       </div>
     </div>
   </div>

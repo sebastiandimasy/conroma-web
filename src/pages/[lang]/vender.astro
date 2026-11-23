@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -22,78 +22,144 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 /* Dueña de la búsqueda regional y de proceso («vender piso en el Maresme», «cómo vender mi
    piso»). «Vender piso en {pueblo}» es de cada hub: aquí solo se enlaza (spec §7.0). */
 const path = '/es/vender/';
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Vender',
+    title: 'Vender piso o casa en el Maresme',
+    description: 'Vende tu piso o casa en el Maresme con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría.',
+    service: 'Venta de viviendas',
+    heroTitle: 'Vender tu piso en el Maresme',
+    heroLead: 'Valoración gratis, fotos, visitas y acompañamiento hasta notaría.',
+    heroCta: '¿Cuánto vale mi piso?',
+    photo: 'Foto',
+    proofBridge: 'Esto es lo que hacemos con tu piso desde el primer día.',
+    storyTitle: 'Cómo vendemos tu piso',
+    storyBridge: '¿Y si prefieres venderlo por tu cuenta? Aquí ves cuándo encaja cada opción.',
+    compareTitle: 'Con Conroma o por tu cuenta',
+    compareLead: 'Las dos opciones funcionan. Elige la que encaje con tu tiempo y con lo que ya tienes.',
+    compareBridge: 'Todo empieza por saber cuánto vale tu piso.',
+    guideTitle: 'Para leer antes de vender',
+    faqTitle: 'Dudas al vender tu piso',
+    faqLead: 'Lo que más nos preguntan antes de poner un piso a la venta.',
+    closingTitle: 'Hablemos',
+    closingMuted: 'de tu piso',
+    closingText: 'Cuéntanos qué piso quieres vender y te decimos cómo lo haríamos.',
+    townsLabel: 'Vender en tu pueblo',
+    townLink: (town: string) => `Vender piso en ${town}`,
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Sell',
+    title: 'Sell your apartment or house in the Maresme',
+    description: 'Sell your apartment or house in the Maresme with Conroma: free valuation, photos, viewings and support right up to the notary.',
+    service: 'Home sales',
+    heroTitle: 'Selling your home in the Maresme',
+    heroLead: 'Free valuation, photos, viewings and support right up to the notary.',
+    heroCta: 'What’s my home worth?',
+    photo: 'Photo',
+    proofBridge: 'This is what we do with your home from day one.',
+    storyTitle: 'How we sell your home',
+    storyBridge: 'Rather sell it yourself? Here’s when each option makes sense.',
+    compareTitle: 'With Conroma or on your own',
+    compareLead: 'Both options work. Pick the one that fits your time and what you already have.',
+    compareBridge: 'It all starts with knowing what your home is worth.',
+    guideTitle: 'Worth reading before you sell',
+    faqTitle: 'Questions about selling your home',
+    faqLead: 'What people ask us most before putting a home on the market.',
+    closingTitle: 'Let’s talk',
+    closingMuted: 'about your home',
+    closingText: 'Tell us which home you want to sell and we’ll tell you how we’d go about it.',
+    townsLabel: 'Sell in your town',
+    townLink: (town: string) => `Sell a home in ${town}`,
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'Vendre',
+    title: 'Vendre pis o casa al Maresme',
+    description: 'Ven el teu pis o casa al Maresme amb Conroma: valoració gratuïta, fotos, visites i acompanyament fins a la notaria.',
+    service: 'Venda d’habitatges',
+    heroTitle: 'Vendre el teu pis al Maresme',
+    heroLead: 'Valoració gratuïta, fotos, visites i acompanyament fins a la notaria.',
+    heroCta: 'Quant val el meu pis?',
+    photo: 'Foto',
+    proofBridge: 'Això és el que fem amb el teu pis des del primer dia.',
+    storyTitle: 'Com venem el teu pis',
+    storyBridge: 'I si prefereixes vendre’l pel teu compte? Aquí veus quan encaixa cada opció.',
+    compareTitle: 'Amb Conroma o pel teu compte',
+    compareLead: 'Les dues opcions funcionen. Tria la que encaixi amb el teu temps i amb el que ja tens.',
+    compareBridge: 'Tot comença per saber quant val el teu pis.',
+    guideTitle: 'Per llegir abans de vendre',
+    faqTitle: 'Dubtes a l’hora de vendre el teu pis',
+    faqLead: 'El que més ens pregunten abans de posar un pis a la venda.',
+    closingTitle: 'Parlem',
+    closingMuted: 'del teu pis',
+    closingText: 'Explica’ns quin pis vols vendre i et diem com ho faríem.',
+    townsLabel: 'Ven al teu poble',
+    townLink: (town: string) => `Vendre pis a ${town}`,
+  },
+})[lang];
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Vender', path },
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
 ];
+const faq = venderFaq[lang];
 // Foto CC BY-SA: el crédito va visible en el propio hero.
 const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'vista')!;
-const description = 'Vende tu piso o casa en el Maresme con Conroma: valoración gratis, fotos, visitas y acompañamiento hasta notaría.';
-const lang = getLang(Astro.url);
+const description = t.description;
 ---
 
 <BaseLayout
-  title="Vender piso o casa en el Maresme"
+  title={t.title}
   description={description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(venderFaq), serviceSchema('Venta de viviendas', description, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq), serviceSchema(t.service, description, path, lang)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Vender tu piso en el Maresme"
-    lead="Valoración gratis, fotos, visitas y acompañamiento hasta notaría."
+    title={t.heroTitle}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt={heroCredit.alt}
-    cta={{ label: '¿Cuánto vale mi piso?', href: '#valoracion' }}
-    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+    alt={heroCredit.alt[lang]}
+    cta={{ label: t.heroCta, href: '#valoracion' }}
+    credit={{ text: `${t.photo}: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
   />
 
-  <Statement text={venderAnswer} />
+  <Statement text={venderAnswer[lang]} />
 
-  <ProofBand bridge="Esto es lo que hacemos con tu piso desde el primer día." />
+  <ProofBand bridge={t.proofBridge} />
 
-  <StoryScroll
-   
-    title="Cómo vendemos tu piso"
-    steps={venderSteps}
-    bridge="¿Y si prefieres venderlo por tu cuenta? Aquí ves cuándo encaja cada opción."
-  />
+  <StoryScroll title={t.storyTitle} steps={venderSteps[lang]} bridge={t.storyBridge} />
 
-  <Compare
-   
-    title="Con Conroma o por tu cuenta"
-    lead="Las dos opciones funcionan. Elige la que encaje con tu tiempo y con lo que ya tienes."
-    options={venderCompare}
-    bridge="Todo empieza por saber cuánto vale tu piso."
-  />
+  <Compare title={t.compareTitle} lead={t.compareLead} options={venderCompare[lang]} bridge={t.compareBridge} />
 
   <ValuationBlock />
 
-  <GuideTeaser title="Para leer antes de vender" category="Vender" />
+  <GuideTeaser title={t.guideTitle} category="Vender" />
 
   <FaqSection
-   
-    title="Dudas al vender tu piso"
-    lead="Lo que más nos preguntan antes de poner un piso a la venta."
-    items={venderFaq}
+    title={t.faqTitle}
+    lead={t.faqLead}
+    items={faq}
     origin="vender-faq"
     reason="valoracion"
   />
 
   <ClosingCTA
-    title="Hablemos"
-    titleMuted="de tu piso"
+    title={t.closingTitle}
+    titleMuted={t.closingMuted}
     image={closingPhoto}
-    text="Cuéntanos qué piso quieres vender y te decimos cómo lo haríamos."
+    text={t.closingText}
     origin="vender-cierre"
     reason="valoracion"
   >
-    <nav class="closing-cta__towns" aria-label="Vender en tu pueblo">
+    <nav class="closing-cta__towns" aria-label={t.townsLabel}>
       <ul>
         {
           publishedSellerTowns.map((town) => (
             <li>
-              <a href={`/es/inmobiliaria/${town.slug}/`}>Vender piso en {town.name}</a>
+              <a href={localizePath(`/es/inmobiliaria/${town.slug}/`, lang)}>{t.townLink(town.name)}</a>
             </li>
           ))
         }

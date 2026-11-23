@@ -1,5 +1,6 @@
 ---
 import { site } from '../../data/site';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   title: string;
@@ -8,6 +9,11 @@ interface Props {
 
 const { title, lead } = Astro.props;
 const videos = site.instagramVideos.filter((item) => item.video);
+const videoLabel = strings({
+  es: (n: number) => `Vídeo ${n} de clientes, abrir en Instagram`,
+  en: (n: number) => `Client video ${n}, open on Instagram`,
+  ca: (n: number) => `Vídeo ${n} de clients, obre a Instagram`,
+})[getLang(Astro.url)];
 ---
 
 {/* Reels de clientes: fila con scroll lateral en móvil, rejilla en escritorio. Cada vídeo
@@ -21,7 +27,7 @@ const videos = site.instagramVideos.filter((item) => item.video);
         <ul class="reel-row__list">
           {videos.map((item, index) => (
             <li class="reel-row__item">
-              <a class="reel-row__link" href={item.url} target="_blank" rel="noopener" aria-label={`Vídeo ${index + 1} de clientes, abrir en Instagram`}>
+              <a class="reel-row__link" href={item.url} target="_blank" rel="noopener" aria-label={videoLabel(index + 1)}>
                 <video class="reel-row__video" src={item.video} poster={item.video!.replace(/\.mp4$/, '-poster.jpg')} muted loop playsinline preload="none" aria-hidden="true" />
               </a>
             </li>

@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -21,123 +21,300 @@ import { breadcrumbSchema, faqSchema } from '../../lib/seo';
 
 /* Keyword (docs/KEYWORDS.md): «servicios inmobiliaria Malgrat»; secundarias: qué hace una
    inmobiliaria, servicios de compraventa. Cada servicio enlaza a su página, que es la que compite. */
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Servicios',
+    answer:
+      'Conroma Asesores ofrece en Malgrat de Mar y el Alt Maresme cinco servicios inmobiliarios: compra, venta, alquiler, gestión de patrimonio y reformas con Conroma en Obras. ' +
+      'Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.',
+    managed: 'inmuebles gestionados',
+    clients: 'clientes satisfechos',
+    sold: 'pisos vendidos',
+    listName: 'Servicios de Conroma Asesores',
+    title: 'Servicios inmobiliarios en Malgrat de Mar',
+    description:
+      'Servicios inmobiliarios de Conroma en Malgrat de Mar y el Alt Maresme: comprar, vender, alquilar, gestión de patrimonio y reformas.',
+    heroLead: 'Todo lo que pasa alrededor de una casa, con una misma persona de principio a fin.',
+    heroAlt: 'El equipo de Conroma Asesores en la oficina de Malgrat de Mar',
+    heroCta: 'Ver qué hacemos',
+    indexTitle: 'Qué hacemos por ti',
+    guideTitle: 'Qué hace una inmobiliaria por ti',
+    guideLead: 'Estas son las tareas que llevamos en una compraventa o un alquiler, para que sepas qué esperar.',
+    splitTitle: '¿Cuánto vale tu piso?',
+    splitText: 'Pasamos a ver tu piso y te damos un precio realista, gratis y sin compromiso. Si decides vender, empezamos por ahí.',
+    splitAlt: 'Una asesora de Conroma preparando una valoración en la oficina',
+    splitLink: 'Saber cuánto vale mi piso',
+    faqTitle: 'Servicios: lo que nos preguntan',
+    testimonials: 'Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes.',
+    closing: 'Hablemos',
+    closingMuted: 'de lo que necesitas',
+    // Qué hace una inmobiliaria (keyword secundaria): las tareas de una compraventa o un alquiler.
+    guide: [
+      {
+        title: 'Valoración',
+        text: 'Fijar un precio realista según lo que se vende en la zona. Un precio bien puesto desde el principio acorta la venta.',
+      },
+      {
+        title: 'Documentación',
+        text: 'Nota simple, certificado energético, cédula de habitabilidad, último IBI y certificado de la comunidad. Se reúne antes de anunciar para que nada frene la operación.',
+      },
+      {
+        title: 'Difusión',
+        text: 'Fotos, vídeo, portales y redes para que el piso llegue a quien lo busca.',
+      },
+      {
+        title: 'Visitas',
+        text: 'Enseñar el piso a compradores o inquilinos con interés real y resolver sus dudas sobre la casa y la zona.',
+      },
+      {
+        title: 'Negociación y contrato',
+        text: 'Acercar posturas en el precio y preparar el contrato de arras o el de alquiler, con todo explicado antes de firmar.',
+      },
+      {
+        title: 'Hasta notaría',
+        text: 'Acompañarte hasta la firma y la entrega de llaves, con una misma persona durante toda la operación.',
+      },
+    ],
+    faq: [
+      {
+        question: '¿Qué servicios ofrece Conroma?',
+        answer:
+          'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes uno o varios inmuebles y reformamos pisos con Conroma en Obras.',
+      },
+      {
+        question: '¿Una misma persona lleva toda mi operación?',
+        answer: 'Sí. Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.',
+      },
+      {
+        question: '¿Tengo que pagar por una valoración o una primera visita?',
+        answer: 'No. Pasamos a ver tu piso y te damos un precio realista gratis y sin compromiso.',
+      },
+      {
+        question: '¿En qué zonas trabajáis?',
+        answer:
+          'Tenemos oficina en Malgrat de Mar y trabajamos toda la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella y Lloret de Mar.',
+      },
+    ],
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Services',
+    answer:
+      'Conroma Asesores offers five property services in Malgrat de Mar and the Alt Maresme: buying, selling, renting, property portfolio management and renovations with Conroma en Obras. ' +
+      'The same person handles your deal from start to finish, looking for an outcome that works for both sides.',
+    managed: 'properties managed',
+    clients: 'happy clients',
+    sold: 'homes sold',
+    listName: 'Conroma Asesores services',
+    title: 'Estate agency services in Malgrat de Mar',
+    description:
+      "Conroma's estate agency services in Malgrat de Mar and the Alt Maresme: buying, selling, renting, property portfolio management and renovations.",
+    heroLead: 'Everything to do with a home, with the same person from start to finish.',
+    heroAlt: 'The Conroma Asesores team at the Malgrat de Mar office',
+    heroCta: 'See what we do',
+    indexTitle: 'What we do for you',
+    guideTitle: 'What an estate agent does for you',
+    guideLead: 'These are the jobs we take care of in a sale or a rental, so you know what to expect.',
+    splitTitle: "What's your home worth?",
+    splitText: "We come and see your home and give you a realistic price, free and with no obligation. If you decide to sell, that's where we start.",
+    splitAlt: 'A Conroma adviser preparing a valuation at the office',
+    splitLink: "Find out what my home's worth",
+    faqTitle: 'Services: what people ask us',
+    testimonials: 'We put care and professionalism into every project, and our clients say so.',
+    closing: "Let's talk",
+    closingMuted: 'about what you need',
+    guide: [
+      {
+        title: 'Valuation',
+        text: 'Setting a realistic price based on what sells in the area. A price set right from the start makes the sale quicker.',
+      },
+      {
+        title: 'Paperwork',
+        text: "Land Registry extract (nota simple), energy certificate (EPC), certificate of habitability (cédula), latest council tax bill (IBI) and a certificate from the owners' association. We gather it before advertising so nothing holds up the sale.",
+      },
+      {
+        title: 'Marketing',
+        text: 'Photos, video, property portals and social media so the home reaches the people looking for it.',
+      },
+      {
+        title: 'Viewings',
+        text: 'Showing the home to buyers or tenants who are genuinely interested and answering their questions about the house and the area.',
+      },
+      {
+        title: 'Negotiation and contract',
+        text: 'Bringing both sides closer on price and preparing the deposit contract (arras) or the rental agreement, with everything explained before you sign.',
+      },
+      {
+        title: 'All the way to the notary',
+        text: 'Going with you to the signing and the handover of keys, with the same person throughout.',
+      },
+    ],
+    faq: [
+      {
+        question: 'What services does Conroma offer?',
+        answer:
+          'We help you buy, sell and rent homes in Malgrat de Mar and the Alt Maresme. We also manage property portfolios if you own one or more properties, and renovate homes through Conroma en Obras.',
+      },
+      {
+        question: 'Will the same person handle my whole deal?',
+        answer: 'Yes. The same person handles your deal from start to finish, looking for an outcome that works for both sides.',
+      },
+      {
+        question: 'Do I have to pay for a valuation or a first visit?',
+        answer: 'No. We come and see your home and give you a realistic price, free and with no obligation.',
+      },
+      {
+        question: 'Which areas do you cover?',
+        answer:
+          'Our office is in Malgrat de Mar and we cover the whole area: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella and Lloret de Mar.',
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'Serveis',
+    answer:
+      "Conroma Asesores ofereix a Malgrat de Mar i l'Alt Maresme cinc serveis immobiliaris: compra, venda, lloguer, gestió de patrimoni i reformes amb Conroma en Obras. " +
+      'Una mateixa persona porta la teva operació de principi a fi, buscant la satisfacció de les dues parts.',
+    managed: 'immobles gestionats',
+    clients: 'clients satisfets',
+    sold: 'pisos venuts',
+    listName: 'Serveis de Conroma Asesores',
+    title: 'Serveis immobiliaris a Malgrat de Mar',
+    description:
+      "Serveis immobiliaris de Conroma a Malgrat de Mar i l'Alt Maresme: comprar, vendre, llogar, gestió de patrimoni i reformes.",
+    heroLead: "Tot el que passa al voltant d'una casa, amb una mateixa persona de principi a fi.",
+    heroAlt: "L'equip de Conroma Asesores a l'oficina de Malgrat de Mar",
+    heroCta: 'Veure què fem',
+    indexTitle: 'Què fem per tu',
+    guideTitle: 'Què fa una immobiliària per tu',
+    guideLead: 'Aquestes són les tasques que portem en una compravenda o un lloguer, perquè sàpigues què esperar.',
+    splitTitle: 'Quant val el teu pis?',
+    splitText: 'Venim a veure el teu pis i et donem un preu realista, gratis i sense compromís. Si decideixes vendre, comencem per aquí.',
+    splitAlt: "Una assessora de Conroma preparant una valoració a l'oficina",
+    splitLink: 'Saber quant val el meu pis',
+    faqTitle: 'Serveis: el que ens pregunten',
+    testimonials: 'Fem cada projecte amb passió i professionalitat, i així ho diuen els nostres clients.',
+    closing: 'Parlem',
+    closingMuted: 'del que necessites',
+    guide: [
+      {
+        title: 'Valoració',
+        text: 'Fixar un preu realista segons el que es ven a la zona. Un preu ben posat des del principi escurça la venda.',
+      },
+      {
+        title: 'Documentació',
+        text: "Nota simple, certificat energètic, cèdula d'habitabilitat, últim IBI i certificat de la comunitat. Es reuneix abans d'anunciar perquè res no aturi l'operació.",
+      },
+      {
+        title: 'Difusió',
+        text: 'Fotos, vídeo, portals i xarxes perquè el pis arribi a qui el busca.',
+      },
+      {
+        title: 'Visites',
+        text: 'Ensenyar el pis a compradors o llogaters amb interès real i resoldre els seus dubtes sobre la casa i la zona.',
+      },
+      {
+        title: 'Negociació i contracte',
+        text: "Apropar posicions en el preu i preparar el contracte d'arres o el de lloguer, amb tot explicat abans de signar.",
+      },
+      {
+        title: 'Fins a la notaria',
+        text: "Acompanyar-te fins a la signatura i el lliurament de claus, amb una mateixa persona durant tota l'operació.",
+      },
+    ],
+    faq: [
+      {
+        question: 'Quins serveis ofereix Conroma?',
+        answer:
+          "T'ajudem a comprar, vendre i llogar habitatge a Malgrat de Mar i l'Alt Maresme. També gestionem patrimoni si tens un o diversos immobles i reformem pisos amb Conroma en Obras.",
+      },
+      {
+        question: 'Una mateixa persona porta tota la meva operació?',
+        answer: 'Sí. Una mateixa persona porta la teva operació de principi a fi, buscant la satisfacció de les dues parts.',
+      },
+      {
+        question: 'He de pagar per una valoració o una primera visita?',
+        answer: 'No. Venim a veure el teu pis i et donem un preu realista gratis i sense compromís.',
+      },
+      {
+        question: 'A quines zones treballeu?',
+        answer:
+          'Tenim oficina a Malgrat de Mar i treballem tota la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella i Lloret de Mar.',
+      },
+    ],
+  },
+})[lang];
 const path = '/es/servicios/';
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Servicios', path },
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
 ];
-const answer =
-  'Conroma Asesores ofrece en Malgrat de Mar y el Alt Maresme cinco servicios inmobiliarios: compra, venta, alquiler, gestión de patrimonio y reformas con Conroma en Obras. ' +
-  'Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.';
 const trackRecord = [
-  { value: '+300', label: 'inmuebles gestionados' },
-  { value: '+100', label: 'clientes satisfechos' },
-  { value: '+200', label: 'pisos vendidos' },
+  { value: '+300', label: t.managed },
+  { value: '+100', label: t.clients },
+  { value: '+200', label: t.sold },
 ];
-// Qué hace una inmobiliaria (keyword secundaria): las tareas de una compraventa o un alquiler.
-const guide = [
-  {
-    title: 'Valoración',
-    text: 'Fijar un precio realista según lo que se vende en la zona. Un precio bien puesto desde el principio acorta la venta.',
-  },
-  {
-    title: 'Documentación',
-    text: 'Nota simple, certificado energético, cédula de habitabilidad, último IBI y certificado de la comunidad. Se reúne antes de anunciar para que nada frene la operación.',
-  },
-  {
-    title: 'Difusión',
-    text: 'Fotos, vídeo, portales y redes para que el piso llegue a quien lo busca.',
-  },
-  {
-    title: 'Visitas',
-    text: 'Enseñar el piso a compradores o inquilinos con interés real y resolver sus dudas sobre la casa y la zona.',
-  },
-  {
-    title: 'Negociación y contrato',
-    text: 'Acercar posturas en el precio y preparar el contrato de arras o el de alquiler, con todo explicado antes de firmar.',
-  },
-  {
-    title: 'Hasta notaría',
-    text: 'Acompañarte hasta la firma y la entrega de llaves, con una misma persona durante toda la operación.',
-  },
-];
-const faq = [
-  {
-    question: '¿Qué servicios ofrece Conroma?',
-    answer:
-      'Te ayudamos a comprar, vender y alquilar vivienda en Malgrat de Mar y el Alt Maresme. También gestionamos patrimonio si tienes uno o varios inmuebles y reformamos pisos con Conroma en Obras.',
-  },
-  {
-    question: '¿Una misma persona lleva toda mi operación?',
-    answer: 'Sí. Una misma persona lleva tu operación de principio a fin, buscando la satisfacción de las dos partes.',
-  },
-  {
-    question: '¿Tengo que pagar por una valoración o una primera visita?',
-    answer: 'No. Pasamos a ver tu piso y te damos un precio realista gratis y sin compromiso.',
-  },
-  {
-    question: '¿En qué zonas trabajáis?',
-    answer:
-      'Tenemos oficina en Malgrat de Mar y trabajamos toda la zona: Blanes, Palafolls, Santa Susanna, Pineda de Mar, Tordera, Calella y Lloret de Mar.',
-  },
-];
+const guide = t.guide;
+const faq = t.faq;
 // Lista de servicios para buscadores e IA: cada uno con su página.
 const serviceList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Servicios de Conroma Asesores',
-  itemListElement: services.map((service, index) => ({
+  name: t.listName,
+  itemListElement: services[lang].map((service, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: service.name,
-    url: `${site.url}${service.href}`,
+    url: `${site.url}${localizePath(service.href, lang)}`,
   })),
 };
-const lang = getLang(Astro.url);
 ---
 
 <BaseLayout
-  title="Servicios inmobiliarios en Malgrat de Mar"
-  description="Servicios inmobiliarios de Conroma en Malgrat de Mar y el Alt Maresme: comprar, vender, alquilar, gestión de patrimonio y reformas."
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceList]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq), serviceList]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Servicios inmobiliarios en Malgrat de Mar"
-    lead="Todo lo que pasa alrededor de una casa, con una misma persona de principio a fin."
+    title={t.title}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
-    cta={{ label: 'Ver qué hacemos', href: '#servicios' }}
+    alt={t.heroAlt}
+    cta={{ label: t.heroCta, href: '#servicios' }}
     position="center 30%"
   />
 
-  <Statement text={answer} />
+  <Statement text={t.answer} />
 
-  <ServiceIndex id="servicios" title="Qué hacemos por ti" photos />
+  <ServiceIndex id="servicios" title={t.indexTitle} photos />
 
   <ContentGuide
     tone="surface"
-    title="Qué hace una inmobiliaria por ti"
-    lead="Estas son las tareas que llevamos en una compraventa o un alquiler, para que sepas qué esperar."
+    title={t.guideTitle}
+    lead={t.guideLead}
     items={guide}
   />
 
   <SplitFeature
     tone="canvas"
     reverse
-    title="¿Cuánto vale tu piso?"
-    text="Pasamos a ver tu piso y te damos un precio realista, gratis y sin compromiso. Si decides vender, empezamos por ahí."
+    title={t.splitTitle}
+    text={t.splitText}
     image={valuationPhoto}
-    alt="Una asesora de Conroma preparando una valoración en la oficina"
-    link={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
+    alt={t.splitAlt}
+    link={{ label: t.splitLink, href: localizePath('/es/valoracion/', lang) }}
   />
 
-  <FaqSection title="Servicios: lo que nos preguntan" items={faq} origin="servicios-faq" />
+  <FaqSection title={t.faqTitle} items={faq} origin="servicios-faq" />
 
   <ProofBand figures={trackRecord} count />
 
-  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <Testimonials lead={t.testimonials} />
 
-  <ClosingCTA title="Hablemos" titleMuted="de lo que necesitas" image={closingPhoto} origin="servicios-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="servicios-cierre" />
 </BaseLayout>

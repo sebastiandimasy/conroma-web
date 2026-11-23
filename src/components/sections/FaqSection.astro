@@ -2,6 +2,7 @@
 import Faq from '../Faq.astro';
 import type { FaqItem } from '../../data/faq';
 import { whatsappUrl, type ContactReason } from '../../lib/links';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   title?: string;
@@ -13,7 +14,29 @@ interface Props {
   reason?: ContactReason;
 }
 
-const { title = 'Preguntas frecuentes', items, lead, origin, reason } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Preguntas frecuentes',
+    contactTitle: '¿Te queda alguna duda?',
+    contactText: 'Escríbenos y te la resolvemos.',
+    contactLink: 'Preguntar por WhatsApp',
+  },
+  en: {
+    title: 'Frequently asked questions',
+    contactTitle: 'Still got a question?',
+    contactText: 'Message us and we’ll answer it.',
+    contactLink: 'Ask on WhatsApp',
+  },
+  ca: {
+    title: 'Preguntes freqüents',
+    contactTitle: 'Et queda algun dubte?',
+    contactText: 'Escriu-nos i te’l resolem.',
+    contactLink: 'Pregunta per WhatsApp',
+  },
+})[lang];
+
+const { title = t.title, items, lead, origin, reason } = Astro.props;
 ---
 
 {/* Columna estrecha y centrada: filas suaves que se abren, y al final una salida por WhatsApp. */}
@@ -29,10 +52,10 @@ const { title = 'Preguntas frecuentes', items, lead, origin, reason } = Astro.pr
     {
       origin && (
         <div class="faq-section__contact">
-          <p class="faq-section__contact-title">¿Te queda alguna duda?</p>
-          <p class="faq-section__contact-text">Escríbenos y te la resolvemos.</p>
-          <a class="button button--ghost" href={whatsappUrl({ reason })} data-contact="whatsapp" data-origin={origin}>
-            Preguntar por WhatsApp
+          <p class="faq-section__contact-title">{t.contactTitle}</p>
+          <p class="faq-section__contact-text">{t.contactText}</p>
+          <a class="button button--ghost" href={whatsappUrl(lang, { reason })} data-contact="whatsapp" data-origin={origin}>
+            {t.contactLink}
           </a>
         </div>
       )

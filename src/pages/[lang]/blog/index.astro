@@ -1,36 +1,65 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, intlLocale, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
 import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
-import { posts } from '../../../data/blog';
+import { localizePost, posts } from '../../../data/blog';
 import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
 
 // Índice del blog: lista editorial (categoría y fecha, título, entradilla) con el patrón de GuideTeaser. Sin tarjetas ni chapas.
-const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Blog: comprar, vender y alquilar en Malgrat de Mar',
+    description: 'Guías cortas y claras de Conroma para comprar, vender o alquilar una vivienda en Malgrat de Mar y alrededores.',
+    home: 'Inicio',
+    h1: 'Guías para comprar, vender y alquilar en el Maresme',
+    lead: 'Te lo contamos fácil: guías cortas para comprar, vender o alquilar sin perderte en los papeles.',
+    closing: 'Hablemos',
+    closingMuted: 'de tu caso',
+  },
+  en: {
+    title: 'Blog: buying, selling and renting in Malgrat de Mar',
+    description: 'Short, clear guides from Conroma on buying, selling or renting a home in Malgrat de Mar and the surrounding area.',
+    home: 'Home',
+    h1: 'Guides to buying, selling and renting in the Maresme',
+    lead: 'Plain and simple: short guides to buying, selling or renting without getting lost in the paperwork.',
+    closing: 'Let’s talk',
+    closingMuted: 'about your case',
+  },
+  ca: {
+    title: 'Blog: comprar, vendre i llogar a Malgrat de Mar',
+    description: 'Guies curtes i clares de Conroma per comprar, vendre o llogar un habitatge a Malgrat de Mar i rodalia.',
+    home: 'Inici',
+    h1: 'Guies per comprar, vendre i llogar al Maresme',
+    lead: 'T’ho expliquem fàcil: guies curtes per comprar, vendre o llogar sense perdre’t entre papers.',
+    closing: 'Parlem',
+    closingMuted: 'del teu cas',
+  },
+})[lang];
+const longDate = new Intl.DateTimeFormat(intlLocale[lang], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
 const path = '/es/blog/';
-const title = 'Blog: comprar, vender y alquilar en Malgrat de Mar';
+const title = t.title;
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
+  { name: t.home, path: '/es/' },
   { name: 'Blog', path },
 ];
-const lang = getLang(Astro.url);
 ---
 
 <BaseLayout
   title={title}
-  description="Guías cortas y claras de Conroma para comprar, vender o alquilar una vivienda en Malgrat de Mar y alrededores."
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(title, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), collectionPageSchema(title, path, lang)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>Guías para comprar, vender y alquilar en el Maresme</h1>
-      <p class="page-head__lead">Te lo contamos fácil: guías cortas para comprar, vender o alquilar sin perderte en los papeles.</p>
+      <h1 class="page-head__title" data-split>{t.h1}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
@@ -38,9 +67,9 @@ const lang = getLang(Astro.url);
     <div class="wrap">
       <ul class="guide-teaser__list">
         {
-          posts.map((post) => (
+          posts.map((entry) => localizePost(entry, lang)).map((post) => (
             <li data-reveal>
-              <a class="guide-teaser__card" href={`/es/blog/${post.slug}/`}>
+              <a class="guide-teaser__card" href={localizePath(`/es/blog/${post.slug}/`, lang)}>
                 <p class="guide-teaser__date">
                   {post.category} · <time datetime={post.date}>{longDate.format(new Date(`${post.date}T12:00:00Z`))}</time>
                 </p>
@@ -54,5 +83,5 @@ const lang = getLang(Astro.url);
     </div>
   </section>
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu caso" image={closingPhoto} origin="blog-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="blog-cierre" />
 </BaseLayout>

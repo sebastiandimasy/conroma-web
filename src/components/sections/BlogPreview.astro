@@ -1,23 +1,31 @@
 ---
 import Icon from '../Icon.astro';
-import { posts } from '../../data/blog';
+import { localizePost, posts } from '../../data/blog';
+import { getLang, localizePath, strings } from '../../i18n';
+
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { eyebrow: '¿Tienes dudas?', title: 'Te lo contamos', titleHighlight: 'fácil.', read: 'Leer', all: 'Ir al blog' },
+  en: { eyebrow: 'Got questions?', title: 'We’ll keep it', titleHighlight: 'simple.', read: 'Read', all: 'Go to the blog' },
+  ca: { eyebrow: 'Tens dubtes?', title: 'T’ho expliquem', titleHighlight: 'fàcil.', read: 'Llegir', all: 'Anar al blog' },
+})[lang];
 ---
 
 <section class="section blog-preview">
   <div class="wrap">
     <div class="section__head section__head--center" data-reveal>
-      <p class="eyebrow">¿Tienes dudas?</p>
-      <h2 class="section__title">Te lo contamos <span class="highlight">fácil.</span></h2>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section__title">{t.title} <span class="highlight">{t.titleHighlight}</span></h2>
     </div>
     <ul class="feature-grid">
       {
-        posts.slice(0, 3).map((post) => (
+        posts.slice(0, 3).map((entry) => localizePost(entry, lang)).map((post) => (
           <li data-reveal>
-            <a class="card feature blog__card" href={`/es/blog/${post.slug}/`}>
+            <a class="card feature blog__card" href={localizePath(`/es/blog/${post.slug}/`, lang)}>
               <span class="tag">{post.category}</span>
               <h3 class="feature__title">{post.title}</h3>
               <span class="services__more">
-                Leer
+                {t.read}
                 <Icon name="arrow" class="link-list__arrow" />
               </span>
             </a>
@@ -26,7 +34,7 @@ import { posts } from '../../data/blog';
       }
     </ul>
     <p class="featured__more">
-      <a class="button button--ghost button--large" href="/es/blog/">Ir al blog</a>
+      <a class="button button--ghost button--large" href={localizePath('/es/blog/', lang)}>{t.all}</a>
     </p>
   </div>
 </section>

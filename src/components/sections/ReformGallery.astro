@@ -1,30 +1,79 @@
 ---
 import ReformCarousel from '../../islands/ReformCarousel';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   title?: string;
   lead?: string;
 }
 
-const { title = 'Obras que hemos hecho', lead = 'Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.' } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Obras que hemos hecho',
+    lead: 'Pisos de aquí que dejamos como nuevos. Mira el trabajo, sin filtros.',
+    more: 'Más antes y después en Instagram',
+    // Mismo orden que `numbers`.
+    alts: [
+      'Baño reformado con plato de ducha, mampara de cristal y espejo redondo iluminado',
+      'Baño reformado con ducha de obra, mueble de lavabo blanco y espejo con luz',
+      'Cocina reformada con muebles verde salvia, encimera clara y suelo de madera',
+      'Cocina reformada en verde salvia con horno y microondas en columna',
+      'Cocina reformada con columna de horno, nevera integrada y suelo laminado',
+      'Baño reformado con revestimiento de mármol, suelo efecto madera y lavabo sobre encimera',
+      'Baño reformado con mueble de lavabo blanco, espejo y paredes lisas',
+      'Pasillo reformado con puertas blancas nuevas, suelo laminado y luz de techo',
+      'Ducha reformada con mampara de perfil negro y revestimiento efecto mármol',
+      'Cocina reformada con muebles blancos, encimera negra y suelo hidráulico',
+      'Salón reformado con suelo de madera clara, salida a la terraza y comedor',
+      'Baño reformado con ducha de obra, lavabo sobre encimera de madera y espejo iluminado',
+    ],
+  },
+  en: {
+    title: "Work we've done",
+    lead: "Local homes we've left as good as new. Have a look at the work, no filters.",
+    more: 'More before-and-afters on Instagram',
+    alts: [
+      'Renovated bathroom with shower tray, glass screen and round lit mirror',
+      'Renovated bathroom with tiled walk-in shower, white vanity unit and lit mirror',
+      'Renovated kitchen with sage green units, light worktop and wooden floor',
+      'Renovated sage green kitchen with oven and microwave in a tall unit',
+      'Renovated kitchen with tall oven unit, integrated fridge and laminate flooring',
+      'Renovated bathroom with marble wall tiles, wood-effect floor and countertop basin',
+      'Renovated bathroom with white vanity unit, mirror and plain walls',
+      'Renovated hallway with new white doors, laminate flooring and ceiling light',
+      'Renovated shower with black-framed screen and marble-effect tiles',
+      'Renovated kitchen with white units, black worktop and patterned cement tile floor',
+      'Renovated living room with light wooden floor, dining area and doors onto the terrace',
+      'Renovated bathroom with tiled walk-in shower, basin on a wooden countertop and lit mirror',
+    ],
+  },
+  ca: {
+    title: 'Obres que hem fet',
+    lead: "Pisos d'aquí que deixem com nous. Mira la feina, sense filtres.",
+    more: 'Més abans i després a Instagram',
+    alts: [
+      'Bany reformat amb plat de dutxa, mampara de vidre i mirall rodó il·luminat',
+      "Bany reformat amb dutxa d'obra, moble de lavabo blanc i mirall amb llum",
+      'Cuina reformada amb mobles verd sàlvia, taulell clar i terra de fusta',
+      'Cuina reformada en verd sàlvia amb forn i microones en columna',
+      'Cuina reformada amb columna de forn, nevera integrada i terra laminat',
+      'Bany reformat amb revestiment de marbre, terra efecte fusta i lavabo sobre taulell',
+      'Bany reformat amb moble de lavabo blanc, mirall i parets llises',
+      'Passadís reformat amb portes blanques noves, terra laminat i llum de sostre',
+      'Dutxa reformada amb mampara de perfil negre i revestiment efecte marbre',
+      'Cuina reformada amb mobles blancs, taulell negre i terra hidràulic',
+      "Sala d'estar reformada amb terra de fusta clara, sortida a la terrassa i menjador",
+      "Bany reformat amb dutxa d'obra, lavabo sobre taulell de fusta i mirall il·luminat",
+    ],
+  },
+})[lang];
+const { title = t.title, lead = t.lead } = Astro.props;
 
 // Obras reales de Conroma en Obras (public/img/reformas). La 10 vive en src/assets: no se lista aquí.
 // Cada alt describe lo que se ve en la foto (SEO de imágenes y lectores de pantalla).
-const alts: [number, string][] = [
-  [1, 'Baño reformado con plato de ducha, mampara de cristal y espejo redondo iluminado'],
-  [2, 'Baño reformado con ducha de obra, mueble de lavabo blanco y espejo con luz'],
-  [3, 'Cocina reformada con muebles verde salvia, encimera clara y suelo de madera'],
-  [4, 'Cocina reformada en verde salvia con horno y microondas en columna'],
-  [5, 'Cocina reformada con columna de horno, nevera integrada y suelo laminado'],
-  [6, 'Baño reformado con revestimiento de mármol, suelo efecto madera y lavabo sobre encimera'],
-  [7, 'Baño reformado con mueble de lavabo blanco, espejo y paredes lisas'],
-  [8, 'Pasillo reformado con puertas blancas nuevas, suelo laminado y luz de techo'],
-  [9, 'Ducha reformada con mampara de perfil negro y revestimiento efecto mármol'],
-  [11, 'Cocina reformada con muebles blancos, encimera negra y suelo hidráulico'],
-  [12, 'Salón reformado con suelo de madera clara, salida a la terraza y comedor'],
-  [13, 'Baño reformado con ducha de obra, lavabo sobre encimera de madera y espejo iluminado'],
-];
-const photos = alts.map(([n, alt]) => ({ src: `/img/reformas/reforma-${String(n).padStart(2, '0')}.jpg`, alt }));
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
+const photos = numbers.map((n, i) => ({ src: `/img/reformas/reforma-${String(n).padStart(2, '0')}.jpg`, alt: t.alts[i] }));
 ---
 
 {/* Galería de obras: título, carrusel coverflow y salida a Instagram. Sin tarjetas ni etiquetas. */}
@@ -36,10 +85,10 @@ const photos = alts.map(([n, alt]) => ({ src: `/img/reformas/reforma-${String(n)
     </div>
   </div>
   {/* Coverflow a sangre (estilo elegido por el dueño, 2026-11-18): se ven las obras vecinas a los lados. */}
-  <ReformCarousel client:visible photos={photos} />
+  <ReformCarousel client:visible photos={photos} lang={lang} />
   <div class="wrap">
     <a class="link-cta reform-gallery__more" href="https://www.instagram.com/conromaenobras/" rel="noopener" target="_blank">
-      Más antes y después en Instagram
+      {t.more}
     </a>
   </div>
 </section>

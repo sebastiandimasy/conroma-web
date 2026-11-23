@@ -2,16 +2,35 @@
 import Icon from '../Icon.astro';
 import Section from '../Section.astro';
 import { guarantees } from '../../data/faq';
+import { getLang, strings } from '../../i18n';
 import type { IconName } from '../../lib/icons';
 
 const icons: IconName[] = ['user', 'globe', 'shield'];
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    eyebrow: '¿Por qué con nosotros?',
+    title: 'Comprar o vender una casa ya es bastante.',
+    highlight: 'Lo demás lo llevamos nosotros.',
+  },
+  en: {
+    eyebrow: 'Why us?',
+    title: 'Buying or selling a home is enough on its own.',
+    highlight: 'We handle the rest.',
+  },
+  ca: {
+    eyebrow: 'Per què amb nosaltres?',
+    title: 'Comprar o vendre una casa ja és prou feina.',
+    highlight: 'La resta ho portem nosaltres.',
+  },
+})[lang];
 ---
 
-<Section class="trust" center eyebrow="¿Por qué con nosotros?">
-  <Fragment slot="title">Comprar o vender una casa ya es bastante. <span class="highlight">Lo demás lo llevamos nosotros.</span></Fragment>
+<Section class="trust" center eyebrow={t.eyebrow}>
+  <Fragment slot="title">{t.title} <span class="highlight">{t.highlight}</span></Fragment>
   <ul class="feature-grid">
     {
-      guarantees.map((item, index) => (
+      guarantees[lang].map((item, index) => (
         <li class="card feature" data-reveal>
           <span class="icon-tile"><Icon name={icons[index]} /></span>
           <h3 class="feature__title">{item.question}</h3>

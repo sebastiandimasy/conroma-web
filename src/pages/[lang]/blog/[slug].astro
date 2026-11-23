@@ -1,40 +1,45 @@
 ---
-import { getLang, languages } from '../../../i18n';
+import { getLang, intlLocale, languages, localizePath, strings } from '../../../i18n';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import ClosingCTA from '../../../components/sections/ClosingCTA.astro';
 import InstagramReel from '../../../components/sections/InstagramReel.astro';
 import closingPhoto from '../../../assets/equipo/conroma-82.jpg';
-import { posts, relatedPosts, splitLinks, type BlogPost } from '../../../data/blog';
+import { localizePost, posts, relatedPosts, splitLinks, type BlogEntry } from '../../../data/blog';
 import { site } from '../../../data/site';
 import { articleSchema, breadcrumbSchema, videoSchema } from '../../../lib/seo';
 import type { ImageMetadata } from 'astro';
 
 export function getStaticPaths() {
-  return languages.flatMap((lang) => posts.map((post) => ({ params: { lang, slug: post.slug }, props: { post } })));
+  return languages.flatMap((lang) => posts.map((post) => ({ params: { lang, slug: post.slug }, props: { entry: post } })));
 }
 
 interface Props {
-  post: BlogPost;
+  entry: BlogEntry;
 }
 
-const { post } = Astro.props;
+const lang = getLang(Astro.url);
+const post = localizePost(Astro.props.entry, lang);
+const t = strings({
+  es: { home: 'Inicio', by: 'Por', updated: 'Actualizado el', draft: 'Borrador pendiente de revisión por Conroma.', summary: 'En resumen.', agency: 'Conroma es una inmobiliaria familiar de', company: 'Conoce la empresa', or: 'o', write: 'escríbenos', doubts: 'si tienes dudas sobre tu caso.', more: 'Más guías', closing: 'Hablemos', closingMuted: 'de tu caso' },
+  en: { home: 'Home', by: 'By', updated: 'Updated', draft: 'Draft awaiting review by Conroma.', summary: 'In short.', agency: 'Conroma is a family-run estate agency in', company: 'Get to know us', or: 'or', write: 'message us', doubts: 'if you have questions about your case.', more: 'More guides', closing: 'Let’s talk', closingMuted: 'about your case' },
+  ca: { home: 'Inici', by: 'Per', updated: 'Actualitzat el', draft: 'Esborrany pendent de revisió per part de Conroma.', summary: 'En resum.', agency: 'Conroma és una immobiliària familiar de', company: 'Coneix l’empresa', or: 'o', write: 'escriu-nos', doubts: 'si tens dubtes sobre el teu cas.', more: 'Més guies', closing: 'Parlem', closingMuted: 'del teu cas' },
+})[lang];
 const path = `/es/blog/${post.slug}/`;
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
+  { name: t.home, path: '/es/' },
   { name: 'Blog', path: '/es/blog/' },
   { name: post.title, path },
 ];
 const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  new Date(date).toLocaleDateString(intlLocale[lang], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const dateLabel = formatDate(post.date);
-const others = relatedPosts(post);
+const others = relatedPosts(Astro.props.entry).map((item) => localizePost(item, lang));
 // Portada del reel (src/assets/blog/reels/{id}.jpg): fondo mientras carga el iframe y miniatura del VideoObject.
 const reelPosters = import.meta.glob<{ default: ImageMetadata }>('../../../assets/blog/reels/*.jpg', { eager: true });
 const poster = post.video ? reelPosters[`../../../assets/blog/reels/${post.video.instagram}.jpg`]?.default : undefined;
-const schemas: object[] = [breadcrumbSchema(crumbs), articleSchema(post)];
-if (post.video && poster) schemas.push(videoSchema(post, post.video, poster.src));
-const lang = getLang(Astro.url);
+const schemas: object[] = [breadcrumbSchema(crumbs, lang), articleSchema(post, lang)];
+if (post.video && poster) schemas.push(videoSchema(post, post.video, poster.src, lang));
 ---
 
 <BaseLayout
@@ -51,18 +56,18 @@ const lang = getLang(Astro.url);
         <h1 class="page-head__title">{post.title}</h1>
         <p class="page-head__lead">{post.intro}</p>
         <p class="article__byline">
-          {post.category} · Por <a href={post.author.href}>{post.author.name}</a>, {post.author.role} · <time datetime={post.date}>{dateLabel}</time>
+          {post.category} · {t.by} <a href={post.author.href}>{post.author.name}</a>, {post.author.role} · <time datetime={post.date}>{dateLabel}</time>
           {post.updated && post.updated !== post.date && (
             <>
-              {' '}· Actualizado el <time datetime={post.updated}>{formatDate(post.updated)}</time>
+              {' '}· {t.updated} <time datetime={post.updated}>{formatDate(post.updated)}</time>
             </>
           )}
         </p>
-        {post.draft && <p class="article__draft">Borrador pendiente de revisión por Conroma.</p>}
+        {post.draft && <p class="article__draft">{t.draft}</p>}
       </div>
     </header>
     <div class="wrap article__wrap article__body">
-      <p class="article__summary"><strong>En resumen.</strong> {post.summary}</p>
+      <p class="article__summary"><strong>{t.summary}</strong> {post.summary}</p>
       {post.video && <InstagramReel file={post.video.file} title={post.video.title} poster={poster} />}
       {
         post.sections.map((section) => (
@@ -86,8 +91,8 @@ const lang = getLang(Astro.url);
       </p>
       <aside class="article__author">
         <p>
-          <strong>{post.author.name}</strong>, {post.author.role}. Conroma es una inmobiliaria familiar de {site.address.locality}.{' '}
-          <a href="/es/empresa/">Conoce la empresa</a> o <a href="/es/contacto/">escríbenos</a> si tienes dudas sobre tu caso.
+          <strong>{post.author.name}</strong>, {post.author.role}. {t.agency} {site.address.locality}.{' '}
+          <a href={localizePath('/es/empresa/', lang)}>{t.company}</a> {t.or} <a href={localizePath('/es/contacto/', lang)}>{t.write}</a> {t.doubts}
         </p>
       </aside>
     </div>
@@ -96,11 +101,11 @@ const lang = getLang(Astro.url);
     others.length > 0 && (
       <section class="section guide-teaser guide-teaser--surface">
         <div class="wrap">
-          <h2 class="section__title" data-reveal>Más guías</h2>
+          <h2 class="section__title" data-reveal>{t.more}</h2>
           <ul class="guide-teaser__list">
             {others.map((item) => (
               <li data-reveal>
-                <a class="guide-teaser__card" href={`/es/blog/${item.slug}/`}>
+                <a class="guide-teaser__card" href={localizePath(`/es/blog/${item.slug}/`, lang)}>
                   <p class="guide-teaser__date">{item.category}</p>
                   <h3 class="guide-teaser__title">{item.title}</h3>
                   <p class="guide-teaser__text">{item.description}</p>
@@ -112,5 +117,5 @@ const lang = getLang(Astro.url);
       </section>
     )
   }
-  <ClosingCTA title="Hablemos" titleMuted="de tu caso" image={closingPhoto} origin="blog-articulo-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="blog-articulo-cierre" />
 </BaseLayout>

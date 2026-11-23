@@ -6,18 +6,25 @@ const builtOn = new Date('2026-11-16T12:00:00Z');
 
 describe('proofFigures', () => {
   it('da las cifras reales en orden, con su fuente', () => {
-    const figures = proofFigures({ rating, yearsActive: 7, listings: 118, builtOn });
+    const figures = proofFigures({ rating, yearsActive: 7, listings: 118, builtOn, lang: 'es' });
     expect(figures.map((f) => f.value)).toEqual(['4,7', '107', '7', '118']);
     expect(figures[0].source).toBe('Google, consultado el 12 oct 2026');
     expect(figures[0].href).toBe(rating.url);
     expect(figures[3].source).toBe('Cartera publicada a 16 nov 2026');
   });
 
+  it('formatea nota y fechas según el idioma', () => {
+    const figures = proofFigures({ rating, yearsActive: 7, listings: 118, builtOn, lang: 'en' });
+    expect(figures[0].value).toBe('4.7');
+    expect(figures[0].source).toBe('Google, checked on 12 Oct 2026');
+    expect(figures[2].label).toBe('years in the Alt Maresme');
+  });
+
   it('sin ficha de Google no pinta ni nota ni recuento', () => {
-    expect(proofFigures({ rating: null, yearsActive: 7, listings: 118, builtOn }).map((f) => f.value)).toEqual(['7', '118']);
+    expect(proofFigures({ rating: null, yearsActive: 7, listings: 118, builtOn, lang: 'es' }).map((f) => f.value)).toEqual(['7', '118']);
   });
 
   it('nunca pinta un cero', () => {
-    expect(proofFigures({ rating: null, yearsActive: null, listings: 0, builtOn })).toEqual([]);
+    expect(proofFigures({ rating: null, yearsActive: null, listings: 0, builtOn, lang: 'es' })).toEqual([]);
   });
 });

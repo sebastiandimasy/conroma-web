@@ -1,6 +1,7 @@
 ---
 import Icon from '../Icon.astro';
 import { services } from '../../data/services';
+import { getLang, localizePath, strings } from '../../i18n';
 
 interface Props {
   title: string;
@@ -12,15 +13,48 @@ interface Props {
 }
 
 const { title, exclude, photos = false, id } = Astro.props;
-const list = services.filter((service) => service.slug !== exclude);
+const lang = getLang(Astro.url);
+const list = services[lang].filter((service) => service.slug !== exclude);
+const t = strings({
+  es: {
+    more: (name: string) => `Más sobre ${name.toLowerCase()}`,
+    alts: {
+      comprar: 'Entrega de llaves de una vivienda comprada con Conroma',
+      vender: 'Herman, de Conroma, preparando la tasación de un piso',
+      alquilar: 'Piso en alquiler gestionado por Conroma',
+      'gestion-de-patrimonio': 'Gestión de patrimonio inmobiliario con Conroma',
+      reformas: 'Reforma e interiorismo de Conroma en Obras',
+    },
+  },
+  en: {
+    more: (name: string) => `More about ${name.toLowerCase()}`,
+    alts: {
+      comprar: 'Handing over the keys to a home bought with Conroma',
+      vender: 'Herman, from Conroma, preparing a property valuation',
+      alquilar: 'Rental apartment managed by Conroma',
+      'gestion-de-patrimonio': 'Property portfolio management with Conroma',
+      reformas: 'Renovation and interior design by Conroma en Obras',
+    },
+  },
+  ca: {
+    more: (name: string) => `Més sobre ${name.toLowerCase()}`,
+    alts: {
+      comprar: "Lliurament de claus d'un habitatge comprat amb Conroma",
+      vender: "En Herman, de Conroma, preparant la taxació d'un pis",
+      alquilar: 'Pis de lloguer gestionat per Conroma',
+      'gestion-de-patrimonio': 'Gestió de patrimoni immobiliari amb Conroma',
+      reformas: 'Reforma i interiorisme de Conroma en Obras',
+    },
+  },
+})[lang];
 
 // Una foto por servicio (las que ya tenía la home antigua).
 const photoOf: Record<string, { src: string; alt: string }> = {
-  comprar: { src: '/img/servicios/compra-venta.jpg', alt: 'Entrega de llaves de una vivienda comprada con Conroma' },
-  vender: { src: '/img/equipo/herman-trabajando.jpg', alt: 'Herman, de Conroma, preparando la tasación de un piso' },
-  alquilar: { src: '/img/servicios/alquiler.jpg', alt: 'Piso en alquiler gestionado por Conroma' },
-  'gestion-de-patrimonio': { src: '/img/servicios/gestion-patrimonio.jpg', alt: 'Gestión de patrimonio inmobiliario con Conroma' },
-  reformas: { src: '/img/reformas/reforma-07.jpg', alt: 'Reforma e interiorismo de Conroma en Obras' },
+  comprar: { src: '/img/servicios/compra-venta.jpg', alt: t.alts.comprar },
+  vender: { src: '/img/equipo/herman-trabajando.jpg', alt: t.alts.vender },
+  alquilar: { src: '/img/servicios/alquiler.jpg', alt: t.alts.alquilar },
+  'gestion-de-patrimonio': { src: '/img/servicios/gestion-patrimonio.jpg', alt: t.alts['gestion-de-patrimonio'] },
+  reformas: { src: '/img/reformas/reforma-07.jpg', alt: t.alts.reformas },
 };
 ---
 
@@ -39,11 +73,11 @@ const photoOf: Record<string, { src: string; alt: string }> = {
                 </summary>
                 <div class="service-index__body">
                   <p class="service-index__text">{service.summary}</p>
-                  <a class="arrow-link" href={service.href}>
+                  <a class="arrow-link" href={localizePath(service.href, lang)}>
                     <span class="arrow-link__icon" aria-hidden="true">
                       <Icon name="arrow" />
                     </span>
-                    <span class="arrow-link__label">Más sobre {service.name.toLowerCase()}</span>
+                    <span class="arrow-link__label">{t.more(service.name)}</span>
                   </a>
                   {photoOf[service.slug] && (
                     <img
@@ -85,7 +119,7 @@ const photoOf: Record<string, { src: string; alt: string }> = {
         <ul class="service-index__list">
           {list.map((service) => (
             <li data-reveal>
-              <a class="service-index__row" href={service.href}>
+              <a class="service-index__row" href={localizePath(service.href, lang)}>
                 <h3 class="service-index__name">{service.name}</h3>
                 <p class="service-index__text">{service.summary}</p>
                 <Icon name="arrow" class="service-index__icon" />

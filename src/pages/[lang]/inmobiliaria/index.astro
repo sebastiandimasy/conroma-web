@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, intlLocale, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import type { ImageMetadata } from 'astro';
@@ -16,15 +16,69 @@ import { propertiesIn } from '../../../data/properties';
 import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
 
 // Índice de zonas: la puerta a las páginas de pueblo. Filas editoriales con foto del pueblo, sin tarjetas.
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    zones: 'Zonas',
+    title: 'Inmobiliaria en el Alt Maresme y la Costa Brava',
+    description: (n: number) =>
+      `Inmobiliaria en ${n} pueblos del Alt Maresme y la Costa Brava, de Malgrat a Lloret. Elige el tuyo: lo que hay en venta y cómo vendemos allí.`,
+    lead: 'La oficina está en Malgrat de Mar y nos movemos por la costa y el interior. Elige tu pueblo y mira lo que tenemos en venta, o cómo vendemos allí.',
+    answer: (names: string) =>
+      `Conroma Asesores trabaja en ${names}, desde la oficina de Malgrat de Mar. En cada pueblo te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`,
+    plural: (n: number) => `${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`,
+    agency: (name: string) => `Inmobiliaria en ${name}`,
+    forSale: (count: string) => `${count} en venta`,
+    moreTitle: 'Más pueblos con inmuebles en venta',
+    moreNav: 'Más pueblos',
+    closing: 'Hablemos',
+    closingMuted: 'de tu piso',
+  },
+  en: {
+    home: 'Home',
+    zones: 'Areas',
+    title: 'Estate agent in the Alt Maresme and Costa Brava',
+    description: (n: number) =>
+      `Estate agent in ${n} towns across the Alt Maresme and Costa Brava, from Malgrat to Lloret. Pick yours: what's for sale and how we sell there.`,
+    lead: 'Our office is in Malgrat de Mar and we work along the coast and inland. Pick your town and see what we have for sale, or how we sell there.',
+    answer: (names: string) =>
+      `Conroma Asesores works in ${names}, from our office in Malgrat de Mar. In each town we'll tell you what's for sale, including what isn't advertised, and value your home for free, no strings attached.`,
+    plural: (n: number) => `${n} ${n === 1 ? 'property' : 'properties'}`,
+    agency: (name: string) => `Estate agent in ${name}`,
+    forSale: (count: string) => `${count} for sale`,
+    moreTitle: 'More towns with properties for sale',
+    moreNav: 'More towns',
+    closing: "Let's talk",
+    closingMuted: 'about your home',
+  },
+  ca: {
+    home: 'Inici',
+    zones: 'Zones',
+    title: "Immobiliària a l'Alt Maresme i la Costa Brava",
+    description: (n: number) =>
+      `Immobiliària a ${n} pobles de l'Alt Maresme i la Costa Brava, de Malgrat a Lloret. Tria el teu: què hi ha en venda i com hi venem.`,
+    lead: "L'oficina és a Malgrat de Mar i ens movem per la costa i per l'interior. Tria el teu poble i mira què tenim en venda, o com hi venem.",
+    answer: (names: string) =>
+      `Conroma Asesores treballa a ${names}, des de l'oficina de Malgrat de Mar. A cada poble et diem què hi ha en venda, també el que no està anunciat, i valorem el teu pis gratis i sense compromís.`,
+    plural: (n: number) => `${n} ${n === 1 ? 'immoble' : 'immobles'}`,
+    agency: (name: string) => `Immobiliària a ${name}`,
+    forSale: (count: string) => `${count} en venda`,
+    moreTitle: 'Més pobles amb immobles en venda',
+    moreNav: 'Més pobles',
+    closing: 'Parlem',
+    closingMuted: 'del teu pis',
+  },
+})[lang];
 const path = '/es/inmobiliaria/';
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Zonas', path },
+  { name: t.home, path: localizePath('/es/', lang) },
+  { name: t.zones, path: localizePath(path, lang) },
 ];
 const files = import.meta.glob<{ default: ImageMetadata }>('../../../assets/lugares/*/*.jpg', { eager: true });
 const photoFor = (slug: string) => {
   const photo = placePhotos.find((p) => p.town === slug && files[`../../../${p.file}`]);
-  return photo ? { image: files[`../../../${photo.file}`].default, alt: photo.alt } : null;
+  return photo ? { image: files[`../../../${photo.file}`].default, alt: photo.alt[lang] } : null;
 };
 const catalogSlugs = new Set(publishedCatalogTowns.map((town) => town.slug));
 const sellerSlugs = new Set(publishedSellerTowns.map((town) => town.slug));
@@ -35,27 +89,22 @@ const moreTowns = publishedCatalogTowns
   .filter((town) => !sellerSlugs.has(town.slug))
   .map((town) => ({ ...town, forSale: forSaleIn(town.slug) }))
   .filter((town) => town.forSale > 0);
-const plural = (n: number) => `${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`;
-const title = 'Inmobiliaria en el Alt Maresme y la Costa Brava';
-const names = new Intl.ListFormat('es', { type: 'conjunction' }).format(zones.map((zone) => zone.name));
-const answer = `Conroma Asesores trabaja en ${names}, desde la oficina de Malgrat de Mar. En cada pueblo te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`;
-const lang = getLang(Astro.url);
+const title = t.title;
+const names = new Intl.ListFormat(intlLocale[lang], { type: 'conjunction' }).format(zones.map((zone) => zone.name));
+const answer = t.answer(names);
 ---
 
 <BaseLayout
   title={title}
-  description={`Inmobiliaria en ${zones.length} pueblos del Alt Maresme y la Costa Brava, de Malgrat a Lloret. Elige el tuyo: lo que hay en venta y cómo vendemos allí.`}
+  description={t.description(zones.length)}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), collectionPageSchema(title, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), collectionPageSchema(title, localizePath(path, lang), lang)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
       <h1 class="page-head__title" data-split>{title}</h1>
-      <p class="page-head__lead">
-        La oficina está en Malgrat de Mar y nos movemos por la costa y el interior. Elige tu pueblo y mira lo que tenemos
-        en venta, o cómo vendemos allí.
-      </p>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
@@ -70,12 +119,12 @@ const lang = getLang(Astro.url);
               )}
               <div class="zones__body">
                 <h2 class="zones__name">
-                  <a href={`/es/inmobiliaria/${zone.slug}/`}>{zone.name}</a>
+                  <a href={localizePath(`/es/inmobiliaria/${zone.slug}/`, lang)}>{zone.name}</a>
                 </h2>
-                <p class="zones__intro">{zone.intro || zone.sellerIntro}</p>
+                <p class="zones__intro">{(zone.intro ?? zone.sellerIntro)?.[lang]}</p>
                 <div class="zones__links">
-                  <a class="link-cta" href={`/es/inmobiliaria/${zone.slug}/`}>{`Inmobiliaria en ${zone.name}`}</a>
-                  {zone.forSale > 0 && <a class="link-cta" href={`/es/venta/${zone.slug}/`}>{`${plural(zone.forSale)} en venta`}</a>}
+                  <a class="link-cta" href={localizePath(`/es/inmobiliaria/${zone.slug}/`, lang)}>{t.agency(zone.name)}</a>
+                  {zone.forSale > 0 && <a class="link-cta" href={localizePath(`/es/venta/${zone.slug}/`, lang)}>{t.forSale(t.plural(zone.forSale))}</a>}
                 </div>
               </div>
             </li>
@@ -92,14 +141,14 @@ const lang = getLang(Astro.url);
       <section class="section zones">
         <div class="wrap">
           <div class="section__head" data-reveal>
-            <h2 class="section__title">Más pueblos con inmuebles en venta</h2>
+            <h2 class="section__title">{t.moreTitle}</h2>
           </div>
-          <nav class="town-list" aria-label="Más pueblos" data-reveal>
+          <nav class="town-list" aria-label={t.moreNav} data-reveal>
             <ul class="town-list__items">
               {moreTowns.map((town) => (
                 <li>
-                  <a class="town-list__link" href={`/es/venta/${town.slug}/`}>
-                    <span>{`${town.name} · ${plural(town.forSale)}`}</span>
+                  <a class="town-list__link" href={localizePath(`/es/venta/${town.slug}/`, lang)}>
+                    <span>{`${town.name} · ${t.plural(town.forSale)}`}</span>
                     <Icon name="arrow" class="town-links__arrow" />
                   </a>
                 </li>
@@ -111,7 +160,7 @@ const lang = getLang(Astro.url);
     )
   }
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu piso" image={closingPhoto} origin="zonas-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="zonas-cierre" />
 </BaseLayout>
 
 <style>

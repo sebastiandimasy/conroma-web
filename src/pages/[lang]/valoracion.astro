@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, intlLocale, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -14,89 +14,234 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
    Arriba, el asistente de cuatro pasos (embudo, sin cabecera ni pie). Debajo, texto real para
    Google y las IA: cómo se calcula el valor y las dudas habituales. Sin precios ni plazos inventados. */
 const path = '/es/valoracion/';
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Valoración', path },
-];
-const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(publishedSellerTowns.map((town) => town.name));
-const guide = [
-  {
-    title: 'Ubicación',
-    text: 'La calle y la zona pesan más que nada: la cercanía a la playa, al centro, a la estación y a los servicios. Dos pisos iguales en dos calles distintas pueden valer muy diferente.',
-  },
-  {
-    title: 'Metros y distribución',
-    text: 'Los metros útiles, las habitaciones y los baños, y cómo están repartidos. Un piso bien aprovechado se vende mejor que otro más grande pero mal distribuido.',
-  },
-  {
-    title: 'Estado del piso',
-    text: 'Si está para entrar a vivir o necesita obra. La cocina, los baños y las instalaciones son lo que más mueve el precio.',
-  },
-  {
-    title: 'Edificio y planta',
-    text: 'La planta, el ascensor, la orientación y la luz, si es exterior y si tiene terraza, parking o trastero.',
-  },
-  {
-    title: 'Ventas reales en la zona',
-    text: 'Comparamos con pisos parecidos que se han vendido cerca. Los precios de los anuncios son lo que se pide, no lo que se acaba pagando.',
-  },
-  {
-    title: 'Papeles al día',
-    text: 'Nota simple, certificado energético y cédula de habitabilidad. Tenerlos listos no cambia el valor, pero evita que la venta se frene.',
-  },
-];
-const faq = [
-  {
-    question: '¿La valoración es gratis?',
-    answer: 'Sí. Es gratis y sin compromiso: pasamos a ver tu piso y te damos un precio realista. Decidir si vendes es cosa tuya.',
-  },
-  {
-    question: '¿Qué diferencia hay entre una valoración y una tasación?',
-    answer:
-      'La valoración la hacemos nosotros para fijar a qué precio vender, según el mercado de la zona. La tasación oficial la hace una sociedad de tasación homologada por el Banco de España y normalmente la pide el banco del comprador para concederle la hipoteca.',
-  },
-  {
-    question: '¿Hace falta que veáis el piso?',
-    answer:
-      'Para darte un precio fiable, sí. Con las cuatro preguntas tenemos una primera idea, y después pasamos a verlo contigo para afinar.',
-  },
-  {
-    question: '¿En qué zonas valoráis pisos?',
-    answer: `Tenemos la oficina en Malgrat de Mar y valoramos en toda la zona: ${townNames}.`,
-  },
-];
 const lang = getLang(Astro.url);
+const townNames = new Intl.ListFormat(intlLocale[lang], { type: 'conjunction' }).format(publishedSellerTowns.map((town) => town.name));
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Valoración',
+    title: '¿Cuánto vale mi piso? Valoración gratis en Malgrat de Mar',
+    description:
+      'Dinos dónde está tu piso y en qué estado, y te decimos cuánto vale. Gratis y sin compromiso, en Malgrat de Mar y el Alt Maresme.',
+    service: 'Valoración de inmuebles',
+    serviceDescription: 'Valoración gratis de tu piso en Malgrat de Mar y el Alt Maresme, sin compromiso.',
+    noscriptTitle: '¿Cuánto vale mi piso?',
+    noscriptText:
+      'Para la valoración paso a paso hace falta JavaScript. Escríbenos por WhatsApp o llámanos y te lo decimos igual.',
+    guideTitle: 'Cómo se calcula lo que vale un piso',
+    guideLead:
+      'Una valoración seria parte de lo que se ha vendido de verdad cerca de tu piso. Estos son los puntos que miramos cuando pasamos a verlo.',
+    guideMore: 'Cómo vendemos tu piso',
+    faqTitle: 'Valoración: lo que nos preguntan',
+    guide: [
+      {
+        title: 'Ubicación',
+        text: 'La calle y la zona pesan más que nada: la cercanía a la playa, al centro, a la estación y a los servicios. Dos pisos iguales en dos calles distintas pueden valer muy diferente.',
+      },
+      {
+        title: 'Metros y distribución',
+        text: 'Los metros útiles, las habitaciones y los baños, y cómo están repartidos. Un piso bien aprovechado se vende mejor que otro más grande pero mal distribuido.',
+      },
+      {
+        title: 'Estado del piso',
+        text: 'Si está para entrar a vivir o necesita obra. La cocina, los baños y las instalaciones son lo que más mueve el precio.',
+      },
+      {
+        title: 'Edificio y planta',
+        text: 'La planta, el ascensor, la orientación y la luz, si es exterior y si tiene terraza, parking o trastero.',
+      },
+      {
+        title: 'Ventas reales en la zona',
+        text: 'Comparamos con pisos parecidos que se han vendido cerca. Los precios de los anuncios son lo que se pide, no lo que se acaba pagando.',
+      },
+      {
+        title: 'Papeles al día',
+        text: 'Nota simple, certificado energético y cédula de habitabilidad. Tenerlos listos no cambia el valor, pero evita que la venta se frene.',
+      },
+    ],
+    faq: [
+      {
+        question: '¿La valoración es gratis?',
+        answer: 'Sí. Es gratis y sin compromiso: pasamos a ver tu piso y te damos un precio realista. Decidir si vendes es cosa tuya.',
+      },
+      {
+        question: '¿Qué diferencia hay entre una valoración y una tasación?',
+        answer:
+          'La valoración la hacemos nosotros para fijar a qué precio vender, según el mercado de la zona. La tasación oficial la hace una sociedad de tasación homologada por el Banco de España y normalmente la pide el banco del comprador para concederle la hipoteca.',
+      },
+      {
+        question: '¿Hace falta que veáis el piso?',
+        answer:
+          'Para darte un precio fiable, sí. Con las cuatro preguntas tenemos una primera idea, y después pasamos a verlo contigo para afinar.',
+      },
+      {
+        question: '¿En qué zonas valoráis pisos?',
+        answer: `Tenemos la oficina en Malgrat de Mar y valoramos en toda la zona: ${townNames}.`,
+      },
+    ],
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Valuation',
+    title: 'What’s my home worth? Free valuation in Malgrat de Mar',
+    description:
+      'Tell us where your home is and what condition it’s in, and we’ll tell you what it’s worth. Free, no obligation, in Malgrat de Mar and the Alt Maresme.',
+    service: 'Property valuation',
+    serviceDescription: 'Free, no-obligation valuation of your home in Malgrat de Mar and the Alt Maresme.',
+    noscriptTitle: 'What’s my home worth?',
+    noscriptText:
+      'The step-by-step valuation needs JavaScript. Message us on WhatsApp or give us a call and we’ll tell you all the same.',
+    guideTitle: 'How a home’s value is worked out',
+    guideLead:
+      'A proper valuation starts from what has actually sold near your home. These are the things we look at when we come round.',
+    guideMore: 'How we sell your home',
+    faqTitle: 'Valuations: what people ask us',
+    guide: [
+      {
+        title: 'Location',
+        text: 'The street and the area count more than anything: how close it is to the beach, the town centre, the station and local amenities. Two identical homes on two different streets can be worth very different amounts.',
+      },
+      {
+        title: 'Size and layout',
+        text: 'The usable floor area, the bedrooms and bathrooms, and how they’re laid out. A home that makes good use of its space sells better than a bigger one with an awkward layout.',
+      },
+      {
+        title: 'Condition',
+        text: 'Whether it’s ready to move into or needs work. The kitchen, the bathrooms and the wiring and plumbing are what move the price most.',
+      },
+      {
+        title: 'Building and floor',
+        text: 'Which floor it’s on, the lift, the orientation and the light, whether it faces the street and whether it has a terrace, parking or a storage room.',
+      },
+      {
+        title: 'Real sales nearby',
+        text: 'We compare it with similar homes that have sold close by. Listing prices are what sellers ask, not what buyers end up paying.',
+      },
+      {
+        title: 'Paperwork in order',
+        text: 'The land registry extract (nota simple), the energy certificate and the cédula de habitabilidad (certificate of habitability). Having them ready doesn’t change the value, but it stops the sale stalling.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Is the valuation free?',
+        answer: 'Yes. It’s free and with no obligation: we come round to see your home and give you a realistic price. Whether you sell is up to you.',
+      },
+      {
+        question: 'What’s the difference between a valuation and a formal appraisal (tasación)?',
+        answer:
+          'We do the valuation to set the asking price, based on the local market. The official appraisal is carried out by a valuation company approved by the Bank of Spain, and it’s usually the buyer’s bank that asks for it before granting the mortgage.',
+      },
+      {
+        question: 'Do you need to see the property?',
+        answer:
+          'To give you a reliable price, yes. The four questions give us a first idea, and then we come round with you to fine-tune it.',
+      },
+      {
+        question: 'Which areas do you cover for valuations?',
+        answer: `Our office is in Malgrat de Mar and we do valuations across the area: ${townNames}.`,
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'Valoració',
+    title: 'Quant val el meu pis? Valoració gratuïta a Malgrat de Mar',
+    description:
+      'Digues-nos on és el teu pis i en quin estat està, i et diem quant val. Gratis i sense compromís, a Malgrat de Mar i l’Alt Maresme.',
+    service: 'Valoració d’immobles',
+    serviceDescription: 'Valoració gratuïta del teu pis a Malgrat de Mar i l’Alt Maresme, sense compromís.',
+    noscriptTitle: 'Quant val el meu pis?',
+    noscriptText:
+      'Per a la valoració pas a pas cal JavaScript. Escriu-nos per WhatsApp o truca’ns i t’ho diem igualment.',
+    guideTitle: 'Com es calcula el que val un pis',
+    guideLead:
+      'Una valoració seriosa parteix del que s’ha venut de debò a prop del teu pis. Aquests són els punts que mirem quan venim a veure’l.',
+    guideMore: 'Com venem el teu pis',
+    faqTitle: 'Valoració: el que ens pregunten',
+    guide: [
+      {
+        title: 'Ubicació',
+        text: 'El carrer i la zona pesen més que res: la proximitat a la platja, al centre, a l’estació i als serveis. Dos pisos iguals en dos carrers diferents poden valer molt diferent.',
+      },
+      {
+        title: 'Metres i distribució',
+        text: 'Els metres útils, les habitacions i els banys, i com estan repartits. Un pis ben aprofitat es ven millor que un altre més gran però mal distribuït.',
+      },
+      {
+        title: 'Estat del pis',
+        text: 'Si està per entrar a viure o necessita obra. La cuina, els banys i les instal·lacions són el que més mou el preu.',
+      },
+      {
+        title: 'Edifici i planta',
+        text: 'La planta, l’ascensor, l’orientació i la llum, si és exterior i si té terrassa, pàrquing o traster.',
+      },
+      {
+        title: 'Vendes reals a la zona',
+        text: 'Comparem amb pisos semblants que s’han venut a prop. Els preus dels anuncis són el que es demana, no el que s’acaba pagant.',
+      },
+      {
+        title: 'Papers al dia',
+        text: 'Nota simple, certificat energètic i cèdula d’habitabilitat. Tenir-los a punt no canvia el valor, però evita que la venda s’encalli.',
+      },
+    ],
+    faq: [
+      {
+        question: 'La valoració és gratis?',
+        answer: 'Sí. És gratis i sense compromís: venim a veure el teu pis i et donem un preu realista. Decidir si el vens és cosa teva.',
+      },
+      {
+        question: 'Quina diferència hi ha entre una valoració i una taxació?',
+        answer:
+          'La valoració la fem nosaltres per fixar a quin preu vendre, segons el mercat de la zona. La taxació oficial la fa una societat de taxació homologada pel Banc d’Espanya i normalment la demana el banc del comprador per concedir-li la hipoteca.',
+      },
+      {
+        question: 'Cal que vegeu el pis?',
+        answer:
+          'Per donar-te un preu fiable, sí. Amb les quatre preguntes tenim una primera idea, i després venim a veure’l amb tu per afinar.',
+      },
+      {
+        question: 'A quines zones valoreu pisos?',
+        answer: `Tenim l’oficina a Malgrat de Mar i valorem a tota la zona: ${townNames}.`,
+      },
+    ],
+  },
+})[lang];
+const crumbs = [
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
+];
 ---
 
 <BaseLayout
-  title="¿Cuánto vale mi piso? Valoración gratis en Malgrat de Mar"
-  description="Dinos dónde está tu piso y en qué estado, y te decimos cuánto vale. Gratis y sin compromiso, en Malgrat de Mar y el Alt Maresme."
+  title={t.title}
+  description={t.description}
   path={path}
   schemas={[
-    breadcrumbSchema(crumbs),
-    faqSchema(faq),
-    serviceSchema('Valoración de inmuebles', 'Valoración gratis de tu piso en Malgrat de Mar y el Alt Maresme, sin compromiso.', path),
+    breadcrumbSchema(crumbs, lang),
+    faqSchema(t.faq),
+    serviceSchema(t.service, t.serviceDescription, path, lang),
   ]}
   bare
 >
-  <ValuationWizard client:load />
+  <ValuationWizard client:load lang={lang} />
   <noscript>
     <div class="wrap wizard-fallback">
-      <h2>¿Cuánto vale mi piso?</h2>
-      <p>Para la valoración paso a paso hace falta JavaScript. Escríbenos por WhatsApp o llámanos y te lo decimos igual.</p>
+      <h2>{t.noscriptTitle}</h2>
+      <p>{t.noscriptText}</p>
     </div>
   </noscript>
 
   <ContentGuide
-    title="Cómo se calcula lo que vale un piso"
-    lead="Una valoración seria parte de lo que se ha vendido de verdad cerca de tu piso. Estos son los puntos que miramos cuando pasamos a verlo."
-    items={guide}
+    title={t.guideTitle}
+    lead={t.guideLead}
+    items={t.guide}
   >
-    <a class="arrow-link content-guide__more" href="/es/vender/">
+    <a class="arrow-link content-guide__more" href={localizePath('/es/vender/', lang)}>
       <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-      <span class="arrow-link__label">Cómo vendemos tu piso</span>
+      <span class="arrow-link__label">{t.guideMore}</span>
     </a>
   </ContentGuide>
 
-  <FaqSection title="Valoración: lo que nos preguntan" items={faq} origin="valoracion-faq" />
+  <FaqSection title={t.faqTitle} items={t.faq} origin="valoracion-faq" />
 </BaseLayout>

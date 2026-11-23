@@ -1,13 +1,52 @@
 ---
+import { getLang, localizePath, strings } from '../../i18n';
+
 interface Props {
   title?: string;
   lead?: string;
 }
 
-const {
-  title = '¿Cuánto vale mi casa?',
-  lead = 'Pon la dirección y te lo decimos. Gratis y sin compromiso.',
-} = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: '¿Cuánto vale mi casa?',
+    lead: 'Pon la dirección y te lo decimos. Gratis y sin compromiso.',
+    addressLabel: 'Dirección de tu vivienda',
+    placeholder: 'Ej. Carrer de Mar 24, Malgrat',
+    submit: 'Va, dime cuánto',
+    note: 'Solo te pedimos el contacto al final.',
+    visitTitle: 'Pasamos a verlo',
+    visitText: 'Vemos tu piso en persona y te decimos lo que vale de verdad.',
+    mobileTitle: 'Desde el móvil',
+    mobileText: 'Nos pasas cuatro datos por WhatsApp y te contestamos con una primera idea.',
+  },
+  en: {
+    title: 'What’s my home worth?',
+    lead: 'Give us the address and we’ll tell you. Free and with no obligation.',
+    addressLabel: 'Your home’s address',
+    placeholder: 'E.g. Carrer de Mar 24, Malgrat',
+    submit: 'Go on, tell me',
+    note: 'We only ask for your contact details at the end.',
+    visitTitle: 'We come round',
+    visitText: 'We see your home in person and tell you what it’s really worth.',
+    mobileTitle: 'From your phone',
+    mobileText: 'Send us a few details on WhatsApp and we’ll reply with a first idea.',
+  },
+  ca: {
+    title: 'Quant val la meva casa?',
+    lead: 'Posa l’adreça i t’ho diem. Gratis i sense compromís.',
+    addressLabel: 'Adreça del teu habitatge',
+    placeholder: 'Ex. Carrer de Mar 24, Malgrat',
+    submit: 'Va, digues-me quant',
+    note: 'Només et demanem el contacte al final.',
+    visitTitle: 'Venim a veure’l',
+    visitText: 'Veiem el teu pis en persona i et diem el que val de debò.',
+    mobileTitle: 'Des del mòbil',
+    mobileText: 'Ens passes quatre dades per WhatsApp i et responem amb una primera idea.',
+  },
+})[lang];
+
+const { title = t.title, lead = t.lead } = Astro.props;
 ---
 
 <section class="section valuation" id="valoracion">
@@ -16,29 +55,29 @@ const {
       <div class="valuation__intro">
         <h2 class="section__title">{title}</h2>
         <p class="section__lead">{lead}</p>
-        <form class="valuation__form" action="/es/valoracion/" method="get">
+        <form class="valuation__form" action={localizePath('/es/valoracion/', lang)} method="get">
           <label class="field valuation__field">
-            <span class="visually-hidden">Dirección de tu vivienda</span>
+            <span class="visually-hidden">{t.addressLabel}</span>
             <input
               class="field__control"
               type="text"
               name="direccion"
               autocomplete="street-address"
-              placeholder="Ej. Carrer de Mar 24, Malgrat"
+              placeholder={t.placeholder}
             />
           </label>
-          <button class="button button--primary button--large" type="submit">Va, dime cuánto</button>
+          <button class="button button--primary button--large" type="submit">{t.submit}</button>
         </form>
-        <p class="valuation__note">Solo te pedimos el contacto al final.</p>
+        <p class="valuation__note">{t.note}</p>
       </div>
       <ul class="valuation__options">
         <li class="valuation__option">
-          <h3 class="feature__title">Pasamos a verlo</h3>
-          <p class="feature__text">Vemos tu piso en persona y te decimos lo que vale de verdad.</p>
+          <h3 class="feature__title">{t.visitTitle}</h3>
+          <p class="feature__text">{t.visitText}</p>
         </li>
         <li class="valuation__option">
-          <h3 class="feature__title">Desde el móvil</h3>
-          <p class="feature__text">Nos pasas cuatro datos por WhatsApp y te contestamos con una primera idea.</p>
+          <h3 class="feature__title">{t.mobileTitle}</h3>
+          <p class="feature__text">{t.mobileText}</p>
         </li>
       </ul>
     </div>

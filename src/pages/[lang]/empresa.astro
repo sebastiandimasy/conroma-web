@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -20,85 +20,201 @@ import type { FaqItem } from '../../data/faq';
 import { breadcrumbSchema, faqSchema } from '../../lib/seo';
 
 const path = '/es/empresa/';
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Nuestra empresa', path },
-];
+const lang = getLang(Astro.url);
 const years = site.yearsActive;
-const hours = site.openingHours
-  ?.map((slot) => `${slot.opens.replace(/^0/, '')} a ${slot.closes}`)
-  .join(' y ');
+const founder = site.ceo?.name ?? 'Boris Conde Jr.';
+const { street, postalCode, locality } = site.address;
+const hoursWith = (to: string, and: string) =>
+  site.openingHours?.map((slot) => `${slot.opens.replace(/^0/, '')} ${to} ${slot.closes}`).join(` ${and} `);
 
 // Respuesta directa (AEO) y preguntas con datos de site.ts: nada que no esté ya publicado.
-const answer =
-  `Conroma Asesores Inmobiliarios es una agencia de Malgrat de Mar especializada en gestión inmobiliaria y de patrimonios. ` +
-  `La dirige su fundador, ${site.ceo?.name ?? 'Boris Conde Jr.'}${years ? `, y lleva ${years} años` : ''} atendiendo el Alt Maresme y La Selva en catalán, castellano, inglés y francés.`;
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Nuestra empresa',
+    title: 'Nuestra empresa: quién es Conroma Asesores',
+    description:
+      'Conroma Asesores Inmobiliarios: especialistas en gestión inmobiliaria y de patrimonios en Malgrat de Mar. Quién la dirige, qué hacemos y dónde trabajamos.',
+    answer:
+      `Conroma Asesores Inmobiliarios es una agencia de Malgrat de Mar especializada en gestión inmobiliaria y de patrimonios. ` +
+      `La dirige su fundador, ${founder}${years ? `, y lleva ${years} años` : ''} atendiendo el Alt Maresme y La Selva en catalán, castellano, inglés y francés.`,
+    faq: [
+      {
+        question: '¿Quién dirige Conroma Asesores?',
+        answer:
+          'Boris Conde Jr., CEO y fundador. Empezó a los 18 años en la inmobiliaria de su padre y tres años después montó Conroma con una visión más moderna del sector.',
+      },
+      ...(years
+        ? [{ question: '¿Cuántos años lleva Conroma?', answer: `${years} años trabajando en el Alt Maresme, con oficina en Malgrat de Mar.` }]
+        : []),
+      {
+        question: '¿Qué hace Conroma?',
+        answer:
+          'Compraventa y alquiler de viviendas, gestión de patrimonio y, con Conroma en Obras, reformas e interiorismo antes de vender o de entrar a vivir.',
+      },
+      {
+        question: '¿En qué idiomas atendéis?',
+        answer: 'En catalán, castellano, inglés y francés. Hablamos como te vaya mejor.',
+      },
+      {
+        question: '¿Dónde está la oficina?',
+        answer: `En ${street}, ${postalCode} ${locality}.${hoursWith('a', 'y') ? ` Abrimos de lunes a viernes, de ${hoursWith('a', 'y')}.` : ''}`,
+      },
+    ] as FaqItem[],
+    heroTitle: 'Quién es Conroma Asesores',
+    heroLead: 'Especialistas en gestión inmobiliaria y de patrimonios, con oficina en Malgrat de Mar.',
+    heroAlt: 'Una persona del equipo de Conroma explicando una operación en la pizarra',
+    teamLink: 'Conoce al equipo',
+    rootsTitle: 'Con los pies en el pueblo',
+    rootsText: `Venimos con ideales de la primera década de este siglo. Con los años hemos renovado la manera de trabajar y las herramientas, pero no la idea: tratarte como a alguien del pueblo. ${site.about.es[2]}`,
+    rootsAlt: 'Dos personas del equipo de Conroma en la oficina',
+    rootsLink: 'Pedir una valoración',
+    services: 'Qué hacemos',
+    towns: 'Dónde trabajamos',
+    faqTitle: 'Sobre Conroma',
+    closing: 'Hablemos',
+    closingMuted: 'cuando quieras',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'About us',
+    title: 'About us: who Conroma Asesores are',
+    description:
+      'Conroma Asesores Inmobiliarios: property and portfolio management specialists in Malgrat de Mar. Who runs it, what we do and where we work.',
+    answer:
+      `Conroma Asesores Inmobiliarios is an estate agency in Malgrat de Mar specialising in property and property portfolio management. ` +
+      `It’s run by its founder, ${founder}${years ? `, and has spent ${years} years` : ''} serving the Alt Maresme and La Selva in Catalan, Spanish, English and French.`,
+    faq: [
+      {
+        question: 'Who runs Conroma Asesores?',
+        answer:
+          'Boris Conde Jr., CEO and founder. He started at 18 in his father’s estate agency and three years later set up Conroma with a more modern take on the business.',
+      },
+      ...(years
+        ? [{ question: 'How long has Conroma been going?', answer: `${years} years working in the Alt Maresme, with an office in Malgrat de Mar.` }]
+        : []),
+      {
+        question: 'What does Conroma do?',
+        answer:
+          'Home sales and rentals, property portfolio management and, through Conroma en Obras, renovations and interior design before you sell or move in.',
+      },
+      {
+        question: 'What languages do you speak?',
+        answer: 'Catalan, Spanish, English and French. Whichever suits you best.',
+      },
+      {
+        question: 'Where is the office?',
+        answer: `At ${street}, ${postalCode} ${locality}.${hoursWith('to', 'and') ? ` We’re open Monday to Friday, ${hoursWith('to', 'and')}.` : ''}`,
+      },
+    ],
+    heroTitle: 'Meet Conroma Asesores',
+    heroLead: 'Property and portfolio management specialists, with an office in Malgrat de Mar.',
+    heroAlt: 'A member of the Conroma team explaining a sale on the whiteboard',
+    teamLink: 'Meet the team',
+    rootsTitle: 'Rooted in the town',
+    rootsText: `We started out with ideals from the first decade of this century. Over the years we’ve updated how we work and the tools we use, but not the idea: treating you like someone from the town. ${site.about.en[2]}`,
+    rootsAlt: 'Two members of the Conroma team at the office',
+    rootsLink: 'Ask for a valuation',
+    services: 'What we do',
+    towns: 'Where we work',
+    faqTitle: 'About Conroma',
+    closing: 'Let’s talk',
+    closingMuted: 'whenever you like',
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'La nostra empresa',
+    title: 'La nostra empresa: qui és Conroma Asesores',
+    description:
+      'Conroma Asesores Inmobiliarios: especialistes en gestió immobiliària i de patrimonis a Malgrat de Mar. Qui la dirigeix, què fem i on treballem.',
+    answer:
+      `Conroma Asesores Inmobiliarios és una agència de Malgrat de Mar especialitzada en gestió immobiliària i de patrimonis. ` +
+      `La dirigeix el seu fundador, ${founder}${years ? `, i porta ${years} anys` : ''} atenent l’Alt Maresme i la Selva en català, castellà, anglès i francès.`,
+    faq: [
+      {
+        question: 'Qui dirigeix Conroma Asesores?',
+        answer:
+          'Boris Conde Jr., CEO i fundador. Va començar als 18 anys a la immobiliària del seu pare i tres anys després va muntar Conroma amb una visió més moderna del sector.',
+      },
+      ...(years
+        ? [{ question: 'Quants anys fa que existeix Conroma?', answer: `${years} anys treballant a l’Alt Maresme, amb oficina a Malgrat de Mar.` }]
+        : []),
+      {
+        question: 'Què fa Conroma?',
+        answer:
+          'Compravenda i lloguer d’habitatges, gestió de patrimoni i, amb Conroma en Obras, reformes i interiorisme abans de vendre o d’entrar a viure.',
+      },
+      {
+        question: 'En quins idiomes parleu?',
+        answer: 'En català, castellà, anglès i francès. Parlem com et vagi millor.',
+      },
+      {
+        question: 'On és l’oficina?',
+        answer: `A ${street}, ${postalCode} ${locality}.${hoursWith('a', 'i') ? ` Obrim de dilluns a divendres, de ${hoursWith('a', 'i')}.` : ''}`,
+      },
+    ],
+    heroTitle: 'Qui és Conroma Asesores',
+    heroLead: 'Especialistes en gestió immobiliària i de patrimonis, amb oficina a Malgrat de Mar.',
+    heroAlt: 'Una persona de l’equip de Conroma explicant una operació a la pissarra',
+    teamLink: 'Coneix l’equip',
+    rootsTitle: 'Amb els peus al poble',
+    rootsText: `Venim amb ideals de la primera dècada d’aquest segle. Amb els anys hem renovat la manera de treballar i les eines, però no la idea: tractar-te com algú del poble. ${site.about.ca[2]}`,
+    rootsAlt: 'Dues persones de l’equip de Conroma a l’oficina',
+    rootsLink: 'Demana una valoració',
+    services: 'Què fem',
+    towns: 'On treballem',
+    faqTitle: 'Sobre Conroma',
+    closing: 'Parlem',
+    closingMuted: 'quan vulguis',
+  },
+})[lang];
 
-const faq: FaqItem[] = [
-  {
-    question: '¿Quién dirige Conroma Asesores?',
-    answer:
-      'Boris Conde Jr., CEO y fundador. Empezó a los 18 años en la inmobiliaria de su padre y tres años después montó Conroma con una visión más moderna del sector.',
-  },
-  ...(years
-    ? [{ question: '¿Cuántos años lleva Conroma?', answer: `${years} años trabajando en el Alt Maresme, con oficina en Malgrat de Mar.` }]
-    : []),
-  {
-    question: '¿Qué hace Conroma?',
-    answer:
-      'Compraventa y alquiler de viviendas, gestión de patrimonio y, con Conroma en Obras, reformas e interiorismo antes de vender o de entrar a vivir.',
-  },
-  {
-    question: '¿En qué idiomas atendéis?',
-    answer: 'En catalán, castellano, inglés y francés. Hablamos como te vaya mejor.',
-  },
-  {
-    question: '¿Dónde está la oficina?',
-    answer: `En ${site.address.street}, ${site.address.postalCode} ${site.address.locality}.${hours ? ` Abrimos de lunes a viernes, de ${hours}.` : ''}`,
-  },
+const crumbs = [
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
 ];
-const lang = getLang(Astro.url);
+const faq = t.faq;
 ---
 
 <BaseLayout
-  title="Nuestra empresa: quién es Conroma Asesores"
-  description="Conroma Asesores Inmobiliarios: especialistas en gestión inmobiliaria y de patrimonios en Malgrat de Mar. Quién la dirige, qué hacemos y dónde trabajamos."
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Quién es Conroma Asesores"
-    lead="Especialistas en gestión inmobiliaria y de patrimonios, con oficina en Malgrat de Mar."
+    title={t.heroTitle}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt="Una persona del equipo de Conroma explicando una operación en la pizarra"
-    cta={{ label: 'Conoce al equipo', href: '/es/equipo/' }}
+    alt={t.heroAlt}
+    cta={{ label: t.teamLink, href: '/es/equipo/' }}
     position="center 30%"
   />
 
-  <Statement text={answer} />
+  <Statement text={t.answer} />
 
   <ProofBand />
 
   <SplitFeature
-    title="Con los pies en el pueblo"
-    text={`Venimos con ideales de la primera década de este siglo. Con los años hemos renovado la manera de trabajar y las herramientas, pero no la idea: tratarte como a alguien del pueblo. ${site.about[2]}`}
+    title={t.rootsTitle}
+    text={t.rootsText}
     image={officePhoto}
-    alt="Dos personas del equipo de Conroma en la oficina"
-    link={{ label: 'Pedir una valoración', href: '/es/valoracion/' }}
+    alt={t.rootsAlt}
+    link={{ label: t.rootsLink, href: localizePath('/es/valoracion/', lang) }}
   />
 
-  <ServiceIndex title="Qué hacemos" />
+  <ServiceIndex title={t.services} />
 
   <CeoSection />
 
   <section class="section empresa-towns">
     <div class="wrap">
-      <TownList title="Dónde trabajamos" as="h2" />
+      <TownList title={t.towns} as="h2" />
     </div>
   </section>
 
-  <FaqSection title="Sobre Conroma" items={faq} origin="empresa-faq" />
+  <FaqSection title={t.faqTitle} items={faq} origin="empresa-faq" />
 
-  <ClosingCTA title="Hablemos" titleMuted="cuando quieras" image={closingPhoto} origin="empresa-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="empresa-cierre" />
 </BaseLayout>

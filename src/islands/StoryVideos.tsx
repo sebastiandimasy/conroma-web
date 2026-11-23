@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { strings, type Lang } from '../i18n';
 
 export interface StoryVideo {
   url: string;
@@ -15,9 +16,16 @@ function slotConfig(total: number, slot: number) {
   return { rot: d * 21, scale: 1 - 0.2244 * a * a, x: d * 30, y: a * a * 7.3, z: 10 - Math.abs(slot - center) };
 }
 
+const text = strings({
+  es: { open: 'abrir en Instagram' },
+  en: { open: 'open on Instagram' },
+  ca: { open: 'obre a Instagram' },
+});
+
 const multiplier = (width: number) => (width < 480 ? 0.2 : width < 640 ? 0.38 : width < 768 ? 0.5 : width < 1024 ? 0.75 : 1);
 
-export default function StoryVideos({ items }: { items: StoryVideo[] }) {
+export default function StoryVideos({ items, lang }: { items: StoryVideo[]; lang: Lang }) {
+  const t = text[lang];
   const layoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -111,7 +119,7 @@ export default function StoryVideos({ items }: { items: StoryVideo[] }) {
           href={item.url}
           target="_blank"
           rel="noopener"
-          aria-label={`${item.label}, abrir en Instagram`}
+          aria-label={`${item.label}, ${t.open}`}
         >
           <video src={item.video} poster={item.video.replace(/\.mp4$/, '-poster.jpg')} muted loop playsInline preload="none" aria-hidden="true" />
         </a>

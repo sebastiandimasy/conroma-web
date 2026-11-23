@@ -2,11 +2,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 
-const links = [
+// La 404 no lleva idioma en la ruta: va en español, con salida a la portada en inglés y en catalán.
+const links: { label: string; href: string; lang?: string }[] = [
   { label: 'Inicio', href: '/es/' },
   { label: 'Pisos en venta en Malgrat de Mar', href: '/es/venta/malgrat-de-mar/' },
   { label: '¿Cuánto vale mi piso?', href: '/es/valoracion/' },
   { label: 'Contacto', href: '/es/contacto/' },
+  { label: 'Home page in English', href: '/en/', lang: 'en' },
+  { label: 'Inici en català', href: '/ca/', lang: 'ca' },
 ];
 ---
 
@@ -20,8 +23,8 @@ const links = [
           {
             links.map((link) => (
               <li>
-                <a class="town-list__link" href={link.href}>
-                  <span>{link.label}</span>
+                <a class="town-list__link" href={link.href} hreflang={link.lang}>
+                  <span lang={link.lang}>{link.label}</span>
                   <Icon name="arrow" class="town-links__arrow" />
                 </a>
               </li>

@@ -1,11 +1,14 @@
 ---
 import { team } from '../../data/team';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
+const lang = getLang(Astro.url);
+const at = strings({ es: 'en Conroma', en: 'at Conroma', ca: 'a Conroma' })[lang];
 ---
 
 {/* Una ficha por persona, sin caja: foto, nombre, cargo y bio. */}
@@ -14,9 +17,9 @@ const { title } = Astro.props;
     <h2 class="section__title" data-reveal>{title}</h2>
     <div class="team-members__grid">
       {
-        team.map((member) => (
+        team[lang].map((member) => (
           <article class="member" data-reveal>
-            <img class="member__photo" src={member.photo} alt={`${member.name}, ${member.role} en Conroma`} width="640" height="800" loading="lazy" decoding="async" />
+            <img class="member__photo" src={member.photo} alt={`${member.name}, ${member.role} ${at}`} width="640" height="800" loading="lazy" decoding="async" />
             <h3 class="member__name">{member.name}</h3>
             <p class="member__role">{member.role}</p>
             {member.bio.map((paragraph) => <p class="member__bio">{paragraph}</p>)}

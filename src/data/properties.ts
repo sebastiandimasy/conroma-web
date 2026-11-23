@@ -4,6 +4,7 @@ import legacyMap from './property-legacy.json';
 import { mergeInventoryItem, normRef } from '../lib/inventory';
 import { findTown } from './towns';
 import { formatPrice } from '../lib/format';
+import type { Lang } from '../i18n';
 
 export interface Property {
   ref: string;
@@ -24,7 +25,10 @@ export interface Property {
   tag: string;
   likes: string;
   watchOut: string;
+  /** Descripción de Habitatsoft, en español. */
   description: string;
+  /** La misma descripción en inglés y catalán si el feed la trae (bloques <Language idlanguage="en|ca">). */
+  descriptions?: Partial<Record<'en' | 'ca', string>>;
   photos: number;
   tone: number;
   images?: string[];
@@ -198,23 +202,101 @@ export function propertySlug(property: Property): string {
   return `${base}-${slugify(property.ref)}`;
 }
 
-export function propertyTitle(property: Property): string {
+/**
+ * Tipos de Habitatsoft (en español) en inglés y catalán, en singular y plural.
+ * Un tipo que no esté aquí sale en español: mejor «Torre» que inventar.
+ */
+const TYPE_NAMES: Record<string, Record<'en' | 'ca', [string, string]>> = {
+  piso: { en: ['apartment', 'apartments'], ca: ['pis', 'pisos'] },
+  apartamento: { en: ['apartment', 'apartments'], ca: ['apartament', 'apartaments'] },
+  estudio: { en: ['studio', 'studios'], ca: ['estudi', 'estudis'] },
+  loft: { en: ['loft', 'lofts'], ca: ['loft', 'lofts'] },
+  ático: { en: ['penthouse', 'penthouses'], ca: ['àtic', 'àtics'] },
+  dúplex: { en: ['duplex', 'duplexes'], ca: ['dúplex', 'dúplexs'] },
+  'planta baja': { en: ['ground-floor flat', 'ground-floor flats'], ca: ['planta baixa', 'plantes baixes'] },
+  casa: { en: ['house', 'houses'], ca: ['casa', 'cases'] },
+  'casa adosada': { en: ['terraced house', 'terraced houses'], ca: ['casa adossada', 'cases adossades'] },
+  'casa pareada': { en: ['semi-detached house', 'semi-detached houses'], ca: ['casa aparellada', 'cases aparellades'] },
+  'casa unifamiliar': { en: ['detached house', 'detached houses'], ca: ['casa unifamiliar', 'cases unifamiliars'] },
+  'casa de campo': { en: ['country house', 'country houses'], ca: ['casa de camp', 'cases de camp'] },
+  'casa cueva': { en: ['cave house', 'cave houses'], ca: ['casa cova', 'cases cova'] },
+  chalet: { en: ['villa', 'villas'], ca: ['xalet', 'xalets'] },
+  'chalet unifamiliar': { en: ['detached villa', 'detached villas'], ca: ['xalet unifamiliar', 'xalets unifamiliars'] },
+  bungalow: { en: ['bungalow', 'bungalows'], ca: ['bungalou', 'bungalous'] },
+  masia: { en: ['farmhouse', 'farmhouses'], ca: ['masia', 'masies'] },
+  'finca rústica': { en: ['rural estate', 'rural estates'], ca: ['finca rústica', 'finques rústiques'] },
+  terreno: { en: ['plot', 'plots'], ca: ['terreny', 'terrenys'] },
+  parcela: { en: ['plot', 'plots'], ca: ['parcel·la', 'parcel·les'] },
+  solar: { en: ['building plot', 'building plots'], ca: ['solar', 'solars'] },
+  local: { en: ['commercial premises', 'commercial premises'], ca: ['local', 'locals'] },
+  oficina: { en: ['office', 'offices'], ca: ['oficina', 'oficines'] },
+  'nave industrial': { en: ['industrial unit', 'industrial units'], ca: ['nau industrial', 'naus industrials'] },
+  edificio: { en: ['building', 'buildings'], ca: ['edifici', 'edificis'] },
+  restaurante: { en: ['restaurant', 'restaurants'], ca: ['restaurant', 'restaurants'] },
+  hotel: { en: ['hotel', 'hotels'], ca: ['hotel', 'hotels'] },
+  garaje: { en: ['garage', 'garages'], ca: ['garatge', 'garatges'] },
+  parking: { en: ['parking space', 'parking spaces'], ca: ['plaça de pàrquing', 'places de pàrquing'] },
+  trastero: { en: ['storage room', 'storage rooms'], ca: ['traster', 'trasters'] },
+  inmueble: { en: ['property', 'properties'], ca: ['immoble', 'immobles'] },
+};
+
+const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
+/** Tipo de inmueble en el idioma de la página, con mayúscula: «Piso» → «Apartment» / «Pis». */
+export function typeLabel(type: string, lang: Lang): string {
+  if (lang === 'es') return type;
+  const names = TYPE_NAMES[type.toLowerCase()]?.[lang];
+  return names ? capitalize(names[0]) : type;
+}
+
+/** Estados de Habitatsoft («2ª mano», «Buen estado»…) en inglés y catalán. */
+const STATE_NAMES: Record<string, Record<'en' | 'ca', string>> = {
+  '2ª mano': { en: 'Resale', ca: 'Segona mà' },
+  'segunda mano': { en: 'Resale', ca: 'Segona mà' },
+  'a estrenar': { en: 'Brand new', ca: 'Per estrenar' },
+  'obra nueva': { en: 'New build', ca: 'Obra nova' },
+  'en construcción': { en: 'Under construction', ca: 'En construcció' },
+  'semi nuevo': { en: 'Nearly new', ca: 'Gairebé nou' },
+  'muy buen estado': { en: 'Very good condition', ca: 'Molt bon estat' },
+  'buen estado': { en: 'Good condition', ca: 'Bon estat' },
+  reformado: { en: 'Renovated', ca: 'Reformat' },
+  'a reformar': { en: 'Needs renovating', ca: 'Per reformar' },
+  'para reformar': { en: 'Needs renovating', ca: 'Per reformar' },
+  consultar: { en: 'Ask us', ca: "Pregunta'ns" },
+};
+
+/** Estado del inmueble en el idioma de la página. Lo que no esté en el mapa, en español. */
+export function stateLabel(state: string, lang: Lang): string {
+  if (lang === 'es') return state;
+  return STATE_NAMES[state.trim().toLowerCase().replace(/^de /, '')]?.[lang] ?? state;
+}
+
+/** «Piso en venta en …» en cada idioma. `place` ya viene montado (zona y pueblo). */
+function titleFor(property: Property, place: string, lang: Lang): string {
+  const type = typeLabel(property.type, lang);
+  const rent = property.operation === 'alquiler';
+  if (lang === 'en') return `${type} ${rent ? 'to rent' : 'for sale'} in ${place}`;
+  if (lang === 'ca') return `${type} ${rent ? 'de lloguer' : 'en venda'} a ${place}`;
+  return `${property.type} en ${property.operation} en ${place}`;
+}
+
+export function propertyTitle(property: Property, lang: Lang): string {
   const town = findTown(property.town)?.name ?? property.town;
   // Zona igual al pueblo (o vacía) salía repetida: «…en Maçanet de la Selva, Maçanet de la Selva».
   // Y «Vilobí d’Onyar, Vilobí d'Onyar»: el apóstrofo tipográfico no cuenta como diferencia.
   const norm = (value: string) => value.trim().toLowerCase().replace(/[’‘`´]/g, "'");
   const place = property.zone && norm(property.zone) !== norm(town) ? `${property.zone}, ${town}` : town;
-  return `${property.type} en ${property.operation} en ${place}`;
+  return titleFor(property, place, lang);
 }
 
 const DOC_TITLE_MAX = 65;
 
 /** <title> de la ficha. Google corta hacia los 65 caracteres: si la zona es larga, se queda el pueblo.
  *  Si otra ficha acaba con el mismo título, se añade la referencia para distinguirlas. */
-export function propertyDocTitle(property: Property, listings: Property[]): string {
-  const price = (item: Property) => (hasPublicPrice(item) ? ` — ${formatPrice(item.price)}` : '');
-  const full = (item: Property) => `${propertyTitle(item)}${price(item)}`;
-  const short = (item: Property) => `${item.type} en ${item.operation} en ${findTown(item.town)?.name ?? item.town}${price(item)}`;
+export function propertyDocTitle(property: Property, listings: Property[], lang: Lang): string {
+  const price = (item: Property) => (hasPublicPrice(item) ? ` — ${formatPrice(item.price, lang)}` : '');
+  const full = (item: Property) => `${propertyTitle(item, lang)}${price(item)}`;
+  const short = (item: Property) => `${titleFor(item, findTown(item.town)?.name ?? item.town, lang)}${price(item)}`;
   const base = (item: Property) => (full(item).length <= DOC_TITLE_MAX ? full(item) : short(item));
   const own = base(property);
   const hasTwin = listings.some((item) => item.ref !== property.ref && base(item) === own);
@@ -223,8 +305,8 @@ export function propertyDocTitle(property: Property, listings: Property[]): stri
   return `${own}${suffix}`.length <= DOC_TITLE_MAX ? `${own}${suffix}` : `${short(property)}${suffix}`;
 }
 
-export function propertyUrl(property: Property): string {
-  return `/es/inmueble/${propertySlug(property)}/`;
+export function propertyUrl(property: Property, lang: Lang): string {
+  return `/${lang}/inmueble/${propertySlug(property)}/`;
 }
 
 export function propertiesIn(town: string, operation: Operation): Property[] {
@@ -270,11 +352,22 @@ export function hasPublicPrice(property: Property): boolean {
   return property.price >= MIN_REAL_PRICE;
 }
 
+const UNITS = {
+  es: { room: ['habitación', 'habitaciones'], bath: ['baño', 'baños'] },
+  en: { room: ['bedroom', 'bedrooms'], bath: ['bathroom', 'bathrooms'] },
+  ca: { room: ['habitació', 'habitacions'], bath: ['bany', 'banys'] },
+} satisfies Record<Lang, Record<'room' | 'bath', [string, string]>>;
+
+/** «3 habitaciones», «1 baño»… en el idioma de la página. */
+export function countLabel(count: number, unit: 'room' | 'bath', lang: Lang): string {
+  return `${count} ${UNITS[lang][unit][count === 1 ? 0 : 1]}`;
+}
+
 /** Datos cortos de la ficha del listado. Sin ceros: un local no tiene «0 habitaciones». */
-export function cardFacts(property: Property): string[] {
+export function cardFacts(property: Property, lang: Lang): string[] {
   const facts: string[] = [];
-  if (property.rooms > 0) facts.push(`${property.rooms} ${property.rooms === 1 ? 'habitación' : 'habitaciones'}`);
-  if (property.baths > 0) facts.push(`${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}`);
+  if (property.rooms > 0) facts.push(countLabel(property.rooms, 'room', lang));
+  if (property.baths > 0) facts.push(countLabel(property.baths, 'bath', lang));
   if (property.area > 0) facts.push(`${property.area} m²`);
   return facts;
 }
@@ -313,13 +406,18 @@ function pluralize(type: string, count: number): string {
   return out.join(' ');
 }
 
+function typeCount(type: string, count: number, lang: Lang): string {
+  const names = lang === 'es' ? undefined : TYPE_NAMES[type.toLowerCase()]?.[lang];
+  return `${count} ${names ? names[count === 1 ? 0 : 1] : pluralize(type, count)}`;
+}
+
 /** Desglose "11 locales · 5 bungalows · 3 parkings" para no prometer lo que no hay. */
-export function typeBreakdown(list: Property[], limit = 3): string {
+export function typeBreakdown(list: Property[], lang: Lang, limit = 3): string {
   const counts = new Map<string, number>();
   for (const property of list) counts.set(property.type, (counts.get(property.type) ?? 0) + 1);
   return [...counts.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
-    .map(([type, count]) => `${count} ${pluralize(type, count)}`)
+    .map(([type, count]) => typeCount(type, count, lang))
     .join(' · ');
 }

@@ -5,14 +5,23 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import '../styles/reform-carousel.css';
+import { strings, type Lang } from '../i18n';
 
 /* Carrusel coverflow de obras (estilo Skiper UI · Carousel_003, adaptado a Conroma con Swiper).
    Con reduced-motion, sin giro 3D: pasa como un carrusel plano. Las fotos van en el HTML. */
 interface Props {
   photos: { src: string; alt: string }[];
+  lang: Lang;
 }
 
-export default function ReformCarousel({ photos }: Props) {
+const text = strings({
+  es: { prev: 'Foto anterior', next: 'Foto siguiente', bullet: 'Ir a la foto {{index}}', slide: 'Foto {{index}} de {{slidesLength}}' },
+  en: { prev: 'Previous photo', next: 'Next photo', bullet: 'Go to photo {{index}}', slide: 'Photo {{index}} of {{slidesLength}}' },
+  ca: { prev: 'Foto anterior', next: 'Foto següent', bullet: 'Ves a la foto {{index}}', slide: 'Foto {{index}} de {{slidesLength}}' },
+});
+
+export default function ReformCarousel({ photos, lang }: Props) {
+  const t = text[lang];
   const [still, setStill] = useState(false);
 
   useEffect(() => {
@@ -33,10 +42,10 @@ export default function ReformCarousel({ photos }: Props) {
       speed={still ? 0 : 300}
       pagination={{ clickable: true }}
       a11y={{
-        prevSlideMessage: 'Foto anterior',
-        nextSlideMessage: 'Foto siguiente',
-        paginationBulletMessage: 'Ir a la foto {{index}}',
-        slideLabelMessage: 'Foto {{index}} de {{slidesLength}}',
+        prevSlideMessage: t.prev,
+        nextSlideMessage: t.next,
+        paginationBulletMessage: t.bullet,
+        slideLabelMessage: t.slide,
       }}
     >
       {photos.map((photo, index) => (

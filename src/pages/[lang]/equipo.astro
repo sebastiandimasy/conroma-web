@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -14,43 +14,94 @@ import closingPhoto from '../../assets/equipo/conroma-91.jpg';
 import { breadcrumbSchema, teamSchema } from '../../lib/seo';
 
 const path = '/es/equipo/';
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Nuestro equipo', path },
-];
 const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Nuestro equipo',
+    title: 'Nuestro equipo: las personas de Conroma',
+    description:
+      'Conoce al equipo de Conroma Asesores en Malgrat de Mar: quién te atiende, quién enseña los pisos y quién te acompaña a notaría.',
+    h1: 'El equipo de Conroma en Malgrat de Mar',
+    lead: 'Quien te atiende el primer día te acompaña hasta la firma. Nada de empezar con alguien y acabar con otro.',
+    statement:
+      'Somos especialistas en gestión inmobiliaria y líderes en gestión de patrimonios. Te asesoramos de forma totalmente personalizada, buscando que cada parte salga ganando, y siempre con una atención cercana.',
+    members: 'Quién te atiende',
+    company: 'Conoce la empresa y a su fundador',
+    reels: 'Historias de clientes',
+    reelsLead: 'Casos reales que hemos acompañado, contados en vídeo.',
+    closing: 'Hablemos',
+    closingMuted: 'con el equipo',
+  },
+  en: {
+    home: 'Home',
+    crumb: 'Our team',
+    title: 'Our team: the people at Conroma',
+    description:
+      'Meet the Conroma Asesores team in Malgrat de Mar: who looks after you, who shows you round the homes and who comes with you to the notary.',
+    h1: 'The Conroma team in Malgrat de Mar',
+    lead: 'Whoever looks after you on day one stays with you until the signing. No starting with one person and ending up with another.',
+    statement:
+      'We specialise in property management and lead the way in property portfolio management. Our advice is fully tailored to you, we look for a deal where every side comes out ahead, and we always keep it personal.',
+    members: 'Who you’ll deal with',
+    company: 'Get to know the company and its founder',
+    reels: 'Client stories',
+    reelsLead: 'Real cases we’ve been part of, told on video.',
+    closing: 'Let’s talk',
+    closingMuted: 'to the team',
+  },
+  ca: {
+    home: 'Inici',
+    crumb: 'El nostre equip',
+    title: 'El nostre equip: les persones de Conroma',
+    description:
+      'Coneix l’equip de Conroma Asesores a Malgrat de Mar: qui t’atén, qui t’ensenya els pisos i qui t’acompanya a la notaria.',
+    h1: 'L’equip de Conroma a Malgrat de Mar',
+    lead: 'Qui t’atén el primer dia t’acompanya fins a la signatura. Res de començar amb algú i acabar amb un altre.',
+    statement:
+      'Som especialistes en gestió immobiliària i líders en gestió de patrimonis. T’assessorem de manera totalment personalitzada, buscant que cada part hi surti guanyant, i sempre amb una atenció propera.',
+    members: 'Qui t’atén',
+    company: 'Coneix l’empresa i el seu fundador',
+    reels: 'Històries de clients',
+    reelsLead: 'Casos reals que hem acompanyat, explicats en vídeo.',
+    closing: 'Parlem',
+    closingMuted: 'amb l’equip',
+  },
+})[lang];
+const crumbs = [
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
+];
 ---
 
 <BaseLayout
-  title="Nuestro equipo: las personas de Conroma"
-  description="Conoce al equipo de Conroma Asesores en Malgrat de Mar: quién te atiende, quién enseña los pisos y quién te acompaña a notaría."
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), ...teamSchema()]}
+  schemas={[breadcrumbSchema(crumbs, lang), ...teamSchema(lang)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>El equipo de Conroma en Malgrat de Mar</h1>
+      <h1 class="page-head__title" data-split>{t.h1}</h1>
       <p class="page-head__lead">
-        Quien te atiende el primer día te acompaña hasta la firma. Nada de empezar con alguien y acabar con otro.
+        {t.lead}
       </p>
     </div>
   </section>
 
-  <Statement
-    text="Somos especialistas en gestión inmobiliaria y líderes en gestión de patrimonios. Te asesoramos de forma totalmente personalizada, buscando que cada parte salga ganando, y siempre con una atención cercana."
-  />
+  <Statement text={t.statement} />
 
-  <TeamMembers title="Quién te atiende">
-    <a class="arrow-link team-members__more" href="/es/empresa/">
+  <TeamMembers title={t.members}>
+    <a class="arrow-link team-members__more" href={localizePath('/es/empresa/', lang)}>
       <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-      <span class="arrow-link__label">Conoce la empresa y a su fundador</span>
+      <span class="arrow-link__label">{t.company}</span>
     </a>
   </TeamMembers>
 
   <Testimonials />
 
-  <ReelRow title="Historias de clientes" lead="Casos reales que hemos acompañado, contados en vídeo." />
+  <ReelRow title={t.reels} lead={t.reelsLead} />
 
-  <ClosingCTA title="Hablemos" titleMuted="con el equipo" image={closingPhoto} origin="equipo-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="equipo-cierre" />
 </BaseLayout>

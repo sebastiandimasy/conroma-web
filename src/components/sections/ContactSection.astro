@@ -2,9 +2,53 @@
 import ContactForm from '../../islands/ContactForm';
 import { site } from '../../data/site';
 import { whatsappUrl } from '../../lib/links';
+import { getLang, strings } from '../../i18n';
+
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Cuéntanos qué necesitas',
+    lead: 'Déjanos un mensaje. Y si lo prefieres, escríbenos por WhatsApp o llámanos.',
+    whatsapp: 'Escríbenos por WhatsApp',
+    mobile: 'Móvil y WhatsApp',
+    landline: 'Fijo',
+    email: 'Email',
+    office: 'Oficina',
+    hoursLabel: 'Horario',
+    weekdays: 'Lunes a viernes',
+    to: 'a',
+    and: 'y',
+  },
+  en: {
+    title: 'Tell us what you need',
+    lead: 'Leave us a message. Or, if you prefer, message us on WhatsApp or give us a call.',
+    whatsapp: 'Message us on WhatsApp',
+    mobile: 'Mobile and WhatsApp',
+    landline: 'Landline',
+    email: 'Email',
+    office: 'Office',
+    hoursLabel: 'Opening hours',
+    weekdays: 'Monday to Friday',
+    to: 'to',
+    and: 'and',
+  },
+  ca: {
+    title: 'Explica’ns què necessites',
+    lead: 'Deixa’ns un missatge. I si ho prefereixes, escriu-nos per WhatsApp o truca’ns.',
+    whatsapp: 'Escriu-nos per WhatsApp',
+    mobile: 'Mòbil i WhatsApp',
+    landline: 'Fix',
+    email: 'Correu',
+    office: 'Oficina',
+    hoursLabel: 'Horari',
+    weekdays: 'De dilluns a divendres',
+    to: 'a',
+    and: 'i',
+  },
+})[lang];
 
 // Horario compacto: «9:30 a 13:30 y 16:30 a 19:30».
-const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ');
+const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')} ${t.to} ${h.closes}`).join(` ${t.and} `);
 ---
 
 {/* Contacto editorial: título → lead → WhatsApp (primario) → canales en filas con línea suave,
@@ -13,42 +57,42 @@ const hours = (site.openingHours ?? []).map((h) => `${h.opens.replace(/^0/, '')}
 <section class="section contact" id="contacto">
   <div class="wrap contact__grid">
     <div class="contact__intro" data-reveal>
-      <h2 class="section__title">Cuéntanos qué necesitas</h2>
-      <p class="section__lead">Déjanos un mensaje. Y si lo prefieres, escríbenos por WhatsApp o llámanos.</p>
+      <h2 class="section__title">{t.title}</h2>
+      <p class="section__lead">{t.lead}</p>
       <div class="contact__primary">
-        <a class="button button--primary button--large" href={whatsappUrl()} data-contact="whatsapp" data-origin="contacto">
-          Escríbenos por WhatsApp
+        <a class="button button--primary button--large" href={whatsappUrl(getLang(Astro.url))} data-contact="whatsapp" data-origin="contacto">
+          {t.whatsapp}
         </a>
       </div>
       <address class="contact__list">
         <a class="contact__row" href={`tel:${site.phone}`} data-contact="llamada" data-origin="contacto">
-          <span class="contact__label">Móvil y WhatsApp</span>
+          <span class="contact__label">{t.mobile}</span>
           <span class="contact__value">{site.phoneDisplay}</span>
         </a>
         <a class="contact__row" href={`tel:${site.landline}`} data-contact="llamada" data-origin="contacto-fijo">
-          <span class="contact__label">Fijo</span>
+          <span class="contact__label">{t.landline}</span>
           <span class="contact__value">{site.landlineDisplay}</span>
         </a>
         <a class="contact__row" href={`mailto:${site.email}`}>
-          <span class="contact__label">Email</span>
+          <span class="contact__label">{t.email}</span>
           <span class="contact__value">{site.email}</span>
         </a>
         <a class="contact__row" href={site.mapsUrl} rel="noopener" target="_blank">
-          <span class="contact__label">Oficina</span>
+          <span class="contact__label">{t.office}</span>
           <span class="contact__value">{site.address.street}, {site.address.postalCode} {site.address.locality}</span>
         </a>
         {
           hours && (
             <p class="contact__row">
-              <span class="contact__label">Horario</span>
-              <span class="contact__value">Lunes a viernes, {hours}</span>
+              <span class="contact__label">{t.hoursLabel}</span>
+              <span class="contact__value">{t.weekdays}, {hours}</span>
             </p>
           )
         }
       </address>
     </div>
     <div class="contact__form" data-reveal>
-      <ContactForm client:visible />
+      <ContactForm client:visible lang={lang} />
     </div>
   </div>
 </section>

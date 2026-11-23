@@ -1,3 +1,5 @@
+import { strings } from '../i18n';
+
 export interface Reference {
   label: string;
   value: string;
@@ -19,20 +21,35 @@ export const itpBrackets: { upTo: number; rate: number }[] = [
   { upTo: Infinity, rate: 0.13 },
 ];
 
+// El nombre visible de cada calidad vive en la isla ReformSimulator (tres idiomas).
 export const reformRates = {
-  basica: { label: 'Básica', perSquareMetre: 650 },
-  media: { label: 'Media', perSquareMetre: 750 },
-  alta: { label: 'Alta', perSquareMetre: 900 },
+  basica: { perSquareMetre: 650 },
+  media: { perSquareMetre: 750 },
+  alta: { perSquareMetre: 900 },
 } as const;
 
 export type ReformQuality = keyof typeof reformRates;
 
-export const reformReference: Reference = {
-  label: 'Reforma integral',
-  value: '650 a 900 €/m², con media de 750 €/m²',
-  source: 'Guía de precios de Habitissimo, media de España',
-  date: 'consultada el 13 de octubre de 2026',
-};
+export const reformReference = strings<Reference>({
+  es: {
+    label: 'Reforma integral',
+    value: '650 a 900 €/m², con media de 750 €/m²',
+    source: 'Guía de precios de Habitissimo, media de España',
+    date: 'consultada el 13 de octubre de 2026',
+  },
+  en: {
+    label: 'Full renovation',
+    value: '€650 to €900/m², averaging €750/m²',
+    source: 'Habitissimo price guide, average for Spain',
+    date: 'checked on 13 October 2026',
+  },
+  ca: {
+    label: 'Reforma integral',
+    value: '650 a 900 €/m², amb una mitjana de 750 €/m²',
+    source: "Guia de preus d'Habitissimo, mitjana d'Espanya",
+    date: "consultada el 13 d'octubre de 2026",
+  },
+});
 
 export function monthlyPayment(principal: number, annualRatePercent: number, years: number): number {
   const months = years * 12;

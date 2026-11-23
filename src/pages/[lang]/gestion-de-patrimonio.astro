@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, intlLocale, langPaths, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -24,124 +24,312 @@ import { breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo';
 /* Keyword (docs/KEYWORDS.md): «gestión de patrimonio inmobiliario»; secundarias: administración
    de inmuebles, gestión de alquileres Maresme. Enlaza a Alquilar sin duplicarla (spec §9). */
 const path = '/es/gestion-de-patrimonio/';
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Gestión de patrimonio', path },
-];
-const description =
-  'Gestión de patrimonio inmobiliario en Malgrat de Mar: si tienes uno o varios inmuebles, nos encargamos de su gestión y administración.';
-const answer =
-  'La gestión de patrimonio de Conroma es para propietarios con uno o varios inmuebles en Malgrat de Mar y el Alt Maresme. ' +
-  'Buscamos inquilino, somos su contacto en el día a día y miramos contigo el conjunto: qué conviene alquilar, vender o reformar. Tú ganas libertad y tranquilidad, y estás al tanto de todo.';
-const trackRecord = [
-  { value: '+300', label: 'inmuebles gestionados' },
-  { value: '+100', label: 'clientes satisfechos' },
-  { value: '+200', label: 'pisos vendidos' },
-];
-const steps: StoryStep[] = [
-  {
-    title: 'Buscamos inquilino',
-    text: 'Anunciamos el piso, lo enseñamos y te presentamos a quien encaja. Tú decides a quién se lo alquilas.',
-    image: tenantPhoto,
-    alt: 'Carpeta de Conroma sobre el plano de un piso',
-  },
-  {
-    title: 'Lo llevamos por ti',
-    text: 'Somos el contacto del inquilino para el día a día, y tú estás al tanto de todo.',
-    image: deskPhoto,
-    alt: 'Una asesora de Conroma atendiendo desde la oficina',
-  },
-  {
-    title: 'Miramos el conjunto',
-    text: 'Si tienes más de un inmueble, vemos contigo qué conviene alquilar, vender o reformar.',
-    image: reviewPhoto,
-    alt: 'El equipo de Conroma revisando documentación en la oficina',
-  },
-];
-const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(
+const lang = getLang(Astro.url);
+const townNames = new Intl.ListFormat(intlLocale[lang], { type: 'conjunction' }).format(
   publishedSellerTowns.filter((town) => town.slug !== 'malgrat-de-mar').map((town) => town.name),
 );
-// Qué supone administrar un piso alquilado (normativa general: LAU, INCASÒL, IRPF).
-const guide = [
-  {
-    title: 'El inquilino',
-    text: 'Atender sus avisos y dudas del día a día y ser su interlocutor durante todo el contrato.',
-  },
-  {
-    title: 'Averías y reparaciones',
-    text: 'Por ley, el propietario paga las reparaciones necesarias para que la vivienda siga siendo habitable; las pequeñas, por el desgaste del uso diario, son del inquilino.',
-  },
-  {
-    title: 'Contrato y prórrogas',
-    text: 'Fechas de prórroga, actualización de la renta según lo pactado y fin del contrato, avisando con la antelación que marca la ley.',
-  },
-  {
-    title: 'Fianza y suministros',
-    text: 'Depositar la fianza en el INCASÒL al firmar y ocuparse de los suministros cuando entra o sale un inquilino.',
-  },
-  {
-    title: 'Impuestos',
-    text: 'Las rentas del alquiler se declaran en el IRPF y el IBI llega cada año. Tenerlo ordenado ahorra sustos en la declaración.',
-  },
-  {
-    title: 'Varios inmuebles',
-    text: 'Con más de uno, conviene mirar el conjunto: qué conviene alquilar, vender o reformar en cada caso.',
-  },
-];
-const faq = [
-  {
-    question: '¿Qué incluye la gestión de patrimonio?',
+const photos = [tenantPhoto, deskPhoto, reviewPhoto];
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Gestión de patrimonio',
+    title: 'Gestión de patrimonio inmobiliario en Malgrat de Mar',
+    description:
+      'Gestión de patrimonio inmobiliario en Malgrat de Mar: si tienes uno o varios inmuebles, nos encargamos de su gestión y administración.',
+    service: 'Gestión de patrimonio inmobiliario',
     answer:
-      'Buscamos inquilino, enseñamos el piso y preparamos el contrato. Después somos el contacto del inquilino para el día a día y tú estás al tanto de todo.',
+      'La gestión de patrimonio de Conroma es para propietarios con uno o varios inmuebles en Malgrat de Mar y el Alt Maresme. ' +
+      'Buscamos inquilino, somos su contacto en el día a día y miramos contigo el conjunto: qué conviene alquilar, vender o reformar. Tú ganas libertad y tranquilidad, y estás al tanto de todo.',
+    heroTitle: 'Gestión de patrimonio en Malgrat de Mar',
+    heroLead:
+      'Si tienes uno o varios inmuebles, nos encargamos de su gestión y administración para que tú ganes libertad y tranquilidad.',
+    heroAlt: 'Gestión de inmuebles de Conroma desde el ordenador',
+    handled: 'Lo que llevamos nosotros',
+    figures: ['inmuebles gestionados', 'clientes satisfechos', 'pisos vendidos'],
+    steps: [
+      {
+        title: 'Buscamos inquilino',
+        text: 'Anunciamos el piso, lo enseñamos y te presentamos a quien encaja. Tú decides a quién se lo alquilas.',
+        alt: 'Carpeta de Conroma sobre el plano de un piso',
+      },
+      {
+        title: 'Lo llevamos por ti',
+        text: 'Somos el contacto del inquilino para el día a día, y tú estás al tanto de todo.',
+        alt: 'Una asesora de Conroma atendiendo desde la oficina',
+      },
+      {
+        title: 'Miramos el conjunto',
+        text: 'Si tienes más de un inmueble, vemos contigo qué conviene alquilar, vender o reformar.',
+        alt: 'El equipo de Conroma revisando documentación en la oficina',
+      },
+    ],
+    guideTitle: 'Qué supone administrar un piso alquilado',
+    guideLead: 'Esto es lo que lleva un piso alquilado. Cuéntanos tu caso y vemos qué parte llevamos nosotros.',
+    // Qué supone administrar un piso alquilado (normativa general: LAU, INCASÒL, IRPF).
+    guide: [
+      {
+        title: 'El inquilino',
+        text: 'Atender sus avisos y dudas del día a día y ser su interlocutor durante todo el contrato.',
+      },
+      {
+        title: 'Averías y reparaciones',
+        text: 'Por ley, el propietario paga las reparaciones necesarias para que la vivienda siga siendo habitable; las pequeñas, por el desgaste del uso diario, son del inquilino.',
+      },
+      {
+        title: 'Contrato y prórrogas',
+        text: 'Fechas de prórroga, actualización de la renta según lo pactado y fin del contrato, avisando con la antelación que marca la ley.',
+      },
+      {
+        title: 'Fianza y suministros',
+        text: 'Depositar la fianza en el INCASÒL al firmar y ocuparse de los suministros cuando entra o sale un inquilino.',
+      },
+      {
+        title: 'Impuestos',
+        text: 'Las rentas del alquiler se declaran en el IRPF y el IBI llega cada año. Tenerlo ordenado ahorra sustos en la declaración.',
+      },
+      {
+        title: 'Varios inmuebles',
+        text: 'Con más de uno, conviene mirar el conjunto: qué conviene alquilar, vender o reformar en cada caso.',
+      },
+    ],
+    faqTitle: 'Gestión de patrimonio: lo que nos preguntan',
+    faq: [
+      {
+        question: '¿Qué incluye la gestión de patrimonio?',
+        answer:
+          'Buscamos inquilino, enseñamos el piso y preparamos el contrato. Después somos el contacto del inquilino para el día a día y tú estás al tanto de todo.',
+      },
+      {
+        question: '¿Sirve si solo tengo un piso?',
+        answer: 'Sí. Es para quien tiene uno o varios inmuebles y prefiere que nos encarguemos de su gestión y administración.',
+      },
+      {
+        question: 'Tengo varios inmuebles, ¿me ayudáis a decidir qué hacer con cada uno?',
+        answer: 'Sí. Vemos contigo el conjunto y qué conviene alquilar, vender o reformar en cada caso.',
+      },
+      {
+        question: '¿En qué zonas gestionáis inmuebles?',
+        answer: `En Malgrat de Mar y en los pueblos de alrededor: ${townNames}.`,
+      },
+    ],
+    servicesTitle: 'Lo que podemos hacer con tus inmuebles',
+    testimonialsLead: 'Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes.',
+    closingTitle: 'Hablemos',
+    closingMuted: 'de tus inmuebles',
   },
-  {
-    question: '¿Sirve si solo tengo un piso?',
-    answer: 'Sí. Es para quien tiene uno o varios inmuebles y prefiere que nos encarguemos de su gestión y administración.',
+  en: {
+    home: 'Home',
+    crumb: 'Property portfolio management',
+    title: 'Property portfolio management in Malgrat de Mar',
+    description:
+      'Property portfolio management in Malgrat de Mar: if you own one or more properties, we take care of managing and running them.',
+    service: 'Property portfolio management',
+    answer:
+      'Conroma’s property portfolio management is for owners with one or more properties in Malgrat de Mar and the Alt Maresme. ' +
+      'We find tenants, act as their day-to-day contact and look at the whole picture with you: what’s worth renting out, selling or renovating. You get more freedom and peace of mind, and you’re kept up to date on everything.',
+    heroTitle: 'Property portfolio management in Malgrat de Mar',
+    heroLead: 'If you own one or more properties, we take care of managing and running them so you get more freedom and peace of mind.',
+    heroAlt: 'Conroma managing properties from the computer',
+    handled: 'What we handle',
+    figures: ['properties managed', 'happy clients', 'homes sold'],
+    steps: [
+      {
+        title: 'We find a tenant',
+        text: 'We advertise the property, show it and introduce you to the right person. You decide who you rent it to.',
+        alt: 'A Conroma folder on a floor plan',
+      },
+      {
+        title: 'We handle it for you',
+        text: 'We’re the tenant’s day-to-day contact, and you’re kept up to date on everything.',
+        alt: 'A Conroma adviser helping a client from the office',
+      },
+      {
+        title: 'We look at the whole picture',
+        text: 'If you own more than one property, we work out with you what’s worth renting out, selling or renovating.',
+        alt: 'The Conroma team going through paperwork at the office',
+      },
+    ],
+    guideTitle: 'What running a rented home involves',
+    guideLead: 'This is what a rented home takes. Tell us your situation and we’ll see which part we take on.',
+    guide: [
+      {
+        title: 'The tenant',
+        text: 'Dealing with their day-to-day issues and questions, and being their point of contact for the whole contract.',
+      },
+      {
+        title: 'Breakdowns and repairs',
+        text: 'By law, the landlord pays for the repairs needed to keep the home habitable; small ones caused by everyday wear and tear are down to the tenant.',
+      },
+      {
+        title: 'Contract and renewals',
+        text: 'Renewal dates, rent reviews as agreed and the end of the contract, giving the notice the law requires.',
+      },
+      {
+        title: 'Deposit and utilities',
+        text: 'Lodging the deposit with INCASÒL when the contract is signed, and sorting out the utilities when a tenant moves in or out.',
+      },
+      {
+        title: 'Taxes',
+        text: 'Rental income goes on your income tax return (IRPF) and the IBI property tax arrives every year. Keeping it in order saves nasty surprises at tax time.',
+      },
+      {
+        title: 'Several properties',
+        text: 'With more than one, it pays to look at the whole picture: what’s worth renting out, selling or renovating in each case.',
+      },
+    ],
+    faqTitle: 'Portfolio management: what people ask us',
+    faq: [
+      {
+        question: 'What does property portfolio management include?',
+        answer:
+          'We find a tenant, show the property and draw up the contract. After that, we’re the tenant’s day-to-day contact and you’re kept up to date on everything.',
+      },
+      {
+        question: 'Is it worth it if I only have one home?',
+        answer: 'Yes. It’s for anyone with one or more properties who’d rather we took care of managing and running them.',
+      },
+      {
+        question: 'I own several properties. Can you help me decide what to do with each one?',
+        answer: 'Yes. We look at the whole picture with you and what’s worth renting out, selling or renovating in each case.',
+      },
+      {
+        question: 'Where do you manage properties?',
+        answer: `Malgrat de Mar and the towns around it: ${townNames}.`,
+      },
+    ],
+    servicesTitle: 'What we can do with your properties',
+    testimonialsLead: 'We bring passion and professionalism to every project, and our clients say so.',
+    closingTitle: 'Let’s talk',
+    closingMuted: 'about your properties',
   },
-  {
-    question: 'Tengo varios inmuebles, ¿me ayudáis a decidir qué hacer con cada uno?',
-    answer: 'Sí. Vemos contigo el conjunto y qué conviene alquilar, vender o reformar en cada caso.',
+  ca: {
+    home: 'Inici',
+    crumb: 'Gestió de patrimoni',
+    title: 'Gestió de patrimoni immobiliari a Malgrat de Mar',
+    description:
+      'Gestió de patrimoni immobiliari a Malgrat de Mar: si tens un o diversos immobles, ens encarreguem de la seva gestió i administració.',
+    service: 'Gestió de patrimoni immobiliari',
+    answer:
+      'La gestió de patrimoni de Conroma és per a propietaris amb un o diversos immobles a Malgrat de Mar i l’Alt Maresme. ' +
+      'Busquem llogater, som el seu contacte en el dia a dia i mirem amb tu el conjunt: què convé llogar, vendre o reformar. Tu guanyes llibertat i tranquil·litat, i estàs al cas de tot.',
+    heroTitle: 'Gestió de patrimoni a Malgrat de Mar',
+    heroLead:
+      'Si tens un o diversos immobles, ens encarreguem de la seva gestió i administració perquè tu guanyis llibertat i tranquil·litat.',
+    heroAlt: 'Gestió d’immobles de Conroma des de l’ordinador',
+    handled: 'El que portem nosaltres',
+    figures: ['immobles gestionats', 'clients satisfets', 'pisos venuts'],
+    steps: [
+      {
+        title: 'Busquem llogater',
+        text: 'Anunciem el pis, l’ensenyem i et presentem qui hi encaixa. Tu decideixes a qui el llogues.',
+        alt: 'Carpeta de Conroma sobre el plànol d’un pis',
+      },
+      {
+        title: 'Ho portem per tu',
+        text: 'Som el contacte del llogater per al dia a dia, i tu estàs al cas de tot.',
+        alt: 'Una assessora de Conroma atenent des de l’oficina',
+      },
+      {
+        title: 'Mirem el conjunt',
+        text: 'Si tens més d’un immoble, mirem amb tu què convé llogar, vendre o reformar.',
+        alt: 'L’equip de Conroma revisant documentació a l’oficina',
+      },
+    ],
+    guideTitle: 'Què suposa administrar un pis llogat',
+    guideLead: 'Això és el que comporta un pis llogat. Explica’ns el teu cas i mirem quina part en portem nosaltres.',
+    guide: [
+      {
+        title: 'El llogater',
+        text: 'Atendre els seus avisos i dubtes del dia a dia i ser-ne l’interlocutor durant tot el contracte.',
+      },
+      {
+        title: 'Avaries i reparacions',
+        text: 'Per llei, el propietari paga les reparacions necessàries perquè l’habitatge continuï sent habitable; les petites, pel desgast de l’ús diari, són del llogater.',
+      },
+      {
+        title: 'Contracte i pròrrogues',
+        text: 'Dates de pròrroga, actualització de la renda segons el que s’ha pactat i final del contracte, avisant amb l’antelació que marca la llei.',
+      },
+      {
+        title: 'Fiança i subministraments',
+        text: 'Dipositar la fiança a l’INCASÒL en signar i ocupar-se dels subministraments quan entra o surt un llogater.',
+      },
+      {
+        title: 'Impostos',
+        text: 'Les rendes del lloguer es declaren a l’IRPF i l’IBI arriba cada any. Tenir-ho endreçat estalvia ensurts a la declaració.',
+      },
+      {
+        title: 'Diversos immobles',
+        text: 'Amb més d’un, convé mirar el conjunt: què convé llogar, vendre o reformar en cada cas.',
+      },
+    ],
+    faqTitle: 'Gestió de patrimoni: el que ens pregunten',
+    faq: [
+      {
+        question: 'Què inclou la gestió de patrimoni?',
+        answer:
+          'Busquem llogater, ensenyem el pis i preparem el contracte. Després som el contacte del llogater per al dia a dia i tu estàs al cas de tot.',
+      },
+      {
+        question: 'Serveix si només tinc un pis?',
+        answer: 'Sí. És per a qui té un o diversos immobles i prefereix que ens encarreguem de la seva gestió i administració.',
+      },
+      {
+        question: 'Tinc diversos immobles, m’ajudeu a decidir què fer amb cadascun?',
+        answer: 'Sí. Mirem amb tu el conjunt i què convé llogar, vendre o reformar en cada cas.',
+      },
+      {
+        question: 'A quines zones gestioneu immobles?',
+        answer: `A Malgrat de Mar i als pobles del voltant: ${townNames}.`,
+      },
+    ],
+    servicesTitle: 'El que podem fer amb els teus immobles',
+    testimonialsLead: 'Fem cada projecte amb passió i professionalitat, i així ho diuen els nostres clients.',
+    closingTitle: 'Parlem',
+    closingMuted: 'dels teus immobles',
   },
-  {
-    question: '¿En qué zonas gestionáis inmuebles?',
-    answer: `En Malgrat de Mar y en los pueblos de alrededor: ${townNames}.`,
-  },
+})[lang];
+const crumbs = [
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
 ];
-const lang = getLang(Astro.url);
+const description = t.description;
+const trackRecord = ['+300', '+100', '+200'].map((value, index) => ({ value, label: t.figures[index] }));
+const steps: StoryStep[] = t.steps.map((step, index) => ({ ...step, image: photos[index] }));
 ---
 
 <BaseLayout
-  title="Gestión de patrimonio inmobiliario en Malgrat de Mar"
+  title={t.title}
   description={description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Gestión de patrimonio inmobiliario', description, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(t.faq), serviceSchema(t.service, description, path, lang)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Gestión de patrimonio en Malgrat de Mar"
-    lead="Si tienes uno o varios inmuebles, nos encargamos de su gestión y administración para que tú ganes libertad y tranquilidad."
+    title={t.heroTitle}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt="Gestión de inmuebles de Conroma desde el ordenador"
-    cta={{ label: 'Lo que llevamos nosotros', href: '#que-llevamos' }}
+    alt={t.heroAlt}
+    cta={{ label: t.handled, href: '#que-llevamos' }}
   />
 
-  <Statement text={answer} />
+  <Statement text={t.answer} />
 
   <ProofBand figures={trackRecord} count />
 
-  <StoryScroll id="que-llevamos" title="Lo que llevamos nosotros" steps={steps} />
+  <StoryScroll id="que-llevamos" title={t.handled} steps={steps} />
 
   <ContentGuide
-    title="Qué supone administrar un piso alquilado"
-    lead="Esto es lo que lleva un piso alquilado. Cuéntanos tu caso y vemos qué parte llevamos nosotros."
-    items={guide}
+    title={t.guideTitle}
+    lead={t.guideLead}
+    items={t.guide}
   />
 
-  <FaqSection title="Gestión de patrimonio: lo que nos preguntan" items={faq} origin="patrimonio-faq" />
+  <FaqSection title={t.faqTitle} items={t.faq} origin="patrimonio-faq" />
 
-  <ServiceIndex title="Lo que podemos hacer con tus inmuebles" exclude="gestion-de-patrimonio" />
+  <ServiceIndex title={t.servicesTitle} exclude="gestion-de-patrimonio" />
 
-  <Testimonials lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <Testimonials lead={t.testimonialsLead} />
 
-  <ClosingCTA title="Hablemos" titleMuted="de tus inmuebles" image={closingPhoto} origin="patrimonio-cierre" />
+  <ClosingCTA title={t.closingTitle} titleMuted={t.closingMuted} image={closingPhoto} origin="patrimonio-cierre" />
 </BaseLayout>

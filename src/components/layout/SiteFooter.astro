@@ -3,11 +3,80 @@ import Icon from '../Icon.astro';
 import Logo from '../Logo.astro';
 import { site } from '../../data/site';
 import { mainNav } from '../../data/nav';
-import { getLang, localizePath } from '../../i18n';
+import { getLang, localizePath, strings } from '../../i18n';
 import { publishedSellerTowns } from '../../data/towns';
 import { whatsappUrl } from '../../lib/links';
 
 const year = 2026;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    claim: 'Especialistas en gestión inmobiliaria y gestión de patrimonios.',
+    hours: 'Horario: lunes a viernes,',
+    to: 'a',
+    and: 'y',
+    quickLinks: 'Enlaces rápidos',
+    web: 'Web',
+    services: 'Servicios',
+    contact: 'Contacto',
+    areas: 'Zonas',
+    allAreas: 'Todas las zonas',
+    talk: 'Hablamos',
+    call: 'Llamar',
+    landline: 'Fijo',
+    apiAlt: 'Agente de la Propiedad Inmobiliaria (API)',
+    follow: 'Síguenos',
+    tiktok: 'TikTok de Conroma',
+    legal: 'Legal',
+    legalNotice: 'Aviso legal',
+    privacy: 'Privacidad',
+    cookies: 'Cookies',
+  },
+  en: {
+    claim: 'Specialists in property management and property portfolio management.',
+    hours: 'Opening hours: Monday to Friday,',
+    to: 'to',
+    and: 'and',
+    quickLinks: 'Quick links',
+    web: 'Site',
+    services: 'Services',
+    contact: 'Contact',
+    areas: 'Areas',
+    allAreas: 'All areas',
+    talk: 'Get in touch',
+    call: 'Call',
+    landline: 'Landline',
+    apiAlt: 'Agente de la Propiedad Inmobiliaria (API), registered estate agent',
+    follow: 'Follow us',
+    tiktok: 'Conroma on TikTok',
+    legal: 'Legal',
+    legalNotice: 'Legal notice',
+    privacy: 'Privacy',
+    cookies: 'Cookies',
+  },
+  ca: {
+    claim: 'Especialistes en gestió immobiliària i gestió de patrimonis.',
+    hours: 'Horari: de dilluns a divendres,',
+    to: 'a',
+    and: 'i',
+    quickLinks: 'Enllaços ràpids',
+    web: 'Web',
+    services: 'Serveis',
+    contact: 'Contacte',
+    areas: 'Zones',
+    allAreas: 'Totes les zones',
+    talk: 'Parlem',
+    call: 'Truca',
+    landline: 'Fix',
+    apiAlt: 'Agent de la Propietat Immobiliària (API)',
+    follow: 'Segueix-nos',
+    tiktok: 'Conroma a TikTok',
+    legal: 'Legal',
+    legalNotice: 'Avís legal',
+    privacy: 'Privacitat',
+    cookies: 'Galetes',
+  },
+})[lang];
 ---
 
 <footer class="site-footer">
@@ -16,7 +85,7 @@ const year = 2026;
       <Logo class="site-footer__logo" size={44} />
       <p class="site-footer__name">Conroma Asesores Inmobiliarios</p>
       <p class="site-footer__claim">
-        Especialistas en gestión inmobiliaria y gestión de patrimonios.
+        {t.claim}
       </p>
       <address class="site-footer__address">
         {site.legalName}<br />
@@ -24,37 +93,37 @@ const year = 2026;
         {site.address.postalCode} {site.address.locality}
       </address>
       <p class="site-footer__hours">
-        Horario: lunes a viernes, {site.openingHours?.slice(0, 2).map((h) => `${h.opens.replace(/^0/, '')} a ${h.closes}`).join(' y ')}
+        {t.hours} {site.openingHours?.slice(0, 2).map((h) => `${h.opens.replace(/^0/, '')} ${t.to} ${h.closes}`).join(` ${t.and} `)}
       </p>
     </div>
 
-    <nav class="site-footer__col" aria-label="Enlaces rápidos">
-      <h2 class="site-footer__title">Web</h2>
+    <nav class="site-footer__col" aria-label={t.quickLinks}>
+      <h2 class="site-footer__title">{t.web}</h2>
       <ul class="site-footer__links site-footer__links--nav">
-        {mainNav[getLang(Astro.url)].map((link) => (
-          <li><a href={localizePath(link.href, getLang(Astro.url))}>{link.label}</a></li>
+        {mainNav[lang].map((link) => (
+          <li><a href={localizePath(link.href, lang)}>{link.label}</a></li>
         ))}
-        <li><a href="/es/servicios/">Servicios</a></li>
-        <li><a href="/es/contacto/">Contacto</a></li>
+        <li><a href={localizePath('/es/servicios/', lang)}>{t.services}</a></li>
+        <li><a href={localizePath('/es/contacto/', lang)}>{t.contact}</a></li>
       </ul>
     </nav>
 
     {/* En móvil la barra inferior solo tiene 5 enlaces: el pie es la única vía a los hubs de pueblo. */}
-    <nav class="site-footer__col" aria-label="Zonas">
-      <h2 class="site-footer__title">Zonas</h2>
+    <nav class="site-footer__col" aria-label={t.areas}>
+      <h2 class="site-footer__title">{t.areas}</h2>
       <ul class="site-footer__links site-footer__links--cols">
         {publishedSellerTowns.map((town) => (
-          <li><a href={`/es/inmobiliaria/${town.slug}/`}>{town.name}</a></li>
+          <li><a href={localizePath(`/es/inmobiliaria/${town.slug}/`, lang)}>{town.name}</a></li>
         ))}
-        <li><a href="/es/inmobiliaria/">Todas las zonas</a></li>
+        <li><a href={localizePath('/es/inmobiliaria/', lang)}>{t.allAreas}</a></li>
       </ul>
     </nav>
 
-    <nav class="site-footer__col" aria-label="Contacto">
-      <h2 class="site-footer__title">Hablamos</h2>
+    <nav class="site-footer__col" aria-label={t.contact}>
+      <h2 class="site-footer__title">{t.talk}</h2>
       <ul class="site-footer__links site-footer__links--icon">
         <li>
-          <a href={whatsappUrl()} data-contact="whatsapp" data-origin="pie">
+          <a href={whatsappUrl(lang)} data-contact="whatsapp" data-origin="pie">
             <Icon name="whatsapp" class="site-footer__icon" />
             WhatsApp · {site.phoneDisplay}
           </a>
@@ -62,13 +131,13 @@ const year = 2026;
         <li>
           <a href={`tel:${site.phone}`} data-contact="llamada" data-origin="pie">
             <Icon name="phone" class="site-footer__icon" />
-            Llamar · {site.phoneDisplay}
+            {t.call} · {site.phoneDisplay}
           </a>
         </li>
         <li>
           <a href={`tel:${site.landline}`} data-contact="llamada" data-origin="pie-fijo">
             <Icon name="phone" class="site-footer__icon" />
-            Fijo · {site.landlineDisplay}
+            {t.landline} · {site.landlineDisplay}
           </a>
         </li>
         <li>
@@ -80,12 +149,12 @@ const year = 2026;
       </ul>
       <div class="site-footer__badges">
         <img class="site-footer__badge" src="/brand/afc.svg" alt="Agents de Finques de Catalunya (AFC)" width="169" height="51" loading="lazy" />
-        <img class="site-footer__badge" src="/brand/api.svg" alt="Agente de la Propiedad Inmobiliaria (API)" width="183" height="46" loading="lazy" />
+        <img class="site-footer__badge" src="/brand/api.svg" alt={t.apiAlt} width="183" height="46" loading="lazy" />
       </div>
     </nav>
 
     <div class="site-footer__col">
-      <h2 class="site-footer__title">Síguenos</h2>
+      <h2 class="site-footer__title">{t.follow}</h2>
       <div class="site-footer__social">
         {site.instagram.map((account) => (
           <a
@@ -104,7 +173,7 @@ const year = 2026;
             href={site.tiktok}
             target="_blank"
             rel="noopener"
-            aria-label="TikTok de Conroma"
+            aria-label={t.tiktok}
           >
             <Icon name="tiktok" class="site-footer__icon" />
           </a>
@@ -115,10 +184,10 @@ const year = 2026;
 
   <div class="wrap site-footer__base">
     <p>© {year} {site.legalName}</p>
-    <nav class="site-footer__legal" aria-label="Legal">
-      <a href="/es/aviso-legal/">Aviso legal</a>
-      <a href="/es/privacidad/">Privacidad</a>
-      <a href="/es/cookies/">Cookies</a>
+    <nav class="site-footer__legal" aria-label={t.legal}>
+      <a href={localizePath('/es/aviso-legal/', lang)}>{t.legalNotice}</a>
+      <a href={localizePath('/es/privacidad/', lang)}>{t.privacy}</a>
+      <a href={localizePath('/es/cookies/', lang)}>{t.cookies}</a>
     </nav>
   </div>
 </footer>

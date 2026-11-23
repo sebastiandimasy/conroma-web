@@ -83,6 +83,22 @@ describe('parser Habitatsoft → Property', () => {
     expect(items[1].geo).toBeUndefined();
   });
 
+  it('lee la descripción en inglés y catalán si el feed la trae; si no, no inventa nada', () => {
+    const [item] = parseHabitatsoftXml(`<WEB><Inmuebles><Inmueble>
+      <NumeroExpediente>6003</NumeroExpediente>
+      <NombreMunicipio>Malgrat de Mar</NombreMunicipio>
+      <LanguageData>
+        <Language idlanguage="es"><txt_FrasePublicitaria>Piso con terraza</txt_FrasePublicitaria></Language>
+        <Language idlanguage="en"><txt_FrasePublicitaria>Apartment with a terrace</txt_FrasePublicitaria></Language>
+        <Language idlanguage="ca"><txt_DetalleAlternativo>Pis amb terrassa</txt_DetalleAlternativo></Language>
+        <Language idlanguage="fr"><txt_FrasePublicitaria>Appartement</txt_FrasePublicitaria></Language>
+      </LanguageData>
+    </Inmueble></Inmuebles></WEB>`);
+    expect(item.description).toBe('Piso con terraza');
+    expect(item.descriptions).toEqual({ en: 'Apartment with a terrace', ca: 'Pis amb terrassa' });
+    expect(items[0].descriptions).toBeUndefined();
+  });
+
   it('townSlug normaliza acentos y espacios', () => {
     expect(townSlug('Santa Susanna')).toBe('santa-susanna');
     expect(townSlug('Malgrat de Mar')).toBe('malgrat-de-mar');

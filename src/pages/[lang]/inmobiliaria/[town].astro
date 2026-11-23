@@ -1,5 +1,5 @@
 ---
-import { getLang, languages } from '../../../i18n';
+import { getLang, languages, localizePath, strings } from '../../../i18n';
 import type { ImageMetadata } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import HeroStory from '../../../components/sections/HeroStory.astro';
@@ -30,11 +30,128 @@ interface Props {
 }
 
 const { town } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    zones: 'Zonas',
+    agency: (name: string) => `Inmobiliaria en ${name}`,
+    answer: (name: string, intro: string) =>
+      `En ${name}, Conroma Asesores te ayuda a vender, comprar y alquilar vivienda desde la oficina de Malgrat de Mar. ${intro} ` +
+      'Valoramos tu piso gratis y sin compromiso, y una misma persona lleva la operación de principio a fin.',
+    faqForSaleQ: (name: string) => `¿Tenéis pisos en venta en ${name}?`,
+    faqForSaleA: (name: string, n: number) =>
+      `Sí: ahora mismo ${n} ${n === 1 ? 'inmueble' : 'inmuebles'} en venta en ${name}, con fotos y precio, en nuestra página de pisos en venta en ${name}. Si buscas algo que no ves, dinos qué y te contamos también lo que aún no está anunciado.`,
+    faqNoCatalogA: (name: string) =>
+      `Trabajamos en ${name}, pero todavía no publicamos ahí el catálogo en la web. Escríbenos diciendo qué buscas y te contamos qué hay, incluido lo que aún no está anunciado.`,
+    faqAlertQ: (name: string) => `¿Me avisáis si entra algo en ${name}?`,
+    faqAlertA: 'Sí. Dinos qué buscas y cuánto quieres gastarte y te escribimos cuando entre algo que encaje. Sin compromiso y sin registrarte en nada.',
+    title: (name: string) => `Inmobiliaria en ${name}: comprar y vender | Conroma`,
+    description: (name: string) =>
+      `¿Compras o vendes en ${name}? Te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`,
+    valuationCta: 'Saber cuánto vale mi piso',
+    photoCredit: (author: string, license: string) => `Foto: ${author} · ${license}`,
+    teamAlt: 'El equipo de Conroma Asesores en la oficina de Malgrat de Mar',
+    officeAlt: 'El equipo de Conroma revisando pisos en la oficina',
+    buyTitle: (name: string) => `Comprar en ${name}`,
+    buyText: (intro: string) =>
+      `${intro} Te decimos qué hay ahora, incluido lo que aún no está anunciado, y te avisamos cuando entra algo que encaje.`,
+    seeForSale: (name: string) => `Ver pisos en venta en ${name}`,
+    tellUs: (name: string) => `Decidnos qué buscáis en ${name}`,
+    sellTitle: (name: string) => `Vender tu piso en ${name}`,
+    sellText: (intro: string) =>
+      `${intro} Pasamos a verlo, te damos un precio realista y nos encargamos de fotos, visitas, negociación y papeles.`,
+    stepsTitle: (name: string) => `Vender en ${name}, paso a paso`,
+    valuationTitle: (name: string) => `¿Cuánto vale tu piso en ${name}?`,
+    valuationLead: 'Pon la dirección y te lo decimos. Gratis y sin compromiso.',
+    testimonialsLead: 'Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes.',
+    faqTitle: (name: string) => `${name}: lo que nos preguntan`,
+    closing: 'Hablemos',
+    closingMuted: (name: string) => `de tu piso en ${name}`,
+  },
+  en: {
+    home: 'Home',
+    zones: 'Areas',
+    agency: (name: string) => `Estate agent in ${name}`,
+    answer: (name: string, intro: string) =>
+      `In ${name}, Conroma Asesores helps you sell, buy and rent a home from our office in Malgrat de Mar. ${intro} ` +
+      'We value your home for free, no strings attached, and the same person handles the whole sale from start to finish.',
+    faqForSaleQ: (name: string) => `Do you have homes for sale in ${name}?`,
+    faqForSaleA: (name: string, n: number) =>
+      `Yes: right now ${n} ${n === 1 ? 'property' : 'properties'} for sale in ${name}, with photos and prices, on our page of homes for sale in ${name}. If you're looking for something you can't see, tell us what and we'll also fill you in on what isn't advertised yet.`,
+    faqNoCatalogA: (name: string) =>
+      `We work in ${name}, but our listings there aren't on the website yet. Message us with what you're looking for and we'll tell you what's around, including what isn't advertised yet.`,
+    faqAlertQ: (name: string) => `Will you let me know if something comes up in ${name}?`,
+    faqAlertA: "Yes. Tell us what you're looking for and your budget, and we'll message you when something suitable comes in. No obligation, and no need to sign up for anything.",
+    title: (name: string) => `Estate agent in ${name}: buy and sell | Conroma`,
+    description: (name: string) =>
+      `Buying or selling in ${name}? We'll tell you what's for sale, including what isn't advertised, and value your home for free, no strings attached.`,
+    valuationCta: "Find out what my home's worth",
+    photoCredit: (author: string, license: string) => `Photo: ${author} · ${license}`,
+    teamAlt: 'The Conroma Asesores team at the office in Malgrat de Mar',
+    officeAlt: 'The Conroma team going through listings at the office',
+    buyTitle: (name: string) => `Buying in ${name}`,
+    buyText: (intro: string) =>
+      `${intro} We'll tell you what's available now, including what isn't advertised yet, and let you know when something suitable comes in.`,
+    seeForSale: (name: string) => `See homes for sale in ${name}`,
+    tellUs: (name: string) => `Tell us what you're looking for in ${name}`,
+    sellTitle: (name: string) => `Selling your home in ${name}`,
+    sellText: (intro: string) =>
+      `${intro} We come and see it, give you a realistic price and take care of photos, viewings, negotiation and paperwork.`,
+    stepsTitle: (name: string) => `Selling in ${name}, step by step`,
+    valuationTitle: (name: string) => `What's your home in ${name} worth?`,
+    valuationLead: "Enter the address and we'll tell you. Free, no obligation.",
+    testimonialsLead: 'We put care and professionalism into every job, and our clients say so.',
+    faqTitle: (name: string) => `${name}: what people ask us`,
+    closing: "Let's talk",
+    closingMuted: (name: string) => `about your home in ${name}`,
+  },
+  ca: {
+    home: 'Inici',
+    zones: 'Zones',
+    agency: (name: string) => `Immobiliària a ${name}`,
+    answer: (name: string, intro: string) =>
+      `A ${name}, Conroma Asesores t'ajuda a vendre, comprar i llogar habitatge des de l'oficina de Malgrat de Mar. ${intro} ` +
+      "Valorem el teu pis gratis i sense compromís, i una mateixa persona porta l'operació de principi a fi.",
+    faqForSaleQ: (name: string) => `Teniu pisos en venda a ${name}?`,
+    faqForSaleA: (name: string, n: number) =>
+      `Sí: ara mateix ${n} ${n === 1 ? 'immoble' : 'immobles'} en venda a ${name}, amb fotos i preu, a la nostra pàgina de pisos en venda a ${name}. Si busques una cosa que no veus, digues-nos què i també t'expliquem el que encara no està anunciat.`,
+    faqNoCatalogA: (name: string) =>
+      `Treballem a ${name}, però encara no hi publiquem el catàleg al web. Escriu-nos dient què busques i t'expliquem què hi ha, inclòs el que encara no està anunciat.`,
+    faqAlertQ: (name: string) => `M'aviseu si entra alguna cosa a ${name}?`,
+    faqAlertA: "Sí. Digues-nos què busques i quant et vols gastar i t'escrivim quan entri alguna cosa que encaixi. Sense compromís i sense registrar-te enlloc.",
+    title: (name: string) => `Immobiliària a ${name}: comprar i vendre | Conroma`,
+    description: (name: string) =>
+      `Compres o vens a ${name}? Et diem què hi ha en venda, també el que no està anunciat, i valorem el teu pis gratis i sense compromís.`,
+    valuationCta: 'Saber quant val el meu pis',
+    photoCredit: (author: string, license: string) => `Foto: ${author} · ${license}`,
+    teamAlt: "L'equip de Conroma Asesores a l'oficina de Malgrat de Mar",
+    officeAlt: "L'equip de Conroma revisant pisos a l'oficina",
+    buyTitle: (name: string) => `Comprar a ${name}`,
+    buyText: (intro: string) =>
+      `${intro} Et diem què hi ha ara, inclòs el que encara no està anunciat, i t'avisem quan entra alguna cosa que encaixi.`,
+    seeForSale: (name: string) => `Veure pisos en venda a ${name}`,
+    tellUs: (name: string) => `Digueu-nos què busqueu a ${name}`,
+    sellTitle: (name: string) => `Vendre el teu pis a ${name}`,
+    sellText: (intro: string) =>
+      `${intro} Passem a veure'l, et donem un preu realista i ens encarreguem de les fotos, les visites, la negociació i els papers.`,
+    stepsTitle: (name: string) => `Vendre a ${name}, pas a pas`,
+    valuationTitle: (name: string) => `Quant val el teu pis a ${name}?`,
+    valuationLead: "Posa-hi l'adreça i t'ho diem. Gratis i sense compromís.",
+    testimonialsLead: 'Fem cada projecte amb passió i professionalitat, i així ho diuen els nostres clients.',
+    faqTitle: (name: string) => `${name}: el que ens pregunten`,
+    closing: 'Parlem',
+    closingMuted: (name: string) => `del teu pis a ${name}`,
+  },
+})[lang];
+const sellerIntro = town.sellerIntro?.[lang] ?? '';
+const lead = (town.intro ?? town.sellerIntro)?.[lang] ?? '';
+const valuationPath = localizePath('/es/valoracion/', lang);
 const path = `/es/inmobiliaria/${town.slug}/`;
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Zonas', path: '/es/inmobiliaria/' },
-  { name: `Inmobiliaria en ${town.name}`, path },
+  { name: t.home, path: localizePath('/es/', lang) },
+  { name: t.zones, path: localizePath('/es/inmobiliaria/', lang) },
+  { name: t.agency(town.name), path: localizePath(path, lang) },
 ];
 
 // Fotos del pueblo (src/assets/lugares/{town}/): la primera va al héroe con su crédito; la segunda, si hay, al bloque de compra.
@@ -46,53 +163,48 @@ const second = townPhotos[1];
 
 // Si el pueblo tiene catálogo publicado, la FAQ y el bloque de compra lo dicen y enlazan.
 const forSale = publishedCatalogTowns.some((t) => t.slug === town.slug) ? propertiesIn(town.slug, 'venta').length : 0;
-const catalogPath = forSale ? `/es/venta/${town.slug}/` : null;
-const answer =
-  `En ${town.name}, Conroma Asesores te ayuda a vender, comprar y alquilar vivienda desde la oficina de Malgrat de Mar. ${town.sellerIntro} ` +
-  'Valoramos tu piso gratis y sin compromiso, y una misma persona lleva la operación de principio a fin.';
+const catalogPath = forSale ? localizePath(`/es/venta/${town.slug}/`, lang) : null;
+const answer = t.answer(town.name, sellerIntro);
 const faq = town.buyerIntro
   ? [
-      ...townFaq(town.name),
+      ...townFaq(town.name, lang),
       {
-        question: `¿Tenéis pisos en venta en ${town.name}?`,
-        answer: forSale
-          ? `Sí: ahora mismo ${forSale} ${forSale === 1 ? 'inmueble' : 'inmuebles'} en venta en ${town.name}, con fotos y precio, en nuestra página de pisos en venta en ${town.name}. Si buscas algo que no ves, dinos qué y te contamos también lo que aún no está anunciado.`
-          : `Trabajamos en ${town.name}, pero todavía no publicamos ahí el catálogo en la web. Escríbenos diciendo qué buscas y te contamos qué hay, incluido lo que aún no está anunciado.`,
+        question: t.faqForSaleQ(town.name),
+        answer: forSale ? t.faqForSaleA(town.name, forSale) : t.faqNoCatalogA(town.name),
       },
       {
-        question: `¿Me avisáis si entra algo en ${town.name}?`,
-        answer: 'Sí. Dinos qué buscas y cuánto quieres gastarte y te escribimos cuando entre algo que encaje. Sin compromiso y sin registrarte en nada.',
+        question: t.faqAlertQ(town.name),
+        answer: t.faqAlertA,
       },
     ]
-  : townFaq(town.name);
-const lang = getLang(Astro.url);
+  : townFaq(town.name, lang);
 ---
 
 <BaseLayout
-  title={`Inmobiliaria en ${town.name}: comprar y vender | Conroma`}
-  description={`¿Compras o vendes en ${town.name}? Te decimos qué hay a la venta, también lo que no está anunciado, y valoramos tu piso gratis y sin compromiso.`}
+  title={t.title(town.name)}
+  description={t.description(town.name)}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq)]}
 >
   {
     hero ? (
       <HeroStory
         crumbs={crumbs}
-        title={`Inmobiliaria en ${town.name}`}
-        lead={town.intro || town.sellerIntro}
+        title={t.agency(town.name)}
+        lead={lead}
         image={photoOf(hero.file)!}
-        alt={hero.alt}
-        cta={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
-        credit={hero.attributionRequired ? { text: `Foto: ${hero.author} · ${hero.license}`, href: hero.url } : undefined}
+        alt={hero.alt[lang]}
+        cta={{ label: t.valuationCta, href: valuationPath }}
+        credit={hero.attributionRequired ? { text: t.photoCredit(hero.author, hero.license), href: hero.url } : undefined}
       />
     ) : (
       <HeroStory
         crumbs={crumbs}
-        title={`Inmobiliaria en ${town.name}`}
-        lead={town.intro || town.sellerIntro}
+        title={t.agency(town.name)}
+        lead={lead}
         image={teamPhoto}
-        alt="El equipo de Conroma Asesores en la oficina de Malgrat de Mar"
-        cta={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
+        alt={t.teamAlt}
+        cta={{ label: t.valuationCta, href: valuationPath }}
       />
     )
   }
@@ -104,16 +216,16 @@ const lang = getLang(Astro.url);
       <SplitFeature
         id="comprar"
         tone="canvas"
-        title={`Comprar en ${town.name}`}
-        text={`${town.buyerIntro} Te decimos qué hay ahora, incluido lo que aún no está anunciado, y te avisamos cuando entra algo que encaje.`}
+        title={t.buyTitle(town.name)}
+        text={t.buyText(town.buyerIntro[lang])}
         image={second ? photoOf(second.file)! : teamPhoto}
-        alt={second ? second.alt : 'El equipo de Conroma revisando pisos en la oficina'}
+        alt={second ? second.alt[lang] : t.officeAlt}
         link={
           catalogPath
-            ? { label: `Ver pisos en venta en ${town.name}`, href: catalogPath }
+            ? { label: t.seeForSale(town.name), href: catalogPath }
             : {
-                label: `Decidnos qué buscáis en ${town.name}`,
-                href: whatsappUrl({ reason: 'general' }),
+                label: t.tellUs(town.name),
+                href: whatsappUrl(lang, { reason: 'general' }),
                 contact: 'whatsapp',
                 origin: `pueblo-${town.slug}-comprar`,
               }
@@ -122,24 +234,24 @@ const lang = getLang(Astro.url);
     ) : (
       <SplitFeature
         tone="canvas"
-        title={`Vender tu piso en ${town.name}`}
-        text={`${town.sellerIntro} Pasamos a verlo, te damos un precio realista y nos encargamos de fotos, visitas, negociación y papeles.`}
+        title={t.sellTitle(town.name)}
+        text={t.sellText(sellerIntro)}
         image={second ? photoOf(second.file)! : teamPhoto}
-        alt={second ? second.alt : 'El equipo de Conroma revisando pisos en la oficina'}
-        link={{ label: 'Saber cuánto vale mi piso', href: '/es/valoracion/' }}
+        alt={second ? second.alt[lang] : t.officeAlt}
+        link={{ label: t.valuationCta, href: valuationPath }}
       />
     )
   }
 
-  <StoryScroll title={`Vender en ${town.name}, paso a paso`} steps={venderSteps} />
+  <StoryScroll title={t.stepsTitle(town.name)} steps={venderSteps[lang]} />
 
   <TownLinks current={town.slug} tone="canvas" />
 
-  <ValuationBlock title={`¿Cuánto vale tu piso en ${town.name}?`} lead="Pon la dirección y te lo decimos. Gratis y sin compromiso." />
+  <ValuationBlock title={t.valuationTitle(town.name)} lead={t.valuationLead} />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <Testimonials tone="canvas" lead={t.testimonialsLead} />
 
-  <FaqSection title={`${town.name}: lo que nos preguntan`} items={faq} origin={`pueblo-${town.slug}-faq`} />
+  <FaqSection title={t.faqTitle(town.name)} items={faq} origin={`pueblo-${town.slug}-faq`} />
 
-  <ClosingCTA title="Hablemos" titleMuted={`de tu piso en ${town.name}`} image={closingPhoto} origin={`pueblo-${town.slug}-cierre`} />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted(town.name)} image={closingPhoto} origin={`pueblo-${town.slug}-cierre`} />
 </BaseLayout>

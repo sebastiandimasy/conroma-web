@@ -3,6 +3,9 @@ import { motion, useDragControls, useReducedMotion } from 'motion/react';
 import { Button } from '@heroui/react';
 import type { Filters } from '../lib/filters';
 import { emptyFilters } from '../lib/filters';
+import { typeLabel } from '../data/properties';
+import { formatPrice } from '../lib/format';
+import { strings, type Lang } from '../i18n';
 
 interface FilterSheetProps {
   open: boolean;
@@ -13,12 +16,68 @@ interface FilterSheetProps {
   count: number;
   onChange: (filters: Filters) => void;
   onClose: () => void;
+  lang: Lang;
 }
+
+const texts = strings({
+  es: {
+    title: 'Filtros',
+    town: 'Pueblo',
+    allTowns: 'Todos los pueblos',
+    maxPrice: 'Precio hasta',
+    noLimit: 'Sin límite',
+    type: 'Tipo',
+    anyType: 'Cualquiera',
+    rooms: 'Habitaciones, como mínimo',
+    extras: 'Que tenga',
+    terrace: 'Terraza',
+    elevator: 'Ascensor',
+    parking: 'Parking',
+    clear: 'Quitar',
+    none: 'Ninguno así',
+    see: (n: number) => `Ver ${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`,
+  },
+  en: {
+    title: 'Filters',
+    town: 'Town',
+    allTowns: 'All towns',
+    maxPrice: 'Max price',
+    noLimit: 'No limit',
+    type: 'Type',
+    anyType: 'Any',
+    rooms: 'Bedrooms, at least',
+    extras: 'Must have',
+    terrace: 'Terrace',
+    elevator: 'Lift',
+    parking: 'Parking',
+    clear: 'Clear',
+    none: 'Nothing like that',
+    see: (n: number) => `See ${n} ${n === 1 ? 'property' : 'properties'}`,
+  },
+  ca: {
+    title: 'Filtres',
+    town: 'Poble',
+    allTowns: 'Tots els pobles',
+    maxPrice: 'Preu fins a',
+    noLimit: 'Sense límit',
+    type: 'Tipus',
+    anyType: 'Qualsevol',
+    rooms: 'Habitacions, com a mínim',
+    extras: 'Que tingui',
+    terrace: 'Terrassa',
+    elevator: 'Ascensor',
+    parking: 'Pàrquing',
+    clear: 'Treure',
+    none: 'Cap així',
+    see: (n: number) => `Veure ${n} ${n === 1 ? 'immoble' : 'immobles'}`,
+  },
+});
 
 const priceSteps = [150000, 200000, 250000, 300000, 400000];
 const roomSteps = [1, 2, 3, 4];
 
-export function FilterSheet({ open, filters, towns, types, count, onChange, onClose }: FilterSheetProps) {
+export function FilterSheet({ open, filters, towns, types, count, onChange, onClose, lang }: FilterSheetProps) {
+  const t = texts[lang];
   const dialogRef = useRef<HTMLDialogElement>(null);
   const controls = useDragControls();
   const reduceMotion = useReducedMotion();
@@ -31,16 +90,16 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
   }, [open]);
 
   const extras: { key: 'terrace' | 'elevator' | 'parking'; label: string }[] = [
-    { key: 'terrace', label: 'Terraza' },
-    { key: 'elevator', label: 'Ascensor' },
-    { key: 'parking', label: 'Parking' },
+    { key: 'terrace', label: t.terrace },
+    { key: 'elevator', label: t.elevator },
+    { key: 'parking', label: t.parking },
   ];
 
   return (
     <dialog
       ref={dialogRef}
       className="filter-dialog"
-      aria-label="Filtros"
+      aria-label={t.title}
       onClose={onClose}
       onClick={(event) => {
         if (event.target === dialogRef.current) onClose();
@@ -68,7 +127,7 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
           >
             <div className="sheet__grabber" />
           </div>
-          <h2 className="sheet__title">Filtros</h2>
+          <h2 className="sheet__title">{t.title}</h2>
 
           {/* Desplegables en vez de listas abiertas: 25 pueblos en chips eran un muro de
               scroll y dejaban el boton de aplicar fuera de pantalla. El <select> nativo
@@ -76,13 +135,13 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
           <div className="sheet__fields">
             {towns.length > 1 && (
               <label className="field">
-                <span className="field__label">Pueblo</span>
+                <span className="field__label">{t.town}</span>
                 <select
                   className="field__control"
                   value={filters.town ?? ''}
                   onChange={(event) => onChange({ ...filters, town: event.target.value || null })}
                 >
-                  <option value="">Todos los pueblos</option>
+                  <option value="">{t.allTowns}</option>
                   {towns.map((town) => (
                     <option key={town.slug} value={town.slug}>
                       {`${town.name} (${town.count})`}
@@ -93,7 +152,7 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
             )}
 
             <label className="field">
-              <span className="field__label">Precio hasta</span>
+              <span className="field__label">{t.maxPrice}</span>
               <select
                 className="field__control"
                 value={filters.maxPrice ?? ''}
@@ -101,26 +160,26 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
                   onChange({ ...filters, maxPrice: event.target.value ? Number(event.target.value) : null })
                 }
               >
-                <option value="">Sin límite</option>
+                <option value="">{t.noLimit}</option>
                 {priceSteps.map((step) => (
                   <option key={step} value={step}>
-                    {`${step.toLocaleString('es-ES')} €`}
+                    {formatPrice(step, lang)}
                   </option>
                 ))}
               </select>
             </label>
 
             <label className="field">
-              <span className="field__label">Tipo</span>
+              <span className="field__label">{t.type}</span>
               <select
                 className="field__control"
                 value={filters.type ?? ''}
                 onChange={(event) => onChange({ ...filters, type: event.target.value || null })}
               >
-                <option value="">Cualquiera</option>
+                <option value="">{t.anyType}</option>
                 {types.map((type) => (
                   <option key={type} value={type}>
-                    {type}
+                    {typeLabel(type, lang)}
                   </option>
                 ))}
               </select>
@@ -128,7 +187,7 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
           </div>
 
           <fieldset className="sheet__group">
-            <legend className="field__label">Habitaciones, como mínimo</legend>
+            <legend className="field__label">{t.rooms}</legend>
             <div className="chip-row">
               {roomSteps.map((step) => (
                 <button
@@ -145,7 +204,7 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
           </fieldset>
 
           <fieldset className="sheet__group">
-            <legend className="field__label">Que tenga</legend>
+            <legend className="field__label">{t.extras}</legend>
             <div className="chip-row">
               {extras.map((extra) => (
                 <button
@@ -163,10 +222,10 @@ export function FilterSheet({ open, filters, towns, types, count, onChange, onCl
 
           <div className="sheet__actions">
             <Button variant="ghost" onPress={() => onChange(emptyFilters)}>
-              Quitar
+              {t.clear}
             </Button>
             <Button variant="primary" onPress={onClose}>
-              {count === 0 ? 'Ninguno así' : `Ver ${count} ${count === 1 ? 'inmueble' : 'inmuebles'}`}
+              {count === 0 ? t.none : t.see(count)}
             </Button>
           </div>
         </motion.div>

@@ -1,16 +1,19 @@
 ---
 import { postsIn } from '../../data/blog';
+import { getLang, intlLocale, localizePath } from '../../i18n';
 
 interface Props {
   title: string;
+  /** Clave de categoría en español (Comprar, Vender, Alquilar). */
   category: string;
   limit?: number;
 }
 
 const { title, category, limit = 3 } = Astro.props;
 // Solo artículos que existen: si la intención no tiene ninguno, la sección no se pinta.
-const list = postsIn(category, limit);
-const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
+const lang = getLang(Astro.url);
+const list = postsIn(category, lang, limit);
+const longDate = new Intl.DateTimeFormat(intlLocale[lang], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Madrid' });
 ---
 
 {
@@ -21,7 +24,7 @@ const longDate = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long
         <ul class="guide-teaser__list">
           {list.map((post) => (
             <li data-reveal>
-              <a class="guide-teaser__card" href={`/es/blog/${post.slug}/`}>
+              <a class="guide-teaser__card" href={localizePath(`/es/blog/${post.slug}/`, lang)}>
                 <time class="guide-teaser__date" datetime={post.date}>
                   {longDate.format(new Date(`${post.date}T12:00:00Z`))}
                 </time>

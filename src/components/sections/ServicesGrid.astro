@@ -2,6 +2,7 @@
 import Icon from '../Icon.astro';
 import Section from '../Section.astro';
 import { services } from '../../data/services';
+import { getLang, localizePath, strings } from '../../i18n';
 
 interface Props {
   eyebrow?: string;
@@ -9,8 +10,14 @@ interface Props {
   exclude?: string;
 }
 
-const { eyebrow = '¿Qué hacemos?', title = 'Todo lo que pasa alrededor de una casa.', exclude } = Astro.props;
-const list = services.filter((service) => service.slug !== exclude);
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { eyebrow: '¿Qué hacemos?', title: 'Todo lo que pasa alrededor de una casa.', more: 'Ver cómo' },
+  en: { eyebrow: 'What do we do?', title: 'Everything to do with a home.', more: 'See how' },
+  ca: { eyebrow: 'Què fem?', title: "Tot el que passa al voltant d'una casa.", more: 'Mira com' },
+})[lang];
+const { eyebrow = t.eyebrow, title = t.title, exclude } = Astro.props;
+const list = services[lang].filter((service) => service.slug !== exclude);
 ---
 
 <Section class="services" center eyebrow={eyebrow}>
@@ -19,13 +26,13 @@ const list = services.filter((service) => service.slug !== exclude);
     {
       list.map((service) => (
         <li data-reveal>
-          <a class="card feature services__card" href={service.href}>
+          <a class="card feature services__card" href={localizePath(service.href, lang)}>
             <span class="icon-tile"><Icon name={service.icon} /></span>
             <span class="services__question">{service.question}</span>
             <h3 class="feature__title">{service.name}</h3>
             <p class="feature__text">{service.summary}</p>
             <span class="services__more">
-              Ver cómo
+              {t.more}
               <Icon name="arrow" class="link-list__arrow" />
             </span>
           </a>

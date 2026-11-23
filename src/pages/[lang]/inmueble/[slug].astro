@@ -1,5 +1,5 @@
 ---
-import { getLang, languages } from '../../../i18n';
+import { getLang, languages, localizePath, strings } from '../../../i18n';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
@@ -7,7 +7,19 @@ import PropertyGallery from '../../../islands/PropertyGallery';
 import FavoriteToggle from '../../../islands/FavoriteToggle';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
-import { cardFacts, getListings, hasPublicPrice, isHome, propertyDocTitle, propertySlug, propertyTitle, type Property } from '../../../data/properties';
+import {
+  cardFacts,
+  countLabel,
+  getListings,
+  hasPublicPrice,
+  isHome,
+  propertyDocTitle,
+  propertySlug,
+  propertyTitle,
+  stateLabel,
+  typeLabel,
+  type Property,
+} from '../../../data/properties';
 import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
@@ -24,16 +36,139 @@ interface Props {
 }
 
 const { property } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    forSaleIn: (town: string) => `Inmuebles en venta en ${town}`,
+    typeIn: (type: string, zone: string) => `${type} en ${zone}`,
+    priceFor: (price: string) => ` por ${price}`,
+    visit: 'Pedir visita',
+    isNew: 'Nuevo',
+    askPrice: 'Precio a consultar',
+    drop: (before: string, drop: string) => `Antes ${before} · ha bajado ${drop}`,
+    afford: '¿Me lo puedo permitir? Calcúlalo',
+    plain: 'Te lo contamos fácil',
+    inSpanish: '',
+    likes: 'Lo que más nos gusta',
+    watchOut: 'A tener en cuenta',
+    features: 'Características',
+    type: 'Tipo',
+    state: 'Estado',
+    floor: 'Planta',
+    lift: 'Ascensor',
+    parking: 'Parking',
+    terrace: 'Terraza o balcón',
+    emissions: 'Emisiones de CO₂',
+    consumption: 'Consumo de energía',
+    perYear: 'año',
+    certificate: 'Certificado energético',
+    exempt: 'Exento',
+    pending: 'En trámite',
+    reference: 'Referencia',
+    yes: 'Sí',
+    ask: 'Consultar',
+    area: 'La zona',
+    areaText: (place: string) => `${place}. En el mapa te situamos la zona aproximada; la dirección exacta te la contamos cuando hablemos.`,
+    areaNav: 'Zona',
+    moreIn: (town: string) => `Más pisos en venta en ${town}`,
+    agent: 'Conoce este piso por dentro',
+    call: 'Llamar',
+    similar: 'Viviendas parecidas',
+  },
+  en: {
+    home: 'Home',
+    forSaleIn: (town: string) => `Properties for sale in ${town}`,
+    typeIn: (type: string, zone: string) => `${type} in ${zone}`,
+    priceFor: (price: string) => ` for ${price}`,
+    visit: 'Book a viewing',
+    isNew: 'New',
+    askPrice: 'Price on request',
+    drop: (before: string, drop: string) => `Was ${before} · down ${drop}`,
+    afford: 'Can I afford it? Work it out',
+    plain: 'In a nutshell',
+    inSpanish: 'Description in Spanish.',
+    likes: 'What we like most',
+    watchOut: 'Worth knowing',
+    features: 'Features',
+    type: 'Type',
+    state: 'Condition',
+    floor: 'Floor',
+    lift: 'Lift',
+    parking: 'Parking',
+    terrace: 'Terrace or balcony',
+    emissions: 'CO₂ emissions',
+    consumption: 'Energy consumption',
+    perYear: 'per year',
+    certificate: 'Energy certificate (EPC)',
+    exempt: 'Exempt',
+    pending: 'In progress',
+    reference: 'Reference',
+    yes: 'Yes',
+    ask: 'Ask us',
+    area: 'The area',
+    areaText: (place: string) => `${place}. The map shows the rough area; we'll give you the exact address when we talk.`,
+    areaNav: 'Area',
+    moreIn: (town: string) => `More homes for sale in ${town}`,
+    agent: 'Knows this property inside out',
+    call: 'Call',
+    similar: 'Similar homes',
+  },
+  ca: {
+    home: 'Inici',
+    forSaleIn: (town: string) => `Immobles en venda a ${town}`,
+    typeIn: (type: string, zone: string) => `${type} a ${zone}`,
+    priceFor: (price: string) => ` per ${price}`,
+    visit: 'Demana una visita',
+    isNew: 'Nou',
+    askPrice: 'Preu a consultar',
+    drop: (before: string, drop: string) => `Abans ${before} · ha baixat ${drop}`,
+    afford: "M'ho puc permetre? Calcula-ho",
+    plain: "T'ho expliquem fàcil",
+    inSpanish: '',
+    likes: 'El que més ens agrada',
+    watchOut: 'A tenir en compte',
+    features: 'Característiques',
+    type: 'Tipus',
+    state: 'Estat',
+    floor: 'Planta',
+    lift: 'Ascensor',
+    parking: 'Pàrquing',
+    terrace: 'Terrassa o balcó',
+    emissions: 'Emissions de CO₂',
+    consumption: "Consum d'energia",
+    perYear: 'any',
+    certificate: 'Certificat energètic',
+    exempt: 'Exempt',
+    pending: 'En tràmit',
+    reference: 'Referència',
+    yes: 'Sí',
+    ask: "Pregunta'ns",
+    area: 'La zona',
+    areaText: (place: string) => `${place}. Al mapa et situem la zona aproximada; l'adreça exacta te la diem quan parlem.`,
+    areaNav: 'Zona',
+    moreIn: (town: string) => `Més pisos en venda a ${town}`,
+    agent: 'Coneix aquest pis per dins',
+    call: 'Trucar',
+    similar: 'Habitatges semblants',
+  },
+})[lang];
 const town = findTown(property.town);
 const townName = town?.name ?? property.town;
 // Coords reales del piso (feed) si las hay; si no, el centro del pueblo.
 const mapGeo = property.geo ?? town?.geo ?? null;
-const title = propertyTitle(property);
-const docTitle = propertyDocTitle(property, getListings());
+const title = propertyTitle(property, lang);
+const docTitle = propertyDocTitle(property, getListings(), lang);
+const type = typeLabel(property.type, lang);
 // Terrenos, locales y parkings no tienen habitaciones: fuera el «0 habitaciones, 0 baños».
 const summary = isHome(property)
-  ? `${property.rooms} ${property.rooms === 1 ? 'habitación' : 'habitaciones'}, ${property.baths} ${property.baths === 1 ? 'baño' : 'baños'}, ${property.area} m²`
+  ? `${countLabel(property.rooms, 'room', lang)}, ${countLabel(property.baths, 'bath', lang)}, ${property.area} m²`
   : `${property.area} m²`;
+// La descripción de Habitatsoft viene en español. Si el feed la trae en el idioma de la página, esa;
+// si no, la española marcada con lang="es" (no se traduce a mano).
+const ownDescription = lang === 'es' ? property.description : property.descriptions?.[lang];
+const description = ownDescription || property.description;
+const descriptionLang = ownDescription ? undefined : 'es';
 const path = `/es/inmueble/${propertySlug(property)}/`;
 // Si el pueblo no tiene página de catálogo (pueblo fino, fuera del índice), enlaza al listado general.
 const listingPath = publishedCatalogTowns.some((t) => t.slug === property.town)
@@ -41,9 +176,9 @@ const listingPath = publishedCatalogTowns.some((t) => t.slug === property.town)
   : '/es/venta/';
 const drop = property.previousPrice ? property.previousPrice - property.price : 0;
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: `Inmuebles en venta en ${townName}`, path: listingPath },
-  { name: `${property.type} en ${property.zone}`, path },
+  { name: t.home, path: '/es/' },
+  { name: t.forSaleIn(townName), path: listingPath },
+  { name: t.typeIn(type, property.zone), path },
 ];
 const similar = getListings({ town: property.town, operation: property.operation })
   .filter((item) => item.ref !== property.ref)
@@ -59,53 +194,54 @@ const home = isHome(property);
 // La planta y el ascensor solo dicen algo en pisos; en una casa, «planta baja» confunde.
 const flat = /piso|ático|dúplex|estudio|apartamento|bungalow|loft/i.test(property.type);
 // Datos de cabecera sin ceros (terrenos, locales y parkings no tienen habitaciones ni planta).
-const facts = flat ? [...cardFacts(property), formatFloor(property.floor)] : cardFacts(property);
+const facts = flat ? [...cardFacts(property, lang), formatFloor(property.floor, lang)] : cardFacts(property, lang);
 const features = [
-  { label: 'Tipo', value: property.type },
-  { label: 'Estado', value: property.state },
+  { label: t.type, value: type },
+  { label: t.state, value: stateLabel(property.state, lang) },
   ...(flat
     ? [
-        { label: 'Planta', value: formatFloor(property.floor) },
-        { label: 'Ascensor', value: property.elevator ? 'Sí' : 'Consultar' },
+        { label: t.floor, value: formatFloor(property.floor, lang) },
+        { label: t.lift, value: property.elevator ? t.yes : t.ask },
       ]
     : []),
   ...(home
     ? [
-        { label: 'Parking', value: property.parking ? 'Sí' : 'Consultar' },
-        { label: 'Terraza o balcón', value: property.terrace ? 'Sí' : 'Consultar' },
+        { label: t.parking, value: property.parking ? t.yes : t.ask },
+        { label: t.terrace, value: property.terrace ? t.yes : t.ask },
       ]
     : []),
   // Obligatorio en la publicidad (RD 390/2021). Hoy sale de la web antigua; mañana, del feed.
   ...(property.energyRating
     ? [
         {
-          label: 'Emisiones de CO₂',
-          value: `${property.energyRating}${property.energyEmissions ? ` · ${property.energyEmissions} kg/m² año` : ''}`,
+          label: t.emissions,
+          value: `${property.energyRating}${property.energyEmissions ? ` · ${property.energyEmissions} kg/m² ${t.perYear}` : ''}`,
         },
         ...(property.energyConsumptionRating
           ? [
               {
-                label: 'Consumo de energía',
-                value: `${property.energyConsumptionRating}${property.energyConsumption ? ` · ${property.energyConsumption} kWh/m² año` : ''}`,
+                label: t.consumption,
+                value: `${property.energyConsumptionRating}${property.energyConsumption ? ` · ${property.energyConsumption} kWh/m² ${t.perYear}` : ''}`,
               },
             ]
           : []),
       ]
     : property.energyExempt || property.energyPending
-      ? [{ label: 'Certificado energético', value: property.energyExempt ? 'Exento' : 'En trámite' }]
+      ? [{ label: t.certificate, value: property.energyExempt ? t.exempt : t.pending }]
       : []),
-  { label: 'Referencia', value: property.ref },
+  { label: t.reference, value: property.ref },
 ];
-const lang = getLang(Astro.url);
+// En en/ca la meta description no lleva la descripción española: solo el resumen, o la suya si existe.
+const metaDescription = `${title}${hasPublicPrice(property) ? t.priceFor(formatPrice(property.price, lang)) : ''}: ${summary}. Ref. ${property.ref}. ${ownDescription ?? ''}`.trim();
 ---
 
 <BaseLayout
   title={docTitle}
-  description={`${title}${hasPublicPrice(property) ? ` por ${formatPrice(property.price)}` : ''}: ${summary}. Ref. ${property.ref}. ${property.description}`.trim()}
+  description={metaDescription}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), listingSchema(property)]}
+  schemas={[breadcrumbSchema(crumbs, lang), listingSchema(property, lang)]}
   contact={{ propertyRef: property.ref, propertyTitle: title }}
-  primaryAction={{ label: 'Pedir visita', href: '#contacto' }}
+  primaryAction={{ label: t.visit, href: '#contacto' }}
   noindex={!indexable}
 >
   <article class="property">
@@ -117,32 +253,32 @@ const lang = getLang(Astro.url);
       <div class="property__main">
         <header class="property__summary">
           <h1 class="property__title">{title}</h1>
-          <p class="property__place">{isNewListing(property) && <span class="tag-new">Nuevo</span>}{place} · Ref. {property.ref}</p>
+          <p class="property__place">{isNewListing(property) && <span class="tag-new">{t.isNew}</span>}{place} · Ref. {property.ref}</p>
           <div class="property__price-row">
             <p class="property__price">
               {
                 hasPublicPrice(property) ? (
-                  <data value={property.price}>{formatPrice(property.price)}</data>
+                  <data value={property.price}>{formatPrice(property.price, lang)}</data>
                 ) : (
-                  <span class="property-card__price--ask">Precio a consultar</span>
+                  <span class="property-card__price--ask">{t.askPrice}</span>
                 )
               }
             </p>
             <div class="property__save">
-              <FavoriteToggle client:load propertyRef={property.ref} label />
+              <FavoriteToggle client:load propertyRef={property.ref} label lang={lang} />
             </div>
           </div>
           {
             drop > 0 && property.previousPrice && (
               <p class="property__drop">
-                Antes {formatPrice(property.previousPrice)} · ha bajado {formatPrice(drop)}
+                {t.drop(formatPrice(property.previousPrice, lang), formatPrice(drop, lang))}
               </p>
             )
           }
         </header>
 
         <div class="property__gallery">
-          <PropertyGallery client:load propertyRef={property.ref} title={title} photos={property.photos} tone={property.tone} images={property.images} />
+          <PropertyGallery client:load propertyRef={property.ref} title={title} photos={property.photos} tone={property.tone} images={property.images} lang={lang} />
         </div>
 
         <div class="property__overview">
@@ -153,31 +289,32 @@ const lang = getLang(Astro.url);
           )}
           {
             hasPublicPrice(property) && (
-              <a class="link-cta property__mortgage" href={`/es/comprar/puedo-comprar/?precio=${property.price}`}>
-                ¿Me lo puedo permitir? Calcúlalo
+              <a class="link-cta property__mortgage" href={localizePath(`/es/comprar/puedo-comprar/?precio=${property.price}`, lang)}>
+                {t.afford}
               </a>
             )
           }
         </div>
 
         {
-          (property.description || property.likes || property.watchOut) && (
+          (description || property.likes || property.watchOut) && (
             <section class="property__block" id="resumen">
-              <h2 class="property__heading">Te lo contamos fácil</h2>
-              {property.description && <p class="property__description">{property.description}</p>}
+              <h2 class="property__heading">{t.plain}</h2>
+              {description && <p class="property__description" lang={descriptionLang}>{description}</p>}
+              {description && descriptionLang && t.inSpanish && <p class="property__lang-note">{t.inSpanish}</p>}
               {
                 (property.likes || property.watchOut) && (
               <div class="honesty">
                 {property.likes && (
                   <div class="honesty__item">
-                    <h3 class="honesty__title">Lo que más nos gusta</h3>
-                    <p>{property.likes}</p>
+                    <h3 class="honesty__title">{t.likes}</h3>
+                    <p lang={lang === 'es' ? undefined : 'es'}>{property.likes}</p>
                   </div>
                 )}
                 {property.watchOut && (
                   <div class="honesty__item">
-                    <h3 class="honesty__title">A tener en cuenta</h3>
-                    <p>{property.watchOut}</p>
+                    <h3 class="honesty__title">{t.watchOut}</h3>
+                    <p lang={lang === 'es' ? undefined : 'es'}>{property.watchOut}</p>
                   </div>
                 )}
               </div>
@@ -188,7 +325,7 @@ const lang = getLang(Astro.url);
         }
 
         <section class="property__block" id="caracteristicas">
-          <h2 class="property__heading">Características</h2>
+          <h2 class="property__heading">{t.features}</h2>
           <dl class="spec-list">
             {
               features.map((feature) => (
@@ -202,9 +339,9 @@ const lang = getLang(Astro.url);
         </section>
 
         <section class="property__block" id="zona">
-          <h2 class="property__heading">La zona</h2>
+          <h2 class="property__heading">{t.area}</h2>
           <p class="property__description">
-            {place}. En el mapa te situamos la zona aproximada; la dirección exacta te la contamos cuando hablemos.
+            {t.areaText(place)}
           </p>
           {
             mapGeo && (
@@ -214,13 +351,14 @@ const lang = getLang(Astro.url);
                   latitude={mapGeo.latitude}
                   longitude={mapGeo.longitude}
                   label={`${property.zone}, ${townName}`}
+                  lang={lang}
                 />
               </div>
             )
           }
-          <nav class="link-list" aria-label="Zona">
-            <a class="link-list__link" href={listingPath}>
-              Más pisos en venta en {townName}
+          <nav class="link-list" aria-label={t.areaNav}>
+            <a class="link-list__link" href={localizePath(listingPath, lang)}>
+              {t.moreIn(townName)}
               <Icon name="arrow" class="link-list__arrow" />
             </a>
           </nav>
@@ -229,7 +367,7 @@ const lang = getLang(Astro.url);
 
       <aside class="property__aside" id="contacto">
         <div class="contact-card">
-          <h2 class="property__heading">Pedir visita</h2>
+          <h2 class="property__heading">{t.visit}</h2>
           {
             site.agent && (
               <div class="agent">
@@ -237,7 +375,7 @@ const lang = getLang(Astro.url);
                 <p>
                   <strong>{site.agent.name}</strong>
                   <br />
-                  Conoce este piso por dentro
+                  {t.agent}
                 </p>
               </div>
             )
@@ -245,7 +383,7 @@ const lang = getLang(Astro.url);
           <div class="contact-card__actions">
             <a
               class="button button--ink button--block"
-              href={whatsappUrl({ reason: 'visita', propertyRef: property.ref, propertyTitle: title })}
+              href={whatsappUrl(lang, { reason: 'visita', propertyRef: property.ref, propertyTitle: title })}
               data-contact="whatsapp"
               data-origin="ficha-contacto"
               data-ref={property.ref}
@@ -255,7 +393,7 @@ const lang = getLang(Astro.url);
             </a>
             <a class="button button--ghost button--block" href={phoneUrl()} data-contact="llamada" data-origin="ficha-contacto" data-ref={property.ref}>
               <Icon name="phone" class="button__icon" />
-              Llamar
+              {t.call}
             </a>
           </div>
         </div>
@@ -267,9 +405,9 @@ const lang = getLang(Astro.url);
         <section class="section similar">
           <div class="wrap">
             <div class="section__head">
-              <h2 class="section__title">Viviendas parecidas</h2>
+              <h2 class="section__title">{t.similar}</h2>
             </div>
-            <PropertyGrid client:visible properties={similar} townName={townName} origin="ficha-parecidas" />
+            <PropertyGrid client:visible properties={similar} townName={townName} origin="ficha-parecidas" lang={lang} />
           </div>
         </section>
       )

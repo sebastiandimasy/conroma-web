@@ -8,6 +8,7 @@ import type { Operation, Property } from '../data/properties';
  *  - Campos numéricos/booleanos en el nivel <Inmueble> (Precio1Euros, NumBanos, box_Ascensor="1/0", Latitud…).
  *  - Fotos en <Medias><Fotos><Foto>.
  *  - Textos (tipo, operación, estado, descripción) en <LanguageData><Language idlanguage="es">.
+ *    De los bloques "en" y "ca" solo se lee la descripción (`descriptions`), si la traen.
  *
  * NO viene en el feed: `likes`/`watchOut` (notas editoriales de Conroma). Quedan vacías salvo que
  * la agencia las meta en un campo libre de Habitatsoft y lo mapeemos aquí.
@@ -50,6 +51,18 @@ function spanishBlock(inmueble: any): any {
   return langs.find((l) => l?.idlanguage === 'es') ?? langs[0] ?? {};
 }
 
+/** Descripciones en inglés y catalán, si la agencia las ha escrito en Habitatsoft. */
+function translatedDescriptions(inmueble: any): Property['descriptions'] {
+  const out: NonNullable<Property['descriptions']> = {};
+  for (const block of asArray<any>(inmueble?.LanguageData?.Language)) {
+    const lang = block?.idlanguage as string;
+    if (lang !== 'en' && lang !== 'ca') continue;
+    const description = text(block.txt_FrasePublicitaria) || text(block.txt_DetalleAlternativo);
+    if (description) out[lang] = description;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 function operationFrom(nombreOperacion: string): Operation {
   return /alquiler|lloguer|rent|louer|miet/i.test(nombreOperacion) ? 'alquiler' : 'venta';
 }
@@ -88,6 +101,7 @@ export function parseHabitatsoftXml(xml: string): Property[] {
       likes: '', // editorial de Conroma; no viene del feed
       watchOut: '', // idem
       description: text(es.txt_FrasePublicitaria) || text(es.txt_DetalleAlternativo),
+      descriptions: translatedDescriptions(it),
       photos: images.length,
       tone: 1,
       images,

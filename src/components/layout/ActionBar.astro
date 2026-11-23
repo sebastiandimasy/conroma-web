@@ -1,19 +1,26 @@
 ---
 import Icon from '../Icon.astro';
 import { phoneUrl, whatsappUrl, type ContactContext } from '../../lib/links';
+import { getLang, localizePath, strings } from '../../i18n';
 
 interface Props {
   contact?: ContactContext;
   primaryAction?: { label: string; href: string };
 }
 
-const { contact = {}, primaryAction = { label: 'Valorar', href: '/es/valoracion/' } } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { nav: 'Contacto rápido', call: 'Llamar', value: 'Valorar' },
+  en: { nav: 'Quick contact', call: 'Call', value: 'Valuation' },
+  ca: { nav: 'Contacte ràpid', call: 'Trucar', value: 'Valorar' },
+})[lang];
+const { contact = {}, primaryAction = { label: t.value, href: '/es/valoracion/' } } = Astro.props;
 ---
 
-<nav class="action-bar glass" aria-label="Contacto rápido" data-action-bar>
+<nav class="action-bar glass" aria-label={t.nav} data-action-bar>
   <a
     class="button button--ink action-bar__button"
-    href={whatsappUrl(contact)}
+    href={whatsappUrl(lang, contact)}
     data-contact="whatsapp"
     data-origin="barra"
     data-ref={contact.propertyRef}
@@ -23,7 +30,7 @@ const { contact = {}, primaryAction = { label: 'Valorar', href: '/es/valoracion/
   </a>
   <a class="button button--ghost action-bar__button" href={phoneUrl()} data-contact="llamada" data-origin="barra" data-ref={contact.propertyRef}>
     <Icon name="phone" class="button__icon" />
-    Llamar
+    {t.call}
   </a>
-  <a class="button button--primary action-bar__button" href={primaryAction.href}>{primaryAction.label}</a>
+  <a class="button button--primary action-bar__button" href={localizePath(primaryAction.href, lang)}>{primaryAction.label}</a>
 </nav>

@@ -68,7 +68,7 @@ const languageLinks = alternates(path);
     <link rel="preload" href="/fonts/playfair-display-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/brand/conroma-logo.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <script type="application/ld+json" set:html={JSON.stringify(siteGraph())} />
+    <script type="application/ld+json" set:html={JSON.stringify(siteGraph(lang))} />
     {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     {/* data-theme siempre fijado (guardado o, si no, el del sistema): HeroUI solo cambia a
         oscuro con el atributo, no con prefers-color-scheme. Sigue al sistema mientras no se guarde. */}
@@ -162,7 +162,7 @@ const languageLinks = alternates(path);
       <slot />
     </main>
     {!bare && <SiteFooter />}
-    {!bare && <ChatDemo client:idle />}
+    {!bare && <ChatDemo client:idle lang={lang} />}
     {/* Banner de cookies servido como HTML (no isla React), para que pinte al instante.
         El script del <head> le pone la clase has-cookie-notice si el consentimiento está pendiente;
         este cablea los botones al mismo localStorage + evento conroma:consent + Consent Mode. */}

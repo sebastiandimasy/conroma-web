@@ -1,11 +1,12 @@
 import { site } from '../data/site';
 import type { Property } from '../data/properties';
-import { hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
+import { countLabel, hasPublicPrice, propertyTitle, propertyUrl } from '../data/properties';
 import type { FaqItem } from '../data/faq';
 import { findTown } from '../data/towns';
 import { team } from '../data/team';
 
-import { defaultLang, languages, localizePath, type Lang } from '../i18n';
+import { defaultLang, intlLocale, languages, localizePath, strings, type Lang } from '../i18n';
+import { formatPrice } from './format';
 
 export interface Crumb {
   name: string;
@@ -30,15 +31,34 @@ export function alternates(path: string) {
   return [...links, { hreflang: 'x-default', href: absoluteUrl(localizePath(path, defaultLang)) }];
 }
 
-export function founderSchema() {
+/** Textos de los schemas que lee Google (no se ven en la página, pero van en su idioma). */
+const schemaText = strings({
+  es: {
+    founderJob: 'CEO y fundador',
+    agencyDescription:
+      'Inmobiliaria familiar en Malgrat de Mar (Alt Maresme): compraventa y alquiler de viviendas, gestión de patrimonio y reformas en el Maresme y la Costa Brava.',
+  },
+  en: {
+    founderJob: 'CEO and founder',
+    agencyDescription:
+      'Family-run estate agency in Malgrat de Mar (Alt Maresme): buying, selling and renting homes, property portfolio management and renovations across the Maresme and the Costa Brava.',
+  },
+  ca: {
+    founderJob: 'CEO i fundador',
+    agencyDescription:
+      "Immobiliària familiar a Malgrat de Mar (Alt Maresme): compravenda i lloguer d'habitatges, gestió de patrimoni i reformes al Maresme i la Costa Brava.",
+  },
+});
+
+export function founderSchema(lang: Lang) {
   if (!site.ceo) return null;
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
     '@id': `${site.url}/#fundador`,
     name: site.ceo.name,
-    jobTitle: 'CEO y fundador',
-    url: absoluteUrl('/es/equipo/'),
+    jobTitle: schemaText[lang].founderJob,
+    url: absoluteUrl(localizePath('/es/equipo/', lang)),
     image: absoluteUrl('/img/equipo/boris.jpg'),
     worksFor: { '@id': `${site.url}/#agencia` },
     knowsLanguage: ['ca', 'es', 'en', 'fr'],
@@ -46,8 +66,8 @@ export function founderSchema() {
 }
 
 /** Personas del equipo (el fundador ya va en el grafo del sitio con su propio @id). */
-export function teamSchema() {
-  return team
+export function teamSchema(lang: Lang) {
+  return team[lang]
     .filter((member) => member.name !== site.ceo?.name)
     .map((member) => ({
       '@context': 'https://schema.org',
@@ -59,7 +79,7 @@ export function teamSchema() {
     }));
 }
 
-export function agentSchema() {
+export function agentSchema(lang: Lang) {
   const phones = [
     { telephone: site.phone, contactType: 'customer service' },
     { telephone: site.landline, contactType: 'sales' },
@@ -75,8 +95,7 @@ export function agentSchema() {
     email: site.email,
     image: absoluteUrl('/img/og-conroma.jpg'),
     logo: absoluteUrl('/img/og-conroma.jpg'), // shortcut: solo hay logo SVG; raster del equipo hasta tener un PNG del logotipo
-    description:
-      'Inmobiliaria familiar en Malgrat de Mar (Alt Maresme): compraventa y alquiler de viviendas, gestión de patrimonio y reformas en el Maresme y la Costa Brava.',
+    description: schemaText[lang].agencyDescription,
     address: {
       '@type': 'PostalAddress',
       streetAddress: site.address.street,
@@ -120,8 +139,8 @@ export function agentSchema() {
 }
 
 /** Grafo global (WebSite + agencia + fundador), emitido en todas las páginas con @id estables. */
-export function siteGraph() {
-  const nodes = [websiteSchema(), agentSchema(), founderSchema()].filter(Boolean) as Record<string, unknown>[];
+export function siteGraph(lang: Lang) {
+  const nodes = [websiteSchema(), agentSchema(lang), founderSchema(lang)].filter(Boolean) as Record<string, unknown>[];
   return {
     '@context': 'https://schema.org',
     '@graph': nodes.map(({ '@context': _ctx, ...rest }) => rest),
@@ -135,14 +154,14 @@ export function websiteSchema() {
     '@id': `${site.url}/#website`,
     url: site.url,
     name: site.name,
-    inLanguage: 'es-ES',
+    inLanguage: languages.map((lang) => intlLocale[lang]),
     publisher: { '@id': `${site.url}/#agencia` },
   };
 }
 
 const SERVICE_AREA = ['Malgrat de Mar', 'Santa Susanna', 'Pineda de Mar', 'Calella', 'Palafolls', 'Blanes', 'Lloret de Mar', 'Tordera'];
 
-export function serviceSchema(name: string, description: string, path: string) {
+export function serviceSchema(name: string, description: string, path: string, lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -151,11 +170,12 @@ export function serviceSchema(name: string, description: string, path: string) {
     description,
     provider: { '@id': `${site.url}/#agencia` },
     areaServed: SERVICE_AREA,
-    url: absoluteUrl(path),
+    url: absoluteUrl(localizePath(path, lang)),
   };
 }
 
-export function breadcrumbSchema(crumbs: Crumb[]) {
+/** Las rutas de las migas vienen en español (`/es/...`): aquí se pasan al idioma de la página. */
+export function breadcrumbSchema(crumbs: Crumb[], lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -163,17 +183,17 @@ export function breadcrumbSchema(crumbs: Crumb[]) {
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      item: absoluteUrl(crumb.path),
+      item: absoluteUrl(localizePath(crumb.path, lang)),
     })),
   };
 }
 
-export function collectionPageSchema(name: string, path: string) {
+export function collectionPageSchema(name: string, path: string, lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name,
-    url: absoluteUrl(path),
+    url: absoluteUrl(localizePath(path, lang)),
   };
 }
 
@@ -212,7 +232,7 @@ function listingEntityType(type: string): 'House' | 'Apartment' | 'Place' {
   return 'Place';
 }
 
-export function listingSchema(property: Property) {
+export function listingSchema(property: Property, lang: Lang) {
   const town = findTown(property.town)?.name ?? property.town;
   const entityType = listingEntityType(property.type);
   const isAccommodation = entityType !== 'Place';
@@ -249,12 +269,14 @@ export function listingSchema(property: Property) {
 
   // Sin descripción propia, resumen factual con los datos del inventario.
   const parts = [
-    `${property.type} en ${property.operation} en ${property.zone ? `${property.zone}, ` : ''}${town}`,
+    propertyTitle(property, lang),
     `${property.area} m²`,
-    ...(isAccommodation ? [`${property.rooms} habitaciones`] : []),
-    ...(hasPublicPrice(property) ? [`${property.price.toLocaleString('es-ES')} €`] : []),
+    ...(isAccommodation ? [countLabel(property.rooms, 'room', lang)] : []),
+    ...(hasPublicPrice(property) ? [formatPrice(property.price, lang)] : []),
   ];
-  const description = property.description?.trim() || `${parts.join(', ')}.`;
+  // La descripción de Habitatsoft está en español: en en/ca, la suya si el feed la trae y si no el resumen.
+  const ownDescription = lang === 'es' ? property.description : property.descriptions?.[lang];
+  const description = ownDescription?.trim() || `${parts.join(', ')}.`;
   const images = (property.images ?? []).filter((src) => !src.endsWith('.svg')).map((src) => absoluteUrl(src));
   if (property.geo) {
     mainEntity.geo = { '@type': 'GeoCoordinates', latitude: property.geo.latitude, longitude: property.geo.longitude };
@@ -263,8 +285,9 @@ export function listingSchema(property: Property) {
   return {
     '@context': 'https://schema.org',
     '@type': 'RealEstateListing',
-    name: propertyTitle(property),
-    url: absoluteUrl(propertyUrl(property)),
+    name: propertyTitle(property, lang),
+    url: absoluteUrl(propertyUrl(property, lang)),
+    inLanguage: lang,
     description,
     ...(images.length ? { image: images } : {}),
     ...(offers ? { offers } : {}),
@@ -277,6 +300,7 @@ export function videoSchema(
   post: { description: string; slug: string },
   video: { file: string; title: string; uploaded: string; seconds: number },
   thumbnailPath: string,
+  lang: Lang,
 ) {
   return {
     '@context': 'https://schema.org',
@@ -287,13 +311,14 @@ export function videoSchema(
     uploadDate: video.uploaded,
     duration: `PT${video.seconds}S`,
     contentUrl: absoluteUrl(`/video/${video.file}.mp4`),
-    url: absoluteUrl(`/es/blog/${post.slug}/`),
+    url: absoluteUrl(`/${lang}/blog/${post.slug}/`),
+    // El reel está grabado en español en las tres versiones de la página: es el idioma del vídeo.
     inLanguage: 'es',
     publisher: { '@id': `${site.url}/#agencia` },
   };
 }
 
-export function articleSchema(post: { title: string; description: string; date: string; updated?: string; slug: string }) {
+export function articleSchema(post: { title: string; description: string; date: string; updated?: string; slug: string }, lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -302,8 +327,8 @@ export function articleSchema(post: { title: string; description: string; date: 
     datePublished: post.date,
     dateModified: post.updated ?? post.date,
     image: absoluteUrl('/img/og-conroma.jpg'),
-    inLanguage: 'es',
-    mainEntityOfPage: absoluteUrl(`/es/blog/${post.slug}/`),
+    inLanguage: lang,
+    mainEntityOfPage: absoluteUrl(`/${lang}/blog/${post.slug}/`),
     author: site.ceo ? { '@id': `${site.url}/#fundador` } : { '@id': `${site.url}/#agencia` },
     publisher: { '@id': `${site.url}/#agencia` },
   };

@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useReducedMotion } from 'motion/react';
+import type { Lang } from '../i18n';
+import { formatPrice } from '../lib/format';
 
 interface AnimatedNumberProps {
   value: number;
-  suffix?: string;
+  lang: Lang;
 }
 
-const formatter = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' });
-
-export function AnimatedNumber({ value, suffix = ' €' }: AnimatedNumberProps) {
+/** Importe en euros que cuenta hasta su valor (formato del idioma: «60.000 €», «€60,000»). */
+export function AnimatedNumber({ value, lang }: AnimatedNumberProps) {
   const [shown, setShown] = useState(value);
   const current = useRef(value);
   const reduceMotion = useReducedMotion();
@@ -37,7 +38,7 @@ export function AnimatedNumber({ value, suffix = ' €' }: AnimatedNumberProps) 
 
   return (
     <data value={Math.round(value)}>
-      {`${formatter.format(Math.round(shown))}${suffix}`}
+      {formatPrice(Math.round(shown), lang)}
     </data>
   );
 }

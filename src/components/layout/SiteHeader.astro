@@ -61,7 +61,7 @@ const switchTo = (to: (typeof languages)[number]) => (current.startsWith(`/${lan
           ))}
         </ul>
       </details>
-      <SavedLink client:idle className="button button--ghost icon-button saved-link" />
+      <SavedLink client:idle className="button button--ghost icon-button saved-link" lang={lang} />
       <ThemeSwitch client:load label={t.themeDark} />
       {/* WhatsApp, no "Valorar mi piso": la valoración ya tiene su sitio en el nav
           ("Vender") y en el dock móvil, así que el CTA la duplicaba desde la esquina
@@ -70,7 +70,7 @@ const switchTo = (to: (typeof languages)[number]) => (current.startsWith(`/${lan
           data-contact / data-origin: GTM mide la conversión por la URL del enlace. */}
       <a
         class="button button--primary site-header__cta"
-        href={whatsappUrl({ reason: 'general' })}
+        href={whatsappUrl(lang, { reason: 'general' })}
         data-contact="whatsapp"
         data-origin="cabecera"
         aria-label={t.whatsappLabel}

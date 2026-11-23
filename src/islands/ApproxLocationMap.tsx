@@ -3,6 +3,7 @@ import { Map as MapLibreMap, NavigationControl, setWorkerUrl } from 'maplibre-gl
 import type { Feature } from 'geojson';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { strings, type Lang } from '../i18n';
 
 setWorkerUrl(workerUrl);
 
@@ -18,7 +19,33 @@ interface Props {
   label: string;
   /** Radio del círculo de zona en metros (ubicación aproximada, no exacta). */
   radiusMeters?: number;
+  lang: Lang;
 }
+
+const texts = strings({
+  es: { area: 'Ubicación aproximada' },
+  en: { area: 'Approximate location' },
+  ca: { area: 'Ubicació aproximada' },
+});
+
+// Textos propios de MapLibre (por defecto en inglés): botones de zoom y aviso de «dos dedos».
+const MAP_LOCALE: Record<Lang, Record<string, string> | undefined> = {
+  en: undefined,
+  es: {
+    'NavigationControl.ZoomIn': 'Acercar',
+    'NavigationControl.ZoomOut': 'Alejar',
+    'CooperativeGesturesHandler.WindowsHelpText': 'Usa Ctrl + rueda para hacer zoom en el mapa',
+    'CooperativeGesturesHandler.MacHelpText': 'Usa ⌘ + rueda para hacer zoom en el mapa',
+    'CooperativeGesturesHandler.MobileHelpText': 'Usa dos dedos para mover el mapa',
+  },
+  ca: {
+    'NavigationControl.ZoomIn': 'Apropar',
+    'NavigationControl.ZoomOut': 'Allunyar',
+    'CooperativeGesturesHandler.WindowsHelpText': 'Fes servir Ctrl + roda per fer zoom al mapa',
+    'CooperativeGesturesHandler.MacHelpText': 'Fes servir ⌘ + roda per fer zoom al mapa',
+    'CooperativeGesturesHandler.MobileHelpText': 'Fes servir dos dits per moure el mapa',
+  },
+};
 
 function resolveTheme(): 'light' | 'dark' {
   const attr = document.documentElement.dataset.theme;
@@ -39,7 +66,7 @@ function circlePolygon(longitude: number, latitude: number, radiusMeters: number
   return { type: 'Feature', geometry: { type: 'Polygon', coordinates: [ring] }, properties: {} };
 }
 
-export default function ApproxLocationMap({ latitude, longitude, label, radiusMeters = 250 }: Props) {
+export default function ApproxLocationMap({ latitude, longitude, label, radiusMeters = 250, lang }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,6 +86,7 @@ export default function ApproxLocationMap({ latitude, longitude, label, radiusMe
       cooperativeGestures: true, // un dedo hace scroll de página, dos mueven el mapa
       scrollZoom: false,
       dragRotate: false,
+      locale: MAP_LOCALE[lang],
     });
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
 
@@ -79,7 +107,7 @@ export default function ApproxLocationMap({ latitude, longitude, label, radiusMe
       observer.disconnect();
       map.remove();
     };
-  }, [latitude, longitude, label, radiusMeters]);
+  }, [latitude, longitude, label, radiusMeters, lang]);
 
-  return <div ref={containerRef} className="approx-map__canvas" aria-label={`Ubicación aproximada: ${label}`} role="group" />;
+  return <div ref={containerRef} className="approx-map__canvas" aria-label={`${texts[lang].area}: ${label}`} role="group" />;
 }

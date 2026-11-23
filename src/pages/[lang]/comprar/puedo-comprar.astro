@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
@@ -15,97 +15,237 @@ import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 /* Keyword (docs/KEYWORDS.md): «puedo comprar un piso», «cuánto me dan de hipoteca».
    Calculadora arriba; debajo, qué mira el banco y qué gastos tiene la compra en Cataluña
    (normativa general: ITP según Decreto ley 5/2025, Ley 5/2019 de crédito inmobiliario). */
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    home: 'Inicio',
+    buy: 'Comprar',
+    crumb: '¿Puedo comprar?',
+    title: '¿Puedo comprar un piso? Calcula tu presupuesto',
+    description:
+      'Calcula hasta qué presupuesto puedes comprar con el límite del 40% de endeudamiento, y si tu préstamo saldría pre-aprobado. Sin dejar tus datos.',
+    h1: '¿Puedo comprar un piso?',
+    lead: 'Con el límite del 40% de endeudamiento te decimos hasta qué presupuesto llegas y si tu préstamo saldría pre-aprobado. Sin dejar tus datos; es un cálculo orientativo, como lo mira el banco.',
+    guideTitle: 'Qué mira el banco y qué cuesta comprar',
+    guideLead: 'Antes de buscar piso conviene saber esto: lo que el banco pide para darte la hipoteca y los gastos que vienen con la compra.',
+    seeHomes: 'Ver pisos en venta',
+    faqTitle: 'Comprar: dudas sobre la financiación',
+    closing: 'Hablemos',
+    closingMuted: 'de tu compra',
+    guide: [
+      {
+        title: 'Endeudamiento',
+        text: 'Entre la cuota de la hipoteca y el resto de tus pagos al mes no deberías pasar del 40% de lo que ingresas. Es el primer número que mira el banco.',
+      },
+      {
+        title: 'Entrada',
+        text: 'Para vivienda habitual, los bancos suelen financiar hasta el 80% del valor de tasación. El resto, la entrada, lo pone el comprador.',
+      },
+      {
+        title: 'Estabilidad en el trabajo',
+        text: 'El banco mira la antigüedad y el tipo de contrato. Con poco tiempo en la empresa o con un contrato temporal, lo estudia con más calma.',
+      },
+      {
+        title: 'Impuestos de la compra',
+        text: 'En Cataluña, un piso de segunda mano paga el Impuesto de Transmisiones Patrimoniales: un 10% hasta 600.000 €, con tipos reducidos en algunos casos. Uno de obra nueva paga IVA (10%) y actos jurídicos documentados.',
+      },
+      {
+        title: 'Notaría, registro y gestoría',
+        text: 'La escritura de compraventa suma notaría, registro y, si la usas, gestoría. Los gastos de notaría, registro y gestoría de la hipoteca los paga el banco desde la Ley 5/2019.',
+      },
+      {
+        title: 'Tasación',
+        text: 'Antes de conceder la hipoteca, el banco pide una tasación oficial del piso, hecha por una sociedad homologada. Normalmente la paga el comprador.',
+      },
+    ],
+    faq: [
+      {
+        question: '¿Por qué el 40%?',
+        answer: 'Es el límite de endeudamiento que mira la banca: entre la cuota de la hipoteca y el resto de tus pagos mensuales no deberías pasar del 40% de tu sueldo. Por encima, cuesta que aprueben el préstamo.',
+      },
+      {
+        question: '¿Cuánto tengo que tener ahorrado para comprar?',
+        answer:
+          'Como referencia, la entrada (el 20% si el banco financia el 80%) más los impuestos y gastos de la compra. En un piso de segunda mano en Cataluña, solo el impuesto es el 10% del precio en la mayoría de casos.',
+      },
+      {
+        question: '¿Esto es una aprobación de verdad?',
+        answer: 'No. Es un cálculo orientativo, un simulacro. La aprobación de verdad la da el banco con tus papeles. Lo que sí hacemos es acompañarte para conseguirla.',
+      },
+      {
+        question: 'No tengo ahorros, ¿puedo comprar igual?',
+        answer: 'A veces sí. Hay opciones de financiación 100% según el caso. Escríbenos y lo miramos contigo, sin compromiso.',
+      },
+    ],
+  },
+  // Inglés: los conceptos fiscales y notariales españoles se explican para un comprador extranjero.
+  en: {
+    home: 'Home',
+    buy: 'Buy',
+    crumb: 'Can I buy?',
+    title: 'Can I afford to buy? Work out your budget',
+    description:
+      'Work out how much you could spend under the 40% debt-to-income limit, and whether your loan would come out pre-approved. No personal details needed.',
+    h1: 'Can I afford to buy a home?',
+    lead: "Using the 40% debt-to-income limit, we tell you how much you could spend and whether your loan would come out pre-approved. No personal details needed; it's a rough calculation, done the way the bank does it.",
+    guideTitle: 'What the bank looks at and what buying costs',
+    guideLead: 'Worth knowing before you start looking: what the bank asks for before giving you a mortgage, and the costs that come with buying.',
+    seeHomes: 'See homes for sale',
+    faqTitle: 'Buying: questions about financing',
+    closing: "Let's talk",
+    closingMuted: 'about your purchase',
+    guide: [
+      {
+        title: 'Debt-to-income ratio',
+        text: "Your mortgage payment plus your other monthly repayments shouldn't add up to more than 40% of your income. It's the first number the bank looks at.",
+      },
+      {
+        title: 'Deposit',
+        text: 'For a main home, Spanish banks usually lend up to 80% of the official valuation. The rest, the deposit, comes from the buyer.',
+      },
+      {
+        title: 'Job stability',
+        text: "The bank looks at how long you've been in your job and what kind of contract you have. If you're new to the company or on a temporary contract, it takes a closer look.",
+      },
+      {
+        title: 'Taxes on the purchase',
+        text: 'In Catalonia, a resale home pays property transfer tax (ITP): 10% up to €600,000, with reduced rates in some cases. A new-build pays VAT (IVA, 10%) plus stamp duty (AJD).',
+      },
+      {
+        title: 'Notary, Land Registry and gestoría',
+        text: "Signing the title deed means paying the notary, registering the home at the Land Registry and, if you use one, a gestoría (an agency that handles the paperwork and tax forms). Since Law 5/2019, the bank pays the notary, registry and gestoría costs of the mortgage itself.",
+      },
+      {
+        title: 'Valuation',
+        text: 'Before approving the mortgage, the bank asks for an official valuation of the property, carried out by an approved valuation company. The buyer usually pays for it.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Why 40%?',
+        answer: "It's the debt limit banks work with: your mortgage payment plus your other monthly repayments shouldn't go over 40% of your salary. Above that, it's hard to get the loan approved.",
+      },
+      {
+        question: 'How much do I need to have saved to buy?',
+        answer:
+          'As a guide, the deposit (20% if the bank lends 80%) plus the taxes and costs of the purchase. On a resale home in Catalonia, the transfer tax alone is 10% of the price in most cases.',
+      },
+      {
+        question: 'Is this a real approval?',
+        answer: "No. It's a rough calculation, a dry run. Real approval comes from the bank once it has your paperwork. What we do is help you get it.",
+      },
+      {
+        question: "I don't have any savings. Can I still buy?",
+        answer: "Sometimes, yes. There are 100% financing options depending on your situation. Message us and we'll look at it with you, no strings attached.",
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    buy: 'Comprar',
+    crumb: 'Puc comprar?',
+    title: 'Puc comprar un pis? Calcula el teu pressupost',
+    description:
+      "Calcula fins a quin pressupost pots comprar amb el límit del 40% d'endeutament, i si el teu préstec sortiria preaprovat. Sense deixar les teves dades.",
+    h1: 'Puc comprar un pis?',
+    lead: "Amb el límit del 40% d'endeutament et diem fins a quin pressupost arribes i si el teu préstec sortiria preaprovat. Sense deixar les teves dades; és un càlcul orientatiu, com ho mira el banc.",
+    guideTitle: 'Què mira el banc i què costa comprar',
+    guideLead: 'Abans de buscar pis convé saber això: el que el banc demana per donar-te la hipoteca i les despeses que venen amb la compra.',
+    seeHomes: 'Veure pisos en venda',
+    faqTitle: 'Comprar: dubtes sobre el finançament',
+    closing: 'Parlem',
+    closingMuted: 'de la teva compra',
+    guide: [
+      {
+        title: 'Endeutament',
+        text: 'Entre la quota de la hipoteca i la resta de pagaments del mes no hauries de passar del 40% del que ingresses. És el primer número que mira el banc.',
+      },
+      {
+        title: 'Entrada',
+        text: "Per a habitatge habitual, els bancs solen finançar fins al 80% del valor de taxació. La resta, l'entrada, la posa el comprador.",
+      },
+      {
+        title: 'Estabilitat a la feina',
+        text: "El banc mira l'antiguitat i el tipus de contracte. Amb poc temps a l'empresa o amb un contracte temporal, s'ho estudia amb més calma.",
+      },
+      {
+        title: 'Impostos de la compra',
+        text: "A Catalunya, un pis de segona mà paga l'impost sobre transmissions patrimonials: un 10% fins a 600.000 €, amb tipus reduïts en alguns casos. Un d'obra nova paga IVA (10%) i actes jurídics documentats.",
+      },
+      {
+        title: 'Notaria, registre i gestoria',
+        text: "L'escriptura de compravenda suma notaria, registre i, si la fas servir, gestoria. Les despeses de notaria, registre i gestoria de la hipoteca les paga el banc des de la Llei 5/2019.",
+      },
+      {
+        title: 'Taxació',
+        text: 'Abans de concedir la hipoteca, el banc demana una taxació oficial del pis, feta per una societat homologada. Normalment la paga el comprador.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Per què el 40%?',
+        answer: "És el límit d'endeutament que mira la banca: entre la quota de la hipoteca i la resta de pagaments mensuals no hauries de passar del 40% del teu sou. Per sobre, costa que aprovin el préstec.",
+      },
+      {
+        question: 'Quant he de tenir estalviat per comprar?',
+        answer:
+          "Com a referència, l'entrada (el 20% si el banc finança el 80%) més els impostos i despeses de la compra. En un pis de segona mà a Catalunya, només l'impost ja és el 10% del preu en la majoria de casos.",
+      },
+      {
+        question: 'Això és una aprovació de debò?',
+        answer: "No. És un càlcul orientatiu, un simulacre. L'aprovació de debò la dona el banc amb els teus papers. El que sí que fem és acompanyar-te per aconseguir-la.",
+      },
+      {
+        question: 'No tinc estalvis, puc comprar igualment?',
+        answer: 'De vegades sí. Hi ha opcions de finançament al 100% segons el cas. Escriu-nos i ho mirem amb tu, sense compromís.',
+      },
+    ],
+  },
+})[lang];
 const path = '/es/comprar/puedo-comprar/';
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Comprar', path: '/es/comprar/' },
-  { name: '¿Puedo comprar?', path },
+  { name: t.home, path: '/es/' },
+  { name: t.buy, path: '/es/comprar/' },
+  { name: t.crumb, path },
 ];
-const guide = [
-  {
-    title: 'Endeudamiento',
-    text: 'Entre la cuota de la hipoteca y el resto de tus pagos al mes no deberías pasar del 40% de lo que ingresas. Es el primer número que mira el banco.',
-  },
-  {
-    title: 'Entrada',
-    text: 'Para vivienda habitual, los bancos suelen financiar hasta el 80% del valor de tasación. El resto, la entrada, lo pone el comprador.',
-  },
-  {
-    title: 'Estabilidad en el trabajo',
-    text: 'El banco mira la antigüedad y el tipo de contrato. Con poco tiempo en la empresa o con un contrato temporal, lo estudia con más calma.',
-  },
-  {
-    title: 'Impuestos de la compra',
-    text: 'En Cataluña, un piso de segunda mano paga el Impuesto de Transmisiones Patrimoniales: un 10% hasta 600.000 €, con tipos reducidos en algunos casos. Uno de obra nueva paga IVA (10%) y actos jurídicos documentados.',
-  },
-  {
-    title: 'Notaría, registro y gestoría',
-    text: 'La escritura de compraventa suma notaría, registro y, si la usas, gestoría. Los gastos de notaría, registro y gestoría de la hipoteca los paga el banco desde la Ley 5/2019.',
-  },
-  {
-    title: 'Tasación',
-    text: 'Antes de conceder la hipoteca, el banco pide una tasación oficial del piso, hecha por una sociedad homologada. Normalmente la paga el comprador.',
-  },
-];
-const faq = [
-  {
-    question: '¿Por qué el 40%?',
-    answer: 'Es el límite de endeudamiento que mira la banca: entre la cuota de la hipoteca y el resto de tus pagos mensuales no deberías pasar del 40% de tu sueldo. Por encima, cuesta que aprueben el préstamo.',
-  },
-  {
-    question: '¿Cuánto tengo que tener ahorrado para comprar?',
-    answer:
-      'Como referencia, la entrada (el 20% si el banco financia el 80%) más los impuestos y gastos de la compra. En un piso de segunda mano en Cataluña, solo el impuesto es el 10% del precio en la mayoría de casos.',
-  },
-  {
-    question: '¿Esto es una aprobación de verdad?',
-    answer: 'No. Es un cálculo orientativo, un simulacro. La aprobación de verdad la da el banco con tus papeles. Lo que sí hacemos es acompañarte para conseguirla.',
-  },
-  {
-    question: 'No tengo ahorros, ¿puedo comprar igual?',
-    answer: 'A veces sí. Hay opciones de financiación 100% según el caso. Escríbenos y lo miramos contigo, sin compromiso.',
-  },
-];
-const lang = getLang(Astro.url);
+const guide = t.guide;
+const faq = t.faq;
 ---
 
 <BaseLayout
-  title="¿Puedo comprar un piso? Calcula tu presupuesto"
-  description="Calcula hasta qué presupuesto puedes comprar con el límite del 40% de endeudamiento, y si tu préstamo saldría pre-aprobado. Sin dejar tus datos."
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>¿Puedo comprar un piso?</h1>
-      <p class="page-head__lead">
-        Con el límite del 40% de endeudamiento te decimos hasta qué presupuesto llegas y si tu préstamo saldría
-        pre-aprobado. Sin dejar tus datos; es un cálculo orientativo, como lo mira el banco.
-      </p>
+      <h1 class="page-head__title" data-split>{t.h1}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="section calc-section">
     <div class="wrap">
       <div class="calc-section__form" data-reveal>
-        <AffordabilitySimulator client:load />
+        <AffordabilitySimulator client:load lang={lang} />
       </div>
     </div>
   </section>
 
   <ContentGuide
-    title="Qué mira el banco y qué cuesta comprar"
-    lead="Antes de buscar piso conviene saber esto: lo que el banco pide para darte la hipoteca y los gastos que vienen con la compra."
+    title={t.guideTitle}
+    lead={t.guideLead}
     items={guide}
   >
-    <a class="arrow-link content-guide__more" href="/es/venta/">
+    <a class="arrow-link content-guide__more" href={localizePath('/es/venta/', lang)}>
       <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-      <span class="arrow-link__label">Ver pisos en venta</span>
+      <span class="arrow-link__label">{t.seeHomes}</span>
     </a>
   </ContentGuide>
 
-  <FaqSection title="Comprar: dudas sobre la financiación" items={faq} origin="puedo-comprar-faq" />
+  <FaqSection title={t.faqTitle} items={faq} origin="puedo-comprar-faq" />
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu compra" image={closingPhoto} origin="puedo-comprar-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="puedo-comprar-cierre" />
 </BaseLayout>

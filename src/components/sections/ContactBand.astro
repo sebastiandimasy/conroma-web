@@ -2,23 +2,31 @@
 import Icon from '../Icon.astro';
 import { site } from '../../data/site';
 import { whatsappUrl } from '../../lib/links';
+import { getLang, localizePath, strings } from '../../i18n';
+
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { eyebrow: '¿Cómo contacto?', title: 'Cuéntanos qué necesitas.', lead: 'Escríbenos por donde te vaya mejor.', cta: 'Ir a contacto', call: 'Llamar' },
+  en: { eyebrow: 'How do I reach you?', title: 'Tell us what you need.', lead: 'Get in touch however suits you best.', cta: 'Go to contact page', call: 'Call' },
+  ca: { eyebrow: 'Com us contacto?', title: 'Explica’ns què necessites.', lead: 'Escriu-nos per on et vagi millor.', cta: 'Ves a contacte', call: 'Truca' },
+})[lang];
 ---
 
 <section class="section contact-band" id="contacto">
   <div class="wrap">
     <div class="contact-band__card glass" data-reveal>
-      <p class="eyebrow">¿Cómo contacto?</p>
-      <h2 class="section__title">Cuéntanos qué necesitas.</h2>
-      <p class="section__lead">Escríbenos por donde te vaya mejor.</p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 class="section__title">{t.title}</h2>
+      <p class="section__lead">{t.lead}</p>
       <div class="contact-band__actions">
-        <a class="button button--primary button--large" href="/es/contacto/">Ir a contacto</a>
-        <a class="button button--ghost button--large" href={whatsappUrl()} data-contact="whatsapp" data-origin="home-contacto">
+        <a class="button button--primary button--large" href={localizePath('/es/contacto/', lang)}>{t.cta}</a>
+        <a class="button button--ghost button--large" href={whatsappUrl(getLang(Astro.url))} data-contact="whatsapp" data-origin="home-contacto">
           <Icon name="whatsapp" class="button__icon button__icon--whatsapp" />
           WhatsApp
         </a>
         <a class="button button--ghost button--large" href={`tel:${site.phone}`} data-contact="llamada" data-origin="home-contacto">
           <Icon name="phone" class="button__icon contact__icon" />
-          Llamar · {site.phoneDisplay}
+          {t.call} · {site.phoneDisplay}
         </a>
       </div>
     </div>

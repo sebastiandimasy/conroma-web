@@ -1,6 +1,7 @@
 ---
 import Icon from '../Icon.astro';
 import { towns, publishedCatalogTowns, publishedSellerTowns } from '../../data/towns';
+import { getLang, intlLocale, localizePath, strings } from '../../i18n';
 
 interface Props {
   /** Pueblo de la página actual: no se enlaza a sí mismo. */
@@ -10,23 +11,50 @@ interface Props {
 }
 
 const { current, tone = 'surface' } = Astro.props;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    forSale: (name: string) => `Pisos en venta en ${name}`,
+    agency: (name: string) => `Inmobiliaria en ${name}`,
+    title: 'De Malgrat de Mar a toda la costa',
+    lead: 'La oficina está en Malgrat de Mar y nos movemos por todo el Alt Maresme y el sur de la Costa Brava.',
+    nav: 'Zonas',
+    more: (list: string) => `También trabajamos en ${list}.`,
+  },
+  en: {
+    forSale: (name: string) => `Homes for sale in ${name}`,
+    agency: (name: string) => `Estate agent in ${name}`,
+    title: 'From Malgrat de Mar along the coast',
+    lead: 'Our office is in Malgrat de Mar and we cover the whole Alt Maresme and the southern Costa Brava.',
+    nav: 'Areas',
+    more: (list: string) => `We also work in ${list}.`,
+  },
+  ca: {
+    forSale: (name: string) => `Pisos en venda a ${name}`,
+    agency: (name: string) => `Immobiliària a ${name}`,
+    title: 'De Malgrat de Mar a tota la costa',
+    lead: "L'oficina és a Malgrat de Mar i ens movem per tot l'Alt Maresme i el sud de la Costa Brava.",
+    nav: 'Zones',
+    more: (list: string) => `També treballem a ${list}.`,
+  },
+})[lang];
 
 /* Los enlaces salen de los datos, no escritos a mano: así ningún pueblo con
    página publicada se queda huérfano (sin enlaces entrantes) al añadirlo. */
 const links = [
   ...publishedCatalogTowns.map((town) => ({
-    label: `Pisos en venta en ${town.name}`,
+    label: t.forSale(town.name),
     href: `/es/venta/${town.slug}/`,
   })),
   ...publishedSellerTowns.map((town) => ({
-    label: `Inmobiliaria en ${town.name}`,
+    label: t.agency(town.name),
     href: `/es/inmobiliaria/${town.slug}/`,
   })),
 ].filter((link) => !current || link.href !== `/es/inmobiliaria/${current}/`);
 
 /* Pueblos sin página propia: solo el nombre, en una frase, para no enlazar a algo que no existe. */
 const publishedSlugs = new Set(publishedSellerTowns.map((town) => town.slug));
-const upcoming = new Intl.ListFormat('es', { type: 'conjunction' }).format(
+const upcoming = new Intl.ListFormat(intlLocale[lang], { type: 'conjunction' }).format(
   towns.filter((town) => !publishedSlugs.has(town.slug)).map((town) => town.name),
 );
 ---
@@ -35,17 +63,15 @@ const upcoming = new Intl.ListFormat('es', { type: 'conjunction' }).format(
 <section class:list={['section town-links', tone === 'canvas' && 'town-links--canvas']}>
   <div class="wrap">
     <div class="section__head" data-reveal>
-      <h2 class="section__title">De Malgrat de Mar a toda la costa</h2>
-      <p class="section__lead">
-        La oficina está en Malgrat de Mar y nos movemos por todo el Alt Maresme y el sur de la Costa Brava.
-      </p>
+      <h2 class="section__title">{t.title}</h2>
+      <p class="section__lead">{t.lead}</p>
     </div>
-    <nav class="town-list" aria-label="Zonas" data-reveal>
+    <nav class="town-list" aria-label={t.nav} data-reveal>
       <ul class="town-list__items">
         {
           links.map((link) => (
             <li>
-              <a class="town-list__link" href={link.href}>
+              <a class="town-list__link" href={localizePath(link.href, lang)}>
                 <span>{link.label}</span>
                 <Icon name="arrow" class="town-links__arrow" />
               </a>
@@ -54,6 +80,6 @@ const upcoming = new Intl.ListFormat('es', { type: 'conjunction' }).format(
         }
       </ul>
     </nav>
-    {upcoming && <p class="town-links__more">También trabajamos en {upcoming}.</p>}
+    {upcoming && <p class="town-links__more">{t.more(upcoming)}</p>}
   </div>
 </section>

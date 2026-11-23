@@ -3,6 +3,7 @@ import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import Breadcrumbs from '../layout/Breadcrumbs.astro';
 import Icon from '../Icon.astro';
+import { getLang, localizePath } from '../../i18n';
 import type { Crumb } from '../../lib/seo';
 
 interface Props {
@@ -40,7 +41,7 @@ const { crumbs, title, lead, image, alt, cta, credit, position } = Astro.props;
       {crumbs && <Breadcrumbs crumbs={crumbs} />}
       <h1 class="hero-story__title">{title}</h1>
       <p class="hero-story__lead">{lead}</p>
-      <a class="arrow-link hero-story__cta" href={cta.href}>
+      <a class="arrow-link hero-story__cta" href={localizePath(cta.href, getLang(Astro.url))}>
         <span class="arrow-link__icon"><Icon name="arrow" /></span>
         <span class="arrow-link__label">{cta.label}</span>
       </a>

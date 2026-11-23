@@ -1,8 +1,15 @@
 ---
 import { Picture } from 'astro:assets';
 import { site } from '../../data/site';
+import { getLang, strings } from '../../i18n';
 
 const ceo = site.ceo;
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { photoPending: 'Foto de {name} pendiente' },
+  en: { photoPending: 'Photo of {name} coming soon' },
+  ca: { photoPending: 'Foto de {name} pendent' },
+})[lang];
 ---
 
 {
@@ -11,18 +18,18 @@ const ceo = site.ceo;
       <div class="wrap founder__grid">
         <figure class="founder__figure" data-reveal>
           {ceo.photo ? (
-            <Picture class="founder__photo" src={ceo.photo.src} alt={ceo.photo.alt} formats={['avif', 'webp']} width={840} widths={[420, 640, 840, 1067]} sizes="(min-width: 60rem) 40vw, calc(100vw - 40px)" loading="lazy" decoding="async" />
+            <Picture class="founder__photo" src={ceo.photo.src} alt={ceo.photo.alt[lang]} formats={['avif', 'webp']} width={840} widths={[420, 640, 840, 1067]} sizes="(min-width: 60rem) 40vw, calc(100vw - 40px)" loading="lazy" decoding="async" />
           ) : (
-            <div class="founder__photo founder__photo--pending">Foto de {ceo.name} pendiente</div>
+            <div class="founder__photo founder__photo--pending">{t.photoPending.replace('{name}', ceo.name)}</div>
           )}
         </figure>
         <div class="founder__copy" data-reveal>
           <h2 class="section__title">{ceo.name}</h2>
-          <p class="founder__role">{ceo.role}</p>
+          <p class="founder__role">{ceo.role[lang]}</p>
           <div class="founder__bio">
-            {ceo.bio.map((paragraph) => <p class:list={{ founder__pending: ceo.bioPending }}>{paragraph}</p>)}
+            {ceo.bio[lang].map((paragraph) => <p class:list={{ founder__pending: ceo.bioPending }}>{paragraph}</p>)}
           </div>
-          {ceo.closing && <p class="founder__closing">{ceo.closing}</p>}
+          {ceo.closing && <p class="founder__closing">{ceo.closing[lang]}</p>}
           <p class="founder__signature script" aria-hidden="true">{ceo.name}</p>
         </div>
       </div>

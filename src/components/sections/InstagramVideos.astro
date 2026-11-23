@@ -1,6 +1,14 @@
 ---
 import StoryVideos from '../../islands/StoryVideos';
 import { site } from '../../data/site';
+import { getLang, strings } from '../../i18n';
+
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { eyebrow: 'Casos de éxito', title: 'Historias que nos motivan', titleHighlight: 'día a día.', lead: 'Estos son algunos de los casos de éxito y testimonios de clientes de Conroma.' },
+  en: { eyebrow: 'Success stories', title: 'Stories that keep us going', titleHighlight: 'every day.', lead: 'Here are some of Conroma’s success stories and client testimonials.' },
+  ca: { eyebrow: 'Casos d’èxit', title: 'Històries que ens motiven', titleHighlight: 'dia a dia.', lead: 'Aquests són alguns dels casos d’èxit i testimonis de clients de Conroma.' },
+})[lang];
 
 const videos = site.instagramVideos.filter((item) => item.video);
 ---
@@ -10,11 +18,11 @@ const videos = site.instagramVideos.filter((item) => item.video);
     <section class="section instagram-videos">
       <div class="wrap">
         <div class="section__head section__head--center" data-reveal>
-          <p class="eyebrow">Casos de éxito</p>
-          <h2 class="section__title">Historias que nos motivan <span class="highlight">día a día.</span></h2>
-          <p class="section__lead">Estos son algunos de los casos de éxito y testimonios de clientes de Conroma.</p>
+          <p class="eyebrow">{t.eyebrow}</p>
+          <h2 class="section__title">{t.title} <span class="highlight">{t.titleHighlight}</span></h2>
+          <p class="section__lead">{t.lead}</p>
         </div>
-        <StoryVideos client:visible items={videos.map((item) => ({ url: item.url, label: item.label, video: item.video! }))} />
+        <StoryVideos client:visible lang={lang} items={videos.map((item) => ({ url: item.url, label: item.label[lang], video: item.video! }))} />
         <ul class="social-links">
           {
             site.instagram.map((account) => (

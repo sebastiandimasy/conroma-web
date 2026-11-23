@@ -1,10 +1,18 @@
 import * as React from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
 import type { Testimonial } from '../data/testimonials';
+import { strings, type Lang } from '../i18n';
 import '../styles/testimonial-carousel.css';
+
+const text = strings({
+  es: { carousel: 'carrusel', label: 'Reseñas de clientes', choose: 'Elegir reseña', review: 'Reseña', of: 'de' },
+  en: { carousel: 'carousel', label: 'Client reviews', choose: 'Choose a review', review: 'Review', of: 'of' },
+  ca: { carousel: 'carrusel', label: 'Ressenyes de clients', choose: 'Tria una ressenya', review: 'Ressenya', of: 'de' },
+});
 
 interface Props {
   testimonials: Testimonial[];
+  lang: Lang;
   /** Milisegundos entre avances automáticos. */
   intervalMs?: number;
 }
@@ -16,7 +24,8 @@ function initialOf(name: string) {
 // Reseñas apiladas en la misma celda: todas van en el HTML (Google y las IA las leen)
 // y solo se ve la activa. Rota sola mientras está en pantalla, sin hover ni foco dentro;
 // en cuanto el visitante elige una, deja de rotar.
-export default function TestimonialCarousel({ testimonials, intervalMs = 6000 }: Props) {
+export default function TestimonialCarousel({ testimonials, lang, intervalMs = 6000 }: Props) {
+  const t = text[lang];
   const reduceMotion = useReducedMotion();
   const ref = React.useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.4 });
@@ -39,8 +48,8 @@ export default function TestimonialCarousel({ testimonials, intervalMs = 6000 }:
       ref={ref}
       className="tcar"
       role="group"
-      aria-roledescription="carrusel"
-      aria-label="Reseñas de clientes"
+      aria-roledescription={t.carousel}
+      aria-label={t.label}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -61,12 +70,15 @@ export default function TestimonialCarousel({ testimonials, intervalMs = 6000 }:
               style={{ zIndex: active ? 1 : 0 }}
             >
               <span className="tcar__mark" aria-hidden="true">«</span>
-              <blockquote className="tcar__quote">{item.text}</blockquote>
+              {/* La cita va en su idioma original: no se traduce. */}
+              <blockquote className="tcar__quote" lang={item.lang === lang ? undefined : item.lang}>
+                {item.text}
+              </blockquote>
               <figcaption className="tcar__by">
                 <span className="tcar__avatar" aria-hidden="true">{initialOf(item.author)}</span>
                 <span className="tcar__by-text">
                   <strong>{item.author}</strong>
-                  <span>{item.context}</span>
+                  <span>{item.context[lang]}</span>
                 </span>
               </figcaption>
             </motion.figure>
@@ -75,13 +87,13 @@ export default function TestimonialCarousel({ testimonials, intervalMs = 6000 }:
       </div>
 
       {count > 1 && (
-        <div className="tcar__dots" role="group" aria-label="Elegir reseña">
+        <div className="tcar__dots" role="group" aria-label={t.choose}>
           {testimonials.map((item, i) => (
             <button
               key={item.author}
               type="button"
               aria-current={i === index ? 'true' : undefined}
-              aria-label={`Reseña ${i + 1} de ${count}: ${item.author}`}
+              aria-label={`${t.review} ${i + 1} ${t.of} ${count}: ${item.author}`}
               className={`tcar__dot${i === index ? ' is-active' : ''}`}
               onClick={() => {
                 setChosen(true);

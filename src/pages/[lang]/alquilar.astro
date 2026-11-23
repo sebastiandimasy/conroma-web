@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../i18n';
+import { getLang, intlLocale, langPaths, localizePath, strings } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -25,108 +25,300 @@ import { whatsappUrl } from '../../lib/links';
    Keyword principal (docs/KEYWORDS.md): «pisos en alquiler Malgrat de Mar»; secundarias: alquiler
    en los pueblos de la zona, «alquilar piso Maresme», «buscar inquilino». Volúmenes pendientes de NotFair. */
 const path = '/es/alquilar/';
-const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Alquilar', path },
-];
+const lang = getLang(Astro.url);
 // Foto CC BY-SA: el crédito va visible en el propio hero.
 const heroCredit = placePhotos.find((photo) => photo.town === 'malgrat-de-mar' && photo.name === 'parc-del-castell')!;
-const description =
-  'Pisos en alquiler en Malgrat de Mar y el Maresme: te decimos qué hay hoy y te avisamos. ¿Tienes piso? Buscamos inquilino y preparamos el contrato.';
 // Pueblos con página propia: enlaces internos con su nombre (la zona de servicio real).
-const townNames = new Intl.ListFormat('es', { type: 'conjunction' }).format(
+const townNames = new Intl.ListFormat(intlLocale[lang], { type: 'conjunction' }).format(
   publishedSellerTowns.filter((town) => town.slug !== 'malgrat-de-mar').map((town) => town.name),
 );
-const answer =
-  'Conroma te ayuda con el alquiler en Malgrat de Mar y el Alt Maresme, tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad. ' +
-  'A quien busca, le decimos qué hay hoy y le avisamos cuando entra algo. Al propietario, le buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar.';
-// Guía general del alquiler en Cataluña (normativa vigente, sin cifras propias).
-const guide = [
-  {
-    title: 'Cédula de habitabilidad',
-    text: 'En Cataluña, para alquilar una vivienda hace falta la cédula de habitabilidad vigente. Si no la tienes o está caducada, se tramita antes de firmar.',
-  },
-  {
-    title: 'Certificado energético',
-    text: 'Es obligatorio para alquilar, y la calificación energética tiene que aparecer en el anuncio del piso.',
-  },
-  {
-    title: 'Fianza',
-    text: 'Para vivienda, la ley fija una mensualidad de fianza. En Cataluña, el propietario la deposita en el INCASÒL.',
-  },
-  {
-    title: 'Honorarios de la inmobiliaria',
-    text: 'Desde la Ley de vivienda de 2023, los gastos de gestión inmobiliaria y de formalización del contrato de alquiler de vivienda los paga el propietario, no el inquilino.',
-  },
-  {
-    title: 'Duración del contrato',
-    text: 'En vivienda habitual, el contrato se prorroga cada año, si el inquilino quiere, hasta cinco años cuando el propietario es una persona y hasta siete cuando es una empresa.',
-  },
-  {
-    title: 'Papeles del inquilino',
-    text: 'Normalmente se pide DNI o NIE y algo que acredite ingresos, como las nóminas o el contrato de trabajo. Tenerlo preparado acelera el proceso.',
-  },
-];
-const faq = [
-  {
-    question: '¿Tenéis pisos de alquiler ahora mismo?',
-    answer: 'Cambia cada semana y todavía no los publicamos en la web. Escríbenos y te decimos qué hay hoy.',
-  },
-  {
-    question: '¿En qué pueblos os encargáis del alquiler?',
-    answer: `En Malgrat de Mar y en los pueblos de alrededor: ${townNames}.`,
-  },
-  {
-    question: '¿Cómo encuentro inquilino para mi piso en el Maresme?',
+const t = strings({
+  es: {
+    home: 'Inicio',
+    crumb: 'Alquilar',
+    title: 'Pisos en alquiler en Malgrat de Mar',
+    description:
+      'Pisos en alquiler en Malgrat de Mar y el Maresme: te decimos qué hay hoy y te avisamos. ¿Tienes piso? Buscamos inquilino y preparamos el contrato.',
+    service: 'Alquiler de viviendas',
     answer:
-      'Escríbenos y vemos tu piso. Lo enseñamos a los interesados, preparamos el contrato y tú decides a quién se lo alquilas.',
+      'Conroma te ayuda con el alquiler en Malgrat de Mar y el Alt Maresme, tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad. ' +
+      'A quien busca, le decimos qué hay hoy y le avisamos cuando entra algo. Al propietario, le buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar.',
+    heroLead: 'Tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad.',
+    photo: 'Foto',
+    searchTitle: 'Busco piso de alquiler',
+    searchText: 'Dinos zona, presupuesto y para cuándo. Te decimos qué tenemos hoy y te avisamos cuando entre algo que te cuadre.',
+    searchAlt: 'Carpeta de Conroma sobre el plano de un piso',
+    searchLink: 'Preguntar qué hay ahora',
+    ownerTitle: 'Tengo un piso y busco inquilino',
+    ownerText:
+      'Buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar. Tú decides a quién se lo alquilas.',
+    ownerAlt: 'El equipo de Conroma revisando un contrato en la oficina',
+    ownerLink: 'Quiero alquilar mi piso',
+    townsTitle: 'Alquiler en Malgrat de Mar y el Alt Maresme',
+    townsLead:
+      'Te ayudamos a encontrar piso o inquilino en Malgrat de Mar y en los pueblos de alrededor. En cada uno tienes lo que hacemos allí.',
+    townsLabel: 'Pueblos donde trabajamos',
+    townLink: (town: string) => `Inmobiliaria en ${town}`,
+    managementLink: 'Que nos encarguemos de tu piso alquilado',
+    guideTitle: 'Lo que conviene saber antes de alquilar en Cataluña',
+    guideLead: 'Tanto si alquilas tu piso como si buscas uno, estos son los puntos que salen en casi todos los alquileres.',
+    testimonialsLead: 'Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes.',
+    faqTitle: 'Lo que más preguntan del alquiler',
+    closingTitle: 'Hablemos',
+    closingMuted: 'de tu alquiler',
+    // Guía general del alquiler en Cataluña (normativa vigente, sin cifras propias).
+    guide: [
+      {
+        title: 'Cédula de habitabilidad',
+        text: 'En Cataluña, para alquilar una vivienda hace falta la cédula de habitabilidad vigente. Si no la tienes o está caducada, se tramita antes de firmar.',
+      },
+      {
+        title: 'Certificado energético',
+        text: 'Es obligatorio para alquilar, y la calificación energética tiene que aparecer en el anuncio del piso.',
+      },
+      {
+        title: 'Fianza',
+        text: 'Para vivienda, la ley fija una mensualidad de fianza. En Cataluña, el propietario la deposita en el INCASÒL.',
+      },
+      {
+        title: 'Honorarios de la inmobiliaria',
+        text: 'Desde la Ley de vivienda de 2023, los gastos de gestión inmobiliaria y de formalización del contrato de alquiler de vivienda los paga el propietario, no el inquilino.',
+      },
+      {
+        title: 'Duración del contrato',
+        text: 'En vivienda habitual, el contrato se prorroga cada año, si el inquilino quiere, hasta cinco años cuando el propietario es una persona y hasta siete cuando es una empresa.',
+      },
+      {
+        title: 'Papeles del inquilino',
+        text: 'Normalmente se pide DNI o NIE y algo que acredite ingresos, como las nóminas o el contrato de trabajo. Tenerlo preparado acelera el proceso.',
+      },
+    ],
+    faq: [
+      {
+        question: '¿Tenéis pisos de alquiler ahora mismo?',
+        answer: 'Cambia cada semana y todavía no los publicamos en la web. Escríbenos y te decimos qué hay hoy.',
+      },
+      {
+        question: '¿En qué pueblos os encargáis del alquiler?',
+        answer: `En Malgrat de Mar y en los pueblos de alrededor: ${townNames}.`,
+      },
+      {
+        question: '¿Cómo encuentro inquilino para mi piso en el Maresme?',
+        answer:
+          'Escríbenos y vemos tu piso. Lo enseñamos a los interesados, preparamos el contrato y tú decides a quién se lo alquilas.',
+      },
+      {
+        question: 'Y después de firmar, ¿os podéis encargar del piso?',
+        answer:
+          'Sí, con la gestión de patrimonio: nos encargamos de la gestión y la administración del inmueble para que tú ganes libertad y tranquilidad.',
+      },
+    ],
   },
-  {
-    question: 'Y después de firmar, ¿os podéis encargar del piso?',
+  en: {
+    home: 'Home',
+    crumb: 'Rent',
+    title: 'Homes to rent in Malgrat de Mar',
+    description:
+      'Homes to rent in Malgrat de Mar and the Maresme: we tell you what’s available and keep you posted. Own one? We find a tenant and do the contract.',
+    service: 'Residential lettings',
     answer:
-      'Sí, con la gestión de patrimonio: nos encargamos de la gestión y la administración del inmueble para que tú ganes libertad y tranquilidad.',
+      'Conroma helps with renting in Malgrat de Mar and the Alt Maresme, whether you’re looking for a home or have one you want to rent out safely. ' +
+      'If you’re looking, we tell you what’s available today and let you know when something comes in. If you’re the owner, we find you a tenant, show the property and draw up the contract, with everything explained before you sign.',
+    heroLead: 'Whether you’re looking for a home or have one you want to rent out safely.',
+    photo: 'Photo',
+    searchTitle: 'I’m looking for a rental',
+    searchText:
+      'Tell us the area, your budget and when you need it. We’ll tell you what we have today and let you know when something suitable comes in.',
+    searchAlt: 'A Conroma folder on a floor plan',
+    searchLink: 'Ask what’s available now',
+    ownerTitle: 'I have a home and need a tenant',
+    ownerText:
+      'We find a tenant, show the property and draw up the contract, with everything explained before you sign. You decide who you rent it to.',
+    ownerAlt: 'The Conroma team going over a contract at the office',
+    ownerLink: 'I want to rent out my home',
+    townsTitle: 'Renting in Malgrat de Mar and the Alt Maresme',
+    townsLead:
+      'We help you find a home or a tenant in Malgrat de Mar and the towns around it. Each page shows what we do there.',
+    townsLabel: 'Towns where we work',
+    townLink: (town: string) => `Estate agent in ${town}`,
+    managementLink: 'Have us look after your rented property',
+    guideTitle: 'What to know before renting in Catalonia',
+    guideLead: 'Whether you’re renting out your home or looking for one, these points come up in almost every rental.',
+    testimonialsLead: 'We bring passion and professionalism to every project, and our clients say so.',
+    faqTitle: 'What people ask most about renting',
+    closingTitle: 'Let’s talk',
+    closingMuted: 'about your rental',
+    guide: [
+      {
+        title: 'Certificate of habitability (cédula)',
+        text: 'In Catalonia you need a valid cédula de habitabilidad to rent out a home. If you don’t have one or it has expired, it’s sorted out before signing.',
+      },
+      {
+        title: 'Energy certificate',
+        text: 'It’s compulsory for renting, and the energy rating has to appear in the advert for the property.',
+      },
+      {
+        title: 'Deposit',
+        text: 'For a home, the law sets the deposit at one month’s rent. In Catalonia, the landlord lodges it with INCASÒL, the Catalan housing agency.',
+      },
+      {
+        title: 'Agency fees',
+        text: 'Since the 2023 Housing Law, the agency’s management fees and the cost of drawing up a residential rental contract are paid by the landlord, not the tenant.',
+      },
+      {
+        title: 'Length of the contract',
+        text: 'For a main residence, the contract renews every year, if the tenant wants, up to five years when the landlord is an individual and up to seven when it’s a company.',
+      },
+      {
+        title: 'Tenant’s paperwork',
+        text: 'You’re usually asked for a DNI or NIE (Spanish ID or foreigner’s ID number) and proof of income, such as payslips or an employment contract. Having it ready speeds things up.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Do you have homes to rent right now?',
+        answer: 'It changes every week and we don’t list them on the website yet. Message us and we’ll tell you what’s available today.',
+      },
+      {
+        question: 'Which towns do you cover for rentals?',
+        answer: `Malgrat de Mar and the towns around it: ${townNames}.`,
+      },
+      {
+        question: 'How do I find a tenant for my home in the Maresme?',
+        answer:
+          'Message us and we’ll come and see your home. We show it to interested people, draw up the contract and you decide who you rent it to.',
+      },
+      {
+        question: 'And after signing, can you look after the property?',
+        answer:
+          'Yes, with our property portfolio management: we take care of managing and running the property so you get more freedom and peace of mind.',
+      },
+    ],
   },
+  ca: {
+    home: 'Inici',
+    crumb: 'Llogar',
+    title: 'Pisos de lloguer a Malgrat de Mar',
+    description:
+      'Pisos de lloguer a Malgrat de Mar i el Maresme: et diem què hi ha avui i t’avisem. Tens pis? Busquem llogater i preparem el contracte.',
+    service: 'Lloguer d’habitatges',
+    answer:
+      'Conroma t’ajuda amb el lloguer a Malgrat de Mar i l’Alt Maresme, tant si busques pis com si en tens un i el vols llogar amb seguretat. ' +
+      'A qui busca, li diem què hi ha avui i l’avisem quan entra alguna cosa. Al propietari, li busquem llogater, ensenyem el pis i preparem el contracte, amb tot explicat abans de signar.',
+    heroLead: 'Tant si busques pis com si en tens un i el vols llogar amb seguretat.',
+    photo: 'Foto',
+    searchTitle: 'Busco pis de lloguer',
+    searchText: 'Digues-nos zona, pressupost i per quan el vols. Et diem què tenim avui i t’avisem quan entri alguna cosa que et quadri.',
+    searchAlt: 'Carpeta de Conroma sobre el plànol d’un pis',
+    searchLink: 'Pregunta què hi ha ara',
+    ownerTitle: 'Tinc un pis i busco llogater',
+    ownerText:
+      'Busquem llogater, ensenyem el pis i preparem el contracte, amb tot explicat abans de signar. Tu decideixes a qui el llogues.',
+    ownerAlt: 'L’equip de Conroma revisant un contracte a l’oficina',
+    ownerLink: 'Vull llogar el meu pis',
+    townsTitle: 'Lloguer a Malgrat de Mar i l’Alt Maresme',
+    townsLead:
+      'T’ajudem a trobar pis o llogater a Malgrat de Mar i als pobles del voltant. A cadascun hi tens el que hi fem.',
+    townsLabel: 'Pobles on treballem',
+    townLink: (town: string) => `Immobiliària a ${town}`,
+    managementLink: 'Que ens encarreguem del teu pis llogat',
+    guideTitle: 'El que convé saber abans de llogar a Catalunya',
+    guideLead: 'Tant si llogues el teu pis com si en busques un, aquests són els punts que surten a gairebé tots els lloguers.',
+    testimonialsLead: 'Fem cada projecte amb passió i professionalitat, i així ho diuen els nostres clients.',
+    faqTitle: 'El que més pregunten del lloguer',
+    closingTitle: 'Parlem',
+    closingMuted: 'del teu lloguer',
+    guide: [
+      {
+        title: 'Cèdula d’habitabilitat',
+        text: 'A Catalunya, per llogar un habitatge cal la cèdula d’habitabilitat vigent. Si no la tens o està caducada, es tramita abans de signar.',
+      },
+      {
+        title: 'Certificat energètic',
+        text: 'És obligatori per llogar, i la qualificació energètica ha d’aparèixer a l’anunci del pis.',
+      },
+      {
+        title: 'Fiança',
+        text: 'Per a habitatge, la llei fixa una mensualitat de fiança. A Catalunya, el propietari la diposita a l’INCASÒL.',
+      },
+      {
+        title: 'Honoraris de la immobiliària',
+        text: 'Des de la Llei d’habitatge del 2023, les despeses de gestió immobiliària i de formalització del contracte de lloguer d’habitatge les paga el propietari, no el llogater.',
+      },
+      {
+        title: 'Durada del contracte',
+        text: 'En habitatge habitual, el contracte es prorroga cada any, si el llogater vol, fins a cinc anys quan el propietari és una persona i fins a set quan és una empresa.',
+      },
+      {
+        title: 'Papers del llogater',
+        text: 'Normalment es demana el DNI o NIE i alguna cosa que acrediti ingressos, com les nòmines o el contracte de treball. Tenir-ho preparat accelera el procés.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Teniu pisos de lloguer ara mateix?',
+        answer: 'Canvia cada setmana i encara no els publiquem al web. Escriu-nos i et diem què hi ha avui.',
+      },
+      {
+        question: 'A quins pobles us encarregueu del lloguer?',
+        answer: `A Malgrat de Mar i als pobles del voltant: ${townNames}.`,
+      },
+      {
+        question: 'Com trobo llogater per al meu pis al Maresme?',
+        answer: 'Escriu-nos i veiem el teu pis. L’ensenyem als interessats, preparem el contracte i tu decideixes a qui el llogues.',
+      },
+      {
+        question: 'I després de signar, us podeu encarregar del pis?',
+        answer:
+          'Sí, amb la gestió de patrimoni: ens encarreguem de la gestió i l’administració de l’immoble perquè tu guanyis llibertat i tranquil·litat.',
+      },
+    ],
+  },
+})[lang];
+const crumbs = [
+  { name: t.home, path: '/es/' },
+  { name: t.crumb, path },
 ];
-const lang = getLang(Astro.url);
+const description = t.description;
 ---
 
 <BaseLayout
-  title="Pisos en alquiler en Malgrat de Mar"
+  title={t.title}
   description={description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq), serviceSchema('Alquiler de viviendas', description, path)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(t.faq), serviceSchema(t.service, description, path, lang)]}
 >
   <HeroStory
     crumbs={crumbs}
-    title="Pisos en alquiler en Malgrat de Mar"
-    lead="Tanto si buscas piso como si tienes uno y quieres alquilarlo con seguridad."
+    title={t.title}
+    lead={t.heroLead}
     image={heroPhoto}
-    alt={heroCredit.alt}
-    cta={{ label: 'Busco piso de alquiler', href: '#busco' }}
-    credit={{ text: `Foto: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
+    alt={heroCredit.alt[lang]}
+    cta={{ label: t.searchTitle, href: '#busco' }}
+    credit={{ text: `${t.photo}: ${heroCredit.author} · ${heroCredit.license}`, href: heroCredit.url }}
   />
 
-  <Statement text={answer} />
+  <Statement text={t.answer} />
 
   <SplitFeature
     id="busco"
     tone="canvas"
-    title="Busco piso de alquiler"
-    text="Dinos zona, presupuesto y para cuándo. Te decimos qué tenemos hoy y te avisamos cuando entre algo que te cuadre."
+    title={t.searchTitle}
+    text={t.searchText}
     image={searchPhoto}
-    alt="Carpeta de Conroma sobre el plano de un piso"
-    link={{ label: 'Preguntar qué hay ahora', href: whatsappUrl({ reason: 'general' }), contact: 'whatsapp', origin: 'alquilar-busco' }}
+    alt={t.searchAlt}
+    link={{ label: t.searchLink, href: whatsappUrl(lang, { reason: 'general' }), contact: 'whatsapp', origin: 'alquilar-busco' }}
   />
 
   <SplitFeature
     id="tengo-piso"
     tone="surface"
     reverse
-    title="Tengo un piso y busco inquilino"
-    text="Buscamos inquilino, enseñamos el piso y preparamos el contrato, con todo explicado antes de firmar. Tú decides a quién se lo alquilas."
+    title={t.ownerTitle}
+    text={t.ownerText}
     image={ownerPhoto}
-    alt="El equipo de Conroma revisando un contrato en la oficina"
-    link={{ label: 'Quiero alquilar mi piso', href: whatsappUrl({ reason: 'alquiler' }), contact: 'whatsapp', origin: 'alquilar-propietario' }}
+    alt={t.ownerAlt}
+    link={{ label: t.ownerLink, href: whatsappUrl(lang, { reason: 'alquiler' }), contact: 'whatsapp', origin: 'alquilar-propietario' }}
   />
 
   {/* Pueblos de la zona: enlaces internos a cada pueblo (filas, sin tarjetas) y salida a Gestión
@@ -134,19 +326,16 @@ const lang = getLang(Astro.url);
   <section class="section rent-towns">
     <div class="wrap">
       <div class="section__head" data-reveal>
-        <h2 class="section__title">Alquiler en Malgrat de Mar y el Alt Maresme</h2>
-        <p class="section__lead">
-          Te ayudamos a encontrar piso o inquilino en Malgrat de Mar y en los pueblos de alrededor. En cada uno tienes
-          lo que hacemos allí.
-        </p>
+        <h2 class="section__title">{t.townsTitle}</h2>
+        <p class="section__lead">{t.townsLead}</p>
       </div>
-      <nav class="town-list" aria-label="Pueblos donde trabajamos" data-reveal>
+      <nav class="town-list" aria-label={t.townsLabel} data-reveal>
         <ul class="town-list__items">
           {
             publishedSellerTowns.map((town) => (
               <li>
-                <a class="town-list__link" href={`/es/inmobiliaria/${town.slug}/`}>
-                  <span>Inmobiliaria en {town.name}</span>
+                <a class="town-list__link" href={localizePath(`/es/inmobiliaria/${town.slug}/`, lang)}>
+                  <span>{t.townLink(town.name)}</span>
                   <Icon name="arrow" class="town-links__arrow" />
                 </a>
               </li>
@@ -154,23 +343,23 @@ const lang = getLang(Astro.url);
           }
         </ul>
       </nav>
-      <a class="arrow-link rent-towns__link" href="/es/gestion-de-patrimonio/">
+      <a class="arrow-link rent-towns__link" href={localizePath('/es/gestion-de-patrimonio/', lang)}>
         <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-        <span class="arrow-link__label">Que nos encarguemos de tu piso alquilado</span>
+        <span class="arrow-link__label">{t.managementLink}</span>
       </a>
     </div>
   </section>
 
   <ContentGuide
     tone="surface"
-    title="Lo que conviene saber antes de alquilar en Cataluña"
-    lead="Tanto si alquilas tu piso como si buscas uno, estos son los puntos que salen en casi todos los alquileres."
-    items={guide}
+    title={t.guideTitle}
+    lead={t.guideLead}
+    items={t.guide}
   />
 
-  <Testimonials tone="canvas" lead="Hacemos cada proyecto con pasión y profesionalidad, y así lo reflejan nuestros clientes." />
+  <Testimonials tone="canvas" lead={t.testimonialsLead} />
 
-  <FaqSection title="Lo que más preguntan del alquiler" items={faq} origin="alquilar-faq" reason="alquiler" />
+  <FaqSection title={t.faqTitle} items={t.faq} origin="alquilar-faq" reason="alquiler" />
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu alquiler" image={closingPhoto} origin="alquilar-cierre" reason="alquiler" />
+  <ClosingCTA title={t.closingTitle} titleMuted={t.closingMuted} image={closingPhoto} origin="alquilar-cierre" reason="alquiler" />
 </BaseLayout>

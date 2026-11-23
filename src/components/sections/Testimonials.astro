@@ -1,4 +1,5 @@
 ---
+import { getLang, strings } from '../../i18n';
 import Icon from '../Icon.astro';
 import TestimonialCarousel from '../../islands/TestimonialCarousel.tsx';
 import { testimonials } from '../../data/testimonials';
@@ -13,9 +14,34 @@ interface Props {
   tone?: 'surface' | 'canvas';
 }
 
+const lang = getLang(Astro.url);
+const t = strings({
+  es: {
+    title: 'Lo que dicen nuestros clientes',
+    lead: 'Vecinos del Maresme que compraron, vendieron o alquilaron con nosotros.',
+    outOf: 'sobre 5 en Google',
+    onGoogle: 'en Google',
+    reviews: 'reseñas',
+  },
+  en: {
+    title: 'What our clients say',
+    lead: 'People from the Maresme who bought, sold or rented with us.',
+    outOf: 'out of 5 on Google',
+    onGoogle: 'on Google',
+    reviews: 'reviews',
+  },
+  ca: {
+    title: 'El que diuen els nostres clients',
+    lead: 'Veïns del Maresme que van comprar, vendre o llogar amb nosaltres.',
+    outOf: 'sobre 5 a Google',
+    onGoogle: 'a Google',
+    reviews: 'ressenyes',
+  },
+})[lang];
+
 const {
-  title = 'Lo que dicen nuestros clientes',
-  lead = 'Vecinos del Maresme que compraron, vendieron o alquilaron con nosotros.',
+  title = t.title,
+  lead = t.lead,
   limit = testimonials.length,
   tone = 'surface',
 } = Astro.props;
@@ -33,7 +59,7 @@ const rating = site.googleRating;
       {
         rating && (
           <a class="testimonials__rating" href={rating.url} rel="noopener" target="_blank">
-            <span class="testimonials__stars" role="img" aria-label={`${formatRating(rating.value)} sobre 5 en Google`}>
+            <span class="testimonials__stars" role="img" aria-label={`${formatRating(rating.value, lang)} ${t.outOf}`}>
               <Icon name="star" />
               <Icon name="star" />
               <Icon name="star" />
@@ -41,12 +67,12 @@ const rating = site.googleRating;
               <Icon name="star" />
             </span>
             <span>
-              <strong>{formatRating(rating.value)}</strong> en Google · {rating.count} reseñas
+              <strong>{formatRating(rating.value, lang)}</strong> {t.onGoogle} · {rating.count} {t.reviews}
             </span>
           </a>
         )
       }
     </div>
-    <TestimonialCarousel client:visible testimonials={items} />
+    <TestimonialCarousel client:visible testimonials={items} lang={lang} />
   </div>
 </section>

@@ -1,5 +1,5 @@
 ---
-import { getLang, langPaths } from '../../../i18n';
+import { getLang, langPaths, localizePath, strings } from '../../../i18n';
 
 export const getStaticPaths = langPaths;
 import BaseLayout from '../../../layouts/BaseLayout.astro';
@@ -16,96 +16,241 @@ import { breadcrumbSchema, faqSchema } from '../../../lib/seo';
 /* Keyword (docs/KEYWORDS.md): «cuánto cuesta reformar un piso», «precio reforma integral m2».
    Calculadora arriba; debajo, qué mueve el precio y dudas habituales (normativa general, sin
    cifras propias: las de la calculadora son medias de España con su fuente). */
+const lang = getLang(Astro.url);
+const ref = reformReference[lang];
+const t = strings({
+  es: {
+    home: 'Inicio',
+    reforms: 'Reformas',
+    crumb: 'Simulador de reformas',
+    title: 'Simulador de reformas: cuánto cuesta reformar un piso',
+    description:
+      'Calcula cuánto puede costar la reforma integral de tu piso según los metros y la calidad de los acabados. Orientativo y sin dejar tus datos.',
+    h1: '¿Cuánto cuesta reformar un piso?',
+    lead: 'Pon los metros y la calidad que buscas, y te sale una idea de por dónde van los tiros. Sin dejar tus datos.',
+    guideTitle: 'Qué sube o baja el precio de una reforma',
+    guideLead: 'La calculadora parte de los metros y la calidad. En la obra real cuentan también estas cosas.',
+    how: 'Cómo hacemos las reformas',
+    faqTitle: 'Lo que preguntan antes de reformar',
+    closing: 'Hablemos',
+    closingMuted: 'de tu reforma',
+    guide: [
+      {
+        title: 'Metros',
+        text: 'Es la base del cálculo: casi todas las partidas (suelo, pintura, instalaciones) crecen con la superficie del piso.',
+      },
+      {
+        title: 'Estado de partida',
+        text: 'Un piso con la instalación eléctrica y la fontanería antiguas necesita cambiarlas enteras. Si ya están al día, la reforma sale más ligera.',
+      },
+      {
+        title: 'Calidad de los acabados',
+        text: 'Suelos, sanitarios, grifería, muebles de cocina y carpintería. Entre una calidad básica y una alta, el mismo piso puede costar bastante más.',
+      },
+      {
+        title: 'Cambios de distribución',
+        text: 'Tirar o mover tabiques, abrir la cocina o sumar un baño añade obra, y a veces un técnico y un permiso más exigente.',
+      },
+      {
+        title: 'Permisos y tasas',
+        text: 'El ayuntamiento cobra el impuesto de construcciones (ICIO) y la tasa del permiso, según el presupuesto de la obra. Cada municipio fija su porcentaje.',
+      },
+      {
+        title: 'IVA reducido',
+        text: 'En obras de renovación de una vivienda particular, el IVA puede ser del 10% en lugar del 21% si se cumplen las condiciones de la ley; por ejemplo, que los materiales que aporta la empresa no pasen del 40% del total.',
+      },
+    ],
+    faq: [
+      {
+        question: '¿De dónde salen estas cifras?',
+        answer: `Son medias de España: ${ref.value} (${ref.source}, ${ref.date}). No son nuestros precios; sirven para hacerte una idea.`,
+      },
+      {
+        question: '¿El presupuesto final será el que sale aquí?',
+        answer:
+          'No tiene por qué. El presupuesto real lo damos después de ver el piso, por escrito y partida a partida, antes de empezar la obra.',
+      },
+      {
+        question: '¿Qué entra en una reforma integral?',
+        answer:
+          'Normalmente cocina, baños, instalación eléctrica y fontanería, suelos, carpintería y pintura. Lo vemos contigo según si vas a vender o a entrar a vivir.',
+      },
+      {
+        question: '¿Necesito permiso del ayuntamiento?',
+        answer:
+          'Depende de la obra. Para obras menores suele bastar una comunicación previa; si se toca la estructura, la fachada o la distribución de forma importante, hace falta licencia de obra mayor.',
+      },
+    ],
+  },
+  en: {
+    home: 'Home',
+    reforms: 'Renovations',
+    crumb: 'Renovation calculator',
+    title: 'Renovation calculator: what does it cost?',
+    description:
+      'Work out roughly what a full renovation of your home could cost, based on its size and the quality of the finishes. No personal details needed.',
+    h1: 'How much does it cost to renovate a home?',
+    lead: "Enter the size and the finish you want, and you'll get a ballpark figure. No personal details needed.",
+    guideTitle: 'What pushes the price of a renovation up or down',
+    guideLead: 'The calculator starts from the size and the finish. On a real job, these things count too.',
+    how: 'How we do renovations',
+    faqTitle: 'What people ask before renovating',
+    closing: "Let's talk",
+    closingMuted: 'about your renovation',
+    guide: [
+      {
+        title: 'Size',
+        text: "It's the basis of the calculation: almost every item (flooring, painting, wiring and plumbing) grows with the floor area.",
+      },
+      {
+        title: 'Starting condition',
+        text: "A home with old wiring and plumbing needs them replaced entirely. If they're already up to date, the renovation comes out lighter.",
+      },
+      {
+        title: 'Quality of the finishes',
+        text: 'Floors, sanitaryware, taps, kitchen units and joinery. Between a basic and a high-end finish, the same home can cost quite a bit more.',
+      },
+      {
+        title: 'Layout changes',
+        text: 'Knocking down or moving partition walls, opening up the kitchen or adding a bathroom means more work, and sometimes an architect and a stricter permit.',
+      },
+      {
+        title: 'Permits and fees',
+        text: 'The town hall charges a construction tax (ICIO) and a permit fee, based on the budget for the work. Each town sets its own percentage.',
+      },
+      {
+        title: 'Reduced VAT',
+        text: "For renovation work on a private home, VAT (IVA) can be 10% instead of 21% if the legal conditions are met; for example, the materials supplied by the company can't be more than 40% of the total.",
+      },
+    ],
+    faq: [
+      {
+        question: 'Where do these figures come from?',
+        answer: `They're averages for Spain: ${ref.value} (${ref.source}, ${ref.date}). They aren't our prices; they're there to give you an idea.`,
+      },
+      {
+        question: 'Will the final quote be what I see here?',
+        answer:
+          'Not necessarily. We give you the real quote after seeing the property, in writing and item by item, before work starts.',
+      },
+      {
+        question: 'What does a full renovation include?',
+        answer:
+          "Usually the kitchen, bathrooms, electrics and plumbing, floors, joinery and painting. We go through it with you depending on whether you're selling or moving in.",
+      },
+      {
+        question: 'Do I need permission from the town hall?',
+        answer:
+          'It depends on the work. For minor works a prior notice is usually enough; if the structure, the façade or the layout changes significantly, you need a major works licence.',
+      },
+    ],
+  },
+  ca: {
+    home: 'Inici',
+    reforms: 'Reformes',
+    crumb: 'Simulador de reformes',
+    title: 'Simulador de reformes: quant costa reformar un pis',
+    description:
+      'Calcula quant pot costar la reforma integral del teu pis segons els metres i la qualitat dels acabats. Orientatiu i sense deixar les teves dades.',
+    h1: 'Quant costa reformar un pis?',
+    lead: 'Posa els metres i la qualitat que busques, i et surt una idea de per on van els trets. Sense deixar les teves dades.',
+    guideTitle: "Què fa pujar o baixar el preu d'una reforma",
+    guideLead: "La calculadora parteix dels metres i la qualitat. A l'obra real també compten aquestes coses.",
+    how: 'Com fem les reformes',
+    faqTitle: 'El que pregunten abans de reformar',
+    closing: 'Parlem',
+    closingMuted: 'de la teva reforma',
+    guide: [
+      {
+        title: 'Metres',
+        text: 'És la base del càlcul: gairebé totes les partides (terra, pintura, instal·lacions) creixen amb la superfície del pis.',
+      },
+      {
+        title: 'Estat de partida',
+        text: "Un pis amb la instal·lació elèctrica i la fontaneria antigues les ha de canviar senceres. Si ja estan al dia, la reforma surt més lleugera.",
+      },
+      {
+        title: 'Qualitat dels acabats',
+        text: "Terres, sanitaris, aixeteria, mobles de cuina i fusteria. Entre una qualitat bàsica i una d'alta, el mateix pis pot costar força més.",
+      },
+      {
+        title: 'Canvis de distribució',
+        text: 'Tirar o moure envans, obrir la cuina o afegir un bany suma obra, i de vegades un tècnic i un permís més exigent.',
+      },
+      {
+        title: 'Permisos i taxes',
+        text: "L'ajuntament cobra l'impost de construccions (ICIO) i la taxa del permís, segons el pressupost de l'obra. Cada municipi en fixa el percentatge.",
+      },
+      {
+        title: 'IVA reduït',
+        text: "En obres de renovació d'un habitatge particular, l'IVA pot ser del 10% en lloc del 21% si es compleixen les condicions de la llei; per exemple, que els materials que aporta l'empresa no passin del 40% del total.",
+      },
+    ],
+    faq: [
+      {
+        question: "D'on surten aquestes xifres?",
+        answer: `Són mitjanes d'Espanya: ${ref.value} (${ref.source}, ${ref.date}). No són els nostres preus; serveixen per fer-te'n una idea.`,
+      },
+      {
+        question: 'El pressupost final serà el que surt aquí?',
+        answer:
+          "No necessàriament. El pressupost real el donem després de veure el pis, per escrit i partida per partida, abans de començar l'obra.",
+      },
+      {
+        question: 'Què entra en una reforma integral?',
+        answer:
+          'Normalment cuina, banys, instal·lació elèctrica i fontaneria, terres, fusteria i pintura. Ho mirem amb tu segons si vols vendre o entrar-hi a viure.',
+      },
+      {
+        question: "Necessito permís de l'ajuntament?",
+        answer:
+          "Depèn de l'obra. Per a obres menors sol n'hi ha prou amb una comunicació prèvia; si es toca l'estructura, la façana o la distribució de manera important, cal llicència d'obra major.",
+      },
+    ],
+  },
+})[lang];
 const path = '/es/reformas/simulador/';
 const crumbs = [
-  { name: 'Inicio', path: '/es/' },
-  { name: 'Reformas', path: '/es/reformas/' },
-  { name: 'Simulador de reformas', path },
+  { name: t.home, path: '/es/' },
+  { name: t.reforms, path: '/es/reformas/' },
+  { name: t.crumb, path },
 ];
-const guide = [
-  {
-    title: 'Metros',
-    text: 'Es la base del cálculo: casi todas las partidas (suelo, pintura, instalaciones) crecen con la superficie del piso.',
-  },
-  {
-    title: 'Estado de partida',
-    text: 'Un piso con la instalación eléctrica y la fontanería antiguas necesita cambiarlas enteras. Si ya están al día, la reforma sale más ligera.',
-  },
-  {
-    title: 'Calidad de los acabados',
-    text: 'Suelos, sanitarios, grifería, muebles de cocina y carpintería. Entre una calidad básica y una alta, el mismo piso puede costar bastante más.',
-  },
-  {
-    title: 'Cambios de distribución',
-    text: 'Tirar o mover tabiques, abrir la cocina o sumar un baño añade obra, y a veces un técnico y un permiso más exigente.',
-  },
-  {
-    title: 'Permisos y tasas',
-    text: 'El ayuntamiento cobra el impuesto de construcciones (ICIO) y la tasa del permiso, según el presupuesto de la obra. Cada municipio fija su porcentaje.',
-  },
-  {
-    title: 'IVA reducido',
-    text: 'En obras de renovación de una vivienda particular, el IVA puede ser del 10% en lugar del 21% si se cumplen las condiciones de la ley; por ejemplo, que los materiales que aporta la empresa no pasen del 40% del total.',
-  },
-];
-const faq = [
-  {
-    question: '¿De dónde salen estas cifras?',
-    answer: `Son medias de España: ${reformReference.value} (${reformReference.source}, ${reformReference.date}). No son nuestros precios; sirven para hacerte una idea.`,
-  },
-  {
-    question: '¿El presupuesto final será el que sale aquí?',
-    answer:
-      'No tiene por qué. El presupuesto real lo damos después de ver el piso, por escrito y partida a partida, antes de empezar la obra.',
-  },
-  {
-    question: '¿Qué entra en una reforma integral?',
-    answer:
-      'Normalmente cocina, baños, instalación eléctrica y fontanería, suelos, carpintería y pintura. Lo vemos contigo según si vas a vender o a entrar a vivir.',
-  },
-  {
-    question: '¿Necesito permiso del ayuntamiento?',
-    answer:
-      'Depende de la obra. Para obras menores suele bastar una comunicación previa; si se toca la estructura, la fachada o la distribución de forma importante, hace falta licencia de obra mayor.',
-  },
-];
-const lang = getLang(Astro.url);
+const guide = t.guide;
+const faq = t.faq;
 ---
 
 <BaseLayout
-  title="Simulador de reformas: cuánto cuesta reformar un piso"
-  description="Calcula cuánto puede costar la reforma integral de tu piso según los metros y la calidad de los acabados. Orientativo y sin dejar tus datos."
+  title={t.title}
+  description={t.description}
   path={path}
-  schemas={[breadcrumbSchema(crumbs), faqSchema(faq)]}
+  schemas={[breadcrumbSchema(crumbs, lang), faqSchema(faq)]}
 >
   <section class="page-head page-head--editorial">
     <div class="wrap">
       <Breadcrumbs crumbs={crumbs} />
-      <h1 class="page-head__title" data-split>¿Cuánto cuesta reformar un piso?</h1>
-      <p class="page-head__lead">
-        Pon los metros y la calidad que buscas, y te sale una idea de por dónde van los tiros. Sin dejar tus datos.
-      </p>
+      <h1 class="page-head__title" data-split>{t.h1}</h1>
+      <p class="page-head__lead">{t.lead}</p>
     </div>
   </section>
 
   <section class="section simulator-section">
     <div class="wrap" data-reveal>
-      <ReformSimulator client:load />
+      <ReformSimulator client:load lang={lang} />
     </div>
   </section>
 
   <ContentGuide
-    title="Qué sube o baja el precio de una reforma"
-    lead="La calculadora parte de los metros y la calidad. En la obra real cuentan también estas cosas."
+    title={t.guideTitle}
+    lead={t.guideLead}
     items={guide}
   >
-    <a class="arrow-link content-guide__more" href="/es/reformas/">
+    <a class="arrow-link content-guide__more" href={localizePath('/es/reformas/', lang)}>
       <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>
-      <span class="arrow-link__label">Cómo hacemos las reformas</span>
+      <span class="arrow-link__label">{t.how}</span>
     </a>
   </ContentGuide>
 
-  <FaqSection title="Lo que preguntan antes de reformar" items={faq} origin="simulador-faq" />
+  <FaqSection title={t.faqTitle} items={faq} origin="simulador-faq" />
 
-  <ClosingCTA title="Hablemos" titleMuted="de tu reforma" image={closingPhoto} origin="simulador-cierre" />
+  <ClosingCTA title={t.closing} titleMuted={t.closingMuted} image={closingPhoto} origin="simulador-cierre" />
 </BaseLayout>

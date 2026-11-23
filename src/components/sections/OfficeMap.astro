@@ -1,4 +1,5 @@
 ---
+import { getLang, strings } from '../../i18n';
 import Icon from '../Icon.astro';
 import OfficeMapLibre from '../../islands/OfficeMapLibre';
 import { site } from '../../data/site';
@@ -8,6 +9,12 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${site
 const rating = site.googleRating;
 // Horario compacto (los dos turnos de L-V).
 const hours = site.openingHours?.map((s) => `${s.opens}–${s.closes}`).join(' · ');
+const lang = getLang(Astro.url);
+const t = strings({
+  es: { title: 'Pásate por la oficina', weekdays: 'Lunes a viernes', onGoogle: 'en Google', reviews: 'reseñas', directions: 'Cómo llegar', maps: 'Ver en Google Maps' },
+  en: { title: 'Drop by the office', weekdays: 'Monday to Friday', onGoogle: 'on Google', reviews: 'reviews', directions: 'Get directions', maps: 'Open in Google Maps' },
+  ca: { title: 'Passa per l’oficina', weekdays: 'De dilluns a divendres', onGoogle: 'a Google', reviews: 'ressenyes', directions: 'Com arribar-hi', maps: 'Obre-ho a Google Maps' },
+})[lang];
 ---
 
 {/* Mapa editorial: mapa sin caja ni sombra (radio 4px) y los datos debajo, sin tarjeta.
@@ -16,10 +23,11 @@ const hours = site.openingHours?.map((s) => `${s.opens}–${s.closes}`).join(' �
   site.geo && (
     <section class="section office-map">
       <div class="wrap">
-        <h2 class="section__title" data-reveal>Pásate por la oficina</h2>
+        <h2 class="section__title" data-reveal>{t.title}</h2>
         <div class="office-map__frame" data-reveal>
           <OfficeMapLibre
             client:only="react"
+            lang={lang}
             latitude={site.geo.latitude}
             longitude={site.geo.longitude}
             label={`${site.legalName} · ${site.address.street}`}
@@ -31,20 +39,20 @@ const hours = site.openingHours?.map((s) => `${s.opens}–${s.closes}`).join(' �
             <p class="office-map__place">
               {site.address.postalCode} {site.address.locality} · {site.address.region}
             </p>
-            {hours && <p class="office-map__place">Lunes a viernes · {hours}</p>}
+            {hours && <p class="office-map__place">{t.weekdays} · {hours}</p>}
             {rating && (
               <a class="office-map__rating" href={rating.url} rel="noopener" target="_blank">
                 <Icon name="star" class="office-map__star" />
-                {formatRating(rating.value)} en Google · {rating.count} reseñas
+                {formatRating(rating.value, lang)} {t.onGoogle} · {rating.count} {t.reviews}
               </a>
             )}
           </div>
           <div class="office-map__actions">
             <a class="button button--primary button--large" href={directionsUrl} rel="noopener" target="_blank">
-              Cómo llegar
+              {t.directions}
             </a>
             <a class="link-cta" href={site.mapsUrl} rel="noopener" target="_blank">
-              Ver en Google Maps
+              {t.maps}
             </a>
           </div>
         </div>

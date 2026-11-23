@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import { site } from '../../data/site';
 import { phoneUrl, whatsappUrl, type ContactReason } from '../../lib/links';
+import { getLang, strings } from '../../i18n';
 
 interface Props {
   title: string;
@@ -19,6 +20,11 @@ interface Props {
 
 const { title, titleMuted, text, origin, reason, image } = Astro.props;
 const panelId = `cierre-${origin}`;
+const t = strings({
+  es: { open: 'Ver cómo contactar', panelTitle: 'Hablemos', whatsapp: 'Escríbenos por WhatsApp', call: 'O llámanos al' },
+  en: { open: 'See how to get in touch', panelTitle: 'Let’s talk', whatsapp: 'Message us on WhatsApp', call: 'Or call us on' },
+  ca: { open: 'Mira com contactar', panelTitle: 'Parlem', whatsapp: 'Escriu-nos per WhatsApp', call: 'O truca’ns al' },
+})[getLang(Astro.url)];
 ---
 
 {/* Cierre: titular en dos tiempos y un círculo que abre el contacto.
@@ -40,24 +46,24 @@ const panelId = `cierre-${origin}`;
           {titleMuted && <span class="closing-cta__line closing-cta__line--muted">{titleMuted}</span>}
         </h2>
         <button class="closing-cta__orb" type="button" aria-expanded="false" aria-controls={panelId} data-orb>
-          <span class="visually-hidden">Ver cómo contactar</span>
+          <span class="visually-hidden">{t.open}</span>
           <Icon name="arrow" />
         </button>
         {text && <p class="closing-cta__text">{text}</p>}
       </div>
 
       <div class="closing-cta__panel" id={panelId} data-panel>
-        <p class="closing-cta__panel-title">Hablemos</p>
+        <p class="closing-cta__panel-title">{t.panelTitle}</p>
         <div class="closing-cta__pill-row">
           <span class="closing-cta__rule" aria-hidden="true" />
-          <a class="closing-cta__pill" href={whatsappUrl({ reason })} data-contact="whatsapp" data-origin={origin}>
+          <a class="closing-cta__pill" href={whatsappUrl(getLang(Astro.url), { reason })} data-contact="whatsapp" data-origin={origin}>
             <Icon name="whatsapp" />
-            Escríbenos por WhatsApp
+            {t.whatsapp}
           </a>
           <span class="closing-cta__rule" aria-hidden="true" />
         </div>
         <a class="closing-cta__call" href={phoneUrl()} data-contact="llamada" data-origin={origin}>
-          O llámanos al {site.phoneDisplay}
+          {t.call} {site.phoneDisplay}
         </a>
       </div>
     </div>

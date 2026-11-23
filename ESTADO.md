@@ -77,6 +77,13 @@ paquete preparado en `~/Desktop/Claude-migracion/`.
 - **Catálogo indexable** (`catalogIndexable: true`). Los 8 pisos sin fotos quedan fuera solos.
 - **Imagen al compartir** propia, 1200x630 y 100 KB (`public/img/og-conroma.jpg`).
 - **Vídeos optimizados**: `public/video/` 44 MB → 13 MB, con póster y `preload="none"`.
+- **Tres idiomas: es, en y ca** (23-nov). Rutas `/es/`, `/en/` y `/ca/` con las mismas páginas
+  (`src/pages/[lang]/`; los slugs no se traducen). `<html lang>`, canonical, `og:locale` y
+  `hreflang` recíprocos (es, en, ca, x-default → es) por idioma; sitemap con `xhtml:link` de los
+  tres; selector de idioma en la cabecera. Textos en `strings({ es, en, ca })` (`src/i18n/`):
+  si falta un idioma, `astro check` falla. La descripción de Habitatsoft sale en español con
+  `lang="es"` salvo que el feed traiga la de ese idioma (`Property.descriptions`). Las reseñas
+  reales no se traducen. **Regla del dueño: todo cambio de texto, en los tres idiomas.**
 
 ## 4. Falta (código)
 
@@ -137,8 +144,10 @@ En `conroma-crm-ui`:
 - **Publicar**: seguir `docs/SWIPE.md` (Hostinger, `www` y apex al mismo alojamiento, SSL de los dos).
 - **Push a GitHub** de la rama `feat/crm-leads`.
 - **Fotos de 8 inmuebles**: Habitatsoft no ha entregado el archivo.
-- **¿Versión en catalán?** La web antigua tenía 4 idiomas sin hreflang; la nueva es solo
-  castellano. En Malgrat el catalán es lengua habitual.
+- **Idiomas (hechos es/en/ca el 23-nov), pendientes:** que un nativo revise inglés y catalán;
+  leer `DescripcionIdiomas` del panel de Habitatsoft en `scripts/habitatsoft-panel/` (hoy el
+  extractor solo lee el español); traducir `public/llms.txt`; decidir si se traducen los slugs
+  (`/en/venta/` → `/en/for-sale/`), que obligaría a mapear rutas.
 - **Lloret tiene 36 inmuebles, más que Malgrat (23)**, pero los textos tratan Malgrat como el
   mercado principal. Decidir si se reequilibra.
 - **Posible canibalización** entre `/es/inmobiliaria/{pueblo}` y `/es/venta/{pueblo}`.

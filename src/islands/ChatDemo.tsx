@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { services } from '../data/services';
 import { whatsappUrl } from '../lib/links';
+import { localizePath, strings, type Lang } from '../i18n';
 import { Icon } from './Icon';
 import '../styles/chat-demo.css';
 
@@ -20,13 +21,71 @@ interface Intent {
   label: string;
 }
 
-const intents: Intent[] = [
-  { id: 'comprar', label: 'Comprar' },
-  { id: 'vender', label: 'Vender' },
-  { id: 'alquilar', label: 'Alquilar' },
-  { id: 'valoracion', label: '¿Cuánto vale mi piso?' },
-  { id: 'reformas', label: 'Reformas' },
-];
+const text = strings({
+  es: {
+    intents: [
+      { id: 'comprar', label: 'Comprar' },
+      { id: 'vender', label: 'Vender' },
+      { id: 'alquilar', label: 'Alquilar' },
+      { id: 'valoracion', label: '¿Cuánto vale mi piso?' },
+      { id: 'reformas', label: 'Reformas' },
+    ] as Intent[],
+    valuation: 'Cuatro preguntas y te decimos cuánto vale tu piso. Gratis y sin compromiso.',
+    valuationLink: 'Valorar mi piso',
+    more: (name: string) => `Más sobre ${name.toLowerCase()}`,
+    fallback: 'Eso te lo contamos mejor en persona. Escríbenos por WhatsApp y te respondemos.',
+    greeting: 'Hola. Dime qué necesitas y te oriento en un momento.',
+    dialog: 'Chat de ayuda de Conroma',
+    title: '¿Cómo te ayudamos?',
+    close: 'Cerrar chat',
+    human: 'Hablar con una persona',
+    note: 'Respuestas de ejemplo del prototipo.',
+    launcherClose: 'Cerrar chat de ayuda',
+    launcherOpen: 'Abrir chat de ayuda',
+  },
+  en: {
+    intents: [
+      { id: 'comprar', label: 'Buy' },
+      { id: 'vender', label: 'Sell' },
+      { id: 'alquilar', label: 'Rent' },
+      { id: 'valoracion', label: 'What’s my home worth?' },
+      { id: 'reformas', label: 'Renovations' },
+    ],
+    valuation: 'Four questions and we’ll tell you what your home is worth. Free, no strings attached.',
+    valuationLink: 'Value my home',
+    more: () => 'Find out more',
+    fallback: 'That’s easier to explain in person. Message us on WhatsApp and we’ll get back to you.',
+    greeting: 'Hi. Tell me what you need and I’ll point you in the right direction.',
+    dialog: 'Conroma help chat',
+    title: 'How can we help?',
+    close: 'Close chat',
+    human: 'Talk to a person',
+    note: 'Sample answers from the prototype.',
+    launcherClose: 'Close help chat',
+    launcherOpen: 'Open help chat',
+  },
+  ca: {
+    intents: [
+      { id: 'comprar', label: 'Comprar' },
+      { id: 'vender', label: 'Vendre' },
+      { id: 'alquilar', label: 'Llogar' },
+      { id: 'valoracion', label: 'Quant val el meu pis?' },
+      { id: 'reformas', label: 'Reformes' },
+    ],
+    valuation: 'Quatre preguntes i et diem quant val el teu pis. Gratis i sense compromís.',
+    valuationLink: 'Valora el meu pis',
+    more: (name: string) => `Més sobre ${name.toLowerCase()}`,
+    fallback: 'Això t’ho expliquem millor en persona. Escriu-nos per WhatsApp i et responem.',
+    greeting: 'Hola. Digues-me què necessites i t’oriento en un moment.',
+    dialog: 'Xat d’ajuda de Conroma',
+    title: 'Com t’ajudem?',
+    close: 'Tanca el xat',
+    human: 'Parla amb una persona',
+    note: 'Respostes d’exemple del prototip.',
+    launcherClose: 'Tanca el xat d’ajuda',
+    launcherOpen: 'Obre el xat d’ajuda',
+  },
+});
 
 /* ─── PUNTO DE SUSTITUCIÓN PARA LA IA REAL ────────────────────────────────
  * Hoy: respuestas guiadas, 100% en cliente. Sin backend, sin API key.
@@ -42,21 +101,22 @@ const intents: Intent[] = [
  *
  * La UI ya trata getAnswer como asíncrona, así que no hay que tocar nada más.
  * ──────────────────────────────────────────────────────────────────────── */
-export async function getAnswer(input: string): Promise<BotAnswer> {
+export async function getAnswer(input: string, lang: Lang): Promise<BotAnswer> {
+  const t = text[lang];
   if (input === 'valoracion') {
     return {
-      text: 'Cuatro preguntas y te decimos cuánto vale tu piso. Gratis y sin compromiso.',
-      href: '/es/valoracion/',
-      hrefLabel: 'Valorar mi piso',
+      text: t.valuation,
+      href: localizePath('/es/valoracion/', lang),
+      hrefLabel: t.valuationLink,
     };
   }
 
-  const match = services.find((service) => service.slug === input);
+  const match = services[lang].find((service) => service.slug === input);
   if (match) {
-    return { text: match.summary, href: match.href, hrefLabel: `Más sobre ${match.name.toLowerCase()}` };
+    return { text: match.summary, href: localizePath(match.href, lang), hrefLabel: t.more(match.name) };
   }
 
-  return { text: 'Eso te lo contamos mejor en persona. Escríbenos por WhatsApp y te respondemos.' };
+  return { text: t.fallback };
 }
 
 function RobotIcon() {
@@ -81,11 +141,12 @@ function RobotIcon() {
   );
 }
 
-export default function ChatDemo() {
+export default function ChatDemo({ lang }: { lang: Lang }) {
+  const t = text[lang];
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: 0, from: 'bot', text: 'Hola. Dime qué necesitas y te oriento en un momento.' },
+    { id: 0, from: 'bot', text: t.greeting },
   ]);
 
   const [hiddenByHero, setHiddenByHero] = useState(false);
@@ -137,7 +198,7 @@ export default function ChatDemo() {
     if (busy) return;
     setBusy(true);
     setMessages((prev) => [...prev, { id: nextId.current++, from: 'user', text: intent.label }]);
-    const answer = await getAnswer(intent.id);
+    const answer = await getAnswer(intent.id, lang);
     setMessages((prev) => [...prev, { id: nextId.current++, from: 'bot', ...answer }]);
     setBusy(false);
   }
@@ -150,12 +211,12 @@ export default function ChatDemo() {
           id={panelId}
           ref={panelRef}
           role="dialog"
-          aria-label="Chat de ayuda de Conroma"
+          aria-label={t.dialog}
           tabIndex={-1}
         >
           <header className="chatdemo__head">
-            <p className="chatdemo__title">¿Cómo te ayudamos?</p>
-            <button type="button" className="chatdemo__close" aria-label="Cerrar chat" onClick={() => setOpen(false)}>
+            <p className="chatdemo__title">{t.title}</p>
+            <button type="button" className="chatdemo__close" aria-label={t.close} onClick={() => setOpen(false)}>
               <Icon name="close" className="chatdemo__icon" />
             </button>
           </header>
@@ -174,7 +235,7 @@ export default function ChatDemo() {
           </div>
 
           <div className="chatdemo__chips">
-            {intents.map((intent) => (
+            {t.intents.map((intent) => (
               <button
                 key={intent.id}
                 type="button"
@@ -189,15 +250,15 @@ export default function ChatDemo() {
 
           <a
             className="chatdemo__wa"
-            href={whatsappUrl({ reason: 'general' })}
+            href={whatsappUrl(lang, { reason: 'general' })}
             data-contact="whatsapp"
             data-origin="chat"
           >
             <Icon name="whatsapp" className="chatdemo__icon" />
-            Hablar con una persona
+            {t.human}
           </a>
 
-          <p className="chatdemo__note">Respuestas de ejemplo del prototipo.</p>
+          <p className="chatdemo__note">{t.note}</p>
         </div>
       )}
 
@@ -205,7 +266,7 @@ export default function ChatDemo() {
         ref={launcherRef}
         type="button"
         className="chatdemo__launcher"
-        aria-label={open ? 'Cerrar chat de ayuda' : 'Abrir chat de ayuda'}
+        aria-label={open ? t.launcherClose : t.launcherOpen}
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}

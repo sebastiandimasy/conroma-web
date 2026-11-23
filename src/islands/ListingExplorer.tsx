@@ -18,15 +18,78 @@ import { hiddenRefs, hideProperty, hydrateStore, restoreHidden } from '../lib/st
 import { FilterSheet } from './FilterSheet';
 import { Icon } from './Icon';
 import { PropertyCard } from './PropertyCard';
+import { intlLocale, strings, type Lang } from '../i18n';
 
 interface ListingExplorerProps {
   properties: Property[];
   townName: string;
+  lang: Lang;
 }
+
+const texts = strings({
+  es: {
+    upTo: (price: string) => `Hasta ${price}`,
+    rooms3: '3 hab o más',
+    terrace: 'Terraza',
+    elevator: 'Ascensor',
+    filters: 'Filtros',
+    count: (n: number) => `${n} ${n === 1 ? 'inmueble' : 'inmuebles'}`,
+    restore: (n: number) => `Recuperar ${n} ${n === 1 ? 'descartada' : 'descartadas'}`,
+    sort: 'Ordenar',
+    newest: 'Más recientes',
+    priceAsc: 'Precio, de menos a más',
+    priceDesc: 'Precio, de más a menos',
+    emptyTitle: 'Ahora mismo no tenemos ninguna así.',
+    emptyText: 'Prueba a quitar algún filtro, o dinos qué buscas y te avisamos cuando entre.',
+    clearFilters: 'Quitar filtros',
+    tellUs: 'Decidnos qué buscas',
+    more: (n: number) => `Ver más (${n} restantes)`,
+    showingUpTo: (price: string) => `Mostrando inmuebles hasta ${price}.`,
+  },
+  en: {
+    upTo: (price: string) => `Up to ${price}`,
+    rooms3: '3+ bedrooms',
+    terrace: 'Terrace',
+    elevator: 'Lift',
+    filters: 'Filters',
+    count: (n: number) => `${n} ${n === 1 ? 'property' : 'properties'}`,
+    restore: (n: number) => `Bring back ${n} hidden`,
+    sort: 'Sort',
+    newest: 'Newest first',
+    priceAsc: 'Price, low to high',
+    priceDesc: 'Price, high to low',
+    emptyTitle: "We've got nothing like that right now.",
+    emptyText: "Try removing a filter, or tell us what you're after and we'll let you know when something comes in.",
+    clearFilters: 'Clear filters',
+    tellUs: "Tell us what you're after",
+    more: (n: number) => `Show more (${n} left)`,
+    showingUpTo: (price: string) => `Showing properties up to ${price}.`,
+  },
+  ca: {
+    upTo: (price: string) => `Fins a ${price}`,
+    rooms3: '3 hab. o més',
+    terrace: 'Terrassa',
+    elevator: 'Ascensor',
+    filters: 'Filtres',
+    count: (n: number) => `${n} ${n === 1 ? 'immoble' : 'immobles'}`,
+    restore: (n: number) => `Recuperar ${n} ${n === 1 ? 'descartat' : 'descartats'}`,
+    sort: 'Ordenar',
+    newest: 'Més recents',
+    priceAsc: 'Preu, de menys a més',
+    priceDesc: 'Preu, de més a menys',
+    emptyTitle: 'Ara mateix no en tenim cap així.',
+    emptyText: "Prova de treure algun filtre, o digues-nos què busques i t'avisem quan n'entri algun.",
+    clearFilters: 'Treure filtres',
+    tellUs: 'Digues-nos què busques',
+    more: (n: number) => `Veure'n més (en queden ${n})`,
+    showingUpTo: (price: string) => `Mostrant immobles fins a ${price}.`,
+  },
+});
 
 const PAGE = 24;
 
-export default function ListingExplorer({ properties, townName }: ListingExplorerProps) {
+export default function ListingExplorer({ properties, townName, lang }: ListingExplorerProps) {
+  const t = texts[lang];
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [order, setOrder] = useState<SortOrder>('recientes');
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -46,7 +109,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
     for (const property of properties) counts.set(property.town, (counts.get(property.town) ?? 0) + 1);
     return [...counts.entries()]
       .map(([slug, count]) => ({ slug, name: findTown(slug)?.name ?? slug, count }))
-      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'es'));
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, intlLocale[lang]));
   }, [properties]);
   const townName_ = towns.find((town) => town.slug === filters.town)?.name ?? null;
   const matching = useMemo(() => applyFilters(properties, filters), [properties, filters]);
@@ -63,17 +126,17 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
       ? [{ label: townName_, active: true, toggle: () => setFilters({ ...filters, town: null }) }]
       : []),
     {
-      label: 'Hasta 250.000 €',
+      label: t.upTo(formatPrice(250000, lang)),
       active: filters.maxPrice === 250000,
       toggle: () => setFilters({ ...filters, maxPrice: filters.maxPrice === 250000 ? null : 250000 }),
     },
     {
-      label: '3 hab o más',
+      label: t.rooms3,
       active: filters.minRooms === 3,
       toggle: () => setFilters({ ...filters, minRooms: filters.minRooms === 3 ? null : 3 }),
     },
-    { label: 'Terraza', active: filters.terrace, toggle: () => setFilters({ ...filters, terrace: !filters.terrace }) },
-    { label: 'Ascensor', active: filters.elevator, toggle: () => setFilters({ ...filters, elevator: !filters.elevator }) },
+    { label: t.terrace, active: filters.terrace, toggle: () => setFilters({ ...filters, terrace: !filters.terrace }) },
+    { label: t.elevator, active: filters.elevator, toggle: () => setFilters({ ...filters, elevator: !filters.elevator }) },
   ];
 
   return (
@@ -86,7 +149,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
           aria-haspopup="dialog"
         >
           <Icon name="filter" className="button__icon" />
-          {`Filtros${active > 0 ? ` · ${active}` : ''}`}
+          {`${t.filters}${active > 0 ? ` · ${active}` : ''}`}
         </button>
         {quick.map((item) => (
           <button key={item.label} type="button" className="chip" aria-pressed={item.active} onClick={item.toggle}>
@@ -97,22 +160,22 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
 
       <div className="listing__bar">
         <p className="listing__count" aria-live="polite">
-          {`${visible.length} ${visible.length === 1 ? 'inmueble' : 'inmuebles'}`}
+          {t.count(visible.length)}
           {hiddenCount > 0 && (
             <>
               {' · '}
               <button type="button" className="listing__restore" onClick={restoreHidden}>
-                {`Recuperar ${hiddenCount} ${hiddenCount === 1 ? 'descartada' : 'descartadas'}`}
+                {t.restore(hiddenCount)}
               </button>
             </>
           )}
         </p>
         <label className="listing__sort">
-          <span className="visually-hidden">Ordenar</span>
+          <span className="visually-hidden">{t.sort}</span>
           <select value={order} onChange={(event) => setOrder(event.target.value as SortOrder)}>
-            <option value="recientes">Más recientes</option>
-            <option value="precio-asc">Precio, de menos a más</option>
-            <option value="precio-desc">Precio, de más a menos</option>
+            <option value="recientes">{t.newest}</option>
+            <option value="precio-asc">{t.priceAsc}</option>
+            <option value="precio-desc">{t.priceDesc}</option>
           </select>
           <Icon name="chevron" className="listing__sort-icon" />
         </label>
@@ -120,19 +183,19 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
 
       {visible.length === 0 ? (
         <div className="listing__empty">
-          <h2 className="listing__empty-title">Ahora mismo no tenemos ninguna así.</h2>
-          <p>Prueba a quitar algún filtro, o dinos qué buscas y te avisamos cuando entre.</p>
+          <h2 className="listing__empty-title">{t.emptyTitle}</h2>
+          <p>{t.emptyText}</p>
           <div className="listing__empty-actions">
             <Button variant="ghost" onPress={() => setFilters(emptyFilters)}>
-              Quitar filtros
+              {t.clearFilters}
             </Button>
             <a
               className="button button--ink"
-              href={whatsappUrl({ reason: 'general' })}
+              href={whatsappUrl(lang, { reason: 'general' })}
               data-contact="whatsapp"
               data-origin="listado-vacio"
             >
-              Decidnos qué buscas
+              {t.tellUs}
             </a>
           </div>
         </div>
@@ -147,6 +210,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
                 eager={index === 0}
                 headingLevel="h2"
                 onHide={hideProperty}
+                lang={lang}
               />
             </li>
           ))}
@@ -156,13 +220,13 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
       {visible.length > shown && (
         <div className="listing__more">
           <Button variant="ghost" onPress={() => setShown(shown + PAGE)}>
-            {`Ver más (${visible.length - shown} restantes)`}
+            {t.more(visible.length - shown)}
           </Button>
         </div>
       )}
 
       {filters.maxPrice !== null && visible.length > 0 && (
-        <p className="visually-hidden">{`Mostrando inmuebles hasta ${formatPrice(filters.maxPrice)}.`}</p>
+        <p className="visually-hidden">{t.showingUpTo(formatPrice(filters.maxPrice, lang))}</p>
       )}
 
       <FilterSheet
@@ -173,6 +237,7 @@ export default function ListingExplorer({ properties, townName }: ListingExplore
         count={matching.length}
         onChange={setFilters}
         onClose={() => setSheetOpen(false)}
+        lang={lang}
       />
     </div>
   );

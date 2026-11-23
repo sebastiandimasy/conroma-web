@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon';
 import { photoSources } from '../lib/photos';
+import { strings, type Lang } from '../i18n';
 
 interface PropertyGalleryProps {
   propertyRef: string;
@@ -8,12 +9,59 @@ interface PropertyGalleryProps {
   photos: number;
   tone: number;
   images?: string[];
+  lang: Lang;
 }
+
+const texts = strings({
+  es: {
+    photosOf: (title: string) => `Fotos de ${title}`,
+    allPhotosOf: (title: string) => `Todas las fotos de ${title}`,
+    soon: 'Fotos próximamente',
+    zoom: (n: number, total: number) => `Ampliar foto ${n} de ${total}`,
+    alt: (title: string, n: number, total: number) => `${title}, foto ${n} de ${total}`,
+    prev: 'Foto anterior',
+    next: 'Foto siguiente',
+    thumbs: 'Miniaturas',
+    see: (n: number, total: number) => `Ver foto ${n} de ${total}`,
+    count: (n: number, total: number) => `Foto ${n} de ${total}`,
+    seeAll: 'Ver todas las fotos',
+    close: 'Cerrar',
+  },
+  en: {
+    photosOf: (title: string) => `Photos of the ${title.charAt(0).toLowerCase()}${title.slice(1)}`,
+    allPhotosOf: (title: string) => `All photos of the ${title.charAt(0).toLowerCase()}${title.slice(1)}`,
+    soon: 'Photos coming soon',
+    zoom: (n: number, total: number) => `Enlarge photo ${n} of ${total}`,
+    alt: (title: string, n: number, total: number) => `${title}, photo ${n} of ${total}`,
+    prev: 'Previous photo',
+    next: 'Next photo',
+    thumbs: 'Thumbnails',
+    see: (n: number, total: number) => `See photo ${n} of ${total}`,
+    count: (n: number, total: number) => `Photo ${n} of ${total}`,
+    seeAll: 'See all photos',
+    close: 'Close',
+  },
+  ca: {
+    photosOf: (title: string) => `Fotos: ${title}`,
+    allPhotosOf: (title: string) => `Totes les fotos: ${title}`,
+    soon: 'Aviat hi haurà fotos',
+    zoom: (n: number, total: number) => `Amplia la foto ${n} de ${total}`,
+    alt: (title: string, n: number, total: number) => `${title}, foto ${n} de ${total}`,
+    prev: 'Foto anterior',
+    next: 'Foto següent',
+    thumbs: 'Miniatures',
+    see: (n: number, total: number) => `Mostra la foto ${n} de ${total}`,
+    count: (n: number, total: number) => `Foto ${n} de ${total}`,
+    seeAll: 'Mostra totes les fotos',
+    close: 'Tanca',
+  },
+});
 
 /* Visor con miniaturas: foto principal 4:3 que se desliza con el dedo (scroll-snap), tira de
    miniaturas debajo y visor a pantalla completa. Las fotos vienen de Habitatsoft en varios tamaños
    (lib/photos): 800 px por defecto con srcset y miniaturas de 170 px. */
-export default function PropertyGallery({ propertyRef, title, photos, tone, images }: PropertyGalleryProps) {
+export default function PropertyGallery({ propertyRef, title, photos, tone, images, lang }: PropertyGalleryProps) {
+  const t = texts[lang];
   const trackRef = useRef<HTMLDivElement>(null);
   const thumbsRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -72,9 +120,9 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
   if (!hasPhotos) {
     return (
       <div className="gallery">
-        <div className="gallery__empty" aria-label={`Fotos de ${title}`}>
+        <div className="gallery__empty" aria-label={t.photosOf(title)}>
           <Icon name="camera" />
-          <span>Fotos próximamente</span>
+          <span>{t.soon}</span>
         </div>
       </div>
     );
@@ -83,16 +131,16 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
   return (
     <div className="gallery">
       <div className="gallery__stage">
-        <div className="gallery__track" ref={trackRef} tabIndex={0} aria-label={`Fotos de ${title}`}>
+        <div className="gallery__track" ref={trackRef} tabIndex={0} aria-label={t.photosOf(title)}>
           {sources.map((photo, index) => (
             <figure key={index} className="gallery__slide" data-index={index + 1}>
-              <button type="button" className="gallery__zoom" onClick={() => openViewer(index)} aria-label={`Ampliar foto ${index + 1} de ${count}`}>
+              <button type="button" className="gallery__zoom" onClick={() => openViewer(index)} aria-label={t.zoom(index + 1, count)}>
                 <img
                   className="gallery__photo"
                   src={photo.src}
                   srcSet={photo.srcset}
                   sizes="(min-width: 60rem) 58vw, 100vw"
-                  alt={`${title}, foto ${index + 1} de ${count}`}
+                  alt={t.alt(title, index + 1, count)}
                   width="1280"
                   height="960"
                   loading={index === 0 ? 'eager' : 'lazy'}
@@ -107,10 +155,10 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
 
         {count > 1 && (
           <>
-            <button type="button" className="gallery__nav gallery__nav--prev" onClick={() => goTo(current - 2)} aria-label="Foto anterior">
+            <button type="button" className="gallery__nav gallery__nav--prev" onClick={() => goTo(current - 2)} aria-label={t.prev}>
               <Icon name="arrow" />
             </button>
-            <button type="button" className="gallery__nav gallery__nav--next" onClick={() => goTo(current)} aria-label="Foto siguiente">
+            <button type="button" className="gallery__nav gallery__nav--next" onClick={() => goTo(current)} aria-label={t.next}>
               <Icon name="arrow" />
             </button>
           </>
@@ -118,14 +166,14 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
       </div>
 
       {count > 1 && (
-        <div className="gallery__thumbs" ref={thumbsRef} role="group" aria-label="Miniaturas">
+        <div className="gallery__thumbs" ref={thumbsRef} role="group" aria-label={t.thumbs}>
           {sources.map((photo, index) => (
             <button
               key={index}
               type="button"
               className="gallery__thumb"
               onClick={() => goTo(index)}
-              aria-label={`Ver foto ${index + 1} de ${count}`}
+              aria-label={t.see(index + 1, count)}
               aria-current={current === index + 1 ? 'true' : undefined}
             >
               <img src={photo.thumb} alt="" width="170" height="128" loading="lazy" decoding="async" />
@@ -135,17 +183,17 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
       )}
 
       <div className="gallery__meta">
-        <span className="gallery__count" aria-live="polite">{`Foto ${current} de ${count}`}</span>
+        <span className="gallery__count" aria-live="polite">{t.count(current, count)}</span>
         <button type="button" className="link-cta" onClick={() => openViewer()}>
-          Ver todas las fotos
+          {t.seeAll}
         </button>
       </div>
 
-      <dialog ref={dialogRef} className="gallery__viewer" aria-label={`Todas las fotos de ${title}`}>
+      <dialog ref={dialogRef} className="gallery__viewer" aria-label={t.allPhotosOf(title)}>
         <form method="dialog" className="gallery__viewer-bar">
           <button type="submit" className="chip chip--on-photo">
             <Icon name="close" className="save-button__icon" />
-            Cerrar
+            {t.close}
           </button>
         </form>
         <div className="gallery__viewer-list">
@@ -155,7 +203,7 @@ export default function PropertyGallery({ propertyRef, title, photos, tone, imag
               src={photo.src}
               srcSet={photo.srcset}
               sizes="(min-width: 1100px) 1100px, 100vw"
-              alt={`${title}, foto ${index + 1} de ${count}`}
+              alt={t.alt(title, index + 1, count)}
               width="1280"
               height="960"
               loading="lazy"
