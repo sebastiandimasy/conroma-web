@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { initEffects } from './motion/effects';
 import { initReveals } from './motion/reveal';
+import { initTouch } from './motion/touch';
 
 /** Interruptor de emergencia (spec §5.8): en false, la web queda visible y quieta. */
 export const MOTION_ON = true;
@@ -47,6 +48,7 @@ export function waitForSkeleton(): Promise<void> {
 export function initMotion(): void {
   gsap.registerPlugin(ScrollTrigger, SplitText);
   initHeader();
+  initTouch();
   if (!MOTION_ON) return;
   Promise.all([waitForSkeleton(), document.fonts.ready]).then(() => {
     gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {

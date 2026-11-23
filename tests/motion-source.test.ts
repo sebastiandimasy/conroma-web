@@ -42,3 +42,24 @@ describe('movimiento: fuera las animaciones de scroll en CSS', () => {
     expect(styles).not.toMatch(/\[data-reveal\][^{]*\{[^}]*opacity:\s*0/);
   });
 });
+
+describe('movimiento: hover y toque (motion.css)', () => {
+  const motionCss = read('src/styles/motion.css');
+
+  it('se importa en global.css', () => {
+    expect(read('src/styles/global.css')).toMatch(/@import "\.\/motion\.css";/);
+  });
+
+  it('solo tokens de color y transiciones con propiedades concretas', () => {
+    expect(motionCss).not.toMatch(/#[0-9a-f]{3,8}\b|transition:\s*all/i);
+  });
+
+  it('todo :hover vive dentro de (hover: hover) and (pointer: fine)', () => {
+    const outside = motionCss.replace(/@media \(hover: hover\) and \(pointer: fine\)\s*\{[\s\S]*?\n\}/g, '');
+    expect(outside).not.toMatch(/:hover/);
+  });
+
+  it('con reducir movimiento no hay desplazamientos', () => {
+    expect(motionCss).toMatch(/prefers-reduced-motion: reduce/);
+  });
+});
