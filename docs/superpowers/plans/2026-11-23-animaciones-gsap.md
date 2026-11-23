@@ -55,7 +55,7 @@ Léelo entero antes de empezar; este plan no repite sus tablas.
 
 ---
 
-### Tarea 1: Medir la base antes de tocar nada
+### Task 1: Medir la base antes de tocar nada
 
 **Files:**
 - Create: `docs/superpowers/plans/2026-11-23-animaciones-gsap-base.md`
@@ -67,7 +67,7 @@ Léelo entero antes de empezar; este plan no repite sus tablas.
 - [ ] **Paso 3:** Guardar la tabla en el archivo de base y hacer commit
   (`docs: base de rendimiento antes de las animaciones GSAP`).
 
-### Tarea 2: Lógica pura de movimiento (con tests)
+### Task 2: Lógica pura de movimiento (con tests)
 
 **Files:**
 - Create: `src/lib/motion/kinds.ts`, `src/lib/motion/figures.ts`
@@ -126,7 +126,7 @@ expect(formatFigure(parseFigure('+300', 'ca')!, 150, 'ca')).toBe('+150');
 - [ ] **Paso 4:** Mismo comando → PASS.
 - [ ] **Paso 5:** Commit `feat(motion): tipos, valores y cifras de las animaciones`.
 
-### Tarea 3: Entradas, salidas y cifras con `ScrollTrigger.batch`
+### Task 3: Entradas, salidas y cifras con `ScrollTrigger.batch`
 
 **Files:**
 - Create: `src/lib/motion/reveal.ts`
@@ -186,7 +186,7 @@ expect(motion + readFileSync('src/lib/motion/reveal.ts', 'utf8')).not.toMatch(/\
   arriba y vuelven al subir; las cifras de la banda cuentan (4,9 con decimal en `/es/vender/`).
 - [ ] **Paso 6:** Commit `feat(motion): entradas y salidas con ScrollTrigger.batch y cifras que cuentan`.
 
-### Tarea 4: Efectos singulares en GSAP y retirada del CSS `animation-timeline`
+### Task 4: Efectos singulares en GSAP y retirada del CSS `animation-timeline`
 
 **Files:**
 - Create: `src/lib/motion/effects.ts`
@@ -239,7 +239,7 @@ expect(styles).not.toMatch(/\[data-reveal\][^{]*\{[^}]*opacity:\s*0/);
   la foto fija y el paso activo marcado; en Safari/iOS (o WebKit en Playwright) se ve igual.
 - [ ] **Paso 6:** Commit `feat(motion): héroes, Statement y StoryScroll con GSAP; fuera animation-timeline`.
 
-### Tarea 5: Hover y toque
+### Task 5: Hover y toque
 
 **Files:**
 - Create: `src/styles/motion.css` (y `@import "./motion.css";` al final de `src/styles/global.css`),
@@ -286,7 +286,7 @@ expect(motionCss).toMatch(/prefers-reduced-motion: reduce/);
   los velos en claro y oscuro (pares de §0 de `ESTANDAR.md`).
 - [ ] **Paso 6:** Commit `feat(motion): hover en ordenador y pulsación en móvil`.
 
-### Tarea 6: Actualizar `ESTANDAR.md`
+### Task 6: Actualizar `ESTANDAR.md`
 
 **Files:**
 - Modify: `ESTANDAR.md` §1 (tabla de movimiento, ~líneas 160-175), §4 «Contador / Stat» y
@@ -301,7 +301,7 @@ expect(motionCss).toMatch(/prefers-reduced-motion: reduce/);
   resultados que contradigan lo nuevo.
 - [ ] **Paso 3:** Commit `docs(estandar): nuevas reglas de movimiento con GSAP`.
 
-### Tarea 7: Verificación final en móvil y rendimiento
+### Task 7: Verificación final en móvil y rendimiento
 
 **Files:**
 - Modify: `docs/superpowers/plans/2026-11-23-animaciones-gsap-base.md` (añadir columna «después»),
