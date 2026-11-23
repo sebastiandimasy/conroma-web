@@ -131,8 +131,19 @@ export function initReveals(): () => void {
     },
   );
 
+  // Abrir un desplegable o cargar una foto cambia la altura de la página: sin recalcular, los
+  // disparadores se quedan en la posición vieja y un bloque podría fundirse mientras se lee.
+  let pending: number | undefined;
+  const observer = new ResizeObserver(() => {
+    window.clearTimeout(pending);
+    pending = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+  });
+  observer.observe(document.body);
+
   // Al volver a «reducir movimiento», las cifras recuperan su texto real.
   return () => {
+    observer.disconnect();
+    window.clearTimeout(pending);
     for (const item of items) if (item.original !== undefined) item.el.textContent = item.original;
   };
 }

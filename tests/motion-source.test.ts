@@ -63,3 +63,24 @@ describe('movimiento: hover y toque (motion.css)', () => {
     expect(motionCss).toMatch(/prefers-reduced-motion: reduce/);
   });
 });
+
+describe('movimiento: revisión final', () => {
+  it('recalcula las posiciones cuando cambia la altura de la página (desplegables, fotos)', () => {
+    const reveal = read('src/lib/motion/reveal.ts');
+    expect(reveal).toMatch(/new ResizeObserver/);
+    expect(reveal).toMatch(/ScrollTrigger\.refresh\(\)/);
+  });
+
+  it('el parallax de la foto del héroe no pisa el zoom de entrada en CSS', () => {
+    expect(read('src/lib/motion/effects.ts')).toMatch(/hero-story__photo'\), \{[^}]*immediateRender: false/);
+  });
+
+  it('ninguna transición CSS de transform persigue a GSAP en tarjetas', () => {
+    const card = read('src/styles/components.css').match(/\n  \.card \{[^}]*\}/)?.[0] ?? '';
+    expect(card).not.toMatch(/transition:[^;]*transform/);
+  });
+
+  it('la foto del carrusel quita su transición mientras GSAP la mueve', () => {
+    expect(read('src/islands/ReformCarousel.tsx')).toMatch(/clearProps: 'transform,transition'/);
+  });
+});

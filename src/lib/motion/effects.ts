@@ -7,7 +7,8 @@ function heroStory(): void {
   const hero = document.querySelector<HTMLElement>('.hero-story');
   if (!hero) return;
   const scrollTrigger = { trigger: hero, start: 'top top', end: 'bottom top', scrub: true };
-  gsap.to(hero.querySelector('.hero-story__photo'), { y: '10%', ease: 'none', scrollTrigger });
+  // immediateRender: false — si no, GSAP lee a medias el zoom CSS de entrada (hero-settle) y lo deja fijo.
+  gsap.to(hero.querySelector('.hero-story__photo'), { y: '10%', ease: 'none', immediateRender: false, scrollTrigger });
   gsap.to(hero.querySelector('.hero-story__content'), { y: -48, opacity: 0, ease: 'none', scrollTrigger });
 }
 

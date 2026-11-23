@@ -47,7 +47,10 @@ export default function ReformCarousel({ photos, lang }: Props) {
         if (still) return;
         // La foto que llega al centro sube un poco (spec §5.4). Sin fundido: las vecinas ya se ven.
         const photo = swiper.slides[swiper.activeIndex]?.querySelector('img');
-        if (photo) gsap.from(photo, { y: REVEAL.subir.from.y, duration: 0.3, ease: REVEAL.subir.enter.ease, clearProps: 'transform' });
+        if (!photo) return;
+        // Sin la transición CSS del hover mientras GSAP la mueve; al acabar vuelve la de la hoja de estilos.
+        photo.style.transition = 'none';
+        gsap.from(photo, { y: REVEAL.subir.from.y, duration: 0.3, ease: REVEAL.subir.enter.ease, clearProps: 'transform,transition' });
       }}
       a11y={{
         prevSlideMessage: t.prev,
