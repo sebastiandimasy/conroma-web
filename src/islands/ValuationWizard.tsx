@@ -6,7 +6,7 @@ import { site } from '../data/site';
 import { localizePath, strings, type Lang } from '../i18n';
 import { formatRating } from '../lib/format';
 import { createBrowserClient } from '../lib/supabase';
-import { saveLead } from '../lib/leads';
+import { notifyLead, saveLead } from '../lib/leads';
 import { Icon } from './Icon';
 import { FlipLabel } from './FlipLabel';
 
@@ -95,13 +95,13 @@ const text = strings({
     done: {
       notSavedTitle: 'Tu solicitud aún no nos ha llegado. Envíala por WhatsApp.',
       callTitle: (name: string) => `Recibido, ${name}. Te llamamos nosotros.`,
-      waTitle: 'Recibido. Pulsa para continuar por WhatsApp.',
+      waTitle: (name: string) => `Recibido, ${name}. Te escribimos por WhatsApp.`,
       notSavedText:
         'No hemos podido guardarla. Pulsa el botón: se abre WhatsApp con la solicitud ya escrita y solo tienes que darle a enviar. O llámanos al',
       callText:
         'Tenemos tu teléfono y la dirección del piso. Te llamamos en horario de oficina, normalmente el mismo día. Si prefieres adelantarlo, llámanos tú al',
       waText:
-        'Se abre WhatsApp con tu solicitud ya escrita: dale a enviar y te contestamos nosotros, en persona. Si prefieres, llámanos al',
+        'Tenemos tu teléfono y la dirección del piso. Te escribimos en horario de oficina, normalmente el mismo día. Si prefieres adelantarlo, llámanos tú al',
       continueWa: 'Continuar por WhatsApp',
       browse: 'Ver pisos en venta mientras tanto',
     },
@@ -127,7 +127,7 @@ const text = strings({
     sending: 'Enviando…',
     submit: 'Va, enviádmelo',
     callHint: 'Nos llega tu solicitud y te llamamos nosotros. No tienes que hacer nada más.',
-    waHint: 'Guardamos tu solicitud y te damos un botón para seguir por WhatsApp.',
+    waHint: 'Nos llega tu solicitud y te escribimos nosotros por WhatsApp. No tienes que hacer nada más.',
     back: 'Atrás',
     trust: (rating: string, count: number) => `${rating} sobre 5 en ${count} reseñas de Google · Gratis y sin compromiso`,
   },
@@ -195,13 +195,13 @@ const text = strings({
     done: {
       notSavedTitle: 'Your request hasn’t reached us yet. Send it on WhatsApp.',
       callTitle: (name: string) => `Got it, ${name}. We’ll call you.`,
-      waTitle: 'Got it. Tap to carry on in WhatsApp.',
+      waTitle: (name: string) => `Got it, ${name}. We’ll message you on WhatsApp.`,
       notSavedText:
         'We couldn’t save it. Tap the button: WhatsApp opens with your request already written and you just hit send. Or call us on',
       callText:
         'We’ve got your number and the property’s address. We’ll call you during office hours, usually the same day. If you’d rather not wait, call us on',
       waText:
-        'WhatsApp opens with your request already written. Hit send and one of us will reply in person. If you prefer, call us on',
+        'We’ve got your number and the property’s address. We’ll message you during office hours, usually the same day. If you’d rather not wait, call us on',
       continueWa: 'Continue on WhatsApp',
       browse: 'Browse homes for sale in the meantime',
     },
@@ -227,7 +227,7 @@ const text = strings({
     sending: 'Sending…',
     submit: 'Go on, send it to me',
     callHint: 'Your request comes straight to us and we call you. You don’t need to do anything else.',
-    waHint: 'We save your request and give you a button to carry on in WhatsApp.',
+    waHint: 'Your request comes straight to us and we message you on WhatsApp. You don’t need to do anything else.',
     back: 'Back',
     trust: (rating: string, count: number) => `${rating} out of 5 from ${count} Google reviews · Free, no obligation`,
   },
@@ -295,13 +295,13 @@ const text = strings({
     done: {
       notSavedTitle: 'La teva sol·licitud encara no ens ha arribat. Envia-la per WhatsApp.',
       callTitle: (name: string) => `Rebut, ${name}. Et truquem nosaltres.`,
-      waTitle: 'Rebut. Prem per continuar per WhatsApp.',
+      waTitle: (name: string) => `Rebut, ${name}. T’escrivim per WhatsApp.`,
       notSavedText:
         'No l’hem pogut desar. Prem el botó: s’obre WhatsApp amb la sol·licitud ja escrita i només l’has d’enviar. O truca’ns al',
       callText:
         'Tenim el teu telèfon i l’adreça del pis. Et truquem en horari d’oficina, normalment el mateix dia. Si ho vols avançar, truca’ns tu al',
       waText:
-        'S’obre WhatsApp amb la sol·licitud ja escrita: envia-la i et responem nosaltres, en persona. Si ho prefereixes, truca’ns al',
+        'Tenim el teu telèfon i l’adreça del pis. T’escrivim en horari d’oficina, normalment el mateix dia. Si ho vols avançar, truca’ns tu al',
       continueWa: 'Continua per WhatsApp',
       browse: 'Mira pisos en venda mentrestant',
     },
@@ -327,7 +327,7 @@ const text = strings({
     sending: 'Enviant…',
     submit: 'Va, envieu-m’ho',
     callHint: 'Ens arriba la teva sol·licitud i et truquem nosaltres. No has de fer res més.',
-    waHint: 'Desem la teva sol·licitud i et donem un botó per continuar per WhatsApp.',
+    waHint: 'Ens arriba la teva sol·licitud i t’escrivim nosaltres per WhatsApp. No has de fer res més.',
     back: 'Enrere',
     trust: (rating: string, count: number) => `${rating} sobre 5 en ${count} ressenyes de Google · Gratis i sense compromís`,
   },
@@ -411,7 +411,7 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
     event.preventDefault();
     const next: Record<string, string> = {};
     if (answers.name.trim().length < 2) next.name = t.errors.name;
-    if (answers.channel === 'llamada' && !isValidPhone(answers.phone)) {
+    if (!isValidPhone(answers.phone)) {
       next.phone = t.errors.phone;
     }
     if (!answers.privacy) next.privacy = t.errors.privacy;
@@ -424,10 +424,9 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
     if (sending) return;
     setSending(true);
 
-    // El lead se guarda SIEMPRE, antes de ofrecer WhatsApp: si el visitante no llega a enviar
-    // el WhatsApp, la solicitud no se pierde.
+    // Se guarda en Supabase y se avisa por correo a gestion@ a la vez (public/api/aviso-lead.php).
     // Insert directo en Supabase (web estática, sin Worker): anon key + policy RLS solo-INSERT.
-    const stored = await saveLead(() =>
+    const [stored, mailed] = await Promise.all([saveLead(() =>
       createBrowserClient()
         .from('lead')
         .insert({
@@ -443,9 +442,19 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
           consent_at: new Date().toISOString(),
           consent_source: 'valoracion',
         }),
-    );
+    ), notifyLead({
+      form: 'valoracion',
+      name: answers.name.trim(),
+      phone: answers.phone.trim(),
+      intent: 'valoración',
+      address: answers.address.trim(),
+      channel: answers.channel === 'llamada' ? 'Llamada' : 'WhatsApp',
+      message: buildMessage(answers, t),
+      lang,
+    })]);
 
-    setSaved(stored);
+    // Recibido si llegó por cualquiera de las dos vías: la base de datos o el correo.
+    setSaved(stored || mailed);
     setSending(false);
     setSent(true);
   }
@@ -469,7 +478,7 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
             ? t.done.notSavedTitle
             : callMe
               ? t.done.callTitle(answers.name.trim().split(' ')[0])
-              : t.done.waTitle}
+              : t.done.waTitle(answers.name.trim().split(' ')[0])}
         </h2>
         <p className="wizard__text">
           {!saved ? (
@@ -498,14 +507,14 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
             </>
           )}
         </p>
-        {(!callMe || !saved) && (
+        {!saved && (
           <a
             className="button button--primary button--large button--block"
             href={waHref}
             target="_blank"
             rel="noopener"
             data-contact="whatsapp"
-            data-origin={saved ? 'valoracion-whatsapp' : 'valoracion-fallo'}
+            data-origin="valoracion-fallo"
           >
             <FlipLabel>{t.done.continueWa}</FlipLabel>
           </a>
@@ -717,26 +726,24 @@ export default function ValuationWizard({ lang }: { lang: Lang }) {
                 ))}
               </div>
 
-              {answers.channel === 'llamada' && (
-                <label className="field">
-                  <span className="field__label">{t.phoneLabel} <span aria-hidden="true">*</span></span>
-                  <input
-                    id="valoracion-phone"
-                    required
-                    aria-required="true"
-                    aria-describedby={errors.phone ? 'valoracion-phone-error' : undefined}
-                    className="field__control"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    placeholder={t.phonePlaceholder}
-                    value={answers.phone}
-                    aria-invalid={Boolean(errors.phone)}
-                    onChange={(event) => setAnswers({ ...answers, phone: event.target.value })}
-                  />
-                  {errors.phone && <span className="field__error" id="valoracion-phone-error" role="alert">{errors.phone}</span>}
-                </label>
-              )}
+              <label className="field">
+                <span className="field__label">{t.phoneLabel} <span aria-hidden="true">*</span></span>
+                <input
+                  id="valoracion-phone"
+                  required
+                  aria-required="true"
+                  aria-describedby={errors.phone ? 'valoracion-phone-error' : undefined}
+                  className="field__control"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder={t.phonePlaceholder}
+                  value={answers.phone}
+                  aria-invalid={Boolean(errors.phone)}
+                  onChange={(event) => setAnswers({ ...answers, phone: event.target.value })}
+                />
+                {errors.phone && <span className="field__error" id="valoracion-phone-error" role="alert">{errors.phone}</span>}
+              </label>
 
               <label className="check">
                 <input
