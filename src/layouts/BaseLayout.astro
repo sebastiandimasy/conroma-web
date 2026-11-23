@@ -135,6 +135,7 @@ const languageLinks = alternates(path);
     </script>
   </head>
   <body class:list={{ 'page--bare': bare, 'page--overlay': overlay }}>
+    <canvas class="beams" id="beams" aria-hidden="true"></canvas>
     {/* Google Tag Manager (noscript) */}
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KWJHKHR2" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     {/* Medición Click-URL: un clic en cualquier enlace wa.me/ o tel: empuja el evento al dataLayer.
@@ -200,6 +201,8 @@ const languageLinks = alternates(path);
     <script>
       import { initMotion } from '../lib/motion';
       import { initFlipButtons } from '../lib/flip';
+      import { initBeams } from '../lib/beams';
+      initBeams(document.getElementById('beams') as HTMLCanvasElement | null);
       initMotion();
       initFlipButtons();
     </script>
