@@ -24,6 +24,14 @@ export function pageTitle(title: string): string {
   return branded.length <= 60 ? branded : title;
 }
 
+/** Meta description: Google muestra unos 155 caracteres; se corta por palabra entera. */
+export function clipDescription(text: string, max = 155): string {
+  const flat = text.replace(/\s+/g, ' ').trim();
+  if (flat.length <= max) return flat;
+  const cut = flat.slice(0, max);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.…-]+$/, '') + '…';
+}
+
 /** hreflang recíprocos: la misma página en cada idioma, y x-default a la versión en español. */
 export function alternates(path: string) {
   if (localizePath(path, defaultLang) === path && !path.startsWith(`/${defaultLang}/`)) return [];
@@ -94,7 +102,7 @@ export function agentSchema(lang: Lang) {
     telephone: [site.phone, site.landline].filter(Boolean),
     email: site.email,
     image: absoluteUrl('/img/og-conroma.jpg'),
-    logo: absoluteUrl('/img/og-conroma.jpg'), // shortcut: solo hay logo SVG; raster del equipo hasta tener un PNG del logotipo
+    logo: absoluteUrl('/img/conroma-logo-512.png'), // PNG 512×512 del logotipo, negro sobre blanco (sacado de brand/conroma-logo.svg)
     description: schemaText[lang].agencyDescription,
     address: {
       '@type': 'PostalAddress',

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { absoluteUrl, agentSchema, alternates, breadcrumbSchema, collectionPageSchema, listingSchema, pageTitle } from '../src/lib/seo';
+import { absoluteUrl, agentSchema, alternates, breadcrumbSchema, clipDescription, collectionPageSchema, listingSchema, pageTitle } from '../src/lib/seo';
 import { properties, propertyDocTitle, propertySlug, propertyTitle } from '../src/data/properties';
 
 describe('seo', () => {
@@ -148,5 +148,24 @@ describe('URLs de inmueble', () => {
     expect(propertyDocTitle(venta, [venta], 'en')).toBe('Detached villa for sale in Centre, Tordera — €260,000');
     // Un tipo sin traducción sale en español en vez de inventarlo.
     expect(propertyTitle({ ...venta, type: 'Torre' }, 'en')).toBe('Torre for sale in Centre, Tordera');
+  });
+});
+
+describe('clipDescription', () => {
+  it('deja intacto un texto que ya cabe', () => {
+    expect(clipDescription('Piso en venta en Malgrat de Mar.')).toBe('Piso en venta en Malgrat de Mar.');
+  });
+
+  it('corta a 155 caracteres por palabra entera y cierra con puntos suspensivos', () => {
+    const long = 'Bonito y reformado bungalow en venta en Malgrat de Mar, ubicado en estupendo camping a pie de carretera dotado de todos los servicios, comodidades y espacios de ocio, en parcela de 60 m2.';
+    const clipped = clipDescription(long);
+    expect(clipped.length).toBeLessThanOrEqual(155);
+    expect(clipped.endsWith('…')).toBe(true);
+    expect(long.startsWith(clipped.slice(0, -1))).toBe(true);
+    expect(clipped.slice(0, -1)).not.toMatch(/[\s,;:.]$/);
+  });
+
+  it('junta espacios y saltos de línea del texto de la ficha', () => {
+    expect(clipDescription('Salón\n\ncomedor   amplio.')).toBe('Salón comedor amplio.');
   });
 });

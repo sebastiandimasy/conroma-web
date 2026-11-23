@@ -5,7 +5,7 @@ import SiteHeader from '../components/layout/SiteHeader.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
 import ChatDemo from '../islands/ChatDemo';
 import { site } from '../data/site';
-import { absoluteUrl, alternates, pageTitle, siteGraph } from '../lib/seo';
+import { absoluteUrl, alternates, clipDescription, pageTitle, siteGraph } from '../lib/seo';
 import type { ContactContext } from '../lib/links';
 import { getLang, localizePath, ogLocale } from '../i18n';
 import { ui } from '../i18n/ui';
@@ -31,7 +31,9 @@ const lang = getLang(Astro.url);
 const t = ui[lang];
 const path = localizePath(givenPath, lang);
 const canonical = absoluteUrl(path);
-const languageLinks = alternates(path);
+// Sin hreflang en páginas noindex: no hay versión equivalente que indexar (y /estilo/ solo existe en español).
+const languageLinks = noindex ? [] : alternates(path);
+const metaDescription = clipDescription(description);
 ---
 
 <!doctype html>
@@ -40,14 +42,14 @@ const languageLinks = alternates(path);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle(title)}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <link rel="canonical" href={canonical} />
     {languageLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
     {(noindex || previewNoindex) && <meta name="robots" content={previewNoindex ? 'noindex, nofollow' : 'noindex'} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.legalName} />
     <meta property="og:title" content={pageTitle(title)} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocale[lang]} />
     {/* Cabecera social. ogImage se puede sobreescribir por página; por defecto, el equipo
