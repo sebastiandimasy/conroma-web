@@ -9,7 +9,7 @@
   body {
     @apply text-ink antialiased;
     /* Transparente: el fondo animado (.beams, src/lib/beams.ts) va detrás del contenido y el
-       color base lo pone <html>. Las secciones alternan transparente y gris translúcido. */
+       color base lo pone <html>. Las secciones blancas son transparentes y las grises, opacas. */
     background-color: transparent;
     overflow-x: hidden;
     font-family: var(--font-body);
@@ -176,10 +176,10 @@
 }
 
 /* Fondo animado de la página (src/lib/beams.ts). Las secciones dejan verlo: el lienzo pasa a
-   transparente y el gris a translúcido; tarjetas, campos y menús siguen opacos. */
+   transparente; el gris sigue opaco y hace de corte. Tarjetas, campos y menús, opacos. */
 :root {
   --section-canvas: transparent;
-  --section-surface: color-mix(in oklch, var(--color-surface-2) 50%, transparent);
+  --section-surface: var(--color-surface-2); /* gris opaco: corta el fondo animado */
 }
 
 .beams {
