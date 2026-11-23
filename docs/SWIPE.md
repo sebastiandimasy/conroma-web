@@ -155,9 +155,13 @@ Tres niveles, del más leve al más grave. En todos, primero se confirma el fall
 
 **2. La web nueva no funciona en absoluto** (el día del swipe o después). Unos minutos con el TTL
 a 300 s:
-- hPanel → *Dominios* → *DNS* → `@` (`A`) otra vez a **`185.79.147.30`**. `www` es un `CNAME` a
-  `@`, así que vuelve solo. La web antigua de Habitatsoft sigue encendida (paso 0: no la apagan
-  hasta pasadas 2 semanas).
+- Swipe hecho el **23-nov-2026**. Desde entonces Hostinger tiene `@` como `ALIAS` a
+  `conromaasesores.com.cdn.hstgr.net` y `www` como `CNAME` a `www.conromaasesores.com.cdn.hstgr.net`
+  (los dos con TTL 300). Copia de los registros de antes: `~/conroma-versiones/dns-antes-del-swipe-20261123.txt`.
+- Para volver: hPanel → *Dominios* → *DNS* → borrar el `ALIAS` de `@` y crear `A` `@` →
+  **`185.79.147.30`**; `www` → `CNAME` a `conromaasesores.com`. La web antigua de Habitatsoft
+  sigue encendida (paso 0: no la apagan hasta pasadas 2 semanas). Su certificado caduca el
+  28-dic-2026: a partir de ahí esta vuelta atrás deja de servir.
 - `MX` y `TXT` no se tocan: el correo no se entera de nada.
 
 **3. El feed de Habitatsoft falla o viene incompleto.** No hace falta hacer nada:
