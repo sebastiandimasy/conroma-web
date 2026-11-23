@@ -23,8 +23,8 @@ const FRAME_MS = 33;
 // «lighten» en oscuro: por mucho que se solapen, ningún punto pasa del color `peak`. Ese tope
 // está calculado para que el texto gris (--color-ink-3) y el rojo de error sigan ≥4,5:1.
 const THEME = {
-  light: { base: '#ffffff', peak: '255, 236, 165', op: 'darken' }, // ink-3 5,1:1 · error 4,6:1
-  dark: { base: '#0c0a09', peak: '52, 36, 9', op: 'lighten' }, // ink-3 4,7:1 · ink-2 5,7:1
+  light: { base: '#ffffff', peak: '255, 248, 222', op: 'darken' }, // crema muy suave
+  dark: { base: '#0c0a09', peak: '33, 27, 17', op: 'lighten' }, // brillo cálido muy tenue
 } as const;
 
 function isDark(): boolean {
