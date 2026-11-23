@@ -92,86 +92,11 @@
     animation: hero-settle 1.6s var(--ease-out) both;
   }
 
-  @supports ((animation-timeline: view()) and (animation-range: entry)) {
-    [data-reveal] {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 60%;
-    }
-
-    /* Parallax suave de la foto del hero y el texto que se retira al salir. */
-    .hero-story__photo {
-      animation:
-        hero-settle 1.6s var(--ease-out) both,
-        hero-drift linear both;
-      animation-timeline: auto, view();
-      animation-range: normal, exit 0% exit 100%;
-    }
-
-    .hero-story__content {
-      animation: hero-lift linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 70%;
-    }
-
-    /* Las fotos entran un poco más grandes y se asientan mientras llegan. */
-    .story-scroll__inline img {
-      animation: photo-settle linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 45%;
-    }
-
-    /* La cifra que cruza el centro de la pantalla se enciende; las demás quedan en gris
-       de línea (≥3:1, texto grande). Solo color: no mueve nada. */
-    .proof-band__value {
-      animation: figure-focus linear both;
-      animation-timeline: view();
-      animation-range: cover 20% cover 80%;
-    }
-  }
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    translate: 0 32px;
-  }
-}
-
-@keyframes figure-focus {
-  0%,
-  100% {
-    color: var(--color-line);
-  }
-
-  35%,
-  65% {
-    color: var(--color-ink);
-  }
 }
 
 @keyframes hero-settle {
   from {
     scale: 1.08;
-  }
-}
-
-@keyframes hero-drift {
-  to {
-    translate: 0 10%;
-  }
-}
-
-@keyframes hero-lift {
-  to {
-    opacity: 0;
-    translate: 0 -48px;
-  }
-}
-
-@keyframes photo-settle {
-  from {
-    scale: 1.12;
   }
 }
 

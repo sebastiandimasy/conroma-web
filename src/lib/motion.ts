@@ -1,6 +1,12 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { initEffects } from './motion/effects';
+import { initReveals } from './motion/reveal';
+import { initTouch } from './motion/touch';
+
+/** Interruptor de emergencia (spec §5.8): en false, la web queda visible y quieta. */
+export const MOTION_ON = true;
 
 function initHeader(): void {
   const header = document.querySelector<HTMLElement>('[data-site-header]');
@@ -25,26 +31,35 @@ function initActionBar(): void {
   });
 }
 
-function initSplitTitles(): void {
-  document.querySelectorAll<HTMLElement>('[data-split]').forEach((title) => {
-    SplitText.create(title, {
-      type: 'lines',
-      mask: 'lines',
-      linesClass: 'split-line',
-      autoSplit: true,
-      onSplit: (split) =>
-        gsap.from(split.lines, { yPercent: 110, duration: 0.7, ease: 'power4.out', stagger: 0.08 }),
+/** Resuelve cuando se va el esqueleto de carga (`html.is-loading`, BaseLayout). Sin temporizador propio. */
+export function waitForSkeleton(): Promise<void> {
+  const root = document.documentElement;
+  if (!root.classList.contains('is-loading')) return Promise.resolve();
+  return new Promise((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (root.classList.contains('is-loading')) return;
+      observer.disconnect();
+      resolve();
     });
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
   });
 }
 
 export function initMotion(): void {
   gsap.registerPlugin(ScrollTrigger, SplitText);
   initHeader();
-  const media = gsap.matchMedia();
-  media.add('(prefers-reduced-motion: no-preference)', () => {
-    initActionBar();
-    // [data-reveal] ya no se oculta con JS: lo anima CSS (base.css) solo si el navegador sabe.
-    document.fonts.ready.then(initSplitTitles);
+  initTouch();
+  if (!MOTION_ON) return;
+  Promise.all([waitForSkeleton(), document.fonts.ready]).then(() => {
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      initActionBar();
+      const stopReveals = initReveals();
+      const stopEffects = initEffects();
+      return () => {
+        stopReveals();
+        stopEffects();
+      };
+    });
+    if (document.readyState !== 'complete') addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
   });
 }

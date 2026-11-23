@@ -85,6 +85,11 @@ paquete preparado en `~/Desktop/Claude-migracion/`.
   `lang="es"` salvo que el feed traiga la de ese idioma (`Property.descriptions`). Las reseñas
   reales no se traducen. **Regla del dueño: todo cambio de texto, en los tres idiomas.**
 
+- **Animaciones con GSAP en toda la web** (23-nov, rama local, sin publicar): cada sección entra al
+  aparecer y sale al irse con el scroll, cifras que cuentan, héroes y frase palabra a palabra con GSAP,
+  hover en ordenador y pulsación en móvil. Reglas en `ESTANDAR.md` §1; diseño y plan en
+  `docs/superpowers/`. Interruptor: `MOTION_ON` en `src/lib/motion.ts`.
+
 ## 4. Falta (código)
 
 En este repo:

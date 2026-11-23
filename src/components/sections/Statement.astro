@@ -4,9 +4,8 @@ interface Props {
 }
 
 const { text } = Astro.props;
-// Tramos del scroll: el párrafo se enciende mientras cruza del 30 % al 60 % de su recorrido.
+// Cada palabra va en su <span>: GSAP la enciende al cruzar la pantalla (lib/motion/effects.ts).
 const words = text.split(' ');
-const span = 30 / words.length;
 ---
 
 {/* Respuesta corta justo bajo el hero: la primera frase que leen Google y las IA (el texto va entero en el HTML). */}
@@ -16,7 +15,7 @@ const span = 30 / words.length;
       {
         words.map((word, i) => (
           <>
-            <span class="statement__word" style={`--a: ${(30 + i * span).toFixed(2)}%; --b: ${(30 + (i + 1) * span).toFixed(2)}%`}>
+            <span class="statement__word">
               {word}
             </span>
             {/* Sin espacio tras la última palabra: en Chrome ese espacio estira el último renglón justificado. */}

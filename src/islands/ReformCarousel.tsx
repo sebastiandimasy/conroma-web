@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import gsap from 'gsap';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, EffectCoverflow, Keyboard, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -6,6 +7,7 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import '../styles/reform-carousel.css';
 import { strings, type Lang } from '../i18n';
+import { REVEAL } from '../lib/motion/kinds';
 
 /* Carrusel coverflow de obras (estilo Skiper UI · Carousel_003, adaptado a Conroma con Swiper).
    Con reduced-motion, sin giro 3D: pasa como un carrusel plano. Las fotos van en el HTML. */
@@ -41,6 +43,15 @@ export default function ReformCarousel({ photos, lang }: Props) {
       coverflowEffect={{ rotate: still ? 0 : 40, stretch: 0, depth: still ? 0 : 100, modifier: 1, slideShadows: !still }}
       speed={still ? 0 : 300}
       pagination={{ clickable: true }}
+      onSlideChange={(swiper) => {
+        if (still) return;
+        // La foto que llega al centro sube un poco (spec §5.4). Sin fundido: las vecinas ya se ven.
+        const photo = swiper.slides[swiper.activeIndex]?.querySelector('img');
+        if (!photo) return;
+        // Sin la transición CSS del hover mientras GSAP la mueve; al acabar vuelve la de la hoja de estilos.
+        photo.style.transition = 'none';
+        gsap.from(photo, { y: REVEAL.subir.from.y, duration: 0.3, ease: REVEAL.subir.enter.ease, clearProps: 'transform,transition' });
+      }}
       a11y={{
         prevSlideMessage: t.prev,
         nextSlideMessage: t.next,

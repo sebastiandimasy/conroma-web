@@ -947,29 +947,6 @@
     }
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-center__title,
-    .hero-center__lead,
-    .hero-center__actions {
-      animation: hero-center-in 0.6s cubic-bezier(0.2, 0, 0, 1) both;
-    }
-
-    .hero-center__lead {
-      animation-delay: 0.15s;
-    }
-
-    .hero-center__actions {
-      animation-delay: 0.3s;
-    }
-  }
-
-  @keyframes hero-center-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-  }
-
   /* Statement: la respuesta corta, fina, que se va encendiendo palabra a palabra al hacer scroll. */
   .statement {
     background: var(--section-surface);
@@ -986,22 +963,6 @@
     font-weight: var(--weight-display-text);
     line-height: 1.22;
     letter-spacing: -0.03em;
-  }
-
-  /* Cada palabra lleva su tramo (--a → --b) del recorrido del párrafo por el centro de la pantalla.
-     Sin soporte o con reduced-motion, el texto se ve entero. */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .statement__text {
-        view-timeline: --statement block;
-      }
-
-      .statement__word {
-        animation: statement-word linear both;
-        animation-timeline: --statement;
-        animation-range: cover var(--a) cover var(--b);
-      }
-    }
   }
 
   /* Inicio: textos justificados con la última línea a la izquierda y a todo el ancho de su sección,
@@ -1041,15 +1002,6 @@
 
   .faq-section__inner {
     max-width: none;
-  }
-
-  @keyframes statement-word {
-    from {
-      opacity: 0.18;
-    }
-    to {
-      opacity: 1;
-    }
   }
 
   /* ClosingCTA: centrado. Estado de la oficina → titular en dos tiempos → círculo que abre el
@@ -1722,59 +1674,52 @@
     display: none;
   }
 
+  /* Escritorio: foto fija (sticky) que cambia con el paso activo. GSAP marca el paso con .is-active
+     y funde la foto que toca (lib/motion/effects.ts). Sin JS se ve la primera foto y los pasos enteros. */
   @media (min-width: 60rem) and (prefers-reduced-motion: no-preference) {
-    @supports ((animation-timeline: view()) and (animation-range: entry) and (timeline-scope: none)) {
-      .story-scroll__body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--space-12);
-      }
-
-      .story-scroll__inline {
-        display: none;
-      }
-
-      .story-scroll__step {
-        min-height: 70vh;
-        grid-template-areas:
-          'num title'
-          'num text';
-        align-content: center;
-        animation: story-step linear both;
-        animation-timeline: view();
-      }
-
-      .story-scroll__stage {
-        display: block;
-        position: sticky;
-        top: calc(var(--header-height) + var(--space-6));
-        height: calc(100svh - var(--header-height) - var(--space-12));
-        align-self: start;
-      }
-
-      /* La línea de tiempo de cada foto (--paso-N) va en línea, en el componente. */
-      .story-scroll__stage-photo {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 2px;
-        animation-name: story-photo;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-      }
+    .story-scroll__body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-12);
     }
-  }
 
-  @keyframes story-step {
-    0%, 100% { opacity: 0.6; }
-    35%, 65% { opacity: 1; }
-  }
+    .story-scroll__inline {
+      display: none;
+    }
 
-  @keyframes story-photo {
-    0%, 100% { opacity: 0; }
-    20%, 80% { opacity: 1; }
+    .story-scroll__step {
+      min-height: 70vh;
+      grid-template-areas:
+        'num title'
+        'num text';
+      align-content: center;
+      transition: opacity 0.4s var(--ease-out);
+    }
+
+    .story-scroll.is-enhanced .story-scroll__step:not(.is-active) {
+      opacity: 0.6;
+    }
+
+    .story-scroll__stage {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-6));
+      height: calc(100svh - var(--header-height) - var(--space-12));
+      align-self: start;
+    }
+
+    .story-scroll__stage-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .story-scroll__stage-photo + .story-scroll__stage-photo {
+      opacity: 0;
+    }
   }
 
   /* Compare: dos mitades a sangre sin bordes; la segunda sobre gris. Marca con ✓ amarillo. */

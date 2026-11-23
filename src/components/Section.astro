@@ -22,14 +22,14 @@ const hasHead = Boolean(eyebrow || lead || Astro.slots.has('title'));
   <div class:list={['wrap', wrapClass]}>
     {
       hasHead && (
-        <div class:list={['section__head', { 'section__head--center': center }]} data-reveal={reveal ? true : undefined}>
+        <div class:list={['section__head', { 'section__head--center': center }]}>
           {eyebrow && <p class="eyebrow">{eyebrow}</p>}
           {Astro.slots.has('title') && (
-            <h2 class="section__title">
+            <h2 class="section__title" data-reveal={reveal ? 'titulo' : undefined}>
               <slot name="title" />
             </h2>
           )}
-          {lead && <p class="section__lead">{lead}</p>}
+          {lead && <p class="section__lead" data-reveal={reveal ? '' : undefined}>{lead}</p>}
         </div>
       )
     }

@@ -1,0 +1,67 @@
+/* Hover (ordenador) y pulsación (móvil) — spec 2026-11-23 §5.4.
+   Las entradas y salidas con el scroll van en lib/motion (GSAP); aquí solo estados que entran y salen
+   solos con el ratón o el dedo. Un componente nuevo se apunta con data-hover="zoom|fila|lift". */
+
+@layer components {
+  /* Foto que crece dentro de su marco (el marco ya recorta: overflow hidden). */
+  :is([data-hover='zoom'] img, .property-card__photo, .gallery__photo, .reform-carousel__photo) {
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  /* Fila: velo suave y flecha que avanza. */
+  :is([data-hover='fila'], .service-index__row, .town-list__link, .spec-list__row, .compare__items > li) {
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  :is([data-hover='fila'], .service-index__row) :is(.service-index__icon, .arrow-link__icon) {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  /* Diapositiva activa del carrusel de obras: sube un poco y las vecinas se apagan. */
+  :is([data-hover='lift'], .reform-carousel) .swiper-slide {
+    transition: opacity 0.3s var(--ease-out);
+  }
+
+  /* Pulsación en táctil: respuesta inmediata al dedo antes de la acción (lib/motion/touch.ts
+     registra el touchstart que iOS necesita para aplicar :active). */
+  :is([data-hover='zoom'], .property-card__photo-link, .gallery__zoom, .tcar__dot):active {
+    transform: scale(0.97);
+    transition: transform 0.12s var(--ease-out);
+  }
+
+  :is([data-hover='fila'], .service-index__row, .town-list__link, .spec-list__row, .compare__items > li):active {
+    background-color: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is([data-hover='zoom'], .property-card__photo-link, .gallery__zoom, .reform-carousel__slide):hover
+    :is(img, .property-card__photo, .gallery__photo, .reform-carousel__photo) {
+    transform: scale(1.04);
+  }
+
+  :is([data-hover='fila'], .service-index__row, .town-list__link, .spec-list__row, .compare__items > li):hover {
+    background-color: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  }
+
+  :is([data-hover='fila'], .service-index__row):hover :is(.service-index__icon, .arrow-link__icon) {
+    transform: translateX(4px);
+  }
+
+  :is([data-hover='lift'], .reform-carousel):hover .swiper-slide:not(.swiper-slide-active) {
+    opacity: 0.7;
+  }
+
+  .tcar__dot:not(.is-active):hover::before {
+    background-color: color-mix(in oklab, var(--color-ink) 40%, transparent);
+  }
+}
+
+/* Reducir movimiento: se quedan los velos y la atenuación; fuera escalas y desplazamientos. */
+@media (prefers-reduced-motion: reduce) {
+  :is([data-hover='zoom'] img, .property-card__photo, .gallery__photo, .reform-carousel__photo),
+  :is([data-hover='zoom'], .property-card__photo-link, .gallery__zoom, .tcar__dot):active,
+  :is([data-hover='fila'], .service-index__row) :is(.service-index__icon, .arrow-link__icon) {
+    transform: none !important;
+  }
+}

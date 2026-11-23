@@ -138,7 +138,7 @@ const description = t.description;
     localHomes.length > 0 && (
       <section class="section buy-featured">
         <div class="wrap">
-          <h2 class="section__title" data-reveal>{t.featured}</h2>
+          <h2 class="section__title" data-reveal="titulo">{t.featured}</h2>
           <div class="buy-featured__grid">
             <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" lang={lang} />
           </div>
@@ -155,7 +155,7 @@ const description = t.description;
 
   <section class="section buy-budget">
     <div class="wrap">
-      <h2 class="section__title" data-reveal>{t.budgetTitle}</h2>
+      <h2 class="section__title" data-reveal="titulo">{t.budgetTitle}</h2>
       <p class="section__lead">{t.budgetLead}</p>
       <a class="button button--ghost buy-budget__cta" href={localizePath('/es/comprar/puedo-comprar/', lang)}>{t.budgetCta}</a>
     </div>
