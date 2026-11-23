@@ -11,10 +11,19 @@ export default function ThemeSwitch({ label }: { label: string }) {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    setDark(document.documentElement.dataset.theme === 'dark');
+    const root = document.documentElement;
+    const sync = () => setDark(root.dataset.theme === 'dark');
+    sync();
+    // Hay dos interruptores (cabecera en escritorio, pie en móvil): si uno cambia el tema,
+    // el otro se entera por el atributo.
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
     // La primera sincronización no se anima: solo los cambios del visitante.
     const frame = requestAnimationFrame(() => setAnimate(true));
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, []);
 
   function toggle() {

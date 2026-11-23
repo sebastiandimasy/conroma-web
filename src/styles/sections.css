@@ -55,8 +55,8 @@
   }
 
   .site-header__link {
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill); /* mismo radio que la cápsula que lo contiene */
     font-size: 0.90625rem;
     font-weight: 500;
     color: var(--color-ink-3);
@@ -283,7 +283,17 @@
     display: none;
   }
 
-  @media (min-width: 48rem) {
+  /* Cabecera móvil: logo, idioma y WhatsApp. El tema pasa al pie y el corazón solo sale
+     cuando hay pisos guardados (con cinco botones la barra iba saturada). */
+  @media (max-width: 59.999rem) {
+    .site-header__group .theme-switch,
+    .site-header__group .saved-link:not(:has(.saved-link__count)) {
+      display: none;
+    }
+  }
+
+  /* Con el menú de escritorio a la vista (desde 60rem) el texto solo cabe a partir de 80rem. */
+  @media (min-width: 48rem) and (max-width: 59.999rem), (min-width: 80rem) {
     .site-header__cta .site-header__cta-text {
       display: inline;
     }
@@ -325,10 +335,11 @@
     transform: scale(0.82);
   }
 
-  /* Activo estilo Apple liquid-glass: pill esmerilado con brillo superior y borde sutil,
-     radio md para que la etiqueta no choque con el borde; el dorado del icono da la señal de marca. */
+  /* Activo estilo Apple liquid-glass: pill esmerilado con brillo superior y borde sutil, con el
+     mismo radio que la cápsula del dock (si no, en Inicio y Contacto chocaba con el borde);
+     el dorado del icono da la señal de marca. */
   .mobile-dock__link.is-active {
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pill);
     background: var(--glass-fill-2);
     color: var(--color-ink);
     box-shadow:

@@ -7,7 +7,8 @@ export interface NavLink {
 }
 
 // "Inmuebles" entra la primera: el visitante que llega a comprar quiere ver la
-// cartera, no una página de servicio. Antes solo se llegaba con un clic extra.
+// cartera, no una página de servicio. "Contacto" cierra el menú (antes no estaba);
+// "Equipo" sale de la cabecera: se llega desde "Empresa" y desde el pie.
 export const mainNav = strings<NavLink[]>({
   es: [
     { label: 'Inmuebles', href: '/es/venta/' },
@@ -15,8 +16,8 @@ export const mainNav = strings<NavLink[]>({
     { label: 'Vender', href: '/es/vender/' },
     { label: 'Alquilar', href: '/es/alquilar/' },
     { label: 'Empresa', href: '/es/empresa/' },
-    { label: 'Equipo', href: '/es/equipo/' },
     { label: 'Blog', href: '/es/blog/' },
+    { label: 'Contacto', href: '/es/contacto/' },
   ],
   en: [
     { label: 'Properties', href: '/es/venta/' },
@@ -24,8 +25,8 @@ export const mainNav = strings<NavLink[]>({
     { label: 'Sell', href: '/es/vender/' },
     { label: 'Rent', href: '/es/alquilar/' },
     { label: 'About us', href: '/es/empresa/' },
-    { label: 'Team', href: '/es/equipo/' },
     { label: 'Blog', href: '/es/blog/' },
+    { label: 'Contact', href: '/es/contacto/' },
   ],
   ca: [
     { label: 'Immobles', href: '/es/venta/' },
@@ -33,14 +34,14 @@ export const mainNav = strings<NavLink[]>({
     { label: 'Vendre', href: '/es/vender/' },
     { label: 'Llogar', href: '/es/alquilar/' },
     { label: 'Empresa', href: '/es/empresa/' },
-    { label: 'Equip', href: '/es/equipo/' },
     { label: 'Blog', href: '/es/blog/' },
+    { label: 'Contacte', href: '/es/contacto/' },
   ],
 });
 
 // Dock móvil: las cinco cosas que alguien viene a hacer. Con siete entradas a 390 px las
-// etiquetas se tocaban y los objetivos bajaban de 44 px. "Empresa" y "Equipo" siguen en la
-// cabecera y en el pie.
+// etiquetas se tocaban y los objetivos bajaban de 44 px. "Empresa" sigue en la cabecera y
+// "Equipo", en el pie.
 export const dockNav = strings<(NavLink & { icon: 'home' | 'search' | 'tag' | 'key' | 'phone' })[]>({
   es: [
     { label: 'Inicio', href: '/es/', icon: 'home' },

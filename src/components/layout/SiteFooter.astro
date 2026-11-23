@@ -1,6 +1,7 @@
 ---
 import Icon from '../Icon.astro';
 import Logo from '../Logo.astro';
+import ThemeSwitch from '../../islands/ThemeSwitch';
 import { site } from '../../data/site';
 import { mainNav } from '../../data/nav';
 import { getLang, localizePath, strings } from '../../i18n';
@@ -18,6 +19,8 @@ const t = strings({
     quickLinks: 'Enlaces rápidos',
     web: 'Web',
     services: 'Servicios',
+    team: 'Equipo',
+    theme: 'Tema oscuro',
     contact: 'Contacto',
     areas: 'Zonas',
     allAreas: 'Todas las zonas',
@@ -40,6 +43,8 @@ const t = strings({
     quickLinks: 'Quick links',
     web: 'Site',
     services: 'Services',
+    team: 'Team',
+    theme: 'Dark theme',
     contact: 'Contact',
     areas: 'Areas',
     allAreas: 'All areas',
@@ -62,6 +67,8 @@ const t = strings({
     quickLinks: 'Enllaços ràpids',
     web: 'Web',
     services: 'Serveis',
+    team: 'Equip',
+    theme: 'Tema fosc',
     contact: 'Contacte',
     areas: 'Zones',
     allAreas: 'Totes les zones',
@@ -103,8 +110,8 @@ const t = strings({
         {mainNav[lang].map((link) => (
           <li><a href={localizePath(link.href, lang)}>{link.label}</a></li>
         ))}
+        <li><a href={localizePath('/es/equipo/', lang)}>{t.team}</a></li>
         <li><a href={localizePath('/es/servicios/', lang)}>{t.services}</a></li>
-        <li><a href={localizePath('/es/contacto/', lang)}>{t.contact}</a></li>
       </ul>
     </nav>
 
@@ -184,6 +191,11 @@ const t = strings({
 
   <div class="wrap site-footer__base">
     <p>© {year} {site.legalName}</p>
+    {/* En móvil el interruptor de tema sale de la cabecera (iba demasiado llena) y vive aquí. */}
+    <div class="site-footer__theme">
+      <span aria-hidden="true">{t.theme}</span>
+      <ThemeSwitch client:visible label={t.theme} />
+    </div>
     <nav class="site-footer__legal" aria-label={t.legal}>
       <a href={localizePath('/es/aviso-legal/', lang)}>{t.legalNotice}</a>
       <a href={localizePath('/es/privacidad/', lang)}>{t.privacy}</a>
@@ -320,6 +332,27 @@ const t = strings({
     padding-top: 24px;
     border-top: 1px solid color-mix(in srgb, var(--color-fixed-paper) 16%, transparent);
     color: color-mix(in srgb, var(--color-fixed-paper) 60%, transparent);
+  }
+
+  .site-footer__theme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Pie negro fijo en los dos temas: el interruptor va en hueso, no en tinta. */
+  .site-footer__theme :global(.theme-switch) {
+    color: var(--color-fixed-paper);
+  }
+
+  .site-footer__theme :global(.theme-switch__track) {
+    background: color-mix(in srgb, var(--color-fixed-paper) 22%, transparent);
+  }
+
+  @media (min-width: 60rem) {
+    .site-footer__theme {
+      display: none;
+    }
   }
 
   .site-footer__legal {
