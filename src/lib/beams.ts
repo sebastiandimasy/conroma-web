@@ -112,7 +112,11 @@ export function initBeams(canvas: HTMLCanvasElement | null): void {
   // El interruptor de tema cambia data-theme: repintar con los tonos del otro tema.
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   if (still) return;
-  frame = requestAnimationFrame(tick);
+  // El movimiento arranca cuando la página ha cargado: mientras carga, el hilo principal es
+  // para pintar la foto y el texto (el primer fotograma ya está dibujado arriba).
+  const start = () => (frame = requestAnimationFrame(tick));
+  if (document.readyState === 'complete') start();
+  else addEventListener('load', start, { once: true });
   document.addEventListener('visibilitychange', () => {
     cancelAnimationFrame(frame);
     if (!document.hidden) frame = requestAnimationFrame(tick);

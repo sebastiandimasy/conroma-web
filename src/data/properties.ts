@@ -182,6 +182,13 @@ export function getListings(filter: ListingFilter = {}): Property[] {
   );
 }
 
+/** Lo que viaja al navegador en un listado: la tarjeta solo pinta la primera foto y ningún
+ * texto largo. Pasar el piso entero metía ~435 KB en el HTML de /venta/ (PageSpeed móvil). */
+export function forCard(property: Property): Property {
+  const { descriptions: _descriptions, ...rest } = property;
+  return { ...rest, description: '', images: property.images?.slice(0, 1) };
+}
+
 export function getListing(slug: string): Property | undefined {
   return source.find((property) => propertySlug(property) === slug);
 }

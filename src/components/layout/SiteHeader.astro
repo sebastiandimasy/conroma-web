@@ -62,7 +62,7 @@ const switchTo = (to: (typeof languages)[number]) => (current.startsWith(`/${lan
         </ul>
       </details>
       <SavedLink client:idle className="button button--ghost icon-button saved-link" lang={lang} />
-      <ThemeSwitch client:load label={t.themeDark} />
+      <ThemeSwitch client:idle label={t.themeDark} />
       {/* WhatsApp, no "Valorar mi piso": la valoración ya tiene su sitio en el nav
           ("Vender") y en el dock móvil, así que el CTA la duplicaba desde la esquina
           menos alcanzable. WhatsApp, en cambio, no estaba en ninguna otra parte de la

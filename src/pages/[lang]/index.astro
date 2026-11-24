@@ -19,7 +19,7 @@ import reformPhoto from '../../assets/reformas/reforma-10.jpg';
 import closingPhoto from '../../assets/equipo/conroma-102.jpg';
 import { homeFaq } from '../../data/faq';
 import { site } from '../../data/site';
-import { getListings, homesIn } from '../../data/properties';
+import { forCard, getListings, homesIn } from '../../data/properties';
 import { faqSchema } from '../../lib/seo';
 
 // Foto de portada del equipo (site.ts): la agencia es la gente que te atiende.
@@ -164,7 +164,7 @@ const trackRecord = ['+300', '+100', '+200'].map((value, i) => ({ value, label: 
           <>
             <h2 class="section__title" data-reveal="titulo">{t.featured}</h2>
             <div class="home-featured__grid">
-              <PropertyGrid client:visible properties={featuredHomes} townName="Malgrat de Mar" origin="home-destacados" lang={lang} />
+              <PropertyGrid client:visible properties={featuredHomes.map(forCard)} townName="Malgrat de Mar" origin="home-destacados" lang={lang} />
             </div>
           </>
         )

@@ -7,19 +7,7 @@ import PropertyGallery from '../../../islands/PropertyGallery';
 import FavoriteToggle from '../../../islands/FavoriteToggle';
 import PropertyGrid from '../../../islands/PropertyGrid';
 import ApproxLocationMap from '../../../islands/ApproxLocationMap';
-import {
-  cardFacts,
-  countLabel,
-  getListings,
-  hasPublicPrice,
-  isHome,
-  propertyDocTitle,
-  propertySlug,
-  propertyTitle,
-  stateLabel,
-  typeLabel,
-  type Property,
-} from '../../../data/properties';
+import { cardFacts, countLabel, forCard, getListings, hasPublicPrice, isHome, propertyDocTitle, propertySlug, propertyTitle, stateLabel, type Property, typeLabel } from '../../../data/properties';
 import { findTown, publishedCatalogTowns } from '../../../data/towns';
 import { site } from '../../../data/site';
 import { formatFloor, formatPrice } from '../../../lib/format';
@@ -407,7 +395,7 @@ const metaDescription = `${title}${hasPublicPrice(property) ? t.priceFor(formatP
             <div class="section__head">
               <h2 class="section__title">{t.similar}</h2>
             </div>
-            <PropertyGrid client:visible properties={similar} townName={townName} origin="ficha-parecidas" lang={lang} />
+            <PropertyGrid client:visible properties={similar.map(forCard)} townName={townName} origin="ficha-parecidas" lang={lang} />
           </div>
         </section>
       )

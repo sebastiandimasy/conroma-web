@@ -16,7 +16,7 @@ import heroPhoto from '../../../assets/lugares/malgrat-de-mar/panoramica.jpg';
 import closingPhoto from '../../../assets/equipo/conroma-74.jpg';
 import { site } from '../../../data/site';
 import { buyAnswer, buyFaq, buySteps } from '../../../data/comprar';
-import { getListings, homesIn, propertiesIn } from '../../../data/properties';
+import { forCard, getListings, homesIn, propertiesIn } from '../../../data/properties';
 import { publishedCatalogTowns } from '../../../data/towns';
 import { placePhotos } from '../../../data/creditos-fotos';
 import { proofFigures } from '../../../lib/proof';
@@ -141,7 +141,7 @@ const description = t.description;
         <div class="wrap">
           <h2 class="section__title" data-reveal="titulo">{t.featured}</h2>
           <div class="buy-featured__grid">
-            <PropertyGrid client:visible properties={localHomes.slice(0, 3)} townName="Malgrat de Mar" origin="comprar" lang={lang} />
+            <PropertyGrid client:visible properties={localHomes.slice(0, 3).map(forCard)} townName="Malgrat de Mar" origin="comprar" lang={lang} />
           </div>
           <a class="arrow-link buy-featured__more" href={localizePath('/es/venta/', lang)}>
             <span class="arrow-link__icon" aria-hidden="true"><Icon name="arrow" /></span>

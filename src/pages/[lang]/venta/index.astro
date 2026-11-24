@@ -7,7 +7,7 @@ import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
 import Icon from '../../../components/Icon.astro';
 import FaqSection from '../../../components/sections/FaqSection.astro';
 import ListingExplorer from '../../../islands/ListingExplorer';
-import { cheapestPrice, getListings, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
+import { cheapestPrice, forCard, getListings, homesIn, propertiesIn, typeBreakdown } from '../../../data/properties';
 import { publishedCatalogTowns } from '../../../data/towns';
 import { formatPrice } from '../../../lib/format';
 import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../../lib/seo';
@@ -154,7 +154,7 @@ const faq = t.faq;
 
   <section class="listing-section">
     <div class="wrap">
-      <ListingExplorer client:load properties={catalog} townName={t.area} lang={lang} />
+      <ListingExplorer client:load properties={catalog.map(forCard)} townName={t.area} lang={lang} />
       <section class="section town-index">
         <details class="town-index__details">
           <summary class="town-index__summary">
