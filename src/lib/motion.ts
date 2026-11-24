@@ -31,26 +31,12 @@ function initActionBar(): void {
   });
 }
 
-/** Resuelve cuando se va el esqueleto de carga (`html.is-loading`, BaseLayout). Sin temporizador propio. */
-export function waitForSkeleton(): Promise<void> {
-  const root = document.documentElement;
-  if (!root.classList.contains('is-loading')) return Promise.resolve();
-  return new Promise((resolve) => {
-    const observer = new MutationObserver(() => {
-      if (root.classList.contains('is-loading')) return;
-      observer.disconnect();
-      resolve();
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-  });
-}
-
 export function initMotion(): void {
   gsap.registerPlugin(ScrollTrigger, SplitText);
   initHeader();
   initTouch();
   if (!MOTION_ON) return;
-  Promise.all([waitForSkeleton(), document.fonts.ready]).then(() => {
+  document.fonts.ready.then(() => {
     gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
       initActionBar();
       const stopReveals = initReveals();
