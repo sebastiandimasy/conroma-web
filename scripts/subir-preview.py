@@ -138,6 +138,17 @@ def main() -> None:
     ftp = conectar(cred)
     asegurar_directorio(ftp, cred['FTP_DIR'])
 
+    # Las fotos de fotos/ no cambian nunca (un nombre por foto y tamaño): solo se suben las que no están.
+    try:
+        en_servidor = {n.rsplit('/', 1)[-1] for n in ftp.nlst(f"{cred['FTP_DIR'].rstrip('/')}/fotos")}
+    except Exception:
+        en_servidor = set()
+    ya = [a for a in archivos if a[1].startswith('fotos/') and a[1].rsplit('/', 1)[-1] in en_servidor]
+    if ya:
+        archivos = [a for a in archivos if not (a[1].startswith('fotos/') and a[1].rsplit('/', 1)[-1] in en_servidor)]
+        total_bytes -= sum(ruta.stat().st_size for ruta, _ in ya)
+        print(f"{len(ya)} fotos ya estaban en el servidor · quedan {len(archivos)} archivos · {total_bytes / 1024 / 1024:.0f} MB")
+
     creados: set[str] = set()
     subidos = enviados = fallos = 0
     for local_path, rel in archivos:

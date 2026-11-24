@@ -3,7 +3,7 @@ import { motion, useDragControls, useReducedMotion } from 'motion/react';
 import { Button } from '@heroui/react';
 import type { Filters } from '../lib/filters';
 import { emptyFilters } from '../lib/filters';
-import { typeLabel } from '../data/properties';
+import { typeLabel } from '../data/property-text';
 import { formatPrice } from '../lib/format';
 import { strings, type Lang } from '../i18n';
 

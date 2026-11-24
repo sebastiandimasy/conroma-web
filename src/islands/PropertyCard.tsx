@@ -1,5 +1,6 @@
 import type { Property } from '../data/properties';
-import { cardFacts, hasPublicPrice, propertyTitle, propertyUrl, typeLabel } from '../data/properties';
+import { cardFacts, hasPublicPrice, propertyTitle, propertyUrl, typeLabel } from '../data/property-text';
+import { photoSources } from '../lib/photos';
 import { findTown } from '../data/towns';
 import { formatPrice } from '../lib/format';
 import { isNewListing } from '../lib/inventory';
@@ -63,15 +64,12 @@ const texts = strings({
   },
 });
 
-// El CDN sirve variantes por ancho (xl 800, 2xl 1024, 3xl 1280); la tarjeta no necesita la maxima.
-const cdnSize = (url: string, size: string) => url.replace('/3xl/', `/${size}/`);
-
 export function PropertyCard({ property, townName, origin, eager = false, headingLevel: Heading = 'h3', onHide, lang }: PropertyCardProps) {
   const t = texts[lang];
   const title = propertyTitle(property, lang);
   const url = propertyUrl(property, lang);
   const hasPhotos = (property.images?.length ?? 0) > 0 || property.photos > 0;
-  const cardPhoto = property.images?.[0];
+  const cardPhoto = property.images?.[0] ? photoSources(property.images[0]) : undefined;
   const drop = property.previousPrice ? property.previousPrice - property.price : 0;
   const facts = cardFacts(property, lang);
   const place = findTown(property.town)?.name ?? townName;
@@ -84,12 +82,8 @@ export function PropertyCard({ property, townName, origin, eager = false, headin
           {hasPhotos ? (
             <img
               className="property-card__photo"
-              src={cardPhoto ? cdnSize(cardPhoto, 'xl') : `/img/muestra-${property.tone}.svg`}
-              srcSet={
-                cardPhoto?.includes('/3xl/')
-                  ? `${cdnSize(cardPhoto, 'xl')} 800w, ${cdnSize(cardPhoto, '2xl')} 1024w`
-                  : undefined
-              }
+              src={cardPhoto?.src ?? `/img/muestra-${property.tone}.svg`}
+              srcSet={cardPhoto?.srcset}
               sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
               alt={t.photoAlt(title)}
               width="800"

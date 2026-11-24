@@ -17,3 +17,7 @@ dist/client/_frame390.html
 
 # Registro de altas generado en el prebuild (se publica en la web)
 public/data/altas.json
+
+# Fotos de Habitatsoft en WebP, generadas en el pre-build (scripts/fotos-webp.mjs)
+public/fotos/
+src/data/fotos-locales.json

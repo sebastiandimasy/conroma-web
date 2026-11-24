@@ -57,10 +57,11 @@ async function main() {
   if (fichas[0]) {
     const ficha = await get(`${base}${fichas[0]}`);
     check(`Ficha ${fichas[0]}`, ficha, { preview, mustContain: ['Ref.'] });
-    const foto = ficha.html.match(/https:\/\/fotoshs\.imghs\.net\/[^"\s,)]+/)?.[0];
+    // La foto sale de nuestro dominio (/fotos/, WebP) o, si no se pudo convertir, de Habitatsoft.
+    const foto = ficha.html.match(/\/fotos\/[^"\s,)]+\.webp|https:\/\/fotoshs\.imghs\.net\/[^"\s,)]+/)?.[0];
     if (foto) {
-      const img = await get(foto, 'HEAD');
-      results.push({ name: 'Foto de Habitatsoft en la ficha', fails: img.status === 200 ? [] : [`la foto responde ${img.status}`] });
+      const img = await get(foto.startsWith('/') ? `${base}${foto}` : foto, 'HEAD');
+      results.push({ name: `Foto de la ficha (${foto.startsWith('/') ? 'propia' : 'Habitatsoft'})`, fails: img.status === 200 ? [] : [`la foto responde ${img.status}`] });
     }
   }
 
